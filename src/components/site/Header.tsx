@@ -1,20 +1,23 @@
 "use client";
-// Cabeçalho do site, fixo no topo: transparente sobre o carrossel da
-// home e branco ao rolar ou nas demais páginas.
-//
-// Menu no modelo da Formularis: o Carrinho na frente, como único
-// destaque (06/10, no lugar do "Enviar receita", que segue na gaveta,
-// na home e no botão flutuante do celular), depois A Viver Bem e
-// Categorias com submenu, Lojas e Contato, e a busca na lupa.
+// Cabeçalho do site em três faixas, no modelo de loja (referência
+// biovittare.com.br, pedida pelo usuário em 06/10/2026):
+//   1. a faixa de vantagens no topo (só computador), com os links
+//      institucionais na ponta;
+//   2. a linha principal: logo, busca aberta, "Enviar receita" e carrinho;
+//   3. a barra de categorias em azul-noite, com "Como funciona" em ouro.
+// Fica preso ao topo (sticky) e ocupa espaço no fluxo da página, então as
+// páginas não precisam de margem no topo. A altura está em
+// --altura-cabecalho (globals.css), usada pela barra do catálogo.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
-import { CategoriaDTO } from "@/lib/tipos";
+import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, UNIDADES } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho } from "./CarrinhoDrawer";
+import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 
 // Abre a gaveta do pedido. A contagem só aparece com item no carrinho
 // (o carrinho vem do localStorage depois da hidratação, então começa 0
@@ -28,7 +31,7 @@ function BotaoCarrinho({ className, rotulo = true }: { className: string; rotulo
       <span className="relative">
         <IconeCarrinho tamanho={20} />
         {totalItens > 0 && (
-          <span className="absolute -top-2 -right-2.5 bg-white text-escarlate text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center shadow-sm ring-1 ring-escarlate/20">
+          <span className="absolute -top-2 -right-2.5 bg-tinta text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center">
             {totalItens}
           </span>
         )}
@@ -38,34 +41,18 @@ function BotaoCarrinho({ className, rotulo = true }: { className: string; rotulo
   );
 }
 
-// Itens do submenu "A Viver Bem" (âncoras da página Sobre)
+const INSTITUCIONAL = [
+  { href: "/sobre", rotulo: "A Viver Bem" },
+  { href: "/lojas", rotulo: "Lojas" },
+  { href: "/contato", rotulo: "Contato" },
+];
+
+// Itens do submenu "A Viver Bem" (âncoras da página Sobre), no menu do celular
 const MENU_SOBRE = [
   { href: "/sobre#historia", rotulo: "Nossa história" },
   { href: "/sobre#como-funciona", rotulo: "Como funciona" },
   { href: "/sobre#avaliacoes", rotulo: "O que dizem os clientes" },
 ];
-
-const LINKS = [
-  { href: "/lojas", rotulo: "Lojas" },
-  { href: "/contato", rotulo: "Contato" },
-];
-
-type Submenu = "sobre" | "categorias" | null;
-
-function Seta({ aberto }: { aberto: boolean }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className={`transition-transform duration-200 ${aberto ? "rotate-180" : ""}`}
-    >
-      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function IconeLupa() {
   return (
@@ -73,68 +60,6 @@ function IconeLupa() {
       <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
       <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
-  );
-}
-
-const classeItem = (ativo: boolean) =>
-  `flex items-center gap-1.5 px-3.5 lg:px-4 py-2 rounded-xl text-[0.95rem] font-medium transition-colors ${
-    ativo ? "text-royal bg-royal-claro" : "text-grafite-medio hover:text-royal hover:bg-royal-nevoa"
-  }`;
-
-const classeSubitem =
-  "block px-4 py-2.5 rounded-xl text-[0.95rem] text-grafite-medio hover:text-royal hover:bg-royal-nevoa transition-colors";
-
-// Item com submenu (A Viver Bem, Categorias). Fica fora do Header para
-// não ser recriado a cada renderização, o que tiraria o foco do botão.
-// Ao tirar o mouse espera um instante antes de fechar, senão o submenu
-// some no caminho entre o botão e a lista.
-function Grupo({
-  rotulo,
-  ativo,
-  aberto,
-  aoAbrir,
-  aoFechar,
-  aoAlternar,
-  children,
-}: {
-  rotulo: string;
-  ativo: boolean;
-  aberto: boolean;
-  aoAbrir: () => void;
-  aoFechar: () => void;
-  aoAlternar: () => void;
-  children: React.ReactNode;
-}) {
-  const espera = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function aoEntrar() {
-    if (espera.current) clearTimeout(espera.current);
-    aoAbrir();
-  }
-  function aoSair() {
-    espera.current = setTimeout(aoFechar, 160);
-  }
-
-  return (
-    <div className="relative" onMouseEnter={aoEntrar} onMouseLeave={aoSair}>
-      <button
-        type="button"
-        onClick={aoAlternar}
-        aria-expanded={aberto}
-        aria-haspopup="true"
-        className={classeItem(ativo || aberto)}
-      >
-        {rotulo}
-        <Seta aberto={aberto} />
-      </button>
-      {aberto && (
-        <div className="absolute left-0 top-full pt-2 animar-surgir">
-          <div className="w-64 bg-white rounded-2xl border border-linha shadow-[0_16px_44px_rgba(16,42,74,0.14)] p-2">
-            {children}
-          </div>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -151,7 +76,7 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
       onSubmit={aoBuscar}
       className="relative w-full"
     >
-      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-grafite-claro">
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cinza">
         <IconeLupa />
       </span>
       <input
@@ -159,28 +84,25 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
         name="busca"
         autoFocus={autoFoco}
         required
-        placeholder="Buscar por nome ou ativo..."
+        placeholder="O que você procura? Nome ou ativo"
         aria-label="Buscar no site"
-        className="w-full bg-royal-nevoa border border-linha rounded-2xl pl-12 pr-4 py-3 text-base text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-royal/40 focus:border-royal/40 focus:bg-white transition-colors"
+        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
       />
     </Formulario>
   );
 }
 
+// Item da barra de categorias: caixa alta pequena, fio de ouro embaixo
+// no item ativo e ao passar o mouse
+const classeCategoria = (ativo: boolean) =>
+  `shrink-0 inline-flex items-center h-11 px-2.5 lg:px-3 text-[0.7rem] font-semibold uppercase tracking-[0.1em] border-b-2 transition-colors ${
+    ativo ? "text-white border-ouro-claro" : "text-white/75 border-transparent hover:text-white hover:border-ouro-claro/60"
+  }`;
+
 export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   const pathname = usePathname();
-  const naHome = pathname === "/";
-  const [rolou, setRolou] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const [buscaAberta, setBuscaAberta] = useState(false);
-  const [submenu, setSubmenu] = useState<Submenu>(null);
-
-  useEffect(() => {
-    const aoRolar = () => setRolou(window.scrollY > 24);
-    aoRolar();
-    window.addEventListener("scroll", aoRolar, { passive: true });
-    return () => window.removeEventListener("scroll", aoRolar);
-  }, []);
 
   // Fecha tudo ao trocar de página. Feito durante a renderização, ao
   // notar que o endereço mudou (em efeito, dispararia uma renderização
@@ -190,40 +112,51 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
     setCaminhoAnterior(pathname);
     setMenuAberto(false);
     setBuscaAberta(false);
-    setSubmenu(null);
   }
 
-  // Esc fecha submenu e busca
+  // Esc fecha busca e menu
   useEffect(() => {
     const aoTeclar = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setSubmenu(null);
         setBuscaAberta(false);
+        setMenuAberto(false);
       }
     };
     window.addEventListener("keydown", aoTeclar);
     return () => window.removeEventListener("keydown", aoTeclar);
   }, []);
 
-  const solido = !naHome || rolou || menuAberto || buscaAberta;
-
-  // Os dois submenus com os mesmos gestos. Fechar só vale se ainda for
-  // ele o aberto: o atraso do grupo anterior não pode fechar o próximo.
-  const gestos = (qual: Exclude<Submenu, null>) => ({
-    aberto: submenu === qual,
-    aoAbrir: () => setSubmenu(qual),
-    aoFechar: () => setSubmenu((atual) => (atual === qual ? null : atual)),
-    aoAlternar: () => setSubmenu((atual) => (atual === qual ? null : qual)),
-  });
+  const nota = AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 });
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition duration-300 ${
-        solido ? "bg-white/95 backdrop-blur-md shadow-[0_2px_16px_rgba(16,42,74,0.08)]" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-8 h-16 md:h-[4.5rem]">
-        {/* Logo */}
+    <header className="sticky top-0 z-50 bg-white shadow-[0_1px_0_var(--color-fio)]">
+      {/* ---------- 1. Faixa de vantagens (computador) ---------- */}
+      <div className="hidden md:block bg-gelo/60 border-b border-fio">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-8 flex items-center justify-between text-[0.78rem] text-cinza">
+          <ul className="flex items-center gap-6">
+            <li>Entrega de moto por toda Petrópolis</li>
+            <li>Retirada sem taxa em {UNIDADES.length} lojas</li>
+            <li>
+              <span className="text-ouro">★</span> {nota} no Google · {AVALIACOES_GOOGLE_TOTAL} avaliações
+            </li>
+          </ul>
+          <ul className="flex items-center gap-5">
+            {INSTITUCIONAL.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className={`transition-colors hover:text-tinta ${pathname.startsWith(l.href) ? "text-tinta font-medium" : ""}`}
+                >
+                  {l.rotulo}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* ---------- 2. Linha principal ---------- */}
+      <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
         <Link href="/" className="shrink-0 active:scale-95 transition-transform">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -236,64 +169,19 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           />
         </Link>
 
-        {/* Navegação (computador) */}
-        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1" aria-label="Principal">
-          <BotaoCarrinho className="mr-2 inline-flex items-center gap-2.5 bg-escarlate hover:bg-escarlate-escuro text-white text-sm font-semibold rounded-xl px-4 lg:px-5 py-2.5 active:scale-95 transition" />
+        <div className="hidden md:block flex-1 max-w-xl">
+          <CampoBusca />
+        </div>
 
-          <Grupo rotulo="A Viver Bem" ativo={pathname.startsWith("/sobre")} {...gestos("sobre")}>
-            {MENU_SOBRE.map((l) => (
-              <Link key={l.href} href={l.href} onClick={() => setSubmenu(null)} className={classeSubitem}>
-                {l.rotulo}
-              </Link>
-            ))}
-          </Grupo>
+        <div className="ml-auto flex items-center gap-1 md:gap-3">
+          {/* Computador: a receita como ação principal, ao lado do carrinho */}
+          <BotaoEnviarReceita className="hidden md:inline-flex botao botao-principal botao-compacto !min-h-12" />
+          <BotaoCarrinho className="hidden md:inline-flex botao botao-secundario botao-compacto !min-h-12" />
 
-          <Grupo rotulo="Categorias" ativo={pathname.startsWith("/produto")} {...gestos("categorias")}>
-            {categorias.map((c) => (
-              <Link
-                key={c.id}
-                href={`/produtos/${c.slug}`}
-                onClick={() => setSubmenu(null)}
-                className={classeSubitem}
-              >
-                {c.nome}
-              </Link>
-            ))}
-            <div className="border-t border-linha my-1.5 mx-2" aria-hidden="true" />
-            <Link
-              href="/produtos"
-              onClick={() => setSubmenu(null)}
-              className="flex items-center justify-between px-4 py-2.5 rounded-xl text-[0.95rem] font-semibold text-royal hover:bg-royal-nevoa transition-colors"
-            >
-              Ver todas
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
-          </Grupo>
-
-          {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className={classeItem(pathname.startsWith(l.href))}>
-              {l.rotulo}
-            </Link>
-          ))}
-
-          <button
-            type="button"
-            onClick={() => setBuscaAberta((b) => !b)}
-            aria-label={buscaAberta ? "Fechar busca" : "Buscar"}
-            aria-expanded={buscaAberta}
-            className="ml-1 w-11 h-11 rounded-xl text-grafite-medio hover:text-royal hover:bg-royal-nevoa flex items-center justify-center transition-colors"
-          >
-            <IconeLupa />
-          </button>
-        </nav>
-
-        {/* Celular: lupa e menu */}
-        <div className="md:hidden flex items-center gap-1">
+          {/* Celular: carrinho, lupa e menu */}
           <BotaoCarrinho
             rotulo={false}
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-escarlate"
+            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-tinta"
           />
           <button
             type="button"
@@ -303,7 +191,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             }}
             aria-label={buscaAberta ? "Fechar busca" : "Buscar"}
             aria-expanded={buscaAberta}
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-grafite"
+            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-navy"
           >
             <IconeLupa />
           </button>
@@ -315,7 +203,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             }}
             aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuAberto}
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-grafite"
+            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-navy"
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               {menuAberto ? (
@@ -328,65 +216,69 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
         </div>
       </div>
 
-      {/* Busca aberta, logo abaixo da barra */}
-      {buscaAberta && (
-        <div className="border-t border-linha bg-white px-4 md:px-8 py-4 animar-surgir">
-          <div className="max-w-2xl mx-auto">
-            <CampoBusca autoFoco aoBuscar={() => setBuscaAberta(false)} />
-          </div>
-        </div>
-      )}
-
-      {/* Menu do celular: os grupos já abertos (no toque, submenu só atrapalha) */}
-      {menuAberto && (
-        <nav
-          aria-label="Principal"
-          className="md:hidden bg-white border-t border-linha px-4 pb-5 pt-3 flex flex-col gap-1 max-h-[calc(100dvh-4rem)] overflow-y-auto animar-surgir"
-        >
-          <BotaoCarrinho className="inline-flex items-center justify-center gap-2.5 bg-escarlate text-white font-semibold rounded-xl px-5 py-3.5 mb-2" />
-
-          <p className="px-4 pt-2 pb-1 selo-secao text-grafite-claro">A Viver Bem</p>
-          {MENU_SOBRE.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setMenuAberto(false)}
-              className="px-4 py-3 rounded-xl text-base font-medium text-grafite-medio hover:bg-royal-nevoa transition-colors"
-            >
-              {l.rotulo}
-            </Link>
-          ))}
-
-          <p className="px-4 pt-4 pb-1 selo-secao text-grafite-claro">Categorias</p>
+      {/* ---------- 3. Barra de categorias ---------- */}
+      <nav aria-label="Categorias" className="bg-navy text-white">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-0.5 overflow-x-auto rolagem-sem-barra">
+          <Link href="/produtos" className={classeCategoria(pathname === "/produtos")}>
+            Todos
+          </Link>
           {categorias.map((c) => (
             <Link
               key={c.id}
               href={`/produtos/${c.slug}`}
-              className="px-4 py-3 rounded-xl text-base font-medium text-grafite-medio hover:bg-royal-nevoa transition-colors"
+              className={classeCategoria(pathname === `/produtos/${c.slug}`)}
             >
               {c.nome}
             </Link>
           ))}
           <Link
-            href="/produtos"
-            className="px-4 py-3 rounded-xl text-base font-semibold text-royal hover:bg-royal-nevoa transition-colors"
+            href="/sobre#como-funciona"
+            className="ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-11 pl-4 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-ouro-claro hover:text-white transition-colors"
           >
-            Ver todas
+            Como funciona
           </Link>
+        </div>
+      </nav>
 
-          <div className="border-t border-linha my-2" aria-hidden="true" />
+      {/* Busca aberta, logo abaixo (celular) */}
+      {buscaAberta && (
+        <div className="md:hidden border-t border-fio bg-white px-5 py-3 animar-surgir">
+          <CampoBusca autoFoco aoBuscar={() => setBuscaAberta(false)} />
+        </div>
+      )}
 
-          {LINKS.map((l) => (
+      {/* Menu do celular */}
+      {menuAberto && (
+        <nav
+          aria-label="Principal"
+          className="md:hidden bg-white border-t border-fio px-5 pb-6 pt-3 flex flex-col gap-1 max-h-[calc(100dvh-var(--altura-cabecalho))] overflow-y-auto animar-surgir"
+        >
+          <p className="px-3 pt-2 pb-1 rotulo !text-cinza">A Viver Bem</p>
+          {MENU_SOBRE.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className={`px-4 py-3.5 rounded-xl text-base font-medium transition-colors ${
-                pathname.startsWith(l.href) ? "text-royal bg-royal-claro" : "text-grafite-medio hover:bg-royal-nevoa"
+              onClick={() => setMenuAberto(false)}
+              className="px-3 py-3 rounded-xl text-base font-medium text-grafite hover:bg-gelo transition-colors"
+            >
+              {l.rotulo}
+            </Link>
+          ))}
+          <div className="border-t border-fio my-2" aria-hidden="true" />
+          {INSTITUCIONAL.slice(1).map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className={`px-3 py-3 rounded-xl text-base font-medium transition-colors ${
+                pathname.startsWith(l.href) ? "text-tinta bg-gelo" : "text-grafite hover:bg-gelo"
               }`}
             >
               {l.rotulo}
             </Link>
           ))}
+          <div className="pt-3">
+            <BotaoEnviarReceita className="botao botao-principal w-full" />
+          </div>
         </nav>
       )}
     </header>

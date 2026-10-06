@@ -1,43 +1,10 @@
-"use client";
-// Revela o conteúdo suavemente quando ele entra na tela (rolagem).
-// Respeita "reduzir movimento" via CSS (ver globals.css .revelar).
-import { useEffect, useRef, useState } from "react";
-
-export function Revelar({
-  children,
-  atraso = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  atraso?: number; // ms, para escalonar elementos vizinhos
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visivel, setVisivel] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observador = new IntersectionObserver(
-      (entradas) => {
-        if (entradas[0].isIntersecting) {
-          setVisivel(true);
-          observador.disconnect();
-        }
-      },
-      { threshold: 0.12 }
-    );
-    observador.observe(el);
-    return () => observador.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={`revelar ${visivel ? "visivel" : ""} ${className}`}
-      style={atraso ? { transitionDelay: `${atraso}ms` } : undefined}
-    >
-      {children}
-    </div>
-  );
+// Revela o conteúdo quando ele entra na tela, ao rolar.
+//
+// Desde 06/10/2026 é só CSS (ver .revelar em globals.css): a animação
+// anda com a rolagem da própria pessoa (scroll-driven), então roda também
+// com "reduzir movimento", de forma contida. Sem suporte do navegador, o
+// conteúdo aparece direto. Por não ter estado nem efeito, pode ser usado
+// de qualquer componente, inclusive de servidor.
+export function Revelar({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`revelar ${className}`}>{children}</div>;
 }

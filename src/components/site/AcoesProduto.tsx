@@ -1,7 +1,8 @@
 "use client";
-// Ações da página do produto: escolher a dosagem (se houver),
-// a quantidade e adicionar ao carrinho (que fecha pelo WhatsApp).
-// Sem preço: o farmacêutico passa o valor na conversa.
+// Ações da página do produto: escolher a dosagem (se houver), a
+// quantidade e adicionar ao carrinho (que fecha pelo WhatsApp). Sem
+// preço: o farmacêutico passa o valor na conversa. Aqui o botão
+// principal é o "Adicionar ao carrinho", a ação da tela.
 import { useState } from "react";
 import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
@@ -31,19 +32,16 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
     <div className="mt-auto">
       {/* Dosagens */}
       {dosagens.length > 0 && (
-        <div className="mt-6">
-          <p className="text-sm font-semibold text-grafite mb-2.5">Escolha a dosagem</p>
+        <div className="mt-7">
+          <p className="rotulo !text-cinza mb-3">Escolha a dosagem</p>
           <div className="flex flex-wrap gap-2.5">
             {dosagens.map((d) => (
               <button
                 key={d}
                 type="button"
                 onClick={() => setDosagem(d)}
-                className={`rounded-xl px-6 py-3 text-lg font-semibold border transition-all active:scale-95 ${
-                  dosagem === d
-                    ? "bg-royal text-white border-royal"
-                    : "bg-white text-grafite border-linha hover:border-royal/40"
-                }`}
+                aria-pressed={dosagem === d}
+                className={`chip !min-h-12 !px-6 !text-base ${dosagem === d ? "chip-ativo" : ""}`}
               >
                 {d}
               </button>
@@ -54,44 +52,44 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
 
       {/* Quantidade */}
       <div className="flex items-center justify-between gap-4 mt-7">
-        <p className="text-sm font-semibold text-grafite">Quantidade</p>
+        <p className="rotulo !text-cinza">Quantidade</p>
 
-        <div className="flex items-center bg-royal-nevoa border border-linha rounded-full p-1.5 gap-1">
+        <div className="flex items-center rounded-full border border-fio p-1 gap-1">
           <button
             type="button"
             onClick={() => setQuantidade((q) => Math.max(1, q - 1))}
             aria-label="Diminuir quantidade"
-            className="w-11 h-11 rounded-full bg-white text-royal text-2xl font-semibold flex items-center justify-center active:scale-90 transition-transform sombra-card"
+            className="w-11 h-11 rounded-full text-tinta text-2xl font-medium flex items-center justify-center hover:bg-gelo active:scale-90 transition"
           >
             −
           </button>
-          <span className="text-xl font-bold text-grafite w-8 text-center tabular-nums">
+          <span className="text-xl font-semibold text-navy w-8 text-center tabular-nums">
             {quantidade}
           </span>
           <button
             type="button"
             onClick={() => setQuantidade((q) => Math.min(20, q + 1))}
             aria-label="Aumentar quantidade"
-            className="w-11 h-11 rounded-full bg-white text-royal text-2xl font-semibold flex items-center justify-center active:scale-90 transition-transform sombra-card"
+            className="w-11 h-11 rounded-full text-tinta text-2xl font-medium flex items-center justify-center hover:bg-gelo active:scale-90 transition"
           >
             +
           </button>
         </div>
       </div>
 
-      {/* Adicionar ao carrinho */}
+      {/* Adicionar ao carrinho: a ação principal desta tela */}
       <button
         type="button"
         onClick={adicionarAoCarrinho}
-        className={`w-full mt-5 flex items-center justify-center gap-3 text-white text-lg font-semibold rounded-2xl px-6 py-5 transition-all active:scale-[0.98] ${
-          adicionado ? "bg-green-600" : "degrade-suave"
+        className={`botao botao-principal w-full mt-6 text-lg ${
+          adicionado ? "!bg-green-600 !shadow-none" : ""
         }`}
       >
         {adicionado ? (
-          "✓ Adicionado ao carrinho!"
+          "Adicionado ao carrinho"
         ) : (
           <>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.8h7.9a2 2 0 0 0 2-1.6L21 8H6"
                 stroke="currentColor"

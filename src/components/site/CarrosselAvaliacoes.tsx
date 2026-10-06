@@ -1,10 +1,11 @@
 "use client";
-// Avaliações do Google em carrossel horizontal (rola para o lado),
-// com foto do cliente (ou inicial do nome), estrelas e selo do Google.
+// Avaliações do Google em faixa horizontal (rola para o lado).
 //
-// Acima dos cartões ficam só a média e a quantidade de avaliações do
-// perfil (pedidos do cliente em 05/10/2026): as barras por estrela e o
-// "o que mais citam" saíram.
+// Sistema "Receita e rótulo" (06/10/2026): a frase do cliente é a
+// protagonista, no itálico serifado (a voz humana), e a foto, o nome e as
+// estrelas ficam pequenos embaixo. Fio à esquerda no lugar do cartão com
+// sombra. Acima, só a média e a quantidade de avaliações do perfil
+// (pedido do cliente em 05/10/2026).
 
 import { useRef } from "react";
 import {
@@ -28,7 +29,7 @@ function IconeGoogle({ tamanho = 20 }: { tamanho?: number }) {
   );
 }
 
-// Seta de rolar o carrossel (fora do componente, para não ser recriada a
+// Seta de rolar a faixa (fora do componente, para não ser recriada a
 // cada renderização)
 function SetaBotao({
   direcao,
@@ -44,13 +45,13 @@ function SetaBotao({
       type="button"
       onClick={aoClicar}
       aria-label={rotulo}
-      className="w-12 h-12 rounded-full bg-white border border-linha text-grafite-medio hover:text-royal hover:border-royal/40 sombra-card flex items-center justify-center active:scale-90 transition-all"
+      className="botao botao-secundario w-12 !px-0"
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d={direcao === -1 ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"}
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -62,7 +63,7 @@ function SetaBotao({
 export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] }) {
   const faixaRef = useRef<HTMLDivElement>(null);
 
-  // Rola uma "página" de cards para o lado
+  // Rola uma "página" de fichas para o lado
   function rolar(direcao: -1 | 1) {
     const faixa = faixaRef.current;
     if (!faixa) return;
@@ -70,48 +71,36 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
   }
 
   return (
-    <section className="mt-16">
-      <div className="px-4 md:px-8 max-w-6xl mx-auto">
-        <div className="md:text-center md:max-w-2xl md:mx-auto">
-          <p className="selo-secao text-escarlate">quem já é cliente</p>
-          <h2 className="font-display text-[2.35rem] md:text-[3.25rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.04] mt-3">
-            O que dizem <span className="italic text-royal">sobre a gente</span>
-          </h2>
-        </div>
+    <section aria-labelledby="titulo-avaliacoes" className="secao">
+      <div className="revelar px-5 md:px-8 max-w-6xl mx-auto md:text-center">
+        <p className="rotulo">quem já é cliente</p>
+        <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
+          O que dizem <span className="italic">sobre a gente</span>
+        </h2>
 
         {/* A média e a quantidade de avaliações, levando ao perfil do Google */}
         <a
           href={PERFIL_GOOGLE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group w-fit md:mx-auto mt-6 flex items-center gap-2.5 sm:gap-3 bg-white border border-linha hover:border-royal/30 rounded-full pl-4 pr-5 min-h-12 sombra-card transition"
+          className="botao botao-secundario mt-6 !gap-2.5 text-grafite"
         >
-          <IconeGoogle tamanho={22} />
-          <b className="font-display text-xl font-semibold text-grafite tabular-nums">
+          <IconeGoogle tamanho={20} />
+          <b className="font-semibold tabular-nums">
             {AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
           </b>
-          <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={14} />
-          <span className="text-grafite-medio whitespace-nowrap">
+          <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={13} />
+          <span className="text-cinza">
             <b className="font-semibold text-grafite tabular-nums">{AVALIACOES_GOOGLE_TOTAL}</b>{" "}
             avaliações<span className="hidden sm:inline"> no Google</span>
           </span>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-            className="text-grafite-claro group-hover:text-royal transition-colors"
-          >
-            <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
         </a>
       </div>
 
       {/* Faixa rolável */}
       <div
         ref={faixaRef}
-        className="flex gap-5 overflow-x-auto rolagem-sem-barra mt-7 px-4 md:px-8 pb-3 snap-x snap-mandatory"
+        className="vao-titulo flex gap-8 md:gap-10 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3 snap-x snap-mandatory"
       >
         {/* espaçador para alinhar com o container central em telas largas */}
         <div className="shrink-0 w-0 md:w-[max(0px,calc((100vw-72rem)/2))]" aria-hidden="true" />
@@ -119,50 +108,44 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
         {avaliacoes.map((a) => (
           <figure
             key={a.id}
-            className="relative snap-start shrink-0 w-[17.5rem] md:w-[22rem] bg-white rounded-[1.75rem] border border-linha sombra-card hover:sombra-card-hover hover:-translate-y-1 p-6 md:p-7 flex flex-col transition-all duration-300"
+            className="snap-start shrink-0 w-[17.5rem] md:w-[22rem] border-l fio-ouro pl-5 md:pl-7 flex flex-col"
           >
-            {/* As aspas gigantes em cinza-claro no canto saíram na revisão
-                de 06/10: é o enfeite padrão de cartão de depoimento, e o
-                cartão já diz que é avaliação pela foto, estrelas e logo
-                do Google. */}
+            <blockquote className="citacao flex-1">{a.texto}</blockquote>
 
-            <div className="relative flex items-center gap-3.5">
+            <figcaption className="mt-6 flex items-center gap-3">
               {/* Foto do cliente ou inicial do nome */}
               {a.fotoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={asset(a.fotoUrl)}
-                  alt={a.nome}
+                  alt=""
                   loading="lazy"
-                  className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow-[0_2px_10px_rgba(16,42,74,0.15)]"
+                  decoding="async"
+                  className="w-10 h-10 rounded-full object-cover"
                   draggable={false}
                 />
               ) : (
-                <span className="w-14 h-14 rounded-full degrade-marca text-white flex items-center justify-center font-bold text-xl">
+                <span className="w-10 h-10 rounded-full bg-gelo text-tinta flex items-center justify-center font-medium">
                   {a.nome.charAt(0).toUpperCase()}
                 </span>
               )}
-              <div className="min-w-0 flex-1">
-                <figcaption className="font-semibold text-grafite truncate">{a.nome}</figcaption>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <Estrelas nota={a.nota} tamanho={15} />
-                  {a.fonte === "Google" && <IconeGoogle tamanho={14} />}
-                </div>
-              </div>
-            </div>
-
-            <blockquote className="relative text-grafite-medio leading-relaxed mt-5 flex-1">
-              {a.texto}
-            </blockquote>
+              <span className="min-w-0">
+                <span className="block font-medium text-grafite truncate">{a.nome}</span>
+                <span className="flex items-center gap-1.5 mt-0.5">
+                  <Estrelas nota={a.nota} tamanho={12} />
+                  {a.fonte === "Google" && <IconeGoogle tamanho={12} />}
+                </span>
+              </span>
+            </figcaption>
           </figure>
         ))}
 
         <div className="shrink-0 w-2" aria-hidden="true" />
       </div>
 
-      {/* Setas embaixo e centralizadas, para acompanhar o cabeçalho.
-          No celular a pessoa arrasta, então elas nem aparecem. */}
-      <div className="hidden sm:flex justify-center gap-3 mt-7">
+      {/* Setas embaixo e centralizadas. No celular a pessoa arrasta, então
+          elas nem aparecem. */}
+      <div className="hidden sm:flex justify-center gap-3 mt-8">
         <SetaBotao direcao={-1} rotulo="Ver avaliações anteriores" aoClicar={() => rolar(-1)} />
         <SetaBotao direcao={1} rotulo="Ver próximas avaliações" aoClicar={() => rolar(1)} />
       </div>

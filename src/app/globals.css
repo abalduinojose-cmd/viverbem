@@ -2,137 +2,546 @@
 
 /* ============================================================
    Identidade visual — Manipulação Viver Bem
-   Azul Royal  #1C69B5  -> cor principal (confiança, saúde)
-   Vermelho    #E02129  -> destaques e chamadas de ação (uso pontual)
-   Cinza       #4D4D4D  -> textos e subtítulos
+   Sistema "Branco, azul e ouro" (06/10/2026, ver especificacoes/):
 
-   Redesign "clean & moderno": muito respiro, sombras suaves em
-   camadas, cantos generosos, fundo quase branco com leve tom frio.
+   - Fundo branco em tudo, com luz azul e dourada atrás dos potes.
+   - Azul da marca (#1C69B5) como estrutura e ação: botão principal,
+     rótulos, links. Azul-noite (#0D2340) nos títulos, numa única folha
+     escura (a vitrine) e no rodapé.
+   - Dourado da paleta da farmácia (#B3904F e #C0A060) como acento
+     metálico: a palavra-chave dos títulos, os números, o nome no rótulo,
+     a luz quente sob os potes e fios finos. Nunca em texto pequeno.
+   - Duas vozes: Instrument Sans (texto; títulos em peso 600) e
+     Instrument Serif itálico (a voz humana, em ouro).
+   - Vermelho só no logo.
+
+   Movimento: tudo anda com a rolagem da própria pessoa (scroll-driven),
+   por isso roda também com "reduzir movimento", pedido do usuário.
    ============================================================ */
 @theme {
+  /* Superfícies e tinta */
+  --color-papel: #ffffff;
+  --color-gelo: #eef3f9;
+  --color-fio: #e4e8ee;
+  --color-tinta: #1c69b5;
+  --color-tinta-escura: #14508c;
+  --color-navy: #0d2340;
+  --color-noite: #0d2340;
+  --color-grafite: #1f2328;
+  --color-cinza: #5b6169;
+  --color-ouro: #b3904f;
+  --color-ouro-claro: #c0a060;
+  --color-ouro-escuro: #8f7137;
+  --color-carimbo: #e02129;
+  --color-carimbo-escuro: #b81b22;
+
+  /* Nomes antigos, mantidos para o que ainda não foi redesenhado */
   --color-royal: #1c69b5;
   --color-royal-escuro: #14508c;
   --color-royal-medio: #2f7cc4;
-  --color-royal-claro: #eef4fb;
-  --color-royal-nevoa: #f6f9fd;
+  --color-royal-claro: #eef3f9;
+  --color-royal-nevoa: #f5f8fc;
   --color-escarlate: #e02129;
   --color-escarlate-escuro: #b81b22;
-
-  /* Azul profundo do rodapé, para fechar a página com peso */
-  --color-noite: #0d2340;
-  --color-grafite: #33373d;
   --color-grafite-medio: #5b6169;
   --color-grafite-claro: #8b929b;
-  --color-linha: #e7ebf0;
+  --color-linha: #e4e8ee;
 
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
-  /* Títulos na Bricolage Grotesque (06/10/2026): voz própria, em
-     contraste com a Instrument Sans do texto */
-  --font-display: var(--font-bricolage), var(--font-instrument-sans), system-ui, sans-serif;
-  /* Itálico serifado das palavras em destaque dos títulos */
+  --font-display: var(--font-instrument-sans), system-ui, sans-serif;
   --font-destaque: var(--font-instrument-serif), Georgia, serif;
 
-  /* Sombras suaves em camadas (clean, sem peso) */
+  /* Um raio para as caixas (ladrilhos, gaveta, vídeos) */
+  --radius-caixa: 1.75rem;
+
   --shadow-card: 0 1px 2px rgba(16, 42, 74, 0.04), 0 4px 16px rgba(16, 42, 74, 0.06);
   --shadow-card-hover: 0 2px 4px rgba(16, 42, 74, 0.05), 0 12px 32px rgba(16, 42, 74, 0.12);
 }
 
+:root {
+  /* Escala tipográfica, de 390px (celular) a 1440px (computador) */
+  --tam-display: clamp(3rem, 1.9rem + 4.1vw, 5.75rem); /* 48 -> 90px */
+  --tam-titulo: clamp(2.4rem, 1.85rem + 2.1vw, 3.75rem); /* 38 -> 60px */
+  --tam-apoio: clamp(1.0625rem, 0.99rem + 0.29vw, 1.25rem); /* 17 -> 20px */
+  --tam-numero: clamp(2.75rem, 2.2rem + 1.9vw, 4.25rem); /* 44 -> 68px */
+
+  /* Respiro em três passos fixos */
+  --espaco-secao: clamp(4.5rem, 3.2rem + 3.6vw, 7rem);
+  --vao-titulo: clamp(2rem, 1.6rem + 1.1vw, 3rem);
+  --vao-rotulo: 1rem;
+
+  /* O ouro metálico, para texto grande e números */
+  --ouro-degrade: linear-gradient(135deg, #d2b67c 0%, #b3904f 42%, #dcc38a 68%, #a98545 100%);
+
+  /* Altura do cabeçalho (preso ao topo, no fluxo): celular = linha
+     principal 64px + barra de categorias 44px; computador soma a faixa de
+     vantagens de 32px e a linha principal de 76px. A barra do catálogo e as
+     âncoras usam este valor. */
+  --altura-cabecalho: 6.75rem;
+}
+@media (min-width: 768px) {
+  :root {
+    --altura-cabecalho: 9.5rem;
+  }
+}
+
 body {
-  background: #fbfcfe;
+  background: var(--color-papel);
   color: var(--color-grafite);
   font-family: var(--font-sans);
-  letter-spacing: -0.01em;
-  /* Evita a "borracha" azul do toque no celular */
+  letter-spacing: -0.005em;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Títulos na fonte display (Instrument Sans), um pouco mais justos */
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  letter-spacing: -0.03em;
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
 }
 
-/* A palavra em itálico dos títulos ("pela receita", "sobre a gente")
-   continua serifada, agora na Instrument Serif. Ela desenha menor que a
-   sans, por isso o 1.1em para as duas alturas baterem. */
-:is(h1, h2, h3, h4, .font-display) .italic {
-  font-family: var(--font-destaque);
-  font-weight: 400;
-  font-size: 1.1em;
-  letter-spacing: -0.01em;
+@layer components {
+  /* ---------- Vozes ---------- */
+
+  /* Texto em ouro metálico (só em tamanho grande: contraste) */
+  .ouro-texto {
+    background-image: var(--ouro-degrade);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.08em;
+  }
+
+  /* A palavra em itálico dos títulos ("pela receita", "sobre a gente") é
+     a voz humana, serifada e em ouro. Fora de título, a classe .tinta. */
+  :is(h1, h2, h3, h4, .font-display, .titulo-secao, .titulo-display) .italic,
+  .tinta {
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.1em;
+    letter-spacing: -0.015em;
+    background-image: var(--ouro-degrade);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.08em;
+  }
+
+  /* O nome no rótulo e outras palavras humanas em azul */
+  .tinta-azul {
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--color-tinta);
+  }
+
+  /* Rótulo: caixa alta espaçada, em azul */
+  .rotulo,
+  .selo-secao {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: var(--color-tinta);
+  }
+  .em-noite .rotulo {
+    color: var(--color-ouro-claro);
+  }
+
+  /* Título de seção: UM tamanho para o site inteiro, peso 600, navy */
+  .titulo-secao {
+    font-family: var(--font-sans);
+    font-size: var(--tam-titulo);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+  .em-noite .titulo-secao {
+    color: #fff;
+  }
+
+  /* Título da abertura */
+  .titulo-display {
+    font-family: var(--font-sans);
+    font-size: var(--tam-display);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--color-navy);
+  }
+  .titulo-display .italic {
+    display: block;
+    font-size: 1.12em;
+    margin-top: 0.04em;
+    padding-bottom: 0.08em;
+  }
+
+  .texto-apoio {
+    font-size: var(--tam-apoio);
+    line-height: 1.55;
+    color: var(--color-cinza);
+  }
+  .em-noite .texto-apoio {
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  /* Número grande em ouro (faixa de números, passos, índices) */
+  .numero-tinta {
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background-image: var(--ouro-degrade);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.06em;
+    width: max-content;
+  }
+
+  /* Frase de cliente, nas avaliações: a voz humana, em navy */
+  .citacao {
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    text-wrap: pretty;
+  }
+
+  /* ---------- Botões: três estilos no site inteiro ---------- */
+  .botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 3.5rem;
+    padding: 0 1.9rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background-color 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .botao:active {
+    transform: scale(0.98);
+  }
+  .botao-compacto {
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    font-size: 0.95rem;
+  }
+  /* 1. Principal: azul da marca */
+  .botao-principal {
+    background: var(--color-tinta);
+    color: #fff;
+    box-shadow: 0 18px 40px -16px rgba(28, 105, 181, 0.65);
+  }
+  .botao-principal:hover {
+    background: var(--color-tinta-escura);
+  }
+  /* 2. Secundário: contorno */
+  .botao-secundario {
+    background: transparent;
+    color: var(--color-tinta);
+    border: 1.5px solid rgba(28, 105, 181, 0.4);
+    font-weight: 500;
+  }
+  .botao-secundario:hover {
+    background: var(--color-gelo);
+    border-color: rgba(28, 105, 181, 0.7);
+  }
+  .em-noite .botao-secundario {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .em-noite .botao-secundario:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.65);
+  }
+  /* 3. Link com seta, fio de ouro */
+  .botao-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.75rem;
+    color: var(--color-navy);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    box-shadow: inset 0 -1px 0 rgba(179, 144, 79, 0.55);
+    transition: box-shadow 0.25s, color 0.25s;
+  }
+  .botao-link:hover {
+    color: var(--color-tinta);
+    box-shadow: inset 0 -1px 0 var(--color-tinta);
+  }
+  .botao-link svg {
+    transition: transform 0.25s;
+  }
+  .botao-link:hover svg {
+    transform: translateX(2px);
+  }
+  .em-noite .botao-link {
+    color: #fff;
+  }
+
+  /* Chips (categorias, bairros) */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1.2rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-fio);
+    background: #fff;
+    color: var(--color-cinza);
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: border-color 0.25s, color 0.25s, background-color 0.25s;
+  }
+  .chip:hover {
+    border-color: rgba(28, 105, 181, 0.45);
+    color: var(--color-tinta);
+  }
+  .chip-ativo,
+  .chip-ativo:hover {
+    background: var(--color-tinta);
+    border-color: var(--color-tinta);
+    color: #fff;
+  }
+
+  /* ---------- Superfícies ---------- */
+
+  /* Ladrilho: a caixa do sistema, branca com um degradê suave e uma luz
+     dourada no canto */
+  .ladrilho {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-caixa);
+    background: linear-gradient(160deg, #ffffff 0%, #eef3f9 100%);
+    border: 1px solid var(--color-fio);
+    box-shadow: inset 0 1px 0 #fff, 0 20px 40px -30px rgba(16, 42, 74, 0.35);
+  }
+  .ladrilho-luz::after {
+    content: "";
+    position: absolute;
+    right: -3rem;
+    top: -3rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192, 160, 96, 0.22), transparent 70%);
+    pointer-events: none;
+  }
+  /* Ladrilho de vidro, sobre a folha escura */
+  .ladrilho-vidro {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-caixa);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s, background-color 0.3s, transform 0.3s;
+  }
+  .ladrilho-vidro:hover {
+    border-color: rgba(192, 160, 96, 0.45);
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  /* Listas com fio */
+  .lista-fichas > * + * {
+    border-top: 1px solid var(--color-fio);
+  }
+  .lista-fichas-fechada {
+    border-top: 1px solid var(--color-fio);
+    border-bottom: 1px solid var(--color-fio);
+  }
+  .fio-ouro {
+    border-color: rgba(179, 144, 79, 0.35);
+  }
+
+  /* ---------- Respiro ---------- */
+  .secao {
+    padding-top: var(--espaco-secao);
+  }
+  .secao-fecho {
+    padding-bottom: var(--espaco-secao);
+  }
+  .vao-titulo {
+    margin-top: var(--vao-titulo);
+  }
+  .vao-rotulo {
+    margin-top: var(--vao-rotulo);
+  }
+
+  /* ---------- Folhas: as seções como lâminas que se sobrepõem ---------- */
+  /* Cada seção da home é uma folha com o topo arredondado e uma sombra
+     para cima; a seguinte desliza por cima da anterior (que recua e
+     escurece de leve enquanto sai, ver animação abaixo). A abertura fica
+     presa ao topo no computador e é coberta pela primeira folha. */
+  .folhas {
+    position: relative;
+    z-index: 1;
+  }
+  .folha {
+    position: relative;
+    border-radius: 2.25rem 2.25rem 0 0;
+    background: var(--color-papel);
+    box-shadow: 0 -30px 60px -40px rgba(13, 35, 64, 0.35);
+    margin-top: -2.25rem;
+    padding-top: 2.25rem;
+    transform-origin: 50% 0%;
+  }
+  .folha:first-child {
+    margin-top: 0;
+  }
+  .folha-gelo {
+    background: linear-gradient(180deg, #f3f6fa 0%, #ffffff 100%);
+  }
+  .folha-noite {
+    color: #fff;
+    background:
+      radial-gradient(60% 50% at 85% 0%, rgba(192, 160, 96, 0.2), transparent 60%),
+      radial-gradient(50% 50% at 0% 100%, rgba(47, 124, 196, 0.28), transparent 60%),
+      linear-gradient(170deg, #112d52 0%, #0d2340 55%, #0a1a30 100%);
+  }
+
+  /* Banner em azul-noite com a luz da marca: a abertura e os banners das
+     vitrines (modelo de loja) */
+  .banner-noite {
+    background:
+      radial-gradient(60% 70% at 82% 18%, rgba(63, 146, 224, 0.5), transparent 62%),
+      radial-gradient(45% 50% at 6% 100%, rgba(192, 160, 96, 0.3), transparent 60%),
+      radial-gradient(40% 40% at 50% 110%, rgba(28, 105, 181, 0.5), transparent 60%),
+      linear-gradient(165deg, #1b5ea6 0%, #124a86 38%, #0d2340 100%);
+  }
 }
 
-/* Selo que abre cada seção ("os queridinhos", "até a sua porta").
-   Era um script de pincel, que ficava mal desenhado em português;
-   virou uma etiqueta espaçada em caixa alta, que combina com os
-   títulos e lê bem em qualquer tamanho. */
-.selo-secao {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  line-height: 1.4;
-}
+/* ---------- Movimento ---------- */
 
-/* Revelação ao rolar (ativada pelo componente Revelar) */
-.revelar {
-  opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+/* Entrada em cascata, uma vez, na carga (abertura) */
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.revelar.visivel {
-  opacity: 1;
-  transform: translateY(0);
+.animar-surgir {
+  animation: surgir 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.cascata > * {
+  animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cascata > *:nth-child(1) { animation-delay: 0ms; }
+.cascata > *:nth-child(2) { animation-delay: 90ms; }
+.cascata > *:nth-child(3) { animation-delay: 180ms; }
+.cascata > *:nth-child(4) { animation-delay: 270ms; }
+.cascata > *:nth-child(5) { animation-delay: 360ms; }
+.cascata > *:nth-child(6) { animation-delay: 450ms; }
+.cascata > *:nth-child(7) { animation-delay: 540ms; }
+.cascata > *:nth-child(n + 8) { animation-delay: 630ms; }
 
-/* Degradê da marca (azul royal -> vermelho escarlate) para CTAs */
-.degrade-marca {
-  background-image: linear-gradient(100deg, #1c69b5 0%, #2f7cc4 42%, #e0403f 100%);
+/* Revelação ao rolar: anda com a rolagem da própria pessoa (scroll-driven),
+   por isso roda também com "reduzir movimento". Navegador sem suporte
+   mostra tudo direto. .revelar num elemento; .escalonado nos filhos, um
+   depois do outro. */
+@keyframes revelar-rolagem {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.degrade-marca:hover {
-  background-image: linear-gradient(100deg, #14508c 0%, #14508c 40%, #c9202a 100%);
+/* A folha que sai recua e escurece de leve enquanto a próxima cobre */
+@keyframes folha-recua {
+  to {
+    transform: scale(0.95) translateY(-1.5rem);
+    opacity: 0.35;
+  }
 }
+/* A abertura, presa ao topo, recua enquanto a primeira folha a cobre */
+@keyframes abertura-recua {
+  to {
+    transform: scale(0.94) translateY(-2rem);
+    opacity: 0.3;
+  }
+}
+/* Os potes sobem mais devagar que a página (paralaxe) */
+@keyframes paralaxe {
+  to {
+    transform: translateY(var(--paralaxe, -3rem));
+  }
+}
+@supports (animation-timeline: view()) {
+  .revelar {
+    animation: revelar-rolagem linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+  .escalonado > * {
+    animation: revelar-rolagem linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+  .escalonado > *:nth-child(2) { animation-range: entry 8% entry 43%; }
+  .escalonado > *:nth-child(3) { animation-range: entry 16% entry 51%; }
+  .escalonado > *:nth-child(4) { animation-range: entry 24% entry 59%; }
+  .escalonado > *:nth-child(5) { animation-range: entry 30% entry 65%; }
+  .escalonado > *:nth-child(n + 6) { animation-range: entry 34% entry 69%; }
 
-/* Degradê do carrinho — predominante azul da marca com um toque
-   de vermelho no final (transição suave, sem contraste agressivo). */
-.degrade-suave {
-  background-image: linear-gradient(120deg, #1c69b5 0%, #2f7cc4 45%, #8f4c8e 78%, #d33a41 100%);
+  .folha {
+    animation: folha-recua linear both;
+    animation-timeline: view();
+    animation-range: exit 55% exit 100%;
+  }
+  .paralaxe {
+    animation: paralaxe linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100vh;
+  }
 }
-.degrade-suave:hover {
-  background-image: linear-gradient(120deg, #14508c 0%, #1c69b5 45%, #7c3f7d 78%, #c9202a 100%);
+@supports (animation-timeline: scroll()) {
+  @media (min-width: 1024px) {
+    .abertura-presa {
+      position: sticky;
+      top: 0;
+      animation: abertura-recua linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+      transform-origin: 50% 30%;
+    }
+  }
 }
-
-/* Texto em degradê da marca (destaques modernos) */
-.texto-degrade {
-  background-image: linear-gradient(100deg, #1c69b5 0%, #2f7cc4 45%, #e0403f 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Brilho de fundo suave, decorativo (halo da marca) */
-.halo-marca {
-  position: relative;
-  isolation: isolate;
-}
-.halo-marca::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(60% 45% at 50% 12%, rgba(28, 105, 181, 0.1), transparent 70%),
-    radial-gradient(45% 35% at 82% 78%, rgba(224, 33, 41, 0.06), transparent 70%);
-  pointer-events: none;
-}
-
-/* Classe utilitária: sombra de card padrão do redesign */
-.sombra-card {
-  box-shadow: var(--shadow-card);
-}
-.sombra-card-hover {
-  box-shadow: var(--shadow-card-hover);
+/* Na impressão não há rolagem: tudo visível */
+@media print {
+  .revelar,
+  .escalonado > *,
+  .folha,
+  .paralaxe,
+  .abertura-presa,
+  .cascata > * {
+    animation: none !important;
+  }
 }
 
 /* Esconde a barra nas faixas horizontais, mantendo a rolagem */
@@ -143,69 +552,64 @@ h1, h2, h3, h4 {
   display: none;
 }
 
-/* Entrada suave dos cartões */
-@keyframes surgir {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Luz da marca atrás da abertura: azul no alto, ouro sob os potes */
+.halo-marca {
+  position: relative;
+  isolation: isolate;
 }
-.animar-surgir {
-  animation: surgir 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Brilho sutil e calmo no CTA principal (respeita reduced-motion) */
-@keyframes respirar {
-  0%, 100% {
-    box-shadow: 0 8px 24px rgba(28, 105, 181, 0.25);
-  }
-  50% {
-    box-shadow: 0 12px 36px rgba(28, 105, 181, 0.4);
-  }
-}
-.animar-respirar {
-  animation: respirar 3s ease-in-out infinite;
+.halo-marca::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(55% 60% at 80% 28%, rgba(28, 105, 181, 0.13), transparent 66%),
+    radial-gradient(42% 46% at 68% 96%, rgba(192, 160, 96, 0.26), transparent 62%),
+    radial-gradient(35% 40% at 6% 100%, rgba(28, 105, 181, 0.08), transparent 60%);
+  pointer-events: none;
 }
 
-/* Papel milimetrado do laboratório: malha fina sobre as seções escuras.
-   É só atmosfera, entra atrás do conteúdo e some nas bordas pela máscara,
-   para não virar "fundo quadriculado". */
-.malha-lab {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
-  background-size: 46px 46px;
-  -webkit-mask-image: radial-gradient(90% 70% at 50% 40%, #000 25%, transparent 78%);
-  mask-image: radial-gradient(90% 70% at 50% 40%, #000 25%, transparent 78%);
+/* Sombras das caixas que ainda não foram redesenhadas (gaveta, catálogo) */
+.sombra-card {
+  box-shadow: var(--shadow-card);
+}
+.sombra-card-hover {
+  box-shadow: var(--shadow-card-hover);
 }
 
-/* Entrada em cascata: os filhos surgem um depois do outro, no lugar de
-   uma animação por elemento. O atraso vem da posição, até o 8º. */
-.cascata > * {
-  animation: surgir 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* ------------------------------------------------------------
+   Só o PAINEL ADMINISTRATIVO (/admin) ainda usa estes degradês; o site
+   público não tem mais nenhum. Quando o painel for revisto, apagar.
+   ------------------------------------------------------------ */
+.degrade-marca {
+  background-image: linear-gradient(100deg, #1c69b5 0%, #2f7cc4 42%, #e0403f 100%);
 }
-.cascata > *:nth-child(1) { animation-delay: 0ms; }
-.cascata > *:nth-child(2) { animation-delay: 70ms; }
-.cascata > *:nth-child(3) { animation-delay: 140ms; }
-.cascata > *:nth-child(4) { animation-delay: 210ms; }
-.cascata > *:nth-child(5) { animation-delay: 280ms; }
-.cascata > *:nth-child(6) { animation-delay: 350ms; }
-.cascata > *:nth-child(7) { animation-delay: 420ms; }
-.cascata > *:nth-child(n + 8) { animation-delay: 490ms; }
+.degrade-suave {
+  background-image: linear-gradient(120deg, #1c69b5 0%, #2f7cc4 45%, #8f4c8e 78%, #d33a41 100%);
+}
+.texto-degrade {
+  background-image: var(--ouro-degrade);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 @media (prefers-reduced-motion: reduce) {
+  /* A cascata da carga continua, mais curta e mais baixa: é um fade
+     único, não um movimento contínuo. O que anda com a rolagem fica,
+     porque é a própria pessoa que move. */
   .animar-surgir,
-  .animar-respirar,
   .cascata > * {
-    animation: none;
+    animation-duration: 0.3s;
   }
-  .revelar {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  @keyframes surgir {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

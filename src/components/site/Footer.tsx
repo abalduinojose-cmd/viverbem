@@ -3,10 +3,10 @@
 // Abre com o "Fale com a gente" (ver FaleComAGente). Embaixo dele, desde
 // 05/10/2026, o rodapé segue a estrutura do da Cabana Afrodite, a pedido:
 // tudo centralizado, em três tempos. A marca respirando no alto com a
-// frase no itálico do site; os contatos em ícones (que acendem no degradê
-// azul e vermelho da marca) e a navegação numa fileira de caixa alta; e a
-// linha legal embaixo. Ao fundo, a assinatura "Viver Bem" em marca d'água,
-// cortada pela base como um carimbo.
+// frase no itálico do site; os contatos em ícones (que acendem em azul) e
+// a navegação numa fileira de caixa alta; e a linha legal embaixo. Ao
+// fundo, a assinatura "Viver Bem" em marca d'água, cortada pela base como
+// um carimbo. É o único bloco escuro do site (sistema "Receita e rótulo").
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { FaleComAGente } from "./FaleComAGente";
@@ -92,7 +92,7 @@ export function Footer() {
   const ano = new Date().getFullYear();
 
   return (
-    <footer className="relative isolate mt-auto overflow-hidden bg-noite text-white">
+    <footer className="em-noite relative isolate mt-auto overflow-hidden bg-noite text-white">
       {/* Assinatura gigante ao fundo, quase invisível, cortada pela base.
           É SVG, e não texto, porque texto quase transparente reprova o
           contraste no Lighthouse mesmo escondido. */}
@@ -105,8 +105,8 @@ export function Footer() {
           x="600"
           y="200"
           textAnchor="middle"
-          fill="#ffffff"
-          fillOpacity="0.045"
+          fill="#c0a060"
+          fillOpacity="0.07"
           style={{
             fontFamily: "var(--font-instrument-serif), Georgia, serif",
             fontStyle: "italic",
@@ -143,22 +143,22 @@ export function Footer() {
           className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
         />
 
-        <p className="mt-6 max-w-[40ch] text-[1.2rem] md:text-[1.35rem] leading-relaxed text-white/75 italic [font-family:var(--font-destaque)]">
+        <p className="ouro-texto mt-6 max-w-[40ch] text-[1.25rem] md:text-[1.45rem] leading-relaxed italic [font-family:var(--font-destaque)]">
           Há {ANOS_TRADICAO} anos em Petrópolis, com manipulação, homeopatia e atendimento
           de gente que conhece você pelo nome.
         </p>
 
-        {/* Contatos em ícones, que sobem e acendem no degradê da marca */}
+        {/* Contatos em ícones, que sobem e acendem em azul */}
         <ul className="mt-9 flex items-center gap-2.5">
           {CONTATOS.map((c) => {
             const Icone = c.icone;
             const classe =
-              "group relative inline-flex size-12 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.04] text-white/80 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(28,105,181,0.95)]";
+              "group relative inline-flex size-12 items-center justify-center rounded-2xl border border-ouro/35 bg-white/[0.04] text-white/80 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(28,105,181,0.95)]";
             const miolo = (
               <>
                 <span
                   aria-hidden="true"
-                  className="degrade-marca absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  className="absolute inset-0 rounded-2xl bg-tinta opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                 />
                 <Icone />
               </>

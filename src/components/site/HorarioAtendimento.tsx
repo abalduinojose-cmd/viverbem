@@ -84,32 +84,29 @@ export function useEstadoLoja(): EstadoLoja {
 export function HorarioAtendimento() {
   const estado = useEstadoLoja();
 
+  // Ficha clara, no sistema "Receita e rótulo": fio em vez de caixa escura
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-fio rounded-caixa overflow-hidden">
       {/* Estado atual */}
-      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/[0.07] min-h-[4.25rem]">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-fio min-h-[4.25rem]">
         {estado && (
           <>
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="relative flex w-2.5 h-2.5 shrink-0" aria-hidden="true">
-                {estado.aberto && (
-                  <span className="absolute inline-flex w-full h-full rounded-full bg-green-400 opacity-60 animate-ping" />
-                )}
-                <span
-                  className={`relative inline-flex w-2.5 h-2.5 rounded-full ${
-                    estado.aberto ? "bg-green-400" : "bg-white/30"
-                  }`}
-                />
-              </span>
+              <span
+                aria-hidden="true"
+                className={`inline-flex w-2.5 h-2.5 shrink-0 rounded-full ${
+                  estado.aberto ? "bg-green-500" : "bg-fio"
+                }`}
+              />
               <div className="min-w-0">
                 <p
                   className={`font-semibold leading-tight ${
-                    estado.aberto ? "text-green-400" : "text-white/70"
+                    estado.aberto ? "text-green-700" : "text-grafite"
                   }`}
                 >
                   {estado.aberto ? "Aberto agora" : "Fechado agora"}
                 </p>
-                <p className="text-white/45 text-xs mt-0.5">{estado.detalhe}</p>
+                <p className="text-cinza text-xs mt-0.5">{estado.detalhe}</p>
               </div>
             </div>
 
@@ -119,7 +116,7 @@ export function HorarioAtendimento() {
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
-              className="shrink-0 text-white/25"
+              className="shrink-0 text-grafite-claro"
             >
               <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
               <path d="M12 7v5.2l3.2 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -136,13 +133,13 @@ export function HorarioAtendimento() {
             <li
               key={linha.rotulo}
               className={`flex items-center justify-between gap-4 text-sm py-2 ${
-                hoje ? "text-white" : "text-white/45"
+                hoje ? "text-grafite" : "text-cinza"
               }`}
             >
               <span className="flex items-center gap-2">
                 {hoje && (
                   <span
-                    className="w-1 h-3.5 rounded-full bg-white/70 -ml-2.5"
+                    className="w-1 h-3.5 rounded-full bg-tinta -ml-2.5"
                     aria-hidden="true"
                   />
                 )}

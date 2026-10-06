@@ -174,11 +174,11 @@ export function CarrinhoDrawer() {
           type="button"
           onClick={() => abrirPedido()}
           aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
-          className="degrade-suave fixed bottom-6 right-6 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-3 shadow-[0_10px_30px_rgba(224,33,41,0.35)] active:scale-95 transition"
+          className="bg-tinta hover:bg-tinta-escura fixed bottom-6 right-6 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-3 shadow-[0_18px_40px_-16px_rgba(28,105,181,0.65)] active:scale-95 transition"
         >
           <span className="relative">
             <IconeCarrinho />
-            <span className="absolute -top-2.5 -right-2.5 bg-white text-escarlate text-[0.7rem] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center shadow-sm">
+            <span className="absolute -top-2.5 -right-2.5 bg-white text-tinta text-[0.7rem] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center shadow-sm">
               {totalItens}
             </span>
           </span>
@@ -190,7 +190,7 @@ export function CarrinhoDrawer() {
           onClick={() => abrirPedido({ receita: true })}
           tabIndex={rolou ? 0 : -1}
           aria-hidden={!rolou}
-          className={`md:hidden degrade-suave fixed bottom-5 right-5 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-2.5 shadow-[0_10px_30px_rgba(224,33,41,0.35)] active:scale-95 transition duration-300 ${
+          className={`md:hidden bg-tinta fixed bottom-5 right-5 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-2.5 shadow-[0_18px_40px_-16px_rgba(28,105,181,0.65)] active:scale-95 transition duration-300 ${
             rolou ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
         >
@@ -209,11 +209,11 @@ export function CarrinhoDrawer() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-pedido"
-            className="bg-[#f7f9fc] w-full max-w-md h-full flex flex-col animar-surgir shadow-2xl md:rounded-[1.75rem] overflow-hidden"
+            className="bg-papel w-full max-w-md h-full flex flex-col animar-surgir shadow-2xl md:rounded-caixa overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* ---------- Cabeçalho ---------- */}
-            <div className="bg-noite text-white px-6 pt-6 pb-5 shrink-0">
+            {/* ---------- Cabeçalho (claro, com fio: o escuro é só do rodapé) ---------- */}
+            <div className="bg-white border-b border-fio text-grafite px-6 pt-6 pb-5 shrink-0">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
                   {etapa === "dados" && !enviado && (
@@ -221,14 +221,14 @@ export function CarrinhoDrawer() {
                       type="button"
                       onClick={() => setEtapa("pedido")}
                       aria-label="Voltar"
-                      className="shrink-0 w-10 h-10 -ml-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors"
+                      className="shrink-0 w-10 h-10 -ml-2 rounded-full text-cinza hover:text-grafite hover:bg-gelo flex items-center justify-center transition-colors"
                     >
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
                   )}
-                  <h2 id="titulo-pedido" className="font-display text-2xl font-semibold tracking-tight truncate">
+                  <h2 id="titulo-pedido" className="font-display text-2xl font-medium tracking-[-0.03em] truncate">
                     {enviado ? "Tudo certo" : etapa === "pedido" ? "Seu pedido" : "Seus dados"}
                   </h2>
                 </div>
@@ -236,7 +236,7 @@ export function CarrinhoDrawer() {
                   type="button"
                   onClick={fechar}
                   aria-label="Fechar"
-                  className="shrink-0 bg-white/10 hover:bg-white/20 text-white rounded-full w-10 h-10 flex items-center justify-center active:scale-90 transition"
+                  className="shrink-0 bg-gelo hover:bg-fio text-grafite rounded-full w-10 h-10 flex items-center justify-center active:scale-90 transition"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
@@ -254,12 +254,12 @@ export function CarrinhoDrawer() {
                       <div key={e.chave} className="flex-1 flex flex-col gap-1.5">
                         <span
                           className={`h-1 rounded-full transition-colors ${
-                            atual || passou ? "bg-escarlate" : "bg-white/15"
+                            atual || passou ? "bg-tinta" : "bg-fio"
                           }`}
                         />
                         <span
                           className={`text-[0.7rem] tracking-wide transition-colors ${
-                            atual ? "text-white" : "text-white/45"
+                            atual ? "text-grafite" : "text-cinza"
                           }`}
                         >
                           {i + 1}. {e.rotulo}
@@ -272,7 +272,7 @@ export function CarrinhoDrawer() {
 
               {/* Resumo: aparece com produto no carrinho */}
               {!enviado && temProdutos && (
-                <p className="mt-5 pt-4 border-t border-white/10 text-white/60 text-sm">
+                <p className="mt-5 pt-4 border-t border-fio text-cinza text-sm">
                   {receita ? "Receita + " : ""}
                   {totalItens} {totalItens === 1 ? "produto" : "produtos"}
                   {etapa === "dados" && codigo ? ` · ${codigo}` : ""}
@@ -299,7 +299,7 @@ export function CarrinhoDrawer() {
                 <button
                   type="button"
                   onClick={fechar}
-                  className="mt-2 bg-royal hover:bg-royal-escuro text-white font-semibold rounded-2xl px-8 py-3.5 active:scale-95 transition"
+                  className="botao botao-secundario mt-2"
                 >
                   Concluir
                 </button>
@@ -359,7 +359,7 @@ export function CarrinhoDrawer() {
                         type="button"
                         onClick={() => setProdutoVisto(null)}
                         aria-label="Tirar do pedido"
-                        className="shrink-0 w-9 h-9 rounded-full text-grafite-claro hover:text-escarlate hover:bg-white flex items-center justify-center transition-colors"
+                        className="shrink-0 w-9 h-9 rounded-full text-grafite-claro hover:text-navy hover:bg-white flex items-center justify-center transition-colors"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
@@ -404,7 +404,7 @@ export function CarrinhoDrawer() {
                             type="button"
                             onClick={() => remover(item.produtoId, item.dosagem)}
                             aria-label={`Remover ${item.nome}`}
-                            className="shrink-0 w-9 h-9 -mr-2 -mt-1.5 rounded-full text-grafite-claro hover:text-escarlate hover:bg-escarlate/10 flex items-center justify-center transition-colors"
+                            className="shrink-0 w-9 h-9 -mr-2 -mt-1.5 rounded-full text-grafite-claro hover:text-navy hover:bg-gelo flex items-center justify-center transition-colors"
                           >
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                               <path
@@ -470,7 +470,7 @@ export function CarrinhoDrawer() {
                     type="button"
                     onClick={irParaDados}
                     disabled={!temAlgo}
-                    className="degrade-suave w-full flex items-center justify-center gap-3 text-white text-lg font-semibold rounded-2xl px-6 py-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition"
+                    className="botao botao-principal w-full text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     Continuar
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -481,7 +481,7 @@ export function CarrinhoDrawer() {
                     <button
                       type="button"
                       onClick={() => itens.forEach((i) => remover(i.produtoId, i.dosagem))}
-                      className="w-full mt-1.5 min-h-11 text-grafite-claro hover:text-escarlate font-medium text-sm transition-colors"
+                      className="w-full mt-1.5 min-h-11 text-grafite-claro hover:text-navy font-medium text-sm transition-colors"
                     >
                       Tirar todos os produtos
                     </button>

@@ -1,27 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Instrument_Sans, Instrument_Serif } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-// Instrument Sans: o texto corrido. Trocou a Fraunces + Inter em
-// 05/10/2026, a pedido, por "uma fonte mais moderna" (só a fonte mudou).
+// Duas vozes e nada mais (sistema "Receita e rótulo", 06/10/2026).
+// Instrument Sans: texto, títulos em peso 400 e rótulos em caixa alta.
+// Trocou a Fraunces + Inter em 05/10/2026, a pedido ("uma fonte mais
+// moderna"). A Bricolage Grotesque, que entrou nos títulos por um dia,
+// saiu: o contraste vem do tamanho e da voz serifada, não de uma
+// terceira fonte.
 const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",
   subsets: ["latin"],
   style: ["normal", "italic"],
 });
 
-// Bricolage Grotesque: só os títulos. Entrou em 06/10/2026 na revisão
-// anti-genérico, pelo guia de estética da Anthropic: ela tem desenho
-// próprio (largura variável, cortes diagonais) e abre contraste com a
-// Instrument Sans do texto, no lugar de uma fonte só para tudo.
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["400", "600", "800"],
-});
-
-// Instrument Serif itálico: só nas palavras em destaque dos títulos
-// ("pela receita"), para manter o itálico serifado que era a cara do site
+// Instrument Serif itálico: a "tinta azul da receita", nas palavras em
+// destaque dos títulos, nos números e nas frases dos clientes
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
@@ -61,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${bricolage.variable} h-full antialiased`}
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

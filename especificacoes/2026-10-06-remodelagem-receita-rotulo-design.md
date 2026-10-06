@@ -1,5 +1,66 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 2 (06/10/2026, fim da tarde): a home virou MODELO DE LOJA, na
+> referência do biovittare.com.br (pedido do Anderson: "muita cara de
+> genérico, pegue a referência da parte de produto desse site").**
+> O que foi aplicado por cima do adendo 1 (mantendo as cores, a tipografia,
+> os ladrilhos e as folhas):
+>
+> - **Cabeçalho em três faixas**, preso ao topo e no fluxo da página (as
+>   páginas não têm mais margem no topo; `--altura-cabecalho` = 6,75rem no
+>   celular e 9,5rem do md para cima): faixa de vantagens com os links
+>   institucionais (A Viver Bem, Lojas, Contato), linha principal com logo,
+>   **busca aberta** e carrinho, e a **barra de categorias em azul-noite** com
+>   o "Enviar receita" em ouro na ponta.
+> - **Abertura como banner** largo e arredondado em azul-noite (`.banner-noite`)
+>   com a bancada de potes e o rótulo em vidro; botão branco com texto navy.
+> - **Vantagens** (`Beneficios`): entrega de moto, retirada sem taxa, receita
+>   conferida, 5,0 no Google. Substituiu a faixa de números.
+> - **Categorias em círculos** (`CategoriasRedondas`): foto em
+>   `public/fotos/categorias/<slug>.jpg`; sem foto, o pote de um produto da
+>   área; sem pote, a inicial em ouro.
+> - **Vitrines** (`VitrineCategoria`): título com fio e "ver mais" na linha,
+>   banner em azul-noite ao lado (imagem opcional em
+>   `public/fotos/banners/<slug>.jpg` ou `mais-procurados.jpg`, com véu para
+>   o texto) e a faixa de produtos. Uma vitrine para "Mais procurados" e uma
+>   para cada área com 3 ou mais fotos reais (hoje Dermatologia e Vitaminas).
+> - **Cartão de produto** de loja: foto grande sobre o gelo, nome, botão.
+> - Depois vêm Como funciona (bento), reels e avaliações, em folhas.
+> - As fotos de pessoas (categorias e banners) ficam a cargo do Anderson:
+>   quadradas de pelo menos 800px para os círculos, 4:5 de pelo menos
+>   1000x1250 para os banners, JPG, nos nomes acima.
+
+> **ADENDO 1 (06/10/2026, tarde): a direção mudou para "Branco, azul e ouro".**
+> Depois de implementada a direção A (clara, fina, fios), o Anderson reprovou:
+> "o site está até pior, pedi um layout totalmente moderno e sem parecer
+> genérico". Para ele, clean NÃO é branco e fino: é profundidade, impacto e
+> movimento. O que foi aplicado em seguida, e é o que vale:
+>
+> - **Paleta**: fundo branco; azul `#1C69B5` na estrutura e na ação principal
+>   (o vermelho fica só no logo); azul-noite `#0D2340` nos títulos, numa única
+>   folha escura (a vitrine "Mais procurados") e no rodapé; **dourado da paleta
+>   da farmácia, `#B3904F` e `#C0A060`** (passado pelo Anderson), como acento
+>   metálico em degradê: palavra-chave dos títulos, números, nome do rótulo, luz
+>   quente sob os potes e fios finos. Nunca em texto pequeno (contraste).
+> - **Tipografia**: títulos em Instrument Sans **600** (não 400), navy; itálico
+>   serifado em ouro. Display da abertura até 90px, títulos de seção 60px.
+> - **Superfícies**: `.ladrilho` (branco → gelo, 28px, luz dourada no canto) no
+>   lugar das fichas com fio; `.ladrilho-vidro` sobre a folha escura. "Como
+>   funciona" em bento 2x2; números em ladrilhos; produtos em ladrilhos.
+> - **Folhas (transições de rolagem)**: cada seção da home é uma `.folha` com o
+>   topo arredondado que desliza por cima da anterior; a anterior recua
+>   (`scale .95`, opacidade) via `animation-timeline: view()` no `exit`. A
+>   abertura fica presa ao topo no computador (`.abertura-presa`, sticky +
+>   `scroll(root)`) e recua enquanto a 1ª folha a cobre; os potes têm paralaxe.
+>   Revelação `.revelar` e `.escalonado` (filhos um depois do outro, por faixas
+>   de `animation-range`). Tudo scroll-driven: roda com "reduzir movimento".
+> - **Captura**: a revelação e as folhas andam com a rolagem, então captura de
+>   página inteira precisa desligar `.revelar/.folha/.abertura-presa` (ver
+>   `scratchpad/capturar-etapa.cjs`); o vídeo de rolagem (`rolar.cjs`) mostra
+>   o efeito real.
+> - As seções 4 a 10 abaixo continuam válidas em conteúdo e ordem; o
+>   tratamento visual é o deste adendo.
+
 **Data**: 06/10/2026
 **Pasta**: `viverbem-app` (Next.js 16, branch `reformulacao-formularis`, dev em `localhost:3000`)
 **Pedido**: "site visualmente clean e moderno, sem parecer genérico"

@@ -1,6 +1,11 @@
-// CONTATOS — página com o WhatsApp e as 3 unidades da Viver Bem.
+// CONTATOS: o WhatsApp como ação principal, o horário ao vivo e as 3
+// unidades em lista com fio. Sistema "Branco, azul e ouro" (06/10/2026).
+// As unidades vêm de lib/tipos.ts, a mesma lista do rodapé e das lojas.
 import type { Metadata } from "next";
-import { WHATSAPP_LOJA } from "@/lib/tipos";
+import Link from "next/link";
+import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
+import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
+import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
 
 export const metadata: Metadata = {
   title: "Contatos · Manipulação Viver Bem",
@@ -8,102 +13,86 @@ export const metadata: Metadata = {
     "Fale com a Manipulação Viver Bem pelo WhatsApp e visite as nossas 3 unidades em Petrópolis: Centro, Corrêas e Posse.",
 };
 
-const UNIDADES = [
-  {
-    bairro: "Centro",
-    endereco: "Rua Dom Pedro Segundo, 31, Loja 37",
-    complemento: "Petrópolis/RJ",
-  },
-  {
-    bairro: "Corrêas",
-    endereco: "Rua Dr. Agostinho Goulão, 22",
-    complemento: "Petrópolis/RJ",
-  },
-  {
-    bairro: "Posse",
-    endereco: "Estrada União e Indústria, 33.383",
-    complemento: "Petrópolis/RJ",
-  },
-];
-
 export default function PaginaContato() {
   return (
-    <main className="flex-1 pt-16 md:pt-[4.5rem]">
-      {/* Hero */}
-      <section className="halo-marca px-4 md:px-8 pt-14 pb-6">
-        <div className="text-center max-w-2xl mx-auto">
-          <span className="inline-block text-xs font-semibold tracking-[0.22em] uppercase text-royal bg-royal-claro px-4 py-2 rounded-full">
-            Fale com a gente
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold text-grafite mt-6 tracking-tight leading-[1.05]">
-            Estamos <span className="texto-degrade">pertinho</span>
-            <br />
-            de você
-          </h1>
-          <p className="text-grafite-medio text-lg md:text-xl mt-5 leading-relaxed">
-            Atendimento pelo WhatsApp e 3 unidades em Petrópolis para você visitar.
-          </p>
+    <main className="flex-1">
+      {/* Abertura */}
+      <section className="halo-marca px-5 md:px-8 pt-12 md:pt-16 pb-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:items-end">
+          <div className="lg:col-span-7">
+            <p className="rotulo">fale com a gente</p>
+            <h1 className="titulo-secao vao-rotulo">
+              Estamos <span className="italic">pertinho de você</span>
+            </h1>
+            <p className="texto-apoio mt-4 max-w-xl">
+              Atendimento pelo WhatsApp no horário das lojas, e {UNIDADES.length} unidades em
+              Petrópolis para você visitar.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMERO}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="botao botao-principal"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
+                </svg>
+                Falar no {WHATSAPP_LOJA}
+              </a>
+              <BotaoEnviarReceita className="botao-link self-center sm:self-auto" />
+            </div>
+          </div>
 
-          <a
-            href="https://wa.me/5524988733934"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-3 bg-[#25D366] hover:bg-[#1eb857] text-white text-lg md:text-xl font-semibold rounded-2xl px-9 py-5 transition-colors active:scale-[0.98] shadow-[0_10px_30px_rgba(37,211,102,0.35)]"
-          >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
-            </svg>
-            {WHATSAPP_LOJA}
-          </a>
+          {/* Horário com o estado ao vivo */}
+          <div className="lg:col-span-5">
+            <HorarioAtendimento />
+          </div>
         </div>
       </section>
 
-      {/* Unidades */}
-      <section className="max-w-6xl mx-auto px-4 md:px-8 pt-10 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* As unidades, em lista com fio */}
+      <section className="px-5 md:px-8 max-w-6xl mx-auto pt-12 md:pt-16 pb-20 md:pb-24">
+        <p className="rotulo">onde nos encontrar</p>
+        <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
+          {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>
+        </h2>
+
+        <ul className="escalonado lista-fichas lista-fichas-fechada mt-8">
           {UNIDADES.map((u, i) => (
-            <div
-              key={u.bairro}
-              className="relative bg-white rounded-[1.75rem] border border-linha sombra-card p-7 overflow-hidden"
-            >
-              <span className="absolute top-0 left-0 right-0 h-1 degrade-marca" aria-hidden="true" />
-              <div className="flex items-center gap-3">
-                <span className="shrink-0 w-12 h-12 rounded-2xl degrade-marca text-white flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinejoin="round"
-                    />
-                    <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
-                  </svg>
-                </span>
-                <div>
-                  <p className="text-[0.65rem] font-semibold tracking-widest text-grafite-claro uppercase">
-                    Unidade {i + 1}
-                  </p>
-                  <h2 className="text-xl font-bold text-grafite tracking-tight">{u.bairro}</h2>
-                </div>
+            <li key={u.bairro} className="grid grid-cols-[2.5rem_1fr] sm:grid-cols-[4rem_1fr_auto] items-center gap-x-4 sm:gap-x-8 gap-y-4 py-6 md:py-7">
+              <span aria-hidden="true" className="numero-tinta text-xl md:text-2xl">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy">{u.bairro}</h3>
+                <p className="text-cinza leading-relaxed mt-1">{u.endereco}, Petrópolis/RJ</p>
+                {u.telefone && (
+                  <p className="text-grafite-claro text-sm mt-1 tabular-nums">Telefone {u.telefone}</p>
+                )}
               </div>
-              <p className="text-grafite-medio mt-4 leading-relaxed">{u.endereco}</p>
-              <p className="text-grafite-claro text-sm">{u.complemento}</p>
               <a
-                href={`https://www.google.com/maps/search/${encodeURIComponent(
-                  "Manipulação Viver Bem " + u.endereco + " Petrópolis"
-                )}`}
+                href={linkMapaUnidade(u.bairro, u.endereco)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center min-h-11 gap-2 text-royal font-semibold hover:gap-3 transition-all"
+                className="botao-link col-start-2 sm:col-start-3 justify-self-start"
               >
                 Ver no mapa
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
+
+        <p className="text-cinza mt-8">
+          Horários, como chegar e mais detalhes de cada unidade na{" "}
+          <Link href="/lojas" className="text-tinta font-medium hover:underline">
+            página das lojas
+          </Link>
+          .
+        </p>
       </section>
     </main>
   );

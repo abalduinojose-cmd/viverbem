@@ -1,26 +1,27 @@
 "use client";
-// Vitrine dos vídeos do Instagram da farmácia, no formato vertical
-// dos reels. Os arquivos ficam em public/videos/.
+// Vitrine dos vídeos do Instagram da farmácia, no formato vertical dos
+// reels. Os arquivos ficam em public/videos/, com a capa de cada um ao
+// lado (reel-N.jpg, gerada por scripts/gerar-posteres.js).
 //
-// Os vídeos NÃO tocam sozinhos: cada cartão mostra um quadro de
-// prévia e só carrega o arquivo inteiro quando a pessoa aperta o
-// play, para a home não pesar. Tocar um pausa o anterior.
+// Os vídeos NÃO tocam sozinhos: cada cartão mostra a capa e só carrega o
+// arquivo quando a pessoa aperta o play, para a home não pesar. Tocar um
+// pausa o anterior.
+//
+// Sistema "Receita e rótulo" (06/10/2026): sem a caixa em volta; texto à
+// esquerda e os dois reels à direita, em cantos de 20px.
 
 import { useEffect, useRef, useState } from "react";
 import { INSTAGRAM_PERFIL, INSTAGRAM_URL } from "@/lib/tipos";
 import { asset } from "@/lib/asset";
 
-// O "#t=" faz o navegador mostrar esse segundo como capa, sem
-// precisarmos gerar imagem de pôster para cada vídeo.
-//
 // Só os reels institucionais (equipe, laboratório, loja). O terceiro
 // saiu: mostrava manipulados pelo nome de marca e chamava para
 // "conhecer esses produtos", o caso que a Anvisa puniu (RE 3.547/2026).
 // Antes de colocar um reel novo aqui, o farmacêutico precisa ver (e
 // ouvir) o vídeo inteiro.
 const REELS = [
-  { arquivo: "/videos/reel-1.mp4", capaEm: 3, titulo: "Curiosidades da manipulação" },
-  { arquivo: "/videos/reel-2.mp4", capaEm: 2, titulo: "Quem faz a Viver Bem" },
+  { arquivo: "/videos/reel-1.mp4", capa: "/videos/reel-1.jpg", titulo: "Curiosidades da manipulação" },
+  { arquivo: "/videos/reel-2.mp4", capa: "/videos/reel-2.jpg", titulo: "Quem faz a Viver Bem" },
 ];
 
 function IconeInstagram({ tamanho = 20 }: { tamanho?: number }) {
@@ -76,19 +77,15 @@ export function ReelsInstagram() {
   }, []);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-8 pt-20">
-      {/* Com dois vídeos, o texto vai ao lado deles: lado a lado e na
-          largura toda, cada reel vertical ficaria alto demais */}
-      <div className="bg-royal-nevoa border border-linha rounded-[2rem] px-6 md:px-12 py-12 md:py-14 grid grid-cols-1 lg:grid-cols-12 gap-9 lg:gap-12 items-center">
+    <section aria-labelledby="titulo-reels" className="secao max-w-7xl mx-auto px-5 md:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-9 lg:items-center">
         {/* Cabeçalho */}
-        <div className="lg:col-span-5">
-          <p className="selo-secao text-escarlate">acompanhe a gente</p>
-          <h2 className="font-display text-[2.2rem] md:text-[2.9rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.05] mt-3">
-            Por dentro da
-            <br />
-            <span className="italic text-royal">Viver Bem</span>
+        <div className="revelar lg:col-span-5">
+          <p className="rotulo">acompanhe a gente</p>
+          <h2 id="titulo-reels" className="titulo-secao vao-rotulo">
+            Por dentro da <span className="italic">Viver Bem</span>
           </h2>
-          <p className="text-grafite-medio text-base md:text-lg leading-relaxed mt-4 max-w-md">
+          <p className="texto-apoio mt-4 max-w-md">
             O laboratório, a loja e quem faz a farmácia no dia a dia, direto do nosso
             Instagram.
           </p>
@@ -96,25 +93,26 @@ export function ReelsInstagram() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-7 inline-flex items-center gap-2.5 bg-royal hover:bg-royal-escuro text-white font-semibold rounded-2xl px-6 py-3.5 active:scale-95 transition"
+            className="botao botao-secundario mt-8"
           >
             <IconeInstagram />@{INSTAGRAM_PERFIL}
           </a>
         </div>
 
         {/* Vídeos */}
-        <div className="lg:col-span-7 flex gap-4 md:gap-6 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory -mx-1 px-1 pb-2 lg:justify-end">
+        <div className="revelar lg:col-span-7 flex gap-4 md:gap-6 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory -mx-5 px-5 pb-2 lg:mx-0 lg:px-0 lg:justify-end">
           {REELS.map((reel, i) => (
             <div
               key={reel.arquivo}
-              className="snap-start shrink-0 w-[15rem] sm:w-[16.5rem] relative rounded-[1.5rem] overflow-hidden bg-grafite aspect-[9/16] sombra-card group"
+              className="group relative snap-start shrink-0 w-[15rem] sm:w-[16.5rem] aspect-[9/16] overflow-hidden rounded-caixa bg-gelo shadow-[0_30px_60px_-30px_rgba(13,35,64,0.45)]"
             >
               <video
                 ref={(el) => {
                   refs.current[i] = el;
                 }}
-                src={`${asset(reel.arquivo)}#t=${reel.capaEm}`}
-                preload="metadata"
+                src={asset(reel.arquivo)}
+                poster={asset(reel.capa)}
+                preload="none"
                 playsInline
                 loop
                 onEnded={() => setTocando(null)}
@@ -131,24 +129,24 @@ export function ReelsInstagram() {
                 {/* A cortina escura some enquanto o vídeo roda */}
                 <span
                   aria-hidden="true"
-                  className={`absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/20 transition-opacity ${
+                  className={`absolute inset-0 bg-gradient-to-t from-noite/45 via-transparent to-noite/10 transition-opacity duration-300 ${
                     tocando === i ? "opacity-0" : "opacity-100"
                   }`}
                 />
                 <span
-                  className={`relative w-16 h-16 rounded-full bg-white/95 text-royal flex items-center justify-center sombra-card transition-all ${
+                  className={`relative w-14 h-14 rounded-full bg-white/95 text-tinta flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
                     tocando === i
                       ? "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
-                      : "opacity-100 group-hover:scale-110"
+                      : "opacity-100 group-hover:scale-105"
                   }`}
                 >
                   {tocando === i ? (
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <rect x="6" y="5" width="4" height="14" rx="1.2" />
                       <rect x="14" y="5" width="4" height="14" rx="1.2" />
                     </svg>
                   ) : (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5Z" />
                     </svg>
                   )}
@@ -161,7 +159,7 @@ export function ReelsInstagram() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Ver no Instagram de @${INSTAGRAM_PERFIL}`}
-                className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition-all ${
+                className={`absolute top-3.5 right-3.5 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition duration-300 ${
                   tocando === i ? "opacity-0 group-hover:opacity-100" : "opacity-100"
                 }`}
               >
