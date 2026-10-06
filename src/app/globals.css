@@ -66,8 +66,10 @@
   --tam-numero: clamp(2.75rem, 2.2rem + 1.9vw, 4.25rem); /* 44 -> 68px */
 
   /* Respiro em três passos fixos */
-  --espaco-secao: clamp(4.5rem, 3.2rem + 3.6vw, 7rem);
-  --vao-titulo: clamp(2rem, 1.6rem + 1.1vw, 3rem);
+  /* Compactado em 06/10/2026 a pedido ("tire um pouco dos espaçamentos"):
+     era 4,5-7rem e 2-3rem */
+  --espaco-secao: clamp(3.5rem, 2.5rem + 2.8vw, 5.5rem);
+  --vao-titulo: clamp(1.5rem, 1.2rem + 0.9vw, 2.25rem);
   --vao-rotulo: 1rem;
 
   /* O ouro metálico, para texto grande e números */
@@ -410,6 +412,10 @@ body {
   /* ---------- Respiro ---------- */
   .secao {
     padding-top: var(--espaco-secao);
+  }
+  /* As vitrines vêm em sequência: respiro menor entre elas */
+  .secao-vitrine {
+    padding-top: calc(var(--espaco-secao) * 0.7);
   }
   .secao-fecho {
     padding-bottom: var(--espaco-secao);

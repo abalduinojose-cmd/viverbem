@@ -167,10 +167,9 @@ export default async function Home() {
             href="/produtos"
             produtos={comFoto}
             banner={bannerMaisProcurados}
-            ladoBanner="esquerda"
           />
 
-          {vitrines.map((v, i) => (
+          {vitrines.map((v) => (
             <VitrineCategoria
               key={v.categoria.id}
               id={`titulo-vitrine-${v.categoria.slug}`}
@@ -178,7 +177,6 @@ export default async function Home() {
               href={`/produtos/${v.categoria.slug}`}
               produtos={v.produtos}
               banner={v.banner}
-              ladoBanner={i % 2 === 0 ? "direita" : "esquerda"}
             />
           ))}
 

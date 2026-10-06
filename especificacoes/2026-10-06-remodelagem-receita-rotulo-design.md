@@ -1,5 +1,42 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 19 (06/10/2026, noite): banner dentro da faixa, produtos grandes, site mais compacto. Publicado a pedido.**
+> Vitrines ("diminua mais o quadrado azul", "coloque as categorias com os
+> produtos maiores e arrastando para o lado"): o banner deixou de ser uma
+> coluna da grade e virou o PRIMEIRO CARTÃO da faixa que arrasta (14/16rem
+> de largura, mesma altura dos produtos), e os cartões de produto foram
+> para 16/20rem (`FaixaProdutos` ganhou a prop `antes`; `ladoBanner`
+> saiu). No celular o banner também entra na faixa, em vez de ocupar a
+> tela inteira. Espaçamentos ("tire um pouco dos espaçamentos"):
+> `--espaco-secao` de 4,5-7rem para 3,5-5,5rem, `--vao-titulo` de 2-3rem
+> para 1,5-2,25rem, e as vitrines em sequência usam `.secao-vitrine` (70%
+> do respiro); a home caiu de 7551 para 7263px no computador e de 10003
+> para 8890px no celular. Lint e tsc limpos; capturas em
+> `scratchpad/etapa28/`. Publicado no GitHub Pages a pedido explícito
+> ("e atualize o github").
+
+> **ADENDO 18 (06/10/2026, noite): vitrines com o produto em destaque; "Fale com a gente" refeito com a skill ui-ux-pro-max. Não publicado.**
+> Vitrines ("diminua o espaço do quadrado azul e aumente o produto"): o
+> banner passou de 4 para 3 das 12 colunas e a faixa de 8 para 9; os
+> cartões das vitrines da home foram de 16 para 18rem no computador (15rem
+> no celular) e a foto ganhou recuo menor no ladrilho (`p-2.5`); no
+> computador cabem 3 cartões inteiros ao lado do banner. O banner ficou
+> mais baixo no celular (16rem), com título de 1,7rem e a marca d'água
+> menor no computador. "Fale com a gente" (3ª versão, com a skill:
+> estilo "Trust & Authority" para saúde, contato nunca escondido, uma só
+> ação principal, estado do sistema visível): cabeçalho com o título em
+> duas vozes e o selo ao vivo "Aberto agora · Fecha às 19h" (ponto verde
+> pulsando só sem "reduzir movimento", `role="status"`); grade com a
+> RECEITA em azul-noite (malha, luz de ouro e a folha de receita em vidro
+> como ilustração, título em duas vozes, pílula "Começar"), o WhatsApp
+> com o número grande e a mensagem que já vai pronta num balão (o link
+> leva `?text=`), as 3 LOJAS com endereço completo e "Como chegar" (mapa;
+> antes eram só chips; no celular viram linhas) e o cartão do HORÁRIO com
+> o dia de hoje marcado e o link "Página das lojas". Sem telefone fixo.
+> Lint e tsc limpos; capturas em `scratchpad/etapa26/` e `etapa27/`.
+> **GitHub NÃO atualizado: pedido explícito "só atualize o GitHub quando
+> eu mandar"** (a prévia pública segue no commit `bfeee9c`).
+
 > **ADENDO 17 (06/10/2026, noite): prévia publicada no repositório novo.**
 > A pedido ("crie um repositório no GitHub e um link de visualização"), a
 > remodelagem foi commitada (`04ca686`, adendos 4 a 16) e publicada no

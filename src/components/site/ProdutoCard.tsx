@@ -29,7 +29,7 @@ export function ProdutoCard({
 
   return (
     <article className="group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60">
-      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-3.5">
+      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-2.5">
         {/* A luz dourada da bancada, no pé do pote */}
         <span
           aria-hidden="true"

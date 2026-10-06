@@ -16,13 +16,17 @@ export function FaixaProdutos({
   largura = "padrao",
   className = "",
   comCategoria = true,
+  antes,
   children,
 }: {
   produtos?: ProdutoDTO[];
   /** Falso quando o título da seção já diz a categoria */
   comCategoria?: boolean;
-  /** "estreita" nas grades do catálogo, "padrao" nas vitrines da home */
+  /** "estreita" nas grades do catálogo, "padrao" nas vitrines da home
+   *  (20rem no computador, pedido de 06/10/2026 para destacar os produtos) */
   largura?: "padrao" | "estreita";
+  /** Cartão que abre a faixa (o banner da área), com a largura dele mesmo */
+  antes?: React.ReactNode;
   /** Classes extras na própria fileira (ex.: "cascata") */
   className?: string;
   /**
@@ -36,7 +40,7 @@ export function FaixaProdutos({
   const arraste = useArrasteHorizontal(faixaRef);
 
   const classeItem =
-    largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-56 md:w-64 shrink-0 snap-start";
+    largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-64 md:w-80 shrink-0 snap-start";
 
   return (
     <div
@@ -46,6 +50,7 @@ export function FaixaProdutos({
         arraste.arrastando ? "md:cursor-grabbing select-none snap-none" : ""
       } ${className}`}
     >
+      {antes && <div className="shrink-0 snap-start flex">{antes}</div>}
       {children
         ? Children.map(children, (filho) => <div className={classeItem}>{filho}</div>)
         : produtos?.map((p) => (
