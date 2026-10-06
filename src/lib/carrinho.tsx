@@ -2,9 +2,10 @@
 // Pedido do site (estado no cliente + localStorage). Fecha pelo WhatsApp.
 //
 // Tem duas partes que podem ir juntas na mesma mensagem:
-//   - a RECEITA: a pessoa avisa que vai mandar a foto da prescrição.
-//     Vale para manipulado, que não tem preço nem carrinho no site;
-//   - os ITENS: só produto industrializado com registro, que tem preço.
+//   - a RECEITA: a pessoa avisa que vai mandar a foto da prescrição;
+//   - os ITENS: os produtos que ela pôs no carrinho.
+// Desde 05/10/2026 o site não tem preço: o carrinho leva só nome e
+// quantidade, e o farmacêutico passa o valor pelo WhatsApp.
 //
 // A gaveta também mora aqui, para qualquer botão "Enviar receita" do
 // site (cabeçalho, home, página de produto) conseguir abri-la.
@@ -23,7 +24,6 @@ import {
 export interface ItemCarrinho {
   produtoId: number;
   nome: string;
-  precoCentavos: number;
   dosagem: string | null; // dosagem escolhida (ex.: "500mg") ou null
   quantidade: number;
   fotoUrl?: string | null;
@@ -39,7 +39,6 @@ interface OpcoesAbertura {
 interface ContextoCarrinho {
   itens: ItemCarrinho[];
   totalItens: number;
-  totalCentavos: number;
   adicionar: (item: Omit<ItemCarrinho, "quantidade">, quantidade?: number) => void;
   mudarQuantidade: (produtoId: number, dosagem: string | null, delta: number) => void;
   remover: (produtoId: number, dosagem: string | null) => void;
@@ -57,9 +56,9 @@ interface ContextoCarrinho {
 
 const Contexto = createContext<ContextoCarrinho | null>(null);
 
-// "v2": o carrinho antigo podia ter manipulado com preço. Trocando a
-// chave, o que ficou salvo no navegador de quem já visitou é ignorado.
-const CHAVE_STORAGE = "viverbem_pedido_v2";
+// "v3": os carrinhos antigos guardavam preço. Trocando a chave, o que
+// ficou salvo no navegador de quem já visitou é ignorado.
+const CHAVE_STORAGE = "viverbem_pedido_v3";
 
 export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
@@ -140,11 +139,9 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   const valor = useMemo<ContextoCarrinho>(() => {
     const totalItens = itens.reduce((soma, i) => soma + i.quantidade, 0);
-    const totalCentavos = itens.reduce((soma, i) => soma + i.precoCentavos * i.quantidade, 0);
     return {
       itens,
       totalItens,
-      totalCentavos,
       adicionar,
       mudarQuantidade,
       remover,

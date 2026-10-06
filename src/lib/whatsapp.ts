@@ -1,6 +1,5 @@
 // Monta o link de WhatsApp (wa.me) com o pedido pronto para a equipe.
 import { WHATSAPP_NUMERO, ENTREGA_RETIRADA } from "./tipos";
-import { formatarPreco } from "./preco";
 import { ItemCarrinho } from "./carrinho";
 
 function linkComMensagem(mensagem: string): string {
@@ -15,8 +14,6 @@ export function gerarCodigoPedido(): string {
 export interface DadosPedido {
   nome: string;
   whatsapp: string;
-  /** Só quando há item com preço; na receita o valor vem depois */
-  pagamento: string;
   entrega: string; // "Retirada na loja" | "Entrega em casa"
   local: string; // a loja escolhida, ou o endereço da entrega
   observacao?: string;
@@ -28,7 +25,8 @@ export interface DadosPedido {
 }
 
 /** Link com o pedido completo: dados da pessoa, a receita (se houver)
- *  e os itens com preço, para a equipe receber e preparar. */
+ *  e os itens com a quantidade. Sem preço: o farmacêutico confere e
+ *  responde com o valor. */
 export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): string {
   const partes = [
     "🧾 *NOVO PEDIDO · SITE VIVER BEM*",
@@ -57,13 +55,9 @@ export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): s
   if (itens.length > 0) {
     const linhas = itens.map((item, i) => {
       const dosagem = item.dosagem ? ` (${item.dosagem})` : "";
-      const unit = formatarPreco(item.precoCentavos);
-      const subtotal = formatarPreco(item.precoCentavos * item.quantidade);
-      return `${i + 1}) *${item.nome}*${dosagem}\n    Qtd: ${item.quantidade} × ${unit} = ${subtotal}`;
+      return `${i + 1}) *${item.nome}*${dosagem} · Qtd: ${item.quantidade}`;
     });
-    const total = itens.reduce((soma, i) => soma + i.precoCentavos * i.quantidade, 0);
-    partes.push("", "*Produtos:*", ...linhas, "", `*TOTAL DOS PRODUTOS: ${formatarPreco(total)}*`);
-    if (dados.pagamento) partes.push(`*Pagamento:* ${dados.pagamento}`);
+    partes.push("", "*Produtos:*", ...linhas);
   }
 
   if (dados.observacao && dados.observacao.trim()) {
@@ -75,7 +69,7 @@ export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): s
     "",
     dados.receita
       ? "_Pedido feito pelo site. Segue a foto da receita:_"
-      : "_Pedido feito pelo site. Favor conferir e preparar._"
+      : "_Pedido feito pelo site. Aguardo o valor e o prazo._"
   );
 
   return linkComMensagem(partes.join("\n"));

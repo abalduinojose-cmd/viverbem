@@ -1,20 +1,18 @@
 "use client";
 // Gaveta "Seu pedido", em duas etapas:
-//   1) "pedido" -> a receita ("vou enviar uma receita") e, se houver,
-//                  os produtos industrializados com preço
-//   2) "dados"  -> nome, WhatsApp, como receber e, só quando há produto
-//                  com preço, a forma de pagamento
+//   1) "pedido" -> a receita ("vou enviar uma receita") e os produtos
+//                  que a pessoa pôs no carrinho
+//   2) "dados"  -> nome, WhatsApp e como receber
 // No final tudo vira uma mensagem pronta no WhatsApp da loja, com o
 // código do pedido. A foto da receita a pessoa anexa na própria conversa:
 // ela nunca passa pelo site.
 //
-// Manipulado não tem preço nem carrinho (RDC 67/2007, item 5.14): o
-// pedido dele é a receita. Por isso a receita vem primeiro aqui.
+// Sem preço e sem forma de pagamento (pedido do cliente em 05/10/2026):
+// o farmacêutico confere o pedido e combina valor e pagamento na conversa.
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useCarrinho } from "@/lib/carrinho";
-import { formatarPreco } from "@/lib/preco";
 import { linkWhatsAppPedido, gerarCodigoPedido } from "@/lib/whatsapp";
 import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeMoto } from "./IconeMoto";
@@ -28,9 +26,7 @@ const ETAPAS: { chave: Etapa; rotulo: string }[] = [
   { chave: "dados", rotulo: "Seus dados" },
 ];
 
-const FORMAS_PAGAMENTO = ["Dinheiro", "Pix", "Cartão de débito", "Cartão de crédito"];
-
-function IconeCarrinho({ tamanho = 24 }: { tamanho?: number }) {
+export function IconeCarrinho({ tamanho = 24 }: { tamanho?: number }) {
   return (
     <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -50,7 +46,6 @@ export function CarrinhoDrawer() {
   const {
     itens,
     totalItens,
-    totalCentavos,
     mudarQuantidade,
     remover,
     limpar,
@@ -66,7 +61,6 @@ export function CarrinhoDrawer() {
   const [etapa, setEtapa] = useState<Etapa>("pedido");
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [pagamento, setPagamento] = useState("");
   const [entrega, setEntrega] = useState("");
   const [unidade, setUnidade] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -109,14 +103,9 @@ export function CarrinhoDrawer() {
   const local = ehRetirada ? unidade : endereco.trim();
   const entregaResolvida = entrega.length > 0 && local.length > 0;
 
-  // Pagamento só é pedido quando há produto com preço
   const digitosWhats = whatsapp.replace(/\D/g, "");
   const podeEnviar =
-    temAlgo &&
-    nome.trim().length > 0 &&
-    digitosWhats.length >= 10 &&
-    entregaResolvida &&
-    (!temProdutos || pagamento.length > 0);
+    temAlgo && nome.trim().length > 0 && digitosWhats.length >= 10 && entregaResolvida;
 
   // Trocar de modo zera a escolha do outro, para não enviar os dois
   function escolherEntrega(modo: string) {
@@ -142,7 +131,6 @@ export function CarrinhoDrawer() {
       body: JSON.stringify({
         nome: nome.trim(),
         whatsapp: whatsapp.trim(),
-        pagamento: temProdutos ? pagamento : "",
         entrega,
         local,
         codigo,
@@ -151,7 +139,6 @@ export function CarrinhoDrawer() {
           nome: i.nome,
           dosagem: i.dosagem,
           quantidade: i.quantidade,
-          precoCentavos: i.precoCentavos,
         })),
       }),
     }).catch(() => {
@@ -161,7 +148,6 @@ export function CarrinhoDrawer() {
     const url = linkWhatsAppPedido(itens, {
       nome: nome.trim(),
       whatsapp: whatsapp.trim(),
-      pagamento: temProdutos ? pagamento : "",
       entrega,
       local,
       observacao,
@@ -180,14 +166,14 @@ export function CarrinhoDrawer() {
 
   return (
     <>
-      {/* Botão flutuante. Com produto no pedido, mostra o total em
-          qualquer tela. Sem produto, vira o "Enviar receita" do celular
-          (no computador esse botão já está fixo no cabeçalho). */}
+      {/* Botão flutuante. Com produto no carrinho, mostra quantos itens
+          em qualquer tela. Sem produto, vira o "Enviar receita" do celular
+          (no computador ele fica na home, na página do produto e na gaveta). */}
       {temProdutos ? (
         <button
           type="button"
           onClick={() => abrirPedido()}
-          aria-label="Abrir seu pedido"
+          aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
           className="degrade-suave fixed bottom-6 right-6 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-3 shadow-[0_10px_30px_rgba(224,33,41,0.35)] active:scale-95 transition"
         >
           <span className="relative">
@@ -196,7 +182,7 @@ export function CarrinhoDrawer() {
               {totalItens}
             </span>
           </span>
-          <span className="font-semibold tabular-nums">{formatarPreco(totalCentavos)}</span>
+          <span className="font-semibold">Ver carrinho</span>
         </button>
       ) : (
         <button
@@ -284,18 +270,14 @@ export function CarrinhoDrawer() {
                 </div>
               )}
 
-              {/* Resumo: aparece com produto com preço */}
+              {/* Resumo: aparece com produto no carrinho */}
               {!enviado && temProdutos && (
-                <div className="flex items-end justify-between mt-5 pt-4 border-t border-white/10">
-                  <span className="text-white/60 text-sm">
-                    {receita ? "Receita + " : ""}
-                    {totalItens} {totalItens === 1 ? "produto" : "produtos"}
-                    {etapa === "dados" && codigo ? ` · ${codigo}` : ""}
-                  </span>
-                  <span className="font-display text-3xl font-semibold tracking-tight tabular-nums">
-                    {formatarPreco(totalCentavos)}
-                  </span>
-                </div>
+                <p className="mt-5 pt-4 border-t border-white/10 text-white/60 text-sm">
+                  {receita ? "Receita + " : ""}
+                  {totalItens} {totalItens === 1 ? "produto" : "produtos"}
+                  {etapa === "dados" && codigo ? ` · ${codigo}` : ""}
+                  {" · "}o valor vem pelo WhatsApp
+                </p>
               )}
             </div>
 
@@ -312,7 +294,7 @@ export function CarrinhoDrawer() {
                   Abrimos o WhatsApp com o seu pedido <b className="text-grafite">{codigo}</b>.{" "}
                   {enviouReceita
                     ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
-                    : "Envie a mensagem e a nossa equipe combina o pagamento e a entrega com você."}
+                    : "Envie a mensagem: o farmacêutico confere o pedido e passa o valor, o prazo e a forma de pagamento."}
                 </p>
                 <button
                   type="button"
@@ -386,7 +368,7 @@ export function CarrinhoDrawer() {
                     </div>
                   )}
 
-                  {/* Produtos com preço (industrializados) */}
+                  {/* Produtos do carrinho */}
                   {temProdutos && (
                     <p className="text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-grafite-claro mt-3 px-1">
                       Produtos
@@ -435,7 +417,7 @@ export function CarrinhoDrawer() {
                           </button>
                         </div>
 
-                        <div className="flex items-end justify-between mt-auto pt-2.5">
+                        <div className="flex items-end mt-auto pt-2.5">
                           <div className="flex items-center bg-royal-nevoa border border-linha rounded-full p-0.5">
                             <button
                               type="button"
@@ -457,16 +439,6 @@ export function CarrinhoDrawer() {
                               +
                             </button>
                           </div>
-                          <div className="text-right">
-                            {item.quantidade > 1 && (
-                              <p className="text-[0.7rem] text-grafite-claro tabular-nums leading-none mb-1">
-                                {item.quantidade} × {formatarPreco(item.precoCentavos)}
-                              </p>
-                            )}
-                            <p className="text-grafite font-bold tabular-nums leading-none">
-                              {formatarPreco(item.precoCentavos * item.quantidade)}
-                            </p>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -486,19 +458,13 @@ export function CarrinhoDrawer() {
 
                 <div className="bg-white border-t border-linha px-5 pt-4 pb-5">
                   {temProdutos && (
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-grafite-medio">
-                        Produtos ({totalItens} {totalItens === 1 ? "item" : "itens"})
-                      </span>
-                      <span className="font-bold text-grafite tabular-nums">
-                        {formatarPreco(totalCentavos)}
-                      </span>
-                    </div>
+                    <p className="text-sm text-grafite-medio mb-1">
+                      Produtos ({totalItens} {totalItens === 1 ? "item" : "itens"})
+                    </p>
                   )}
                   <p className="text-xs text-grafite-claro mb-4">
-                    {receita
-                      ? "Na próxima etapa você escolhe se retira na loja ou recebe em casa."
-                      : "Entrega ou retirada e pagamento na próxima etapa."}
+                    Na próxima etapa você escolhe se retira na loja ou recebe em casa. O
+                    farmacêutico passa o valor pelo WhatsApp.
                   </p>
                   <button
                     type="button"
@@ -657,31 +623,6 @@ export function CarrinhoDrawer() {
                     )}
                   </div>
 
-                  {/* Forma de pagamento: só para produto com preço. Na
-                      receita o valor ainda vai ser passado. */}
-                  {temProdutos && (
-                    <div className="flex flex-col gap-2">
-                      <span className="font-semibold text-grafite text-sm">Forma de pagamento *</span>
-                      <div className="grid grid-cols-2 gap-2.5">
-                        {FORMAS_PAGAMENTO.map((forma) => (
-                          <button
-                            key={forma}
-                            type="button"
-                            onClick={() => setPagamento(forma)}
-                            aria-pressed={pagamento === forma}
-                            className={`rounded-2xl px-4 py-3.5 text-sm font-medium border transition active:scale-95 ${
-                              pagamento === forma
-                                ? "bg-royal text-white border-royal"
-                                : "bg-white text-grafite border-linha hover:border-royal/40"
-                            }`}
-                          >
-                            {forma}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   <label className="flex flex-col gap-2">
                     <span className="font-semibold text-grafite text-sm">
                       Observação <span className="text-grafite-claro font-normal">(opcional)</span>
@@ -727,9 +668,6 @@ export function CarrinhoDrawer() {
                         <span className="flex-1 min-w-0 text-sm text-grafite truncate">
                           {item.quantidade}× {item.nome}
                           {item.dosagem ? ` (${item.dosagem})` : ""}
-                        </span>
-                        <span className="text-sm font-semibold text-grafite tabular-nums">
-                          {formatarPreco(item.precoCentavos * item.quantidade)}
                         </span>
                       </div>
                     ))}

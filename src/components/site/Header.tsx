@@ -2,9 +2,10 @@
 // Cabeçalho do site, fixo no topo: transparente sobre o carrossel da
 // home e branco ao rolar ou nas demais páginas.
 //
-// Menu no modelo da Formularis: "Enviar receita" na frente, como único
-// destaque (é o pedido do manipulado), depois A Viver Bem e Categorias
-// com submenu, Lojas e Contato, e a busca na lupa.
+// Menu no modelo da Formularis: o Carrinho na frente, como único
+// destaque (06/10, no lugar do "Enviar receita", que segue na gaveta,
+// na home e no botão flutuante do celular), depois A Viver Bem e
+// Categorias com submenu, Lojas e Contato, e a busca na lupa.
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -12,7 +13,30 @@ import Form from "next/form";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
-import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { useCarrinho } from "@/lib/carrinho";
+import { IconeCarrinho } from "./CarrinhoDrawer";
+
+// Abre a gaveta do pedido. A contagem só aparece com item no carrinho
+// (o carrinho vem do localStorage depois da hidratação, então começa 0
+// no servidor e no cliente, sem divergência).
+function BotaoCarrinho({ className, rotulo = true }: { className: string; rotulo?: boolean }) {
+  const { totalItens, abrirPedido } = useCarrinho();
+  const descricao =
+    totalItens > 0 ? `Carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}` : "Carrinho";
+  return (
+    <button type="button" onClick={() => abrirPedido()} aria-label={descricao} className={className}>
+      <span className="relative">
+        <IconeCarrinho tamanho={20} />
+        {totalItens > 0 && (
+          <span className="absolute -top-2 -right-2.5 bg-white text-escarlate text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center shadow-sm ring-1 ring-escarlate/20">
+            {totalItens}
+          </span>
+        )}
+      </span>
+      {rotulo && "Carrinho"}
+    </button>
+  );
+}
 
 // Itens do submenu "A Viver Bem" (âncoras da página Sobre)
 const MENU_SOBRE = [
@@ -214,7 +238,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
 
         {/* Navegação (computador) */}
         <nav className="hidden md:flex items-center gap-0.5 lg:gap-1" aria-label="Principal">
-          <BotaoEnviarReceita className="mr-2 inline-flex items-center gap-2 bg-escarlate hover:bg-escarlate-escuro text-white text-sm font-semibold rounded-xl px-4 lg:px-5 py-2.5 active:scale-95 transition" />
+          <BotaoCarrinho className="mr-2 inline-flex items-center gap-2.5 bg-escarlate hover:bg-escarlate-escuro text-white text-sm font-semibold rounded-xl px-4 lg:px-5 py-2.5 active:scale-95 transition" />
 
           <Grupo rotulo="A Viver Bem" ativo={pathname.startsWith("/sobre")} {...gestos("sobre")}>
             {MENU_SOBRE.map((l) => (
@@ -267,6 +291,10 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
 
         {/* Celular: lupa e menu */}
         <div className="md:hidden flex items-center gap-1">
+          <BotaoCarrinho
+            rotulo={false}
+            className="w-11 h-11 rounded-xl flex items-center justify-center text-escarlate"
+          />
           <button
             type="button"
             onClick={() => {
@@ -315,7 +343,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           aria-label="Principal"
           className="md:hidden bg-white border-t border-linha px-4 pb-5 pt-3 flex flex-col gap-1 max-h-[calc(100dvh-4rem)] overflow-y-auto animar-surgir"
         >
-          <BotaoEnviarReceita className="inline-flex items-center justify-center gap-2 bg-escarlate text-white font-semibold rounded-xl px-5 py-3.5 mb-2" />
+          <BotaoCarrinho className="inline-flex items-center justify-center gap-2.5 bg-escarlate text-white font-semibold rounded-xl px-5 py-3.5 mb-2" />
 
           <p className="px-4 pt-2 pb-1 selo-secao text-grafite-claro">A Viver Bem</p>
           {MENU_SOBRE.map((l) => (

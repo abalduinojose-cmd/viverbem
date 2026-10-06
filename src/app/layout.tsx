@@ -1,21 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-// Fraunces: títulos — serif expressiva que ecoa o serif do logo
-// ("MANIPULAÇÃO E HOMEOPATIA") e dá o ar de boticário premium
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Instrument Sans: o texto corrido. Trocou a Fraunces + Inter em
+// 05/10/2026, a pedido, por "uma fonte mais moderna" (só a fonte mudou).
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 
-// Inter: corpo — altamente legível, moderna e neutra
-const inter = Inter({
-  variable: "--font-inter",
+// Bricolage Grotesque: só os títulos. Entrou em 06/10/2026 na revisão
+// anti-genérico, pelo guia de estética da Anthropic: ela tem desenho
+// próprio (largura variável, cortes diagonais) e abre contraste com a
+// Instrument Sans do texto, no lugar de uma fonte só para tudo.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "800"],
+});
+
+// Instrument Serif itálico: só nas palavras em destaque dos títulos
+// ("pela receita"), para manter o itálico serifado que era a cara do site
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
 });
 
 // Endereço público do site (troque pela URL do domínio próprio no deploy,
@@ -50,7 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${bricolage.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -61,8 +61,11 @@ const SLIDES = [
         </Link>
       </>
     ),
-    foto: "/fotos/manipulacao.webp",
-    alt: "Mãos com luvas preparando cápsulas no laboratório da Viver Bem",
+    // Era o quadro das mãos com luvas no pó vermelho, o menos nítido dos
+    // reels; como o carrossel fica parado com "reduzir movimento", esta é a
+    // foto que mais gente vê (troca de 05/10/2026)
+    foto: "/fotos/laboratorio.webp",
+    alt: "Técnica preparando uma fórmula no laboratório da Viver Bem",
     seloFoto: null,
   },
   {
@@ -166,7 +169,7 @@ export function HeroCarrossel({ temVideo }: { temVideo: boolean }) {
     <section
       aria-roledescription="carrossel"
       aria-label="Destaques da Viver Bem"
-      className="relative overflow-hidden bg-white"
+      className="relative overflow-hidden bg-white halo-marca"
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
       onFocusCapture={() => setPausado(true)}

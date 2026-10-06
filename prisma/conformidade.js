@@ -16,6 +16,12 @@
 //                    ilustração neutra. A foto original continua em
 //                    public/uploads/, para o caso de o farmacêutico
 //                    classificar o item como industrializado.
+//
+// 05/10/2026, a pedido do cliente: os 10 produtos que têm foto da linha
+// Viver Bem voltam com o nome do pote e a foto (sem preço no site; o
+// pedido vai pelo carrinho e o farmacêutico passa o valor no WhatsApp).
+// Ficam só com a descrição neutra daqui. Risco registrado com o cliente:
+// nome de fantasia de manipulado é o caso da RE nº 3.547/2026.
 
 module.exports = {
   // --- Dermatologia & Estética ---
@@ -32,33 +38,28 @@ module.exports = {
     descricao: "Gel de uso corporal, manipulado com os ativos indicados na prescrição.",
   },
   "Glow Cream": {
-    nome: "Creme facial com ceramida e niacinamida",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Creme facial com ceramida, niacinamida e ácido hialurônico, manipulado conforme a prescrição.",
-    fotoUrl: "/uploads/creme.svg",
   },
   "Firm Defense Serum": {
-    nome: "Sérum com ceramidas e centella",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Sérum facial com ceramidas e Centella asiatica, manipulado conforme a prescrição.",
-    fotoUrl: "/uploads/serum.svg",
   },
   "ZincBlock FPS": {
-    nome: "Protetor solar com óxido de zinco",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Fotoprotetor com óxido de zinco e dióxido de titânio, manipulado conforme a prescrição.",
-    fotoUrl: "/uploads/creme.svg",
   },
   "Bastão Clareador": {
-    nome: "Bastão com vitamina C",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Bastão de uso tópico com vitamina C e manteigas vegetais, manipulado conforme a prescrição.",
-    fotoUrl: "/uploads/gel.svg",
   },
   "Pó Finalizador FPB 20": {
-    nome: "Pó facial finalizador",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao: "Pó facial com sílica e óxidos minerais, manipulado conforme a prescrição.",
-    fotoUrl: "/uploads/creme.svg",
   },
   "Protetor Solar Facial FPS 50": {
     nome: "Protetor solar facial",
@@ -89,32 +90,27 @@ module.exports = {
     fotoUrl: "/uploads/capsulas.svg",
   },
   "CitoRepair™ 2.0": {
-    nome: "Fórmula com espermidina e resveratrol",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Cápsulas com espermidina, resveratrol, precursores de NAD+ e coenzima Q10, manipuladas conforme a prescrição.",
-    fotoUrl: "/uploads/capsulas.svg",
   },
   "Ômega 3 Viver Bem": {
-    nome: "Ômega 3 com EPA e DHA",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao: "Óleo de peixe concentrado em cápsulas, com EPA e DHA, na dose indicada na prescrição.",
-    fotoUrl: "/uploads/capsulas.svg",
   },
   VitaFlex: {
-    nome: "Fórmula com curcumina e colágeno tipo II",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Cápsulas com curcumina, colágeno tipo II, ácido hialurônico, magnésio e vitaminas C, D e K, manipuladas conforme a prescrição.",
-    fotoUrl: "/uploads/capsulas.svg",
   },
   "Creatina Gummy": {
-    nome: "Creatina em gomas",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao: "Creatina monoidratada em gomas, na dose indicada na prescrição.",
-    fotoUrl: "/uploads/vitamina.svg",
   },
   "Caramelo de Creatina": {
-    nome: "Caramelo de creatina",
+    // com foto: fica o nome do pote e a foto original (05/10/2026)
     descricao:
       "Creatina monoidratada em caramelos com farinha de amêndoa, na dose indicada na prescrição.",
-    fotoUrl: "/uploads/vitamina.svg",
   },
   "Composto Emagrecedor": {
     nome: "Fórmula em cápsulas",

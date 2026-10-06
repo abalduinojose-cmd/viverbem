@@ -12,7 +12,7 @@ import { obterAvaliacoes } from "@/lib/catalogo";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { Revelar } from "@/components/site/Revelar";
-import { ANOS_TRADICAO, AVALIACOES_GOOGLE_NOTA, UNIDADES, linkMapaUnidade } from "@/lib/tipos";
+import { ANOS_TRADICAO, UNIDADES, linkMapaUnidade } from "@/lib/tipos";
 
 export const dynamic = "force-dynamic";
 
@@ -146,7 +146,7 @@ export default async function PaginaSobre() {
       {/* ---------- Avaliações ---------- */}
       {avaliacoes.length > 0 && (
         <div id="avaliacoes" className="scroll-mt-24 pb-20">
-          <CarrosselAvaliacoes media={AVALIACOES_GOOGLE_NOTA} avaliacoes={avaliacoes} />
+          <CarrosselAvaliacoes avaliacoes={avaliacoes} />
         </div>
       )}
     </main>

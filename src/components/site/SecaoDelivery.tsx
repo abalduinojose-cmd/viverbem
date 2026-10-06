@@ -35,7 +35,7 @@ export function SecaoDelivery() {
         {/* Cabeçalho */}
         <div className="relative max-w-2xl">
           <p className="selo-secao text-white/60">até a sua porta</p>
-          <h2 className="font-display text-3xl md:text-[2.6rem] font-semibold leading-[1.1] mt-2">
+          <h2 className="font-display text-[2.2rem] md:text-[2.9rem] font-extrabold tracking-[-0.035em] leading-[1.05] mt-3">
             Receba em casa ou
             <br />
             <span className="italic">retire na loja</span>

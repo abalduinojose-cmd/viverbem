@@ -5,7 +5,7 @@ module.exports = [
   {
     "nome": "Edilene Lima",
     "texto": "Minha experiência com a Farmácia Viver Bem é sempre maravilhosa e satisfatória. A Farmácia oferece produtos de qualidade e o atendimento também não fica de fora. As meninas são muitíssimo simpáticas e atenciosas. O atendimento é rápido tanto presencialmente quanto on-line. EU RECOMENDO",
-    "fotoUrl": "/uploads/avaliacoes/edilene-lima.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Karoll Carboni",
@@ -15,7 +15,7 @@ module.exports = [
   {
     "nome": "Viviane Sutter",
     "texto": "Farmácia de minha inteira confiança, eu e minha família somos clientes a muitos anos. Além de preços acessíveis a qualidade é indiscutível. Estou cursando nutrição período 4/8 e quando estiver formada, essa será minha indicação também para meus futuros pacientes.",
-    "fotoUrl": "/uploads/avaliacoes/viviane-sutter.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Bianca Borsato",
@@ -85,7 +85,7 @@ module.exports = [
   {
     "nome": "Jane Loureiro",
     "texto": "Déborah como sempre tira todas as minhas dúvidas e me ajudou nas minhas escolhas. Muita paciência e extremamente atenciosa.",
-    "fotoUrl": "/uploads/avaliacoes/jane-loureiro.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Bruna Oliveira",
@@ -95,26 +95,26 @@ module.exports = [
   {
     "nome": "Claudia de F. Campos Morelli",
     "texto": "Atendimento muito bom. Ótimos produtos e entrega rápida e segura. Super indico.",
-    "fotoUrl": "/uploads/avaliacoes/claudia-de-f-campos-morelli.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Andrea Amorim",
     "texto": "Pronto atendimento. Que simpática! Facilidade em encomendar o produto. Melhor preço pesquisado.",
-    "fotoUrl": "/uploads/avaliacoes/andrea-amorim.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Ana Maria",
     "texto": "Já sou cliente muitos anos. Gosto muito do atendimento. Todos muitos simpáticos.",
-    "fotoUrl": "/uploads/avaliacoes/ana-maria.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Sahara Raposo",
     "texto": "Atendimento excelente, super recomendo! Produtos de ótima qualidade, com preços maravilhosos.",
-    "fotoUrl": "/uploads/avaliacoes/sahara-raposo.jpg"
+    "fotoUrl": null
   },
   {
     "nome": "Tânia Falch",
     "texto": "Ótimo atendimento, bom preço e entrega rápida. Super indico!",
-    "fotoUrl": "/uploads/avaliacoes/tania-falch.jpg"
+    "fotoUrl": null
   }
 ];

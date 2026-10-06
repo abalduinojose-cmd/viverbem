@@ -16,47 +16,28 @@
 import { WHATSAPP_LOJA } from "@/lib/tipos";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 
-// Fatos do processo, não do resultado
+// Fatos do processo, não do resultado. Desde 05/10/2026 viram uma ficha:
+// a palavra-chave no itálico do site, no lugar dos cartões com ícone.
 const FATOS = [
   {
+    palavra: "receita",
     titulo: "Feita a partir da receita",
     texto: "Cada preparação é individual, conforme a prescrição.",
-    icone: (
-      <>
-        <path d="M7.5 3.5h9a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" />
-        <path d="M9 8.5h6M9 12h6M9 15.5h3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      </>
-    ),
   },
   {
+    palavra: "farmacêutico",
     titulo: "Conferida pelo farmacêutico",
     texto: "A receita passa por avaliação farmacêutica antes do preparo.",
-    icone: (
-      <>
-        <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
-        <path d="M8.5 12.3l2.4 2.4 4.6-5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-      </>
-    ),
   },
   {
+    palavra: "sob pedido",
     titulo: "Preparada depois do pedido",
     texto: "Nada fica pronto na prateleira: o preparo começa quando você pede.",
-    icone: (
-      <>
-        <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
-        <path d="M12 7.5v5l3 2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      </>
-    ),
   },
   {
+    palavra: "rótulo",
     titulo: "Rótulo com os seus dados",
     texto: "Seu nome, a composição e a validade.",
-    icone: (
-      <>
-        <path d="M4 12.5V5.5a1.5 1.5 0 0 1 1.5-1.5h7l7.5 7.5-8.5 8.5L4 12.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        <circle cx="8.5" cy="8.5" r="1.4" fill="currentColor" />
-      </>
-    ),
   },
 ];
 
@@ -69,7 +50,7 @@ export function EnviarReceita() {
             <span className="w-1.5 h-1.5 rounded-full bg-escarlate" aria-hidden="true" />
             <span className="text-xs font-medium text-grafite-medio">mediante prescrição</span>
           </span>
-          <h2 className="font-display text-3xl md:text-[2.6rem] font-semibold text-grafite leading-[1.08] mt-4">
+          <h2 className="font-display text-[2.35rem] md:text-[3.25rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.04] mt-4">
             Cada pessoa
             <br />
             <span className="italic text-royal">tem sua fórmula</span>
@@ -79,7 +60,7 @@ export function EnviarReceita() {
             habilitado, na dose e na forma farmacêutica que constam da receita.
           </p>
 
-          <BotaoEnviarReceita className="mt-8 degrade-marca inline-flex items-center justify-center gap-3 text-white text-lg font-semibold rounded-2xl px-8 py-4 active:scale-[0.98] transition" />
+          <BotaoEnviarReceita className="mt-8 bg-royal hover:bg-royal-escuro inline-flex items-center justify-center gap-3 text-white text-lg font-semibold rounded-2xl px-8 py-4 active:scale-[0.98] transition" />
 
           {/* Aviso legal, discreto mas presente */}
           <p className="text-grafite-claro text-xs leading-relaxed mt-4 max-w-md">
@@ -89,16 +70,19 @@ export function EnviarReceita() {
           </p>
         </div>
 
-        <ul className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ul className="lg:col-span-7 bg-white border border-linha rounded-[1.75rem] sombra-card divide-y divide-linha">
           {FATOS.map((f) => (
-            <li key={f.titulo} className="bg-white border border-linha rounded-[1.5rem] p-6 sombra-card">
-              <span className="w-12 h-12 rounded-2xl bg-royal-claro text-royal flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  {f.icone}
-                </svg>
+            <li
+              key={f.titulo}
+              className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-8 px-6 md:px-8 py-5 md:py-6"
+            >
+              <span className="shrink-0 sm:w-36 italic text-royal text-xl md:text-[1.65rem] leading-none [font-family:var(--font-destaque)]">
+                {f.palavra}
               </span>
-              <h3 className="font-display text-lg font-semibold text-grafite leading-snug mt-5">{f.titulo}</h3>
-              <p className="text-grafite-medio leading-relaxed mt-1.5">{f.texto}</p>
+              <div>
+                <h3 className="font-display text-lg font-semibold text-grafite leading-snug">{f.titulo}</h3>
+                <p className="text-grafite-medio leading-relaxed mt-1">{f.texto}</p>
+              </div>
             </li>
           ))}
         </ul>

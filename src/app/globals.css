@@ -25,8 +25,12 @@
   --color-grafite-claro: #8b929b;
   --color-linha: #e7ebf0;
 
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+  /* Títulos na Bricolage Grotesque (06/10/2026): voz própria, em
+     contraste com a Instrument Sans do texto */
+  --font-display: var(--font-bricolage), var(--font-instrument-sans), system-ui, sans-serif;
+  /* Itálico serifado das palavras em destaque dos títulos */
+  --font-destaque: var(--font-instrument-serif), Georgia, serif;
 
   /* Sombras suaves em camadas (clean, sem peso) */
   --shadow-card: 0 1px 2px rgba(16, 42, 74, 0.04), 0 4px 16px rgba(16, 42, 74, 0.06);
@@ -42,16 +46,26 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Títulos usam a fonte display (Fraunces, serif da marca) */
+/* Títulos na fonte display (Instrument Sans), um pouco mais justos */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.03em;
+}
+
+/* A palavra em itálico dos títulos ("pela receita", "sobre a gente")
+   continua serifada, agora na Instrument Serif. Ela desenha menor que a
+   sans, por isso o 1.1em para as duas alturas baterem. */
+:is(h1, h2, h3, h4, .font-display) .italic {
+  font-family: var(--font-destaque);
+  font-weight: 400;
+  font-size: 1.1em;
+  letter-spacing: -0.01em;
 }
 
 /* Selo que abre cada seção ("os queridinhos", "até a sua porta").
    Era um script de pincel, que ficava mal desenhado em português;
-   virou uma etiqueta espaçada em caixa alta, que combina com a
-   serifada dos títulos e lê bem em qualquer tamanho. */
+   virou uma etiqueta espaçada em caixa alta, que combina com os
+   títulos e lê bem em qualquer tamanho. */
 .selo-secao {
   font-size: 0.72rem;
   font-weight: 600;
@@ -157,9 +171,36 @@ h1, h2, h3, h4 {
   animation: respirar 3s ease-in-out infinite;
 }
 
+/* Papel milimetrado do laboratório: malha fina sobre as seções escuras.
+   É só atmosfera, entra atrás do conteúdo e some nas bordas pela máscara,
+   para não virar "fundo quadriculado". */
+.malha-lab {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(90% 70% at 50% 40%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(90% 70% at 50% 40%, #000 25%, transparent 78%);
+}
+
+/* Entrada em cascata: os filhos surgem um depois do outro, no lugar de
+   uma animação por elemento. O atraso vem da posição, até o 8º. */
+.cascata > * {
+  animation: surgir 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cascata > *:nth-child(1) { animation-delay: 0ms; }
+.cascata > *:nth-child(2) { animation-delay: 70ms; }
+.cascata > *:nth-child(3) { animation-delay: 140ms; }
+.cascata > *:nth-child(4) { animation-delay: 210ms; }
+.cascata > *:nth-child(5) { animation-delay: 280ms; }
+.cascata > *:nth-child(6) { animation-delay: 350ms; }
+.cascata > *:nth-child(7) { animation-delay: 420ms; }
+.cascata > *:nth-child(n + 8) { animation-delay: 490ms; }
+
 @media (prefers-reduced-motion: reduce) {
   .animar-surgir,
-  .animar-respirar {
+  .animar-respirar,
+  .cascata > * {
     animation: none;
   }
   .revelar {

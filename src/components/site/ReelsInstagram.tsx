@@ -83,7 +83,7 @@ export function ReelsInstagram() {
         {/* Cabeçalho */}
         <div className="lg:col-span-5">
           <p className="selo-secao text-escarlate">acompanhe a gente</p>
-          <h2 className="font-display text-3xl md:text-4xl font-semibold text-grafite leading-tight mt-2">
+          <h2 className="font-display text-[2.2rem] md:text-[2.9rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.05] mt-3">
             Por dentro da
             <br />
             <span className="italic text-royal">Viver Bem</span>
@@ -96,7 +96,7 @@ export function ReelsInstagram() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-7 inline-flex items-center gap-2.5 degrade-marca text-white font-semibold rounded-2xl px-6 py-3.5 active:scale-95 transition-transform"
+            className="mt-7 inline-flex items-center gap-2.5 bg-royal hover:bg-royal-escuro text-white font-semibold rounded-2xl px-6 py-3.5 active:scale-95 transition"
           >
             <IconeInstagram />@{INSTAGRAM_PERFIL}
           </a>

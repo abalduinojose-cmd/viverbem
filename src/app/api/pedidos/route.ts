@@ -7,8 +7,9 @@
 // informado na tela de finalização (LGPD). A foto da receita NUNCA
 // passa por aqui: só a marcação de que ela vai chegar pelo WhatsApp.
 //
-// Um pedido pode ser só a receita (manipulado, sem itens nem preço),
-// só itens industrializados, ou os dois juntos.
+// Um pedido pode ser só a receita, só itens do carrinho, ou os dois
+// juntos. Desde 05/10/2026 o site não tem preço, então o total fica em
+// zero e o farmacêutico passa o valor pelo WhatsApp.
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 

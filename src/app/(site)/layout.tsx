@@ -1,5 +1,5 @@
 // Layout do SITE público: header fixo, rodapé e o pedido (receita e
-// produtos com preço) disponível em todas as páginas, fechando pelo
+// carrinho, sem preço) disponível em todas as páginas, fechando pelo
 // WhatsApp. O painel administrativo (/admin) tem layout próprio.
 import { CarrinhoGlobal } from "@/components/site/CarrinhoGlobal";
 import { Header } from "@/components/site/Header";
@@ -14,7 +14,7 @@ export default async function LayoutSite({ children }: { children: React.ReactNo
     <CarrinhoGlobal>
       <Header categorias={categorias} />
       <div className="flex-1 flex flex-col">{children}</div>
-      <Footer categorias={categorias} />
+      <Footer />
     </CarrinhoGlobal>
   );
 }

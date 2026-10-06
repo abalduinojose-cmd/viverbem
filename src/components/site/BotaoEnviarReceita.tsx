@@ -1,6 +1,6 @@
 "use client";
 // "Enviar receita": abre a gaveta do pedido já com a receita marcada.
-// É o caminho do manipulado, que não tem preço nem carrinho no site.
+// É o caminho de quem tem receita; os produtos vão pelo carrinho.
 // Usado no cabeçalho, na home, na página de produto e no "Sobre".
 import { useCarrinho } from "@/lib/carrinho";
 

@@ -8,8 +8,14 @@
 // depender dos servidores do Google.
 //
 // Para atualizar: rode o scraper de novo e ajuste a lista.
+//
+// Quem não tem foto no Google aparece com o avatar padrão (um círculo de
+// uma cor só com a inicial). Isso não é foto: o arquivo é descartado e a
+// avaliação fica sem foto, então não entra no site (pedido de 05/10/2026,
+// "só as avaliações com fotos").
 const fs = require("fs");
 const path = require("path");
+const sharp = require("sharp");
 
 const AVALIACOES = [
   {
@@ -170,6 +176,24 @@ async function baixar(url, destino) {
   return bytes.length;
 }
 
+/** Avatar padrão do Google: uma cor cobre a maior parte da imagem. Nas
+ *  fotos de 05/10/2026 a cor dominante cobria até 47%; nos avatares de
+ *  letra, de 65% a 71%. O corte fica em 60%. */
+async function ehAvatarDeLetra(arquivo) {
+  const { data, info } = await sharp(arquivo)
+    .resize(64, 64, { fit: "fill" })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const contagem = new Map();
+  for (let i = 0; i < data.length; i += info.channels) {
+    // 8 faixas por canal, para juntar tons quase iguais
+    const cor = (data[i] >> 5) * 64 + (data[i + 1] >> 5) * 8 + (data[i + 2] >> 5);
+    contagem.set(cor, (contagem.get(cor) || 0) + 1);
+  }
+  return Math.max(...contagem.values()) / (info.width * info.height) >= 0.6;
+}
+
 async function principal() {
   fs.mkdirSync(DESTINO, { recursive: true });
   const prontas = [];
@@ -177,7 +201,14 @@ async function principal() {
   for (const a of AVALIACOES) {
     const arquivo = `${apelido(a.nome)}.jpg`;
     try {
-      const tamanho = await baixar(a.foto, path.join(DESTINO, arquivo));
+      const destino = path.join(DESTINO, arquivo);
+      const tamanho = await baixar(a.foto, destino);
+      if (await ehAvatarDeLetra(destino)) {
+        fs.unlinkSync(destino);
+        console.log(`sem foto ${arquivo} (avatar de letra do Google)`);
+        prontas.push({ nome: a.nome, texto: a.texto, fotoUrl: null });
+        continue;
+      }
       console.log(`ok   ${arquivo} (${(tamanho / 1024).toFixed(1)} kB)`);
       prontas.push({ nome: a.nome, texto: a.texto, fotoUrl: `/uploads/avaliacoes/${arquivo}` });
     } catch (erro) {

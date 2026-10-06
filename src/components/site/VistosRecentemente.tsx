@@ -4,15 +4,13 @@
 // onde parou e fechar o pedido.
 //
 // Guardamos só os slugs; os dados vêm do catálogo que a página passa.
-// Item industrializado tem "adicionar" direto. Manipulado não tem preço
-// nem carrinho, então aparece só como atalho para a página dele.
+// Cada item tem o "adicionar ao carrinho" direto, sem preço.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ProdutoDTO, listarDosagens, ehIndustrializado } from "@/lib/tipos";
-import { formatarPreco } from "@/lib/preco";
-import { useCarrinho } from "@/lib/carrinho";
+import { ProdutoDTO } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
+import { BotaoAdicionar } from "./BotaoAdicionar";
 
 const CHAVE = "viverbem:vistos";
 const LIMITE = 12;
@@ -29,23 +27,6 @@ function lerHistorico(): string[] {
 }
 
 function ItemVisto({ produto }: { produto: ProdutoDTO }) {
-  const { adicionar } = useCarrinho();
-  const [adicionado, setAdicionado] = useState(false);
-  // Com dosagem é preciso escolher, então mandamos para a página
-  const precisaEscolher = listarDosagens(produto.dosagens).length > 0;
-
-  function aoAdicionar() {
-    adicionar({
-      produtoId: produto.id,
-      nome: produto.nome,
-      precoCentavos: produto.precoCentavos,
-      dosagem: null,
-      fotoUrl: produto.fotoUrl,
-    });
-    setAdicionado(true);
-    window.setTimeout(() => setAdicionado(false), 1800);
-  }
-
   return (
     <div className="shrink-0 w-[15rem] md:w-[17rem] snap-start bg-white border border-linha rounded-2xl p-3 flex gap-3 hover:sombra-card transition-shadow">
       <Link
@@ -65,45 +46,9 @@ function ItemVisto({ produto }: { produto: ProdutoDTO }) {
             {produto.nome}
           </p>
         </Link>
-        {!ehIndustrializado(produto) ? (
-          <p className="text-xs text-grafite-claro mt-auto pt-2">Sob prescrição</p>
-        ) : (
-          <div className="flex items-center justify-between gap-2 mt-auto pt-2">
-            <span className="text-royal font-bold tabular-nums">
-              {formatarPreco(produto.precoCentavos)}
-            </span>
-
-            {precisaEscolher ? (
-              <Link
-                href={`/produto/${produto.slug}`}
-                className="text-xs font-semibold text-royal border border-linha hover:border-royal/40 rounded-lg px-2.5 py-1.5 transition-colors"
-              >
-                Escolher
-              </Link>
-            ) : (
-              <button
-                type="button"
-                onClick={aoAdicionar}
-                aria-label={`Adicionar ${produto.nome} ao pedido`}
-                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all active:scale-90 ${
-                  adicionado
-                    ? "bg-green-600 text-white"
-                    : "bg-royal-claro text-royal hover:bg-royal hover:text-white"
-                }`}
-              >
-                {adicionado ? (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-                  </svg>
-                )}
-              </button>
-            )}
-          </div>
-        )}
+        <div className="flex justify-end mt-auto pt-2">
+          <BotaoAdicionar produto={produto} compacto />
+        </div>
       </div>
     </div>
   );

@@ -1,13 +1,16 @@
 "use client";
 // Avaliações do Google em carrossel horizontal (rola para o lado),
 // com foto do cliente (ou inicial do nome), estrelas e selo do Google.
+//
+// Acima dos cartões ficam só a média e a quantidade de avaliações do
+// perfil (pedidos do cliente em 05/10/2026): as barras por estrela e o
+// "o que mais citam" saíram.
 
 import { useRef } from "react";
 import {
   DepoimentoDTO,
+  AVALIACOES_GOOGLE_NOTA,
   AVALIACOES_GOOGLE_TOTAL,
-  AVALIACOES_GOOGLE_NOTAS,
-  AVALIACOES_GOOGLE_ASSUNTOS,
   PERFIL_GOOGLE_URL,
 } from "@/lib/tipos";
 import { Estrelas } from "./Estrelas";
@@ -25,26 +28,21 @@ function IconeGoogle({ tamanho = 20 }: { tamanho?: number }) {
   );
 }
 
-export function CarrosselAvaliacoes({
-  avaliacoes,
-  media,
+// Seta de rolar o carrossel (fora do componente, para não ser recriada a
+// cada renderização)
+function SetaBotao({
+  direcao,
+  rotulo,
+  aoClicar,
 }: {
-  avaliacoes: DepoimentoDTO[];
-  media: number;
+  direcao: -1 | 1;
+  rotulo: string;
+  aoClicar: () => void;
 }) {
-  const faixaRef = useRef<HTMLDivElement>(null);
-
-  // Rola uma "página" de cards para o lado
-  function rolar(direcao: -1 | 1) {
-    const faixa = faixaRef.current;
-    if (!faixa) return;
-    faixa.scrollBy({ left: direcao * (faixa.clientWidth * 0.8), behavior: "smooth" });
-  }
-
-  const SetaBotao = ({ direcao, rotulo }: { direcao: -1 | 1; rotulo: string }) => (
+  return (
     <button
       type="button"
-      onClick={() => rolar(direcao)}
+      onClick={aoClicar}
       aria-label={rotulo}
       className="w-12 h-12 rounded-full bg-white border border-linha text-grafite-medio hover:text-royal hover:border-royal/40 sombra-card flex items-center justify-center active:scale-90 transition-all"
     >
@@ -59,89 +57,55 @@ export function CarrosselAvaliacoes({
       </svg>
     </button>
   );
+}
+
+export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] }) {
+  const faixaRef = useRef<HTMLDivElement>(null);
+
+  // Rola uma "página" de cards para o lado
+  function rolar(direcao: -1 | 1) {
+    const faixa = faixaRef.current;
+    if (!faixa) return;
+    faixa.scrollBy({ left: direcao * (faixa.clientWidth * 0.8), behavior: "smooth" });
+  }
 
   return (
     <section className="mt-16">
       <div className="px-4 md:px-8 max-w-6xl mx-auto">
         <div className="md:text-center md:max-w-2xl md:mx-auto">
           <p className="selo-secao text-escarlate">quem já é cliente</p>
-          <h2 className="font-display text-3xl md:text-[2.6rem] font-semibold text-grafite leading-tight mt-2">
+          <h2 className="font-display text-[2.35rem] md:text-[3.25rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.04] mt-3">
             O que dizem <span className="italic text-royal">sobre a gente</span>
           </h2>
         </div>
 
-        {/* Resumo do perfil: a nota, a distribuição das notas e o que
-            os clientes mais citam. Tudo vem do Google. */}
-        <div className="bg-white border border-linha rounded-[1.75rem] sombra-card mt-7 overflow-hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-6 sm:gap-9 p-6 md:p-8">
-            {/* Nota */}
-            <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-2">
-              <IconeGoogle tamanho={30} />
-              <div>
-                <div className="flex items-baseline gap-2.5">
-                  <span className="font-display text-4xl md:text-5xl font-semibold text-grafite leading-none">
-                    {media.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
-                  </span>
-                  <Estrelas nota={Math.round(media)} tamanho={17} />
-                </div>
-                <a
-                  href={PERFIL_GOOGLE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1.5 text-grafite-claro hover:text-royal text-sm mt-2 transition-colors"
-                >
-                  {AVALIACOES_GOOGLE_TOTAL} avaliações no Google
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* Distribuição das notas: barra por estrela, uma cor só */}
-            <ul className="flex flex-col gap-1.5 min-w-0">
-              {AVALIACOES_GOOGLE_NOTAS.map((n) => (
-                <li key={n.estrelas} className="flex items-center gap-3 text-sm">
-                  <span className="flex items-center gap-1 text-grafite-claro tabular-nums w-6 shrink-0">
-                    {n.estrelas}
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="text-[#f5a623]">
-                      <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
-                    </svg>
-                  </span>
-                  <span className="flex-1 h-2 rounded-full bg-royal-nevoa overflow-hidden">
-                    <span
-                      className="block h-full rounded-full bg-royal"
-                      style={{ width: `${(n.quantidade / AVALIACOES_GOOGLE_TOTAL) * 100}%` }}
-                    />
-                  </span>
-                  <span className="text-grafite-medio tabular-nums w-9 text-right shrink-0">
-                    {n.quantidade}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* O que os clientes mais citam */}
-          <div className="border-t border-linha bg-royal-nevoa/50 px-6 md:px-8 py-5">
-            <p className="text-[0.65rem] font-semibold tracking-[0.18em] uppercase text-grafite-claro">
-              O que mais citam
-            </p>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {AVALIACOES_GOOGLE_ASSUNTOS.map((a) => (
-                <span
-                  key={a.assunto}
-                  className="inline-flex items-center gap-1.5 bg-white border border-linha rounded-full pl-3 pr-2 py-1.5 text-sm text-grafite"
-                >
-                  {a.assunto}
-                  <span className="text-[0.7rem] font-semibold text-royal bg-royal-claro rounded-full px-1.5 py-0.5 tabular-nums">
-                    {a.vezes}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* A média e a quantidade de avaliações, levando ao perfil do Google */}
+        <a
+          href={PERFIL_GOOGLE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group w-fit md:mx-auto mt-6 flex items-center gap-2.5 sm:gap-3 bg-white border border-linha hover:border-royal/30 rounded-full pl-4 pr-5 min-h-12 sombra-card transition"
+        >
+          <IconeGoogle tamanho={22} />
+          <b className="font-display text-xl font-semibold text-grafite tabular-nums">
+            {AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
+          </b>
+          <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={14} />
+          <span className="text-grafite-medio whitespace-nowrap">
+            <b className="font-semibold text-grafite tabular-nums">{AVALIACOES_GOOGLE_TOTAL}</b>{" "}
+            avaliações<span className="hidden sm:inline"> no Google</span>
+          </span>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            className="text-grafite-claro group-hover:text-royal transition-colors"
+          >
+            <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </div>
 
       {/* Faixa rolável */}
@@ -157,13 +121,10 @@ export function CarrosselAvaliacoes({
             key={a.id}
             className="relative snap-start shrink-0 w-[17.5rem] md:w-[22rem] bg-white rounded-[1.75rem] border border-linha sombra-card hover:sombra-card-hover hover:-translate-y-1 p-6 md:p-7 flex flex-col transition-all duration-300"
           >
-            {/* Aspas decorativas, marcando que é um depoimento */}
-            <span
-              aria-hidden="true"
-              className="absolute top-4 right-6 font-display text-6xl leading-none text-royal/10 select-none"
-            >
-              ”
-            </span>
+            {/* As aspas gigantes em cinza-claro no canto saíram na revisão
+                de 06/10: é o enfeite padrão de cartão de depoimento, e o
+                cartão já diz que é avaliação pela foto, estrelas e logo
+                do Google. */}
 
             <div className="relative flex items-center gap-3.5">
               {/* Foto do cliente ou inicial do nome */}
@@ -202,8 +163,8 @@ export function CarrosselAvaliacoes({
       {/* Setas embaixo e centralizadas, para acompanhar o cabeçalho.
           No celular a pessoa arrasta, então elas nem aparecem. */}
       <div className="hidden sm:flex justify-center gap-3 mt-7">
-        <SetaBotao direcao={-1} rotulo="Ver avaliações anteriores" />
-        <SetaBotao direcao={1} rotulo="Ver próximas avaliações" />
+        <SetaBotao direcao={-1} rotulo="Ver avaliações anteriores" aoClicar={() => rolar(-1)} />
+        <SetaBotao direcao={1} rotulo="Ver próximas avaliações" aoClicar={() => rolar(1)} />
       </div>
     </section>
   );

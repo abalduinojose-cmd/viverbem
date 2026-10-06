@@ -7,7 +7,7 @@
 // do servidor, o horário do build ficaria congelado no HTML e poderia
 // dizer "aberto" de madrugada.
 
-import { useEffect, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 
 // Índice 0 = domingo, igual ao getDay() do JavaScript
 const GRADE = [
@@ -21,13 +21,13 @@ const GRADE = [
 ];
 
 // Como as linhas aparecem na lista (dias úteis agrupados)
-const LINHAS = [
+export const HORARIOS = [
   { rotulo: "Seg a sex", horas: "9h às 19h", dias: [1, 2, 3, 4, 5] },
   { rotulo: "Sábado", horas: "9h às 13h", dias: [6] },
   { rotulo: "Domingo", horas: "Fechado", dias: [0] },
 ];
 
-type Estado = { aberto: boolean; dia: number; detalhe: string } | null;
+export type EstadoLoja = { aberto: boolean; dia: number; detalhe: string } | null;
 
 /** Próximo dia em que a loja abre, a partir de (e incluindo) `apartirDe`. */
 function proximaAbertura(apartirDe: number) {
@@ -38,51 +38,51 @@ function proximaAbertura(apartirDe: number) {
   return null;
 }
 
-export function HorarioAtendimento() {
-  const [estado, setEstado] = useState<Estado>(null);
+/** Estado da loja agora, em texto (o mesmo texto no mesmo minuto). */
+function calcularChave(): string {
+  // Hora de Brasília, independente do fuso de quem acessa
+  const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+  const dia = agora.getDay();
+  const faixa = GRADE[dia];
+  const minutos = agora.getHours() * 60 + agora.getMinutes();
 
-  useEffect(() => {
-    function calcular() {
-      // Hora de Brasília, independente do fuso de quem acessa
-      const agora = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" })
-      );
-      const dia = agora.getDay();
-      const faixa = GRADE[dia];
-      const minutos = agora.getHours() * 60 + agora.getMinutes();
+  const aberto =
+    faixa.abre !== null &&
+    faixa.fecha !== null &&
+    minutos >= faixa.abre * 60 &&
+    minutos < faixa.fecha * 60;
 
-      const aberto =
-        faixa.abre !== null &&
-        faixa.fecha !== null &&
-        minutos >= faixa.abre * 60 &&
-        minutos < faixa.fecha * 60;
-
-      let detalhe = "";
-      if (aberto) {
-        detalhe = `Fecha às ${faixa.fecha}h`;
-      } else {
-        // Ainda abre hoje? Senão, procura o próximo dia útil
-        const abreHojeAinda = faixa.abre !== null && minutos < faixa.abre * 60;
-        const proximo = abreHojeAinda ? { dia, salto: 0 } : proximaAbertura((dia + 1) % 7);
-        if (proximo) {
-          const hora = GRADE[proximo.dia].abre;
-          const quando = abreHojeAinda
-            ? "hoje"
-            : proximo.salto === 0
-              ? "amanhã"
-              : GRADE[proximo.dia].curto;
-          detalhe = `Abre ${quando} às ${hora}h`;
-        }
-      }
-
-      setEstado({ aberto, dia, detalhe });
+  let detalhe = "";
+  if (aberto) {
+    detalhe = `Fecha às ${faixa.fecha}h`;
+  } else {
+    // Ainda abre hoje? Senão, procura o próximo dia útil
+    const abreHojeAinda = faixa.abre !== null && minutos < faixa.abre * 60;
+    const proximo = abreHojeAinda ? { dia, salto: 0 } : proximaAbertura((dia + 1) % 7);
+    if (proximo) {
+      const hora = GRADE[proximo.dia].abre;
+      const quando = abreHojeAinda ? "hoje" : proximo.salto === 0 ? "amanhã" : GRADE[proximo.dia].curto;
+      detalhe = `Abre ${quando} às ${hora}h`;
     }
+  }
+  return JSON.stringify({ aberto, dia, detalhe });
+}
 
-    calcular();
-    // Reavalia a cada minuto para virar o selo na hora certa
-    const relogio = setInterval(calcular, 60_000);
-    return () => clearInterval(relogio);
-  }, []);
+// Reavalia a cada minuto para virar o selo na hora certa
+function assinarMinuto(avisar: () => void) {
+  const relogio = setInterval(avisar, 60_000);
+  return () => clearInterval(relogio);
+}
+
+/** Aberto ou fechado agora. No servidor é sempre null (nada de horário
+ *  congelado no HTML); no navegador, o estado do minuto atual. */
+export function useEstadoLoja(): EstadoLoja {
+  const chave = useSyncExternalStore(assinarMinuto, calcularChave, () => "");
+  return useMemo(() => (chave ? (JSON.parse(chave) as EstadoLoja) : null), [chave]);
+}
+
+export function HorarioAtendimento() {
+  const estado = useEstadoLoja();
 
   return (
     <div className="bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden">
@@ -130,7 +130,7 @@ export function HorarioAtendimento() {
 
       {/* Grade da semana, com o dia de hoje em destaque */}
       <ul className="flex flex-col px-5 py-2">
-        {LINHAS.map((linha) => {
+        {HORARIOS.map((linha) => {
           const hoje = estado ? linha.dias.includes(estado.dia) : false;
           return (
             <li

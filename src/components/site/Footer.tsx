@@ -1,21 +1,21 @@
 // Rodapé do site em azul profundo, para fechar a página com peso.
 //
-// Abre com o "Fale com a gente" (no modelo da Formularis): WhatsApp,
-// telefone e o horário ao vivo juntos, no mesmo cartão. Antes a chamada
-// e o horário ficavam separados, e a chamada repetia a da home logo
-// acima. Depois vêm as colunas (marca, navegação, categorias) e a linha
-// legal.
+// Abre com o "Fale com a gente" (ver FaleComAGente). Embaixo dele, desde
+// 05/10/2026, o rodapé segue a estrutura do da Cabana Afrodite, a pedido:
+// tudo centralizado, em três tempos. A marca respirando no alto com a
+// frase no itálico do site; os contatos em ícones (que acendem no degradê
+// azul e vermelho da marca) e a navegação numa fileira de caixa alta; e a
+// linha legal embaixo. Ao fundo, a assinatura "Viver Bem" em marca d'água,
+// cortada pela base como um carimbo.
 import Link from "next/link";
 import { asset } from "@/lib/asset";
-import { HorarioAtendimento } from "./HorarioAtendimento";
-import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { FaleComAGente } from "./FaleComAGente";
 import {
   ANOS_TRADICAO,
-  CategoriaDTO,
-  UNIDADES,
-  WHATSAPP_LOJA,
-  WHATSAPP_NUMERO,
+  CNPJ_FARMACIA,
   INSTAGRAM_URL,
+  UNIDADES,
+  WHATSAPP_NUMERO,
 } from "@/lib/tipos";
 
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}`;
@@ -23,168 +23,197 @@ const TELEFONE_FIXO = UNIDADES.find((u) => u.telefone)?.telefone ?? null;
 
 const NAVEGACAO = [
   { href: "/", rotulo: "Início" },
+  { href: "/produtos", rotulo: "Produtos" },
   { href: "/sobre", rotulo: "A Viver Bem" },
   { href: "/sobre#como-funciona", rotulo: "Como funciona" },
   { href: "/lojas", rotulo: "Lojas" },
   { href: "/contato", rotulo: "Contato" },
 ];
 
-function IconeWhatsApp({ tamanho = 22 }: { tamanho?: number }) {
+function IconeWhatsApp() {
   return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="relative size-[1.15rem]">
       <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
     </svg>
   );
 }
 
-// Título de coluna, no mesmo padrão nas três
-function TituloColuna({ children }: { children: React.ReactNode }) {
+function IconeInstagram() {
   return (
-    <p className="text-[0.7rem] font-semibold tracking-[0.2em] uppercase text-white/45 mb-5">
-      {children}
-    </p>
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+    </svg>
   );
 }
 
-const classeLink = "inline-flex items-center min-h-11 text-white/60 hover:text-white transition-colors";
-
-export function Footer({ categorias }: { categorias: CategoriaDTO[] }) {
+function IconeTelefone() {
   return (
-    <footer className="mt-auto bg-noite text-white">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
+      <path
+        d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconeMapa() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
+      <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="12" cy="10" r="2.4" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
+// Contatos em ícone: só o desenho, com o nome no aria-label e no title
+const CONTATOS = [
+  { id: "whatsapp", rotulo: "WhatsApp", href: LINK_WHATSAPP, externo: true, icone: IconeWhatsApp },
+  { id: "instagram", rotulo: "Instagram", href: INSTAGRAM_URL, externo: true, icone: IconeInstagram },
+  ...(TELEFONE_FIXO
+    ? [
+        {
+          id: "telefone",
+          rotulo: `Telefone fixo ${TELEFONE_FIXO}`,
+          href: `tel:+55${TELEFONE_FIXO.replace(/\D/g, "")}`,
+          externo: false,
+          icone: IconeTelefone,
+        },
+      ]
+    : []),
+  { id: "lojas", rotulo: "Nossas lojas", href: "/lojas", externo: false, icone: IconeMapa },
+];
+
+export function Footer() {
+  const ano = new Date().getFullYear();
+
+  return (
+    <footer className="relative isolate mt-auto overflow-hidden bg-noite text-white">
+      {/* Assinatura gigante ao fundo, quase invisível, cortada pela base.
+          É SVG, e não texto, porque texto quase transparente reprova o
+          contraste no Lighthouse mesmo escondido. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 1200 230"
+        className="pointer-events-none select-none absolute -bottom-10 md:-bottom-16 left-1/2 -z-10 w-[64rem] max-w-none md:w-[78rem] -translate-x-1/2"
+      >
+        <text
+          x="600"
+          y="200"
+          textAnchor="middle"
+          fill="#ffffff"
+          fillOpacity="0.045"
+          style={{
+            fontFamily: "var(--font-instrument-serif), Georgia, serif",
+            fontStyle: "italic",
+            fontSize: 250,
+          }}
+        >
+          Viver Bem
+        </text>
+      </svg>
+
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* ---------- Fale com a gente ---------- */}
-        <section aria-labelledby="fale-com-a-gente" className="pt-14 md:pt-16">
-          <div className="bg-white/[0.06] border border-white/10 rounded-[1.75rem] px-6 md:px-10 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            <div className="lg:col-span-7">
-              <p className="selo-secao text-white/60">fale com a gente</p>
-              <h2
-                id="fale-com-a-gente"
-                className="font-display text-2xl md:text-[2rem] font-semibold mt-1.5 leading-tight"
-              >
-                WhatsApp, telefone ou na loja
-              </h2>
-              <p className="text-white/60 mt-3 leading-relaxed max-w-lg">
-                Tire uma dúvida, envie a sua receita ou combine a retirada. A gente responde
-                pelo WhatsApp no horário de atendimento.
-              </p>
+        <FaleComAGente />
+      </div>
 
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mt-6">
-                <a
-                  href={LINK_WHATSAPP}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1eb857] text-white text-lg font-semibold rounded-2xl px-6 py-4 transition-colors active:scale-[0.98]"
-                >
-                  <IconeWhatsApp />
-                  {WHATSAPP_LOJA}
-                </a>
-                <BotaoEnviarReceita className="inline-flex items-center justify-center gap-2.5 bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 text-white font-semibold rounded-2xl px-6 py-4 transition active:scale-[0.98]" />
-              </div>
+      {/* ---------- Rodapé centralizado ---------- */}
+      <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-28 md:pb-16 flex flex-col items-center text-center">
+        {/* Luz azul bem baixa atrás da marca: profundidade sem chamar atenção */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-10 -z-10 h-72 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-royal/20 blur-[110px]"
+        />
 
-              {TELEFONE_FIXO && (
-                <p className="text-white/45 text-sm mt-4">
-                  Telefone fixo:{" "}
-                  <a
-                    href={`tel:+55${TELEFONE_FIXO.replace(/\D/g, "")}`}
-                    className="inline-flex items-center min-h-11 text-white/75 hover:text-white underline-offset-4 hover:underline"
-                  >
-                    {TELEFONE_FIXO}
+        {/* O logo é colorido, então some no escuro: viramos ele em branco */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={asset("/logo.png")}
+          alt="Manipulação Viver Bem"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+          width={220}
+          height={97}
+          className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
+        />
+
+        <p className="mt-6 max-w-[40ch] text-[1.2rem] md:text-[1.35rem] leading-relaxed text-white/75 italic [font-family:var(--font-destaque)]">
+          Há {ANOS_TRADICAO} anos em Petrópolis, com manipulação, homeopatia e atendimento
+          de gente que conhece você pelo nome.
+        </p>
+
+        {/* Contatos em ícones, que sobem e acendem no degradê da marca */}
+        <ul className="mt-9 flex items-center gap-2.5">
+          {CONTATOS.map((c) => {
+            const Icone = c.icone;
+            const classe =
+              "group relative inline-flex size-12 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.04] text-white/80 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(28,105,181,0.95)]";
+            const miolo = (
+              <>
+                <span
+                  aria-hidden="true"
+                  className="degrade-marca absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                />
+                <Icone />
+              </>
+            );
+            return (
+              <li key={c.id}>
+                {c.externo ? (
+                  <a href={c.href} target="_blank" rel="noopener noreferrer" aria-label={c.rotulo} title={c.rotulo} className={classe}>
+                    {miolo}
                   </a>
-                </p>
-              )}
-            </div>
+                ) : c.href.startsWith("/") ? (
+                  <Link href={c.href} aria-label={c.rotulo} title={c.rotulo} className={classe}>
+                    {miolo}
+                  </Link>
+                ) : (
+                  <a href={c.href} aria-label={c.rotulo} title={c.rotulo} className={classe}>
+                    {miolo}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ul>
 
-            <div className="lg:col-span-5">
-              <HorarioAtendimento />
-            </div>
-          </div>
-        </section>
+        {/* Navegação numa fileira só, em caixa alta discreta */}
+        <nav aria-label="Links do rodapé" className="mt-10 w-full">
+          <ul className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
+            {NAVEGACAO.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors duration-300 hover:bg-white/[0.06] hover:text-white"
+                >
+                  {l.rotulo}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-        {/* ---------- Colunas ---------- */}
-        <div className="py-14 grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-12">
-          {/* Marca */}
-          <div className="col-span-2 md:col-span-5">
-            {/* O logo é colorido, então some no escuro: viramos ele em branco */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={asset("/logo.png")}
-              alt="Manipulação Viver Bem"
-              draggable={false}
-              loading="lazy"
-              decoding="async"
-              width={220}
-              height={97}
-              className="h-11 w-auto object-contain brightness-0 invert"
-            />
-            <p className="text-white/60 leading-relaxed mt-5 max-w-xs">
-              Há {ANOS_TRADICAO} anos em Petrópolis, com manipulação, homeopatia e
-              atendimento de gente que conhece você pelo nome.
+        {/* Aviso legal, curto e centralizado */}
+        <p className="mt-8 max-w-2xl text-xs leading-relaxed text-white/40">
+          Medicamentos manipulados são preparados somente mediante prescrição de profissional
+          habilitado. Os dados informados no pedido (nome e WhatsApp) são usados apenas pela
+          Viver Bem para atendimento e ofertas, conforme a LGPD.
+        </p>
+
+        {/* Linha final */}
+        <div className="mt-10 w-full border-t border-white/10 pt-7">
+          <div className="flex flex-col items-center gap-2 text-[0.75rem] text-white/45 sm:flex-row sm:justify-between">
+            <p>
+              © {ano} Manipulação Viver Bem · CNPJ {CNPJ_FARMACIA}
             </p>
-            <div className="flex items-center gap-2.5 mt-6">
-              <a
-                href={LINK_WHATSAPP}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="w-11 h-11 rounded-xl bg-white/[0.07] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.14] flex items-center justify-center transition-colors"
-              >
-                <IconeWhatsApp tamanho={19} />
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="w-11 h-11 rounded-xl bg-white/[0.07] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.14] flex items-center justify-center transition-colors"
-              >
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.8" />
-                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
-                  <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" />
-                </svg>
-              </a>
-            </div>
+            <p className="max-sm:order-first">Petrópolis · Centro, Corrêas e Posse</p>
           </div>
-
-          {/* Navegação */}
-          <div className="md:col-span-3">
-            <TituloColuna>Navegação</TituloColuna>
-            <ul className="flex flex-col -my-1.5">
-              {NAVEGACAO.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className={classeLink}>
-                    {l.rotulo}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Categorias */}
-          <div className="md:col-span-4">
-            <TituloColuna>Categorias</TituloColuna>
-            <ul className="flex flex-col -my-1.5">
-              {categorias.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/produtos/${c.slug}`} className={classeLink}>
-                    {c.nome}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* ---------- Linha final ---------- */}
-        <div className="border-t border-white/10 py-7 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <p className="text-white/40 text-xs leading-relaxed max-w-xl">
-            Medicamentos manipulados são preparados somente mediante prescrição de
-            profissional habilitado. Os dados informados no pedido (nome e WhatsApp) são
-            usados apenas pela Viver Bem para atendimento e ofertas, conforme a LGPD.
-          </p>
-          <p className="text-white/40 text-xs md:text-right whitespace-nowrap">
-            © {new Date().getFullYear()} Manipulação Viver Bem
-          </p>
         </div>
       </div>
     </footer>

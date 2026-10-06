@@ -25,12 +25,13 @@ export interface Catalogo {
 
 const EH_DEMO = process.env.DEMO === "1";
 
-/** O que de um manipulado pode sair do servidor. O preço interno, a
- *  dosagem, a apresentação e as indicações não vão nem no código da
- *  página: se fossem, apareceriam para quem abrisse o código-fonte,
- *  mesmo sem estar na tela. */
+/** O que de cada produto pode sair do servidor. Desde 05/10/2026 o site
+ *  não mostra preço de nada (o farmacêutico passa o valor pelo WhatsApp),
+ *  então o preço interno não vai nem no código da página: se fosse,
+ *  apareceria para quem abrisse o código-fonte, mesmo sem estar na tela.
+ *  Do manipulado também não saem dosagem, apresentação e indicações. */
 function paraVitrine(p: ProdutoDTO): ProdutoDTO {
-  if (ehIndustrializado(p)) return p;
+  if (ehIndustrializado(p)) return { ...p, precoCentavos: 0 };
   return {
     ...p,
     precoCentavos: 0,

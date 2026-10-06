@@ -9,7 +9,7 @@
 // O cuidado principal é não transformar um arrasto em clique no
 // produto: se o dedo/mouse andou, o clique seguinte é engolido.
 
-import { useRef, useState } from "react";
+import { Children, useRef, useState } from "react";
 import { ProdutoDTO } from "@/lib/tipos";
 import { ProdutoCard } from "./ProdutoCard";
 
@@ -19,10 +19,23 @@ const TOLERANCIA = 6;
 export function FaixaProdutos({
   produtos,
   largura = "padrao",
+  className = "",
+  comCategoria = true,
+  children,
 }: {
-  produtos: ProdutoDTO[];
+  produtos?: ProdutoDTO[];
+  /** Falso quando o título da seção já diz a categoria */
+  comCategoria?: boolean;
   /** "estreita" nas grades do catálogo, "padrao" nas vitrines da home */
   largura?: "padrao" | "estreita";
+  /** Classes extras na própria fileira (ex.: "cascata") */
+  className?: string;
+  /**
+   * Cartões próprios da seção, já montados (a vitrine escura usa os dela).
+   * Vêm como elementos, e não como função: função não atravessa a
+   * fronteira de um Server Component para este, que é client.
+   */
+  children?: React.ReactNode;
 }) {
   const faixaRef = useRef<HTMLDivElement>(null);
   const inicio = useRef({ x: 0, scroll: 0, andou: 0 });
@@ -72,13 +85,15 @@ export function FaixaProdutos({
       onClickCapture={aoClicar}
       className={`flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra pb-2 -mx-1 px-1 snap-x md:cursor-grab ${
         arrastando ? "md:cursor-grabbing select-none snap-none" : ""
-      }`}
+      } ${className}`}
     >
-      {produtos.map((p) => (
-        <div key={p.id} className={classeItem}>
-          <ProdutoCard produto={p} />
-        </div>
-      ))}
+      {children
+        ? Children.map(children, (filho) => <div className={classeItem}>{filho}</div>)
+        : produtos?.map((p) => (
+            <div key={p.id} className={classeItem}>
+              <ProdutoCard produto={p} mostrarCategoria={comCategoria} />
+            </div>
+          ))}
     </div>
   );
 }

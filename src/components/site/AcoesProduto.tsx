@@ -1,9 +1,9 @@
 "use client";
 // Ações da página do produto: escolher a dosagem (se houver),
 // a quantidade e adicionar ao carrinho (que fecha pelo WhatsApp).
+// Sem preço: o farmacêutico passa o valor na conversa.
 import { useState } from "react";
 import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
-import { formatarPreco } from "@/lib/preco";
 import { useCarrinho } from "@/lib/carrinho";
 
 export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
@@ -18,7 +18,6 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
       {
         produtoId: produto.id,
         nome: produto.nome,
-        precoCentavos: produto.precoCentavos,
         dosagem,
         fotoUrl: produto.fotoUrl,
       },
@@ -53,14 +52,9 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         </div>
       )}
 
-      {/* Preço + quantidade */}
-      <div className="flex items-end justify-between gap-4 mt-7">
-        <div>
-          <p className="text-xs font-medium tracking-wider uppercase text-grafite-claro">Valor</p>
-          <p className="text-4xl font-bold text-royal tracking-tight tabular-nums leading-none mt-1">
-            {formatarPreco(produto.precoCentavos)}
-          </p>
-        </div>
+      {/* Quantidade */}
+      <div className="flex items-center justify-between gap-4 mt-7">
+        <p className="text-sm font-semibold text-grafite">Quantidade</p>
 
         <div className="flex items-center bg-royal-nevoa border border-linha rounded-full p-1.5 gap-1">
           <button
@@ -94,7 +88,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         }`}
       >
         {adicionado ? (
-          "✓ Adicionado ao pedido!"
+          "✓ Adicionado ao carrinho!"
         ) : (
           <>
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -108,7 +102,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
               <circle cx="10" cy="20.5" r="1.5" fill="currentColor" />
               <circle cx="17" cy="20.5" r="1.5" fill="currentColor" />
             </svg>
-            Adicionar ao pedido
+            Adicionar ao carrinho
           </>
         )}
       </button>

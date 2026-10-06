@@ -13,6 +13,7 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { infoCategoria } from "@/lib/categorias";
+import { combinaComTermos, normalizar, termosDaBusca } from "@/lib/texto";
 import { ProdutoCard } from "./ProdutoCard";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 
@@ -27,7 +28,7 @@ function lerBuscaDoEndereco() {
 
 // Fora do componente de propósito: declarada lá dentro, a grade seria
 // recriada a cada letra digitada na busca e os cartões piscariam.
-function Grade({ lista }: { lista: ProdutoDTO[] }) {
+function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategoria?: boolean }) {
   if (lista.length === 0) {
     return (
       <div className="py-16 text-center">
@@ -41,7 +42,7 @@ function Grade({ lista }: { lista: ProdutoDTO[] }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
       {lista.map((p) => (
-        <ProdutoCard key={p.id} produto={p} />
+        <ProdutoCard key={p.id} produto={p} mostrarCategoria={comCategoria} />
       ))}
     </div>
   );
@@ -63,15 +64,21 @@ export function CatalogoClient({
   // null = a pessoa ainda não digitou: vale a busca que veio no endereço
   const [digitada, setBusca] = useState<string | null>(null);
   const busca = digitada ?? (buscaInicial || buscaDoEndereco);
-  const termo = busca.trim().toLowerCase();
-  const buscando = termo.length > 0;
+  // Palavras sem acento: "omega 3" precisa achar "Ômega 3 Viver Bem"
+  const termos = useMemo(() => termosDaBusca(busca), [busca]);
+  const buscando = termos.length > 0;
 
   const resultadoBusca = useMemo(() => {
-    if (!termo) return [];
-    return produtos.filter(
-      (p) => p.nome.toLowerCase().includes(termo) || p.descricao.toLowerCase().includes(termo)
-    );
-  }, [termo, produtos]);
+    if (termos.length === 0) return [];
+    return produtos.filter((p) => {
+      // O campo diz "nome ou ativo", então a composição também entra,
+      // junto da categoria (quem busca "cabelo" espera a área toda)
+      const alvo = normalizar(
+        [p.nome, p.descricao, p.categoriaNome ?? "", p.composicao ?? "", p.indicacoes ?? ""].join(" ")
+      );
+      return combinaComTermos(alvo, termos);
+    });
+  }, [termos, produtos]);
 
   const industrializados = useMemo(() => produtos.filter(ehIndustrializado), [produtos]);
 
@@ -117,7 +124,7 @@ export function CatalogoClient({
               <p className="selo-secao text-escarlate">
                 {categoriaAtiva ? "categoria" : "categorias"}
               </p>
-              <h1 className="font-display text-3xl md:text-[2.8rem] font-semibold text-grafite tracking-tight leading-tight mt-2">
+              <h1 className="font-display text-[2.35rem] md:text-[3.25rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.04] mt-3">
                 {titulo}
               </h1>
               <p className="text-grafite-medio text-base md:text-lg leading-relaxed mt-3">{apoio}</p>
@@ -128,7 +135,7 @@ export function CatalogoClient({
               <p className="text-sm text-grafite-medio leading-snug max-w-[13rem]">
                 Tem a receita? O farmacêutico confere e passa o valor.
               </p>
-              <BotaoEnviarReceita className="shrink-0 degrade-marca inline-flex items-center gap-2 text-white text-sm font-semibold rounded-xl px-4 py-3 active:scale-95 transition" />
+              <BotaoEnviarReceita className="shrink-0 bg-royal hover:bg-royal-escuro inline-flex items-center gap-2 text-white text-sm font-semibold rounded-xl px-4 py-3 active:scale-95 transition" />
             </div>
           </div>
         </div>
@@ -200,18 +207,43 @@ export function CatalogoClient({
               {resultadoBusca.length} {resultadoBusca.length === 1 ? "resultado" : "resultados"} para “
               {busca.trim()}”
             </h2>
-            <Grade lista={resultadoBusca} />
+            {resultadoBusca.length > 0 ? (
+              <Grade lista={resultadoBusca} />
+            ) : (
+              /* Sem resultado a página ficava vazia, sem dizer o que fazer */
+              <div className="rounded-3xl border border-linha bg-white p-8 md:p-10 text-center">
+                <p className="text-grafite-medio text-lg">
+                  Não encontramos nada com esse nome no site.
+                </p>
+                <p className="text-grafite-claro mt-2">
+                  A farmácia manipula conforme a receita, então nem toda fórmula está no catálogo.
+                  Envie a foto da prescrição e o farmacêutico confere.
+                </p>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                  <BotaoEnviarReceita className="inline-flex items-center gap-2.5 bg-royal hover:bg-royal-escuro text-white font-semibold rounded-full px-6 py-3 transition" />
+                  <Link
+                    href="/produtos"
+                    className="inline-flex items-center min-h-11 rounded-full border border-linha px-6 font-semibold text-grafite hover:border-royal/40 transition-colors"
+                  >
+                    Ver tudo
+                  </Link>
+                </div>
+              </div>
+            )}
           </>
         ) : categoriaAtiva ? (
-          <Grade lista={produtos} />
+          <Grade lista={produtos} comCategoria={false} />
         ) : (
           <div className="flex flex-col gap-14">
             {/* Industrializados com registro, os únicos com preço */}
             {industrializados.length > 0 && (
               <section>
                 <div className="mb-5">
-                  <p className="selo-secao text-escarlate">com registro na Anvisa</p>
-                  <h2 className="font-display text-2xl md:text-3xl font-semibold text-grafite tracking-tight mt-1">
+                  <p className="selo-secao flex items-center gap-3 text-escarlate">
+                    <span aria-hidden="true" className="h-px w-9 bg-escarlate/40" />
+                    com registro na Anvisa
+                  </p>
+                  <h2 className="font-display text-[1.7rem] md:text-[2.3rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.06] mt-2">
                     Pronta entrega
                   </h2>
                 </div>
@@ -221,24 +253,28 @@ export function CatalogoClient({
 
             {categoriasComItens.map((c) => (
               <section key={c.id}>
-                <div className="flex items-end justify-between gap-4 mb-5">
+                <div className="flex items-end justify-between gap-4 mb-6">
                   <div className="min-w-0">
-                    <h2 className="font-display text-2xl md:text-3xl font-semibold text-grafite tracking-tight">
+                    <h2 className="font-display text-[1.7rem] md:text-[2.3rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.06]">
                       {c.nome}
                     </h2>
-                    <p className="text-grafite-claro text-sm md:text-base mt-1">{infoCategoria(c.slug).descricao}</p>
+                    <p className="text-grafite-claro text-sm md:text-base mt-1.5">{infoCategoria(c.slug).descricao}</p>
                   </div>
+                  {/* Pílula com chip, o mesmo gesto das outras seções */}
                   <Link
                     href={`/produtos/${c.slug}`}
-                    className="shrink-0 hidden sm:inline-flex items-center min-h-11 gap-2 text-royal font-semibold hover:gap-3 transition-[gap]"
+                    className="group shrink-0 hidden sm:inline-flex items-center gap-2.5 rounded-full border border-linha py-1.5 pl-4 pr-1.5 text-sm font-semibold text-grafite transition-colors hover:border-royal/40"
                   >
                     Ver categoria
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-royal-claro text-royal transition duration-300 group-hover:bg-royal group-hover:text-white">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
                   </Link>
                 </div>
-                <Grade lista={produtos.filter((p) => p.categoriaId === c.id)} />
+                {/* A seção já leva o nome da categoria: não repetir no cartão */}
+                <Grade lista={produtos.filter((p) => p.categoriaId === c.id)} comCategoria={false} />
               </section>
             ))}
           </div>

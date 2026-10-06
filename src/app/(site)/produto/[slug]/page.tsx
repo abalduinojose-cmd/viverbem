@@ -1,25 +1,21 @@
 // Página exclusiva de cada produto.
 //
-// Duas versões, conforme o tipo de venda:
-//   - MANIPULADO: diz o que é e leva para "Enviar receita". Não mostra
-//     preço, dosagem, indicação, modo de uso nem apresentação: dose e
-//     quantidade fixas numa vitrine são justamente o "pote de prateleira"
-//     que a Anvisa trata como produto sem registro (RDC 67/2007, item
-//     5.14; RE nº 3.547/2026). O compartilhamento também não leva preço.
-//   - INDUSTRIALIZADO com registro: venda normal, com preço e carrinho,
-//     e os detalhes recolhidos em sanfonas.
+// Desde 05/10/2026 (pedido do cliente) nenhum produto mostra preço e todos
+// vão para o carrinho; o farmacêutico confere o pedido e passa o valor
+// pelo WhatsApp. "Enviar receita" continua como segunda opção.
+//   - MANIPULADO: não mostra dosagem, indicação, modo de uso nem
+//     apresentação (RDC 67/2007, item 5.14; RE nº 3.547/2026).
+//   - INDUSTRIALIZADO com registro: os detalhes ficam em sanfonas.
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
-import { formatarPreco } from "@/lib/preco";
 import { listarItens, ehIndustrializado } from "@/lib/tipos";
 import { FotoProduto } from "@/components/site/FotoProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { VistosRecentemente } from "@/components/site/VistosRecentemente";
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
-import { SeloPrescricao } from "@/components/site/ProdutoCard";
 
 export const dynamic = "force-dynamic";
 
@@ -33,9 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!produto) return { title: "Produto não encontrado" };
 
   const titulo = `${produto.nome} · Manipulação Viver Bem`;
-  const descricao = ehIndustrializado(produto)
-    ? `${formatarPreco(produto.precoCentavos)} · ${produto.descricao}`
-    : produto.descricao;
+  const descricao = produto.descricao;
   return {
     title: titulo,
     description: descricao,
@@ -102,9 +96,9 @@ function Sanfona({
   );
 }
 
-// Como o manipulado chega até a pessoa, em três linhas de processo
-const PASSOS_RECEITA = [
-  "Você envia a foto da receita pelo WhatsApp",
+// Como o pedido chega até a pessoa, em três linhas de processo
+const PASSOS_PEDIDO = [
+  "Adicione ao carrinho e envie o pedido pelo WhatsApp",
   "O farmacêutico confere e passa o valor e o prazo",
   "Retire numa das 3 lojas ou receba em casa, de moto",
 ];
@@ -167,14 +161,10 @@ export default async function PaginaProduto({ params }: Props) {
                   {produto.categoriaNome}
                 </Link>
               )}
-              {industrializado ? (
-                produto.apresentacao && (
-                  <span className="text-[0.65rem] font-semibold tracking-[0.18em] uppercase text-grafite-medio bg-royal-nevoa border border-linha px-3 py-1.5 rounded-full">
-                    {produto.apresentacao}
-                  </span>
-                )
-              ) : (
-                <SeloPrescricao />
+              {industrializado && produto.apresentacao && (
+                <span className="text-[0.65rem] font-semibold tracking-[0.18em] uppercase text-grafite-medio bg-royal-nevoa border border-linha px-3 py-1.5 rounded-full">
+                  {produto.apresentacao}
+                </span>
               )}
             </div>
 
@@ -185,52 +175,45 @@ export default async function PaginaProduto({ params }: Props) {
               {produto.descricao}
             </p>
 
-            {industrializado ? (
-              <>
-                <AcoesProduto produto={produto} />
+            <AcoesProduto produto={produto} />
 
-                <div className="mt-7 border-t border-linha">
-                  <Sanfona titulo="Indicações" itens={listarItens(produto.indicacoes)} />
-                  <Sanfona titulo="Composição" itens={listarItens(produto.composicao)} />
-                  <Sanfona titulo="Modo de uso" texto={produto.modoUso} />
-                </div>
-
-                <p className="text-grafite-claro text-sm mt-6 leading-relaxed">
-                  Você monta o pedido aqui e finaliza pelo WhatsApp. Use conforme a
-                  orientação do seu médico ou do farmacêutico da Viver Bem.
-                </p>
-              </>
-            ) : (
-              <>
-                {/* O pedido do manipulado é a receita */}
-                <div className="mt-8 bg-royal-nevoa border border-linha rounded-[1.75rem] p-5 md:p-6">
-                  <p className="font-semibold text-grafite">Como pedir</p>
-                  <ol className="flex flex-col gap-3 mt-4">
-                    {PASSOS_RECEITA.map((passo, i) => (
-                      <li key={passo} className="flex items-start gap-3 text-grafite-medio leading-snug">
-                        <span className="shrink-0 w-6 h-6 rounded-full bg-white border border-linha text-royal text-xs font-bold flex items-center justify-center">
-                          {i + 1}
-                        </span>
-                        {passo}
-                      </li>
-                    ))}
-                  </ol>
-                  <BotaoEnviarReceita
-                    produtoVisto={produto.nome}
-                    className="degrade-suave w-full mt-6 flex items-center justify-center gap-3 text-white text-lg font-semibold rounded-2xl px-6 py-4 active:scale-[0.98] transition"
-                  />
-                </div>
-
-                <p className="text-grafite-claro text-sm mt-5 leading-relaxed">
-                  Medicamentos manipulados são preparados somente mediante prescrição de
-                  profissional habilitado, na dose e na forma indicadas na receita.{" "}
-                  <Link href="/sobre#como-funciona" className="text-royal font-medium hover:underline">
-                    Entenda como funciona
-                  </Link>
-                  .
-                </p>
-              </>
+            {industrializado && (
+              <div className="mt-7 border-t border-linha">
+                <Sanfona titulo="Indicações" itens={listarItens(produto.indicacoes)} />
+                <Sanfona titulo="Composição" itens={listarItens(produto.composicao)} />
+                <Sanfona titulo="Modo de uso" texto={produto.modoUso} />
+              </div>
             )}
+
+            {/* Como o pedido anda, e a receita como segunda opção */}
+            <div className="mt-8 bg-royal-nevoa border border-linha rounded-[1.75rem] p-5 md:p-6">
+              <p className="font-semibold text-grafite">Como pedir</p>
+              <ol className="flex flex-col gap-3 mt-4">
+                {PASSOS_PEDIDO.map((passo, i) => (
+                  <li key={passo} className="flex items-start gap-3 text-grafite-medio leading-snug">
+                    <span className="shrink-0 w-6 h-6 rounded-full bg-white border border-linha text-royal text-xs font-bold flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                    {passo}
+                  </li>
+                ))}
+              </ol>
+              <BotaoEnviarReceita
+                produtoVisto={produto.nome}
+                className="w-full mt-6 flex items-center justify-center gap-2.5 bg-white border border-linha hover:border-royal/40 text-royal font-semibold rounded-2xl px-6 py-3.5 active:scale-[0.98] transition"
+              >
+                Tenho receita: enviar a foto
+              </BotaoEnviarReceita>
+            </div>
+
+            <p className="text-grafite-claro text-sm mt-5 leading-relaxed">
+              O farmacêutico confere o seu pedido e passa o valor pelo WhatsApp. Se a
+              fórmula precisar de receita, ele pede a foto da prescrição.{" "}
+              <Link href="/sobre#como-funciona" className="text-royal font-medium hover:underline">
+                Entenda como funciona
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
@@ -243,22 +226,27 @@ export default async function PaginaProduto({ params }: Props) {
         <section className="max-w-6xl mx-auto px-4 md:px-8 pt-4 pb-14 border-t border-linha">
           <div className="flex items-end justify-between gap-4 mt-10 mb-6">
             <div>
-              <p className="selo-secao text-escarlate">da mesma área</p>
-              <h2 className="font-display text-2xl md:text-3xl font-semibold text-grafite mt-1">
+              <p className="selo-secao flex items-center gap-3 text-escarlate">
+                <span aria-hidden="true" className="h-px w-9 bg-escarlate/40" />
+                da mesma área
+              </p>
+              <h2 className="font-display text-[1.7rem] md:text-[2.3rem] font-extrabold tracking-[-0.035em] text-grafite leading-[1.06] mt-2">
                 Mais em {categoria?.nome ?? "nossas categorias"}
               </h2>
             </div>
             <Link
               href={hrefCategoria}
-              className="shrink-0 hidden sm:inline-flex items-center min-h-11 gap-2 text-royal font-semibold hover:gap-3 transition-[gap]"
+              className="group shrink-0 hidden sm:inline-flex items-center gap-2.5 rounded-full border border-linha py-1.5 pl-4 pr-1.5 text-sm font-semibold text-grafite transition-colors hover:border-royal/40"
             >
               Ver categoria
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-royal-claro text-royal transition duration-300 group-hover:bg-royal group-hover:text-white">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
             </Link>
           </div>
-          <FaixaProdutos produtos={relacionados} />
+          <FaixaProdutos produtos={relacionados} comCategoria={false} />
         </section>
       )}
     </main>

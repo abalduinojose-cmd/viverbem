@@ -122,34 +122,14 @@ export const ENTREGA_DELIVERY = "Entrega em casa";
 export const INSTAGRAM_PERFIL = "manipulacaoviverbem";
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_PERFIL}/`;
 
+// CNPJ da farmácia (do contrato de 28/09/2026). Vai na linha legal do rodapé,
+// como pede a RDC 44/2009 para site de farmácia.
+export const CNPJ_FARMACIA = "08.303.445/0001-52";
+
 // Total de avaliações no perfil do Google (o site mostra só uma
 // seleção delas). Conferido em ago/2026 — atualize quando crescer.
 export const AVALIACOES_GOOGLE_TOTAL = 634;
 export const AVALIACOES_GOOGLE_NOTA = 5.0;
 
-/** Quantas avaliações em cada nota, do próprio perfil do Google.
- *  As notas baixas ficam à mostra de propósito: distribuição sem
- *  nenhuma nota baixa é o que parece inventado. */
-export const AVALIACOES_GOOGLE_NOTAS = [
-  { estrelas: 5, quantidade: 619 },
-  { estrelas: 4, quantidade: 9 },
-  { estrelas: 3, quantidade: 2 },
-  { estrelas: 2, quantidade: 0 },
-  { estrelas: 1, quantidade: 4 },
-];
-
-/** Assuntos que mais aparecem nas avaliações, com o número de vezes.
- *  Vem do próprio Google, não é escolha nossa. */
-export const AVALIACOES_GOOGLE_ASSUNTOS = [
-  { assunto: "preço", vezes: 25 },
-  { assunto: "atenção", vezes: 14 },
-  { assunto: "atendente", vezes: 13 },
-  { assunto: "WhatsApp", vezes: 12 },
-  { assunto: "educação", vezes: 9 },
-  { assunto: "rapidez", vezes: 6 },
-  { assunto: "eficiência", vezes: 6 },
-  { assunto: "agilidade", vezes: 5 },
-  { assunto: "confiança", vezes: 5 },
-];
 export const PERFIL_GOOGLE_URL =
   "https://www.google.com/maps/search/?api=1&query=Viver%20Bem%20-%20Farm%C3%A1cia%20de%20Manipula%C3%A7%C3%A3o&query_place_id=ChIJnz1PkICpmQARI67bD1sFiE8";
