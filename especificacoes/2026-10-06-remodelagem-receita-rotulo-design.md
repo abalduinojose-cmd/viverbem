@@ -1,5 +1,16 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 3 (06/10/2026, noite): cinco ajustes pedidos por print.**
+> Cabeçalho do celular com três botões redondos (carrinho, busca, menu) em
+> gelo; a barra de categorias deixou o azul-noite e virou uma fileira de
+> pílulas em branco com fio, rolável no celular (`--altura-cabecalho` =
+> 7,25rem / 10rem); vantagens em quatro `.ladrilho` (2x2 no celular);
+> avaliações em cartões limpos, com o texto na Instrument Sans (o itálico
+> serifado saiu dali, "a fonte tá muito ruim") e o selo do Google embaixo;
+> gaveta do pedido no sistema: etapas em pílulas, cartões com fio, stepper
+> em contorno, campos com foco azul, botão final azul com o ícone do
+> WhatsApp (o verde ficou só no ícone).
+
 > **ADENDO 2 (06/10/2026, fim da tarde): a home virou MODELO DE LOJA, na
 > referência do biovittare.com.br (pedido do Anderson: "muita cara de
 > genérico, pegue a referência da parte de produto desse site").**

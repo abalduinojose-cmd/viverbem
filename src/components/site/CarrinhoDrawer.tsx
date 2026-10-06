@@ -162,7 +162,8 @@ export function CarrinhoDrawer() {
   }
 
   const classeCampo =
-    "bg-white border border-linha rounded-2xl px-4 py-3.5 text-base placeholder:text-grafite-claro/70 focus:outline-none focus:border-royal focus:ring-4 focus:ring-royal/10 transition-shadow";
+    "bg-white border border-fio rounded-2xl px-4 py-3.5 text-base text-grafite placeholder:text-grafite-claro/70 focus:outline-none focus:border-tinta focus:ring-4 focus:ring-tinta/10 transition-shadow";
+  const classeRotuloCampo = "font-semibold text-navy text-sm";
 
   return (
     <>
@@ -202,18 +203,18 @@ export function CarrinhoDrawer() {
       {/* Gaveta lateral */}
       {aberto && (
         <div
-          className="fixed inset-0 z-50 bg-noite/60 backdrop-blur-sm flex justify-end md:p-3"
+          className="fixed inset-0 z-50 bg-navy/50 backdrop-blur-[2px] flex justify-end md:p-3"
           onClick={fechar}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-pedido"
-            className="bg-papel w-full max-w-md h-full flex flex-col animar-surgir shadow-2xl md:rounded-caixa overflow-hidden"
+            className="bg-white w-full max-w-md h-full flex flex-col animar-surgir shadow-[0_30px_80px_-20px_rgba(13,35,64,0.5)] md:rounded-[1.75rem] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* ---------- Cabeçalho (claro, com fio: o escuro é só do rodapé) ---------- */}
-            <div className="bg-white border-b border-fio text-grafite px-6 pt-6 pb-5 shrink-0">
+            {/* ---------- Cabeçalho ---------- */}
+            <div className="border-b border-fio text-grafite px-6 pt-5 pb-4 shrink-0">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
                   {etapa === "dados" && !enviado && (
@@ -228,7 +229,7 @@ export function CarrinhoDrawer() {
                       </svg>
                     </button>
                   )}
-                  <h2 id="titulo-pedido" className="font-display text-2xl font-medium tracking-[-0.03em] truncate">
+                  <h2 id="titulo-pedido" className="text-[1.35rem] font-semibold tracking-[-0.03em] text-navy truncate">
                     {enviado ? "Tudo certo" : etapa === "pedido" ? "Seu pedido" : "Seus dados"}
                   </h2>
                 </div>
@@ -244,35 +245,37 @@ export function CarrinhoDrawer() {
                 </button>
               </div>
 
-              {/* Passos do pedido */}
+              {/* Passos do pedido, em pílulas */}
               {!enviado && temAlgo && (
-                <div className="flex items-center gap-2 mt-5">
+                <ol className="flex items-center gap-2 mt-4">
                   {ETAPAS.map((e, i) => {
                     const atual = e.chave === etapa;
                     const passou = e.chave === "pedido" && etapa === "dados";
                     return (
-                      <div key={e.chave} className="flex-1 flex flex-col gap-1.5">
+                      <li
+                        key={e.chave}
+                        aria-current={atual ? "step" : undefined}
+                        className={`inline-flex items-center gap-2 h-8 pl-1.5 pr-3 rounded-full text-[0.78rem] font-medium transition-colors ${
+                          atual ? "bg-navy text-white" : passou ? "bg-gelo text-tinta" : "bg-gelo/60 text-cinza"
+                        }`}
+                      >
                         <span
-                          className={`h-1 rounded-full transition-colors ${
-                            atual || passou ? "bg-tinta" : "bg-fio"
-                          }`}
-                        />
-                        <span
-                          className={`text-[0.7rem] tracking-wide transition-colors ${
-                            atual ? "text-grafite" : "text-cinza"
+                          className={`w-5 h-5 rounded-full text-[0.68rem] font-semibold flex items-center justify-center ${
+                            atual ? "bg-white text-navy" : passou ? "bg-tinta text-white" : "bg-white text-cinza"
                           }`}
                         >
-                          {i + 1}. {e.rotulo}
+                          {passou ? "✓" : i + 1}
                         </span>
-                      </div>
+                        {e.rotulo}
+                      </li>
                     );
                   })}
-                </div>
+                </ol>
               )}
 
               {/* Resumo: aparece com produto no carrinho */}
               {!enviado && temProdutos && (
-                <p className="mt-5 pt-4 border-t border-fio text-cinza text-sm">
+                <p className="mt-4 text-cinza text-sm">
                   {receita ? "Receita + " : ""}
                   {totalItens} {totalItens === 1 ? "produto" : "produtos"}
                   {etapa === "dados" && codigo ? ` · ${codigo}` : ""}
@@ -284,13 +287,13 @@ export function CarrinhoDrawer() {
             {/* ---------- Confirmação de envio ---------- */}
             {enviado ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-8 gap-4">
-                <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M5 13l4 4L19 7" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <div className="w-20 h-20 rounded-full bg-gelo text-tinta flex items-center justify-center">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 className="font-display text-2xl font-semibold text-grafite">Pedido enviado</h3>
-                <p className="text-grafite-medio leading-relaxed">
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-navy">Pedido enviado</h3>
+                <p className="text-cinza leading-relaxed">
                   Abrimos o WhatsApp com o seu pedido <b className="text-grafite">{codigo}</b>.{" "}
                   {enviouReceita
                     ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
@@ -314,22 +317,22 @@ export function CarrinhoDrawer() {
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`text-left rounded-[1.35rem] border p-4 flex items-start gap-3.5 transition ${
+                    className={`text-left rounded-[1.25rem] border p-4 flex items-start gap-3.5 transition ${
                       receita
-                        ? "bg-white border-royal ring-4 ring-royal/10"
-                        : "bg-white border-linha hover:border-royal/40"
+                        ? "bg-gelo/60 border-tinta"
+                        : "bg-white border-fio hover:border-tinta/40"
                     }`}
                   >
                     <span
-                      className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-colors ${
-                        receita ? "bg-royal text-white" : "bg-royal-claro text-royal"
+                      className={`shrink-0 w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
+                        receita ? "bg-tinta text-white" : "bg-gelo text-tinta"
                       }`}
                     >
                       <IconeReceita tamanho={22} />
                     </span>
                     <span className="flex-1 min-w-0">
-                      <span className="block font-semibold text-grafite">Vou enviar uma receita</span>
-                      <span className="block text-sm text-grafite-medio leading-snug mt-1">
+                      <span className="block font-semibold text-navy">Vou enviar uma receita</span>
+                      <span className="block text-sm text-cinza leading-snug mt-1">
                         Você anexa a foto da receita na conversa do WhatsApp. O farmacêutico
                         confere e passa o valor.
                       </span>
@@ -338,7 +341,7 @@ export function CarrinhoDrawer() {
                     <span
                       aria-hidden="true"
                       className={`shrink-0 mt-1 w-11 h-6 rounded-full p-0.5 transition-colors ${
-                        receita ? "bg-royal" : "bg-linha"
+                        receita ? "bg-tinta" : "bg-fio"
                       }`}
                     >
                       <span
@@ -351,9 +354,9 @@ export function CarrinhoDrawer() {
 
                   {/* De qual manipulado a pessoa veio */}
                   {receita && produtoVisto && (
-                    <div className="flex items-center gap-2 bg-royal-claro/70 border border-royal/15 rounded-2xl pl-4 pr-1.5 py-1.5">
-                      <span className="flex-1 min-w-0 text-sm text-grafite-medio truncate">
-                        Você viu: <b className="text-grafite font-semibold">{produtoVisto}</b>
+                    <div className="flex items-center gap-2 bg-gelo/60 border border-fio rounded-2xl pl-4 pr-1.5 py-1.5">
+                      <span className="flex-1 min-w-0 text-sm text-cinza truncate">
+                        Você viu: <b className="text-navy font-semibold">{produtoVisto}</b>
                       </span>
                       <button
                         type="button"
@@ -370,17 +373,15 @@ export function CarrinhoDrawer() {
 
                   {/* Produtos do carrinho */}
                   {temProdutos && (
-                    <p className="text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-grafite-claro mt-3 px-1">
-                      Produtos
-                    </p>
+                    <p className="rotulo !text-cinza mt-3 px-1">Produtos</p>
                   )}
                   {itens.map((item, i) => (
                     <div
                       key={`${item.produtoId}-${item.dosagem ?? ""}`}
-                      className="animar-surgir bg-white border border-linha rounded-[1.35rem] p-3.5 flex gap-3.5 sombra-card"
+                      className="animar-surgir bg-white border border-fio rounded-[1.25rem] p-3 flex gap-3.5"
                       style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                     >
-                      <div className="shrink-0 w-[4.5rem] rounded-2xl bg-royal-nevoa border border-linha/70 overflow-hidden flex items-center justify-center p-1.5 self-stretch">
+                      <div className="shrink-0 w-[4.5rem] rounded-xl bg-gelo/70 overflow-hidden flex items-center justify-center p-1.5 self-stretch">
                         <FotoProduto
                           fotoUrl={item.fotoUrl ?? null}
                           nome={item.nome}
@@ -391,11 +392,11 @@ export function CarrinhoDrawer() {
                       <div className="flex-1 min-w-0 flex flex-col">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="font-semibold text-grafite leading-snug line-clamp-2">
+                            <p className="font-medium text-navy leading-snug line-clamp-2">
                               {item.nome}
                             </p>
                             {item.dosagem && (
-                              <span className="inline-block mt-1 bg-royal-claro text-royal text-[0.7rem] font-semibold px-2.5 py-0.5 rounded-full">
+                              <span className="inline-block mt-1 bg-gelo text-tinta text-[0.7rem] font-semibold px-2.5 py-0.5 rounded-full">
                                 {item.dosagem}
                               </span>
                             )}
@@ -418,23 +419,23 @@ export function CarrinhoDrawer() {
                         </div>
 
                         <div className="flex items-end mt-auto pt-2.5">
-                          <div className="flex items-center bg-royal-nevoa border border-linha rounded-full p-0.5">
+                          <div className="flex items-center border border-fio rounded-full p-0.5">
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, -1)}
                               aria-label="Diminuir"
-                              className="w-8 h-8 rounded-full bg-white text-grafite-medio hover:text-royal sombra-card text-base flex items-center justify-center active:scale-90 transition"
+                              className="w-8 h-8 rounded-full text-tinta hover:bg-gelo text-base flex items-center justify-center active:scale-90 transition"
                             >
                               −
                             </button>
-                            <span className="text-sm font-bold text-grafite w-7 text-center tabular-nums">
+                            <span className="text-sm font-semibold text-navy w-7 text-center tabular-nums">
                               {item.quantidade}
                             </span>
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, 1)}
                               aria-label="Aumentar"
-                              className="w-8 h-8 rounded-full bg-white text-grafite-medio hover:text-royal sombra-card text-base flex items-center justify-center active:scale-90 transition"
+                              className="w-8 h-8 rounded-full text-tinta hover:bg-gelo text-base flex items-center justify-center active:scale-90 transition"
                             >
                               +
                             </button>
@@ -446,9 +447,9 @@ export function CarrinhoDrawer() {
 
                   {/* Nada escolhido ainda */}
                   {!temAlgo && (
-                    <p className="text-sm text-grafite-claro text-center leading-relaxed px-4 pt-4">
+                    <p className="text-sm text-cinza text-center leading-relaxed px-4 pt-4">
                       Marque a receita acima para começar, ou{" "}
-                      <Link href="/produtos" onClick={fechar} className="text-royal font-medium hover:underline">
+                      <Link href="/produtos" onClick={fechar} className="text-tinta font-medium hover:underline">
                         veja os produtos
                       </Link>
                       .
@@ -456,13 +457,13 @@ export function CarrinhoDrawer() {
                   )}
                 </div>
 
-                <div className="bg-white border-t border-linha px-5 pt-4 pb-5">
+                <div className="border-t border-fio px-5 pt-4 pb-5">
                   {temProdutos && (
-                    <p className="text-sm text-grafite-medio mb-1">
+                    <p className="text-sm text-navy font-medium mb-1">
                       Produtos ({totalItens} {totalItens === 1 ? "item" : "itens"})
                     </p>
                   )}
-                  <p className="text-xs text-grafite-claro mb-4">
+                  <p className="text-xs text-cinza mb-4">
                     Na próxima etapa você escolhe se retira na loja ou recebe em casa. O
                     farmacêutico passa o valor pelo WhatsApp.
                   </p>
@@ -493,7 +494,7 @@ export function CarrinhoDrawer() {
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-5">
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-grafite text-sm">Seu nome *</span>
+                    <span className={classeRotuloCampo}>Seu nome *</span>
                     <input
                       value={nome}
                       onChange={(e) => setNome(e.target.value)}
@@ -505,7 +506,7 @@ export function CarrinhoDrawer() {
                   </label>
 
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-grafite text-sm">Seu WhatsApp *</span>
+                    <span className={classeRotuloCampo}>Seu WhatsApp *</span>
                     <input
                       value={whatsapp}
                       onChange={(e) => setWhatsapp(e.target.value)}
@@ -518,7 +519,7 @@ export function CarrinhoDrawer() {
 
                   {/* Como receber o pedido */}
                   <div className="flex flex-col gap-2">
-                    <span className="font-semibold text-grafite text-sm">Como você quer receber *</span>
+                    <span className={classeRotuloCampo}>Como você quer receber *</span>
                     <div className="grid grid-cols-2 gap-2.5">
                       {[
                         {
@@ -551,15 +552,15 @@ export function CarrinhoDrawer() {
                           aria-pressed={entrega === opcao.modo}
                           className={`rounded-2xl px-3 py-4 border transition active:scale-95 flex flex-col items-center gap-1.5 text-center ${
                             entrega === opcao.modo
-                              ? "bg-royal text-white border-royal"
-                              : "bg-white text-grafite border-linha hover:border-royal/40"
+                              ? "bg-navy text-white border-navy"
+                              : "bg-white text-navy border-fio hover:border-tinta/40"
                           }`}
                         >
                           {opcao.icone}
                           <span className="text-sm font-medium leading-tight mt-0.5">{opcao.titulo}</span>
                           <span
                             className={`text-[0.7rem] leading-none ${
-                              entrega === opcao.modo ? "text-white/65" : "text-grafite-claro"
+                              entrega === opcao.modo ? "text-white/65" : "text-cinza"
                             }`}
                           >
                             {opcao.apoio}
@@ -571,7 +572,7 @@ export function CarrinhoDrawer() {
                     {/* Retirada: escolher em qual das 3 lojas */}
                     {ehRetirada && (
                       <div className="flex flex-col gap-2 mt-1.5">
-                        <span className="text-sm text-grafite-medio">Em qual unidade você prefere retirar?</span>
+                        <span className="text-sm text-cinza">Em qual unidade você prefere retirar?</span>
                         {UNIDADES.map((u) => {
                           const marcada = unidade.startsWith(u.bairro);
                           return (
@@ -581,20 +582,20 @@ export function CarrinhoDrawer() {
                               onClick={() => setUnidade(`${u.bairro}, ${u.endereco}`)}
                               aria-pressed={marcada}
                               className={`text-left rounded-2xl px-4 py-3 border transition active:scale-[0.98] flex items-start gap-3 ${
-                                marcada ? "bg-royal-claro border-royal" : "bg-white border-linha hover:border-royal/40"
+                                marcada ? "bg-gelo/60 border-tinta" : "bg-white border-fio hover:border-tinta/40"
                               }`}
                             >
                               <span
                                 className={`shrink-0 w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center transition-colors ${
-                                  marcada ? "border-royal" : "border-grafite-claro"
+                                  marcada ? "border-tinta" : "border-grafite-claro"
                                 }`}
                                 aria-hidden="true"
                               >
-                                {marcada && <span className="w-2 h-2 rounded-full bg-royal" />}
+                                {marcada && <span className="w-2 h-2 rounded-full bg-tinta" />}
                               </span>
                               <span className="min-w-0">
-                                <span className="block font-semibold text-grafite text-sm">{u.bairro}</span>
-                                <span className="block text-grafite-medio text-xs leading-snug mt-0.5">
+                                <span className="block font-semibold text-navy text-sm">{u.bairro}</span>
+                                <span className="block text-cinza text-xs leading-snug mt-0.5">
                                   {u.endereco}
                                 </span>
                               </span>
@@ -607,7 +608,7 @@ export function CarrinhoDrawer() {
                     {/* Entrega: endereço, senão a equipe não tem para onde levar */}
                     {entrega === ENTREGA_DELIVERY && (
                       <label className="flex flex-col gap-2 mt-1.5">
-                        <span className="text-sm text-grafite-medio">Endereço da entrega</span>
+                        <span className="text-sm text-cinza">Endereço da entrega</span>
                         <textarea
                           value={endereco}
                           onChange={(e) => setEndereco(e.target.value)}
@@ -624,8 +625,8 @@ export function CarrinhoDrawer() {
                   </div>
 
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-grafite text-sm">
-                      Observação <span className="text-grafite-claro font-normal">(opcional)</span>
+                    <span className={classeRotuloCampo}>
+                      Observação <span className="text-cinza font-normal">(opcional)</span>
                     </span>
                     <textarea
                       value={observacao}
@@ -638,34 +639,34 @@ export function CarrinhoDrawer() {
 
                   {/* Resumo */}
                   <div className="flex flex-col gap-2">
-                    <span className="font-semibold text-grafite text-sm">Resumo</span>
+                    <span className={classeRotuloCampo}>Resumo</span>
                     {receita && (
-                      <div className="bg-white border border-linha rounded-2xl p-2.5 flex items-center gap-3">
-                        <span className="shrink-0 w-11 h-11 rounded-xl bg-royal-claro text-royal flex items-center justify-center">
+                      <div className="bg-gelo/50 border border-fio rounded-2xl p-2.5 flex items-center gap-3">
+                        <span className="shrink-0 w-11 h-11 rounded-xl bg-tinta text-white flex items-center justify-center">
                           <IconeReceita tamanho={20} />
                         </span>
-                        <span className="flex-1 min-w-0 text-sm text-grafite leading-snug">
+                        <span className="flex-1 min-w-0 text-sm text-navy leading-snug">
                           Receita, com a foto no WhatsApp
                           {produtoVisto && (
-                            <span className="block text-xs text-grafite-claro truncate">Você viu: {produtoVisto}</span>
+                            <span className="block text-xs text-cinza truncate">Você viu: {produtoVisto}</span>
                           )}
                         </span>
-                        <span className="text-xs text-grafite-claro shrink-0">valor a combinar</span>
+                        <span className="text-xs text-cinza shrink-0">valor a combinar</span>
                       </div>
                     )}
                     {itens.map((item) => (
                       <div
                         key={`r-${item.produtoId}-${item.dosagem ?? ""}`}
-                        className="bg-white border border-linha rounded-2xl p-2.5 flex items-center gap-3"
+                        className="bg-gelo/50 border border-fio rounded-2xl p-2.5 flex items-center gap-3"
                       >
-                        <div className="shrink-0 w-11 h-11 rounded-xl bg-royal-nevoa overflow-hidden flex items-center justify-center p-1">
+                        <div className="shrink-0 w-11 h-11 rounded-xl bg-white overflow-hidden flex items-center justify-center p-1">
                           <FotoProduto
                             fotoUrl={item.fotoUrl ?? null}
                             nome={item.nome}
                             className="max-w-full max-h-full !object-contain"
                           />
                         </div>
-                        <span className="flex-1 min-w-0 text-sm text-grafite truncate">
+                        <span className="flex-1 min-w-0 text-sm text-navy truncate">
                           {item.quantidade}× {item.nome}
                           {item.dosagem ? ` (${item.dosagem})` : ""}
                         </span>
@@ -674,19 +675,19 @@ export function CarrinhoDrawer() {
                   </div>
                 </div>
 
-                <div className="bg-white border-t border-linha px-5 py-5">
+                <div className="border-t border-fio px-5 py-5">
                   <button
                     type="button"
                     onClick={enviarPedido}
                     disabled={!podeEnviar}
-                    className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1eb857] disabled:opacity-40 disabled:cursor-not-allowed text-white text-lg font-semibold rounded-2xl px-6 py-4 transition active:scale-[0.98]"
+                    className="botao botao-principal w-full text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
                     </svg>
                     Enviar pedido no WhatsApp
                   </button>
-                  <p className="text-xs text-grafite-claro text-center mt-3 leading-relaxed">
+                  <p className="text-xs text-cinza text-center mt-3 leading-relaxed">
                     {receita && "Anexe a foto da receita logo depois da mensagem. "}
                     Seus dados (nome e WhatsApp) ficam com a Viver Bem apenas para
                     atendimento e ofertas, conforme a LGPD.

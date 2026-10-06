@@ -74,14 +74,14 @@
   --ouro-degrade: linear-gradient(135deg, #d2b67c 0%, #b3904f 42%, #dcc38a 68%, #a98545 100%);
 
   /* Altura do cabeçalho (preso ao topo, no fluxo): celular = linha
-     principal 64px + barra de categorias 44px; computador soma a faixa de
+     principal 64px + fileira de categorias 52px; computador soma a faixa de
      vantagens de 32px e a linha principal de 76px. A barra do catálogo e as
      âncoras usam este valor. */
-  --altura-cabecalho: 6.75rem;
+  --altura-cabecalho: 7.25rem;
 }
 @media (min-width: 768px) {
   :root {
-    --altura-cabecalho: 9.5rem;
+    --altura-cabecalho: 10rem;
   }
 }
 

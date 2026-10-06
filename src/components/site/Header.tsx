@@ -3,8 +3,10 @@
 // biovittare.com.br, pedida pelo usuário em 06/10/2026):
 //   1. a faixa de vantagens no topo (só computador), com os links
 //      institucionais na ponta;
-//   2. a linha principal: logo, busca aberta, "Enviar receita" e carrinho;
-//   3. a barra de categorias em azul-noite, com "Como funciona" em ouro.
+//   2. a linha principal: logo, busca aberta, "Enviar receita" e carrinho
+//      (no celular, três botões redondos: carrinho, busca e menu);
+//   3. a fileira de categorias em pílulas, que rola para o lado no celular,
+//      com "Como funciona" na ponta no computador.
 // Fica preso ao topo (sticky) e ocupa espaço no fluxo da página, então as
 // páginas não precisam de margem no topo. A altura está em
 // --altura-cabecalho (globals.css), usada pela barra do catálogo.
@@ -92,12 +94,16 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
   );
 }
 
-// Item da barra de categorias: caixa alta pequena, fio de ouro embaixo
-// no item ativo e ao passar o mouse
+// Pílula da fileira de categorias: a ativa em navy, as outras acendem no
+// gelo ao passar o mouse
 const classeCategoria = (ativo: boolean) =>
-  `shrink-0 inline-flex items-center h-11 px-2.5 lg:px-3 text-[0.7rem] font-semibold uppercase tracking-[0.1em] border-b-2 transition-colors ${
-    ativo ? "text-white border-ouro-claro" : "text-white/75 border-transparent hover:text-white hover:border-ouro-claro/60"
+  `shrink-0 inline-flex items-center h-9 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
+    ativo ? "bg-navy text-white" : "text-navy/80 hover:bg-gelo hover:text-navy"
   }`;
+
+// Botão redondo do celular (carrinho, busca, menu)
+const classeBotaoRedondo =
+  "md:hidden w-10 h-10 rounded-full bg-gelo text-navy flex items-center justify-center active:scale-95 transition";
 
 export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   const pathname = usePathname();
@@ -173,16 +179,13 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           <CampoBusca />
         </div>
 
-        <div className="ml-auto flex items-center gap-1 md:gap-3">
+        <div className="ml-auto flex items-center gap-2 md:gap-3">
           {/* Computador: a receita como ação principal, ao lado do carrinho */}
           <BotaoEnviarReceita className="hidden md:inline-flex botao botao-principal botao-compacto !min-h-12" />
           <BotaoCarrinho className="hidden md:inline-flex botao botao-secundario botao-compacto !min-h-12" />
 
-          {/* Celular: carrinho, lupa e menu */}
-          <BotaoCarrinho
-            rotulo={false}
-            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-tinta"
-          />
+          {/* Celular: carrinho, lupa e menu, em botões redondos */}
+          <BotaoCarrinho rotulo={false} className={classeBotaoRedondo} />
           <button
             type="button"
             onClick={() => {
@@ -191,7 +194,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             }}
             aria-label={buscaAberta ? "Fechar busca" : "Buscar"}
             aria-expanded={buscaAberta}
-            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-navy"
+            className={`${classeBotaoRedondo} ${buscaAberta ? "!bg-navy !text-white" : ""}`}
           >
             <IconeLupa />
           </button>
@@ -203,22 +206,25 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             }}
             aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuAberto}
-            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-navy"
+            className={`${classeBotaoRedondo} ${menuAberto ? "!bg-navy !text-white" : ""}`}
           >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               {menuAberto ? (
-                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               )}
             </svg>
           </button>
         </div>
       </div>
 
-      {/* ---------- 3. Barra de categorias ---------- */}
-      <nav aria-label="Categorias" className="bg-navy text-white">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 flex items-center gap-0.5 overflow-x-auto rolagem-sem-barra">
+      {/* ---------- 3. Fileira de categorias em pílulas ---------- */}
+      <nav
+        aria-label="Categorias"
+        className="relative border-t border-fio bg-white after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white md:after:hidden"
+      >
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-[3.25rem] flex items-center gap-1.5 overflow-x-auto rolagem-sem-barra">
           <Link href="/produtos" className={classeCategoria(pathname === "/produtos")}>
             Todos
           </Link>
@@ -233,9 +239,12 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           ))}
           <Link
             href="/sobre#como-funciona"
-            className="ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-11 pl-4 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-ouro-claro hover:text-white transition-colors"
+            className="botao-link !min-h-0 ml-auto shrink-0 hidden lg:inline-flex text-[0.85rem] pl-4"
           >
             Como funciona
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </Link>
         </div>
       </nav>

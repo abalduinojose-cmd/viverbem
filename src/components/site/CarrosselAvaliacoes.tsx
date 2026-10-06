@@ -1,11 +1,9 @@
 "use client";
-// Avaliações do Google em faixa horizontal (rola para o lado).
-//
-// Sistema "Receita e rótulo" (06/10/2026): a frase do cliente é a
-// protagonista, no itálico serifado (a voz humana), e a foto, o nome e as
-// estrelas ficam pequenos embaixo. Fio à esquerda no lugar do cartão com
-// sombra. Acima, só a média e a quantidade de avaliações do perfil
-// (pedido do cliente em 05/10/2026).
+// Avaliações do Google em faixa horizontal (rola para o lado), em
+// cartões limpos: foto, nome e estrelas em cima, o texto na sans do site
+// (o itálico serifado saiu daqui a pedido do usuário em 06/10/2026) e o
+// selo do Google embaixo. Acima dos cartões, só a média e a quantidade de
+// avaliações do perfil (pedido do cliente em 05/10/2026).
 
 import { useRef } from "react";
 import {
@@ -63,7 +61,7 @@ function SetaBotao({
 export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] }) {
   const faixaRef = useRef<HTMLDivElement>(null);
 
-  // Rola uma "página" de fichas para o lado
+  // Rola uma "página" de cartões para o lado
   function rolar(direcao: -1 | 1) {
     const faixa = faixaRef.current;
     if (!faixa) return;
@@ -100,7 +98,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
       {/* Faixa rolável */}
       <div
         ref={faixaRef}
-        className="vao-titulo flex gap-8 md:gap-10 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3 snap-x snap-mandatory"
+        className="vao-titulo flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3 snap-x snap-mandatory"
       >
         {/* espaçador para alinhar com o container central em telas largas */}
         <div className="shrink-0 w-0 md:w-[max(0px,calc((100vw-72rem)/2))]" aria-hidden="true" />
@@ -108,11 +106,9 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
         {avaliacoes.map((a) => (
           <figure
             key={a.id}
-            className="snap-start shrink-0 w-[17.5rem] md:w-[22rem] border-l fio-ouro pl-5 md:pl-7 flex flex-col"
+            className="snap-start shrink-0 w-[18rem] md:w-[21rem] rounded-[1.5rem] border border-fio bg-white p-5 md:p-6 flex flex-col gap-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
           >
-            <blockquote className="citacao flex-1">{a.texto}</blockquote>
-
-            <figcaption className="mt-6 flex items-center gap-3">
+            <figcaption className="flex items-center gap-3">
               {/* Foto do cliente ou inicial do nome */}
               {a.fotoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -121,22 +117,33 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-11 h-11 rounded-full object-cover"
                   draggable={false}
                 />
               ) : (
-                <span className="w-10 h-10 rounded-full bg-gelo text-tinta flex items-center justify-center font-medium">
+                <span className="w-11 h-11 rounded-full bg-gelo text-tinta flex items-center justify-center font-semibold">
                   {a.nome.charAt(0).toUpperCase()}
                 </span>
               )}
               <span className="min-w-0">
-                <span className="block font-medium text-grafite truncate">{a.nome}</span>
-                <span className="flex items-center gap-1.5 mt-0.5">
+                <span className="block font-semibold text-navy truncate">{a.nome}</span>
+                <span className="mt-0.5 flex items-center gap-1.5">
                   <Estrelas nota={a.nota} tamanho={12} />
-                  {a.fonte === "Google" && <IconeGoogle tamanho={12} />}
+                  <span className="text-xs text-cinza">
+                    {a.nota.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
+                  </span>
                 </span>
               </span>
             </figcaption>
+
+            <blockquote className="flex-1 text-[0.98rem] leading-relaxed text-grafite">{a.texto}</blockquote>
+
+            {a.fonte === "Google" && (
+              <span className="flex items-center gap-1.5 text-xs text-cinza">
+                <IconeGoogle tamanho={13} />
+                Avaliação no Google
+              </span>
+            )}
           </figure>
         ))}
 
