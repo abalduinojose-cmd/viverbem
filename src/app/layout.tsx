@@ -45,6 +45,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -55,6 +57,9 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
+      // O site rola suave (globals.css); com este atributo o Next desliga a
+      // suavidade só durante a troca de página, para não animar o salto ao topo
+      data-scroll-behavior="smooth"
       className={`${instrumentSans.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

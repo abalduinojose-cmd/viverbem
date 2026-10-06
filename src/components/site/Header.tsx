@@ -1,8 +1,8 @@
 "use client";
 // Cabeçalho do site em três faixas, no modelo de loja (referência
 // biovittare.com.br, pedida pelo usuário em 06/10/2026):
-//   1. a faixa de vantagens no topo (só computador), com os links
-//      institucionais na ponta;
+//   1. a faixa de vantagens no topo (só computador), em azul-noite, com
+//      os links institucionais em pílulas na ponta;
 //   2. a linha principal: logo, busca aberta, "Enviar receita" e carrinho
 //      (no celular, três botões redondos: carrinho, busca e menu);
 //   3. a fileira de categorias em pílulas, que rola para o lado no celular,
@@ -16,10 +16,12 @@ import Link from "next/link";
 import Form from "next/form";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
-import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, UNIDADES } from "@/lib/tipos";
+import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho } from "./CarrinhoDrawer";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { IconeMoto } from "./IconeMoto";
+import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 
 // Abre a gaveta do pedido. A contagem só aparece com item no carrinho
 // (o carrinho vem do localStorage depois da hidratação, então começa 0
@@ -33,7 +35,7 @@ function BotaoCarrinho({ className, rotulo = true }: { className: string; rotulo
       <span className="relative">
         <IconeCarrinho tamanho={20} />
         {totalItens > 0 && (
-          <span className="absolute -top-2 -right-2.5 bg-tinta text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center">
+          <span className="absolute -top-2 -right-2.5 bg-navy text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white">
             {totalItens}
           </span>
         )}
@@ -47,6 +49,18 @@ const INSTITUCIONAL = [
   { href: "/sobre", rotulo: "A Viver Bem" },
   { href: "/lojas", rotulo: "Lojas" },
   { href: "/contato", rotulo: "Contato" },
+];
+
+// Vantagens da faixa do topo (computador). A do meio só aparece de lg para
+// cima, para a faixa caber no tablet.
+const VANTAGENS = [
+  { icone: <IconeMoto tamanho={16} />, texto: "Delivery por toda Petrópolis" },
+  { icone: <IconeLoja tamanho={15} />, texto: `Retirada sem taxa em ${UNIDADES.length} lojas`, soLg: true },
+  {
+    icone: <IconeEstrela tamanho={14} />,
+    texto: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google · ${AVALIACOES_GOOGLE_TOTAL} avaliações`,
+    href: PERFIL_GOOGLE_URL,
+  },
 ];
 
 // Itens do submenu "A Viver Bem" (âncoras da página Sobre), no menu do celular
@@ -94,16 +108,21 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
   );
 }
 
-// Pílula da fileira de categorias: a ativa em navy, as outras acendem no
-// gelo ao passar o mouse
+// Pílula da fileira de categorias: a ativa em navy, as outras em gelo
 const classeCategoria = (ativo: boolean) =>
-  `shrink-0 inline-flex items-center h-9 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
-    ativo ? "bg-navy text-white" : "text-navy/80 hover:bg-gelo hover:text-navy"
+  `shrink-0 inline-flex items-center h-10 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
+    ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
   }`;
 
-// Botão redondo do celular (carrinho, busca, menu)
-const classeBotaoRedondo =
-  "md:hidden w-10 h-10 rounded-full bg-gelo text-navy flex items-center justify-center active:scale-95 transition";
+// Botões do celular (busca e menu) dentro da barra branca: redondos; o
+// que estiver aberto fica em navy
+const classeBotaoCapsula = (ativo = false) =>
+  `w-9 h-9 rounded-full flex items-center justify-center transition active:scale-95 ${
+    ativo ? "bg-navy text-white" : "text-navy hover:bg-gelo"
+  }`;
+// O carrinho, em ouro, como os botões "Adicionar" do site
+const classeBotaoCarrinhoCelular =
+  "w-9 h-9 rounded-full flex items-center justify-center bg-[image:var(--ouro-degrade)] text-navy transition active:scale-95";
 
 export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   const pathname = usePathname();
@@ -132,38 +151,78 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
     return () => window.removeEventListener("keydown", aoTeclar);
   }, []);
 
-  const nota = AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 });
-
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-[0_1px_0_var(--color-fio)]">
+    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl shadow-[0_1px_0_var(--color-fio)]">
+      {/* Linha de progresso da leitura, em ouro, que cresce com a rolagem */}
+      <span aria-hidden="true" className="progresso-rolagem pointer-events-none absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[image:var(--ouro-degrade)]" />
       {/* ---------- 1. Faixa de vantagens (computador) ---------- */}
-      <div className="hidden md:block bg-gelo/60 border-b border-fio">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-8 flex items-center justify-between text-[0.78rem] text-cinza">
-          <ul className="flex items-center gap-6">
-            <li>Entrega de moto por toda Petrópolis</li>
-            <li>Retirada sem taxa em {UNIDADES.length} lojas</li>
-            <li>
-              <span className="text-ouro">★</span> {nota} no Google · {AVALIACOES_GOOGLE_TOTAL} avaliações
-            </li>
+      {/* Em azul-noite, como a dobra: as vantagens com ícone em ouro e um
+          fio entre elas; os links institucionais em pílulas na ponta. */}
+      <div className="hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-9 flex items-center justify-between text-[0.78rem]">
+          <ul className="flex items-center">
+            {VANTAGENS.map((v, i) => {
+              const miolo = (
+                <>
+                  <span className="text-ouro-claro">{v.icone}</span>
+                  {v.texto}
+                </>
+              );
+              return (
+                <li key={v.texto} className={`${v.soLg ? "hidden lg:flex" : "flex"} items-center`}>
+                  {i > 0 && <span aria-hidden="true" className="mx-5 h-3.5 w-px bg-white/15" />}
+                  {v.href ? (
+                    <a
+                      href={v.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+                    >
+                      {miolo}
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 text-white/80">{miolo}</span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
-          <ul className="flex items-center gap-5">
-            {INSTITUCIONAL.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className={`transition-colors hover:text-tinta ${pathname.startsWith(l.href) ? "text-tinta font-medium" : ""}`}
-                >
-                  {l.rotulo}
-                </Link>
-              </li>
-            ))}
+          <ul className="flex items-center gap-1">
+            {INSTITUCIONAL.map((l) => {
+              const ativo = pathname.startsWith(l.href);
+              return (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={ativo ? "page" : undefined}
+                    className={`inline-flex items-center h-6 px-2.5 rounded-full transition-colors ${
+                      ativo ? "bg-white/12 text-white font-medium" : "text-white/70 hover:text-white hover:bg-white/8"
+                    }`}
+                  >
+                    {l.rotulo}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
 
       {/* ---------- 2. Linha principal ---------- */}
       <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
-        <Link href="/" className="shrink-0 active:scale-95 transition-transform">
+        <Link
+          href="/"
+          onClick={(e) => {
+            // Já na home: só volta ao topo, suave
+            if (pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              setMenuAberto(false);
+              setBuscaAberta(false);
+            }
+          }}
+          className="shrink-0 active:scale-95 transition-transform"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset("/logo.png")}
@@ -184,54 +243,67 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           <BotaoEnviarReceita className="hidden md:inline-flex botao botao-principal botao-compacto !min-h-12" />
           <BotaoCarrinho className="hidden md:inline-flex botao botao-secundario botao-compacto !min-h-12" />
 
-          {/* Celular: carrinho, lupa e menu, em botões redondos */}
-          <BotaoCarrinho rotulo={false} className={classeBotaoRedondo} />
-          <button
-            type="button"
-            onClick={() => {
-              setBuscaAberta((b) => !b);
-              setMenuAberto(false);
-            }}
-            aria-label={buscaAberta ? "Fechar busca" : "Buscar"}
-            aria-expanded={buscaAberta}
-            className={`${classeBotaoRedondo} ${buscaAberta ? "!bg-navy !text-white" : ""}`}
-          >
-            <IconeLupa />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMenuAberto((m) => !m);
-              setBuscaAberta(false);
-            }}
-            aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={menuAberto}
-            className={`${classeBotaoRedondo} ${menuAberto ? "!bg-navy !text-white" : ""}`}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              {menuAberto ? (
-                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
+          {/* Celular: barra branca com o carrinho em ouro, a lupa e o menu */}
+          <div className="md:hidden flex items-center gap-0.5 p-1 rounded-full bg-white border border-fio shadow-[0_12px_30px_-18px_rgba(13,35,64,0.45)]">
+            <BotaoCarrinho rotulo={false} className={classeBotaoCarrinhoCelular} />
+            <button
+              type="button"
+              onClick={() => {
+                setBuscaAberta((b) => !b);
+                setMenuAberto(false);
+              }}
+              aria-label={buscaAberta ? "Fechar busca" : "Buscar"}
+              aria-expanded={buscaAberta}
+              className={classeBotaoCapsula(buscaAberta)}
+            >
+              <IconeLupa />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMenuAberto((m) => !m);
+                setBuscaAberta(false);
+              }}
+              aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={menuAberto}
+              className={classeBotaoCapsula(menuAberto)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                {menuAberto ? (
+                  <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                ) : (
+                  <path d="M4 8h16M4 16h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ---------- 3. Fileira de categorias em pílulas ---------- */}
       <nav
         aria-label="Categorias"
-        className="relative border-t border-fio bg-white after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white md:after:hidden"
+        className="relative border-t border-fio/70 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white/90 md:after:hidden"
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-[3.25rem] flex items-center gap-1.5 overflow-x-auto rolagem-sem-barra">
-          <Link href="/produtos" className={classeCategoria(pathname === "/produtos")}>
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
+          <Link
+            href="/produtos"
+            aria-current={pathname === "/produtos" ? "page" : undefined}
+            className={`${classeCategoria(pathname === "/produtos")} !pl-3 gap-1.5`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+              <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+              <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+              <rect x="14" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+            </svg>
             Todos
           </Link>
           {categorias.map((c) => (
             <Link
               key={c.id}
               href={`/produtos/${c.slug}`}
+              aria-current={pathname === `/produtos/${c.slug}` ? "page" : undefined}
               className={classeCategoria(pathname === `/produtos/${c.slug}`)}
             >
               {c.nome}
@@ -278,6 +350,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             <Link
               key={l.href}
               href={l.href}
+              aria-current={pathname.startsWith(l.href) ? "page" : undefined}
               className={`px-3 py-3 rounded-xl text-base font-medium transition-colors ${
                 pathname.startsWith(l.href) ? "text-tinta bg-gelo" : "text-grafite hover:bg-gelo"
               }`}

@@ -7,19 +7,25 @@
 //     apresentação (RDC 67/2007, item 5.14; RE nº 3.547/2026).
 //   - INDUSTRIALIZADO com registro: os detalhes ficam em sanfonas.
 //
-// Sistema "Branco, azul e ouro" (06/10/2026): a foto sobre um ladrilho
-// com a luz dourada, o título em navy, "Como pedir" em três linhas com fio
-// e a receita como link.
+// Sistema "Branco, azul e ouro" (06/10/2026; modernizada à noite, a
+// pedido): a foto sobre o ladrilho com a luz dourada e os selos de
+// logística embaixo; à direita a pílula da área em ouro, o nome grande, a
+// frase em itálico serifado (a segunda voz do site), a descrição, o cartão
+// de compra (AcoesProduto) e "Como pedir" como uma trilha clara de três
+// passos, com a linha em ouro que cresce ao rolar.
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
-import { listarItens, ehIndustrializado } from "@/lib/tipos";
+import { listarItens, ehIndustrializado, UNIDADES } from "@/lib/tipos";
 import { FotoProduto } from "@/components/site/FotoProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
+import { BotaoVerMais } from "@/components/site/BotaoVerMais";
 import { VistosRecentemente } from "@/components/site/VistosRecentemente";
-import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
+import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
+import { IconeMoto } from "@/components/site/IconeMoto";
+import { IconeLoja } from "@/components/site/IconesVantagens";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +60,14 @@ export async function generateStaticParams() {
   return produtos.map((p) => ({ slug: p.slug }));
 }
 
+function Chevron() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ouro shrink-0">
+      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 // Sanfona de detalhe: fechada por padrão, abre no clique. Sem
 // JavaScript, é o <details> nativo do navegador.
 function Sanfona({
@@ -69,43 +83,71 @@ function Sanfona({
   if (!temLista && !texto) return null;
 
   return (
-    <details className="group border-b border-fio py-1.5">
-      <summary className="flex items-center justify-between gap-4 min-h-12 cursor-pointer list-none font-medium text-navy marker:content-['']">
+    <details className="group rounded-2xl border border-fio bg-white open:bg-gelo/40 transition-colors">
+      <summary className="flex items-center justify-between gap-4 min-h-14 px-5 cursor-pointer list-none font-semibold text-navy marker:content-['']">
         {titulo}
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          className="shrink-0 text-ouro transition-transform group-open:rotate-180"
-        >
-          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <span className="shrink-0 w-8 h-8 rounded-full bg-gelo text-ouro flex items-center justify-center transition-transform group-open:rotate-180">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
       </summary>
 
-      {temLista ? (
-        <ul className="mb-3 flex flex-col gap-2">
-          {itens.map((i) => (
-            <li key={i} className="flex items-start gap-2.5 text-cinza leading-relaxed">
-              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-ouro mt-2.5" aria-hidden="true" />
-              {i}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mb-3 text-cinza leading-relaxed whitespace-pre-line">{texto}</p>
-      )}
+      <div className="px-5 pb-5">
+        {temLista ? (
+          <ul className="flex flex-col gap-2">
+            {itens.map((i) => (
+              <li key={i} className="flex items-start gap-2.5 text-cinza leading-relaxed">
+                <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-ouro mt-2.5" aria-hidden="true" />
+                {i}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-cinza leading-relaxed whitespace-pre-line">{texto}</p>
+        )}
+      </div>
     </details>
   );
 }
 
-// Como o pedido chega até a pessoa, em três linhas de processo
+// Como o pedido chega até a pessoa, em três passos de processo
 const PASSOS_PEDIDO = [
-  "Adicione ao carrinho e envie o pedido pelo WhatsApp",
-  "O farmacêutico confere e passa o valor e o prazo",
-  "Retire numa das 3 lojas ou receba em casa, de moto",
+  { titulo: "Adicione ao carrinho", texto: "e envie o pedido pelo WhatsApp." },
+  { titulo: "O farmacêutico confere", texto: "e passa o valor e o prazo." },
+  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem taxa, ou em casa, de moto.` },
 ];
+
+// Selos de logística, embaixo da foto: só o que dá para comprovar
+const SELOS = [
+  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "por toda Petrópolis" },
+  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada sem taxa", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeReceita tamanho={15} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
+];
+
+// Os selos, em linha de três. Quem chama diz onde aparecem (display):
+// "hidden lg:grid" sob a foto no computador, "grid lg:hidden" depois do
+// cartão de compra no celular.
+function Selos({ className = "" }: { className?: string }) {
+  return (
+    <ul className={`grid-cols-1 sm:grid-cols-3 gap-2 ${className}`}>
+      {SELOS.map((s) => (
+        <li
+          key={s.titulo}
+          className="flex items-center gap-2 rounded-2xl border border-fio bg-white px-3 py-2.5 text-[0.78rem] text-cinza whitespace-nowrap"
+        >
+          <span className="shrink-0 w-7 h-7 rounded-full bg-ouro/10 text-ouro-escuro flex items-center justify-center">
+            {s.icone}
+          </span>
+          <span className="leading-tight">
+            <b className="block font-semibold text-navy text-[0.82rem]">{s.titulo}</b>
+            {s.texto}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default async function PaginaProduto({ params }: Props) {
   const { slug } = await params;
@@ -124,75 +166,106 @@ export default async function PaginaProduto({ params }: Props) {
   return (
     <main className="flex-1">
       {/* Trilha de navegação */}
-      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-7">
-        <nav className="flex items-center gap-2 text-sm text-cinza min-h-10" aria-label="Você está em">
-          <Link href="/" className="inline-flex items-center min-h-10 hover:text-tinta transition-colors">Início</Link>
-          <span aria-hidden="true" className="text-ouro">/</span>
-          <Link href={hrefCategoria} className="inline-flex items-center min-h-10 hover:text-tinta transition-colors truncate max-w-[9rem] md:max-w-none">
+      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-6">
+        <nav className="flex items-center gap-1.5 text-sm text-cinza min-h-10" aria-label="Você está em">
+          <Link href="/" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">
+            Início
+          </Link>
+          <Chevron />
+          <Link
+            href={hrefCategoria}
+            className="inline-flex items-center min-h-11 hover:text-tinta transition-colors truncate max-w-[9rem] md:max-w-none"
+          >
             {categoria?.nome ?? "Categorias"}
           </Link>
-          <span aria-hidden="true" className="text-ouro">/</span>
-          <span className="text-navy truncate max-w-[10rem] md:max-w-none">{produto.nome}</span>
+          <Chevron />
+          <span className="text-navy font-medium truncate max-w-[10rem] md:max-w-none">{produto.nome}</span>
         </nav>
       </div>
 
       {/* Produto */}
-      <section className="max-w-6xl mx-auto px-5 md:px-8 pt-6 pb-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
-          {/* Imagem, sobre o ladrilho com a luz dourada */}
-          <div className="ladrilho ladrilho-luz relative flex items-end justify-center min-h-[20rem] md:min-h-[32rem] p-10 md:p-14 md:self-start">
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-[15%] bottom-8 h-16 bg-[radial-gradient(50%_60%_at_50%_60%,rgba(192,160,96,0.4),transparent_70%)]"
-            />
-            <FotoProduto
-              fotoUrl={produto.fotoUrl}
-              nome={produto.nome}
-              className="relative max-w-full max-h-[24rem] !object-contain drop-shadow-[0_28px_26px_rgba(16,42,74,0.25)]"
-              prioritaria
-            />
+      <section className="max-w-6xl mx-auto px-5 md:px-8 pt-4 pb-14 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-14 items-start">
+          {/* ---------- Foto e selos ---------- */}
+          <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
+            <div className="relative overflow-hidden rounded-[2rem] border border-fio bg-gradient-to-b from-gelo to-white flex items-end justify-center min-h-[20rem] md:min-h-[30rem] p-6 md:p-9">
+              {/* A luz dourada da bancada */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-[15%] bottom-6 h-20 bg-[radial-gradient(50%_60%_at_50%_70%,rgba(192,160,96,0.42),transparent_70%)]"
+              />
+              <FotoProduto
+                fotoUrl={produto.fotoUrl}
+                nome={produto.nome}
+                className="relative max-w-full max-h-[24rem] md:max-h-[28.5rem] !object-contain drop-shadow-[0_28px_26px_rgba(16,42,74,0.25)]"
+                prioritaria
+              />
+              {industrializado && produto.novidade && (
+                <span className="absolute top-4 left-4 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">
+                  Novidade
+                </span>
+              )}
+            </div>
+
+            <Selos className="hidden lg:grid mt-4" />
           </div>
 
-          {/* Texto e ação */}
+          {/* ---------- Texto e ação ---------- */}
           <div className="flex flex-col">
             <div className="flex flex-wrap items-center gap-2">
               {produto.categoriaNome && (
-                <Link href={hrefCategoria} className="chip !min-h-9 !px-3.5 rotulo !text-tinta text-[0.62rem]">
+                <Link
+                  href={hrefCategoria}
+                  className="inline-flex items-center gap-2 h-10 pl-3 pr-4 rounded-full bg-white border border-ouro/40 text-ouro-escuro text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition-colors hover:border-ouro hover:bg-ouro/5"
+                >
+                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
                   {produto.categoriaNome}
                 </Link>
               )}
               {industrializado && produto.apresentacao && (
-                <span className="chip !min-h-9 !px-3.5 rotulo !text-cinza text-[0.62rem]">{produto.apresentacao}</span>
+                <span className="inline-flex items-center h-9 px-3.5 rounded-full bg-gelo text-cinza text-[0.72rem] font-semibold uppercase tracking-[0.16em]">
+                  {produto.apresentacao}
+                </span>
               )}
             </div>
 
-            <h1 className="text-[2.25rem] md:text-[2.9rem] font-semibold tracking-[-0.04em] text-navy leading-[1.05] mt-5">
+            <h1 className="mt-5 text-[2.4rem] md:text-[3.25rem] font-semibold tracking-[-0.045em] text-navy leading-[1]">
               {produto.nome}
             </h1>
-            <p className="texto-apoio mt-4">{produto.descricao}</p>
+            {/* A segunda voz: a frase em itálico serifado, em ouro */}
+            <p className="tinta mt-3 text-[1.5rem] md:text-[1.75rem] leading-tight">
+              {industrializado ? "Pronta entrega nas lojas" : "Preparado a partir da sua receita"}
+            </p>
+            <p className="texto-apoio mt-5 max-w-[34rem]">{produto.descricao}</p>
 
             <AcoesProduto produto={produto} />
+            <Selos className="grid lg:hidden mt-5" />
 
             {industrializado && (
-              <div className="mt-7 border-t border-fio">
+              <div className="mt-6 flex flex-col gap-2.5">
                 <Sanfona titulo="Indicações" itens={listarItens(produto.indicacoes)} />
                 <Sanfona titulo="Composição" itens={listarItens(produto.composicao)} />
                 <Sanfona titulo="Modo de uso" texto={produto.modoUso} />
               </div>
             )}
 
-            {/* Como o pedido anda, em três linhas com fio */}
-            <div className="mt-8">
-              <p className="rotulo !text-cinza">Como pedir</p>
-              <ol className="lista-fichas mt-3">
-                {PASSOS_PEDIDO.map((passo, i) => (
-                  <li key={passo} className="flex items-baseline gap-4 py-3 text-grafite leading-snug">
-                    <span className="numero-tinta text-xl shrink-0 w-7">{String(i + 1).padStart(2, "0")}</span>
-                    {passo}
+            {/* Como o pedido anda: a trilha clara, em três passos */}
+            <div className="mt-9">
+              <p className="rotulo">Como pedir</p>
+              <ol className="trilha-clara relative mt-5 pl-12 flex flex-col gap-5">
+                <span aria-hidden="true" className="trilha-linha" />
+                <span aria-hidden="true" className="trilha-progresso" />
+                {PASSOS_PEDIDO.map((p, i) => (
+                  <li key={p.titulo} className="relative">
+                    <span aria-hidden="true" className="trilha-ponto">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="pt-1 font-semibold text-navy leading-snug">{p.titulo}</p>
+                    <p className="text-cinza text-[0.95rem] leading-relaxed">{p.texto}</p>
                   </li>
                 ))}
               </ol>
-              <BotaoEnviarReceita produtoVisto={produto.nome} className="botao-link mt-5" comIcone={false}>
+              <BotaoEnviarReceita produtoVisto={produto.nome} className="botao-link mt-6" comIcone={false}>
                 Tenho receita: enviar a foto
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -200,7 +273,7 @@ export default async function PaginaProduto({ params }: Props) {
               </BotaoEnviarReceita>
             </div>
 
-            <p className="text-grafite-claro text-sm mt-6 leading-relaxed">
+            <p className="text-cinza text-sm mt-6 leading-relaxed">
               O farmacêutico confere o seu pedido e passa o valor pelo WhatsApp. Se a
               fórmula precisar de receita, ele pede a foto da prescrição.{" "}
               <Link href="/sobre#como-funciona" className="text-tinta font-medium hover:underline">
@@ -225,12 +298,9 @@ export default async function PaginaProduto({ params }: Props) {
                 Mais em <span className="italic">{categoria?.nome ?? "nossas categorias"}</span>
               </h2>
             </div>
-            <Link href={hrefCategoria} className="botao botao-secundario botao-compacto shrink-0 hidden sm:inline-flex">
-              Ver categoria
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+            <span className="shrink-0 hidden sm:inline-flex">
+              <BotaoVerMais href={hrefCategoria}>Ver categoria</BotaoVerMais>
+            </span>
           </div>
           <FaixaProdutos produtos={relacionados} comCategoria={false} />
         </section>

@@ -3,8 +3,9 @@
 // preço: o farmacêutico passa o valor pelo WhatsApp. Produto com dosagem
 // para escolher manda para a página dele, onde a escolha acontece.
 //
-// É o botão secundário do sistema (contorno). Dentro de uma folha escura
-// (.em-noite) o contorno vira branco sozinho, pelo CSS.
+// É o botão do carrinho do sistema (.botao-carrinho, globals.css): pílula
+// em ouro com o texto em navy (pedido do usuário), verde por um instante
+// quando o produto entrou.
 import { useState } from "react";
 import Link from "next/link";
 import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
@@ -34,7 +35,13 @@ function IconeFeito() {
   );
 }
 
-const FEITO = "!bg-green-600 !text-white !border-green-600";
+function IconeSeta() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function BotaoAdicionar({
   produto,
@@ -51,8 +58,9 @@ export function BotaoAdicionar({
 
   if (listarDosagens(produto.dosagens).length > 0) {
     return (
-      <Link href={`/produto/${produto.slug}`} className={`botao botao-secundario botao-compacto ${className}`}>
+      <Link href={`/produto/${produto.slug}`} className={`botao-carrinho w-full ${className}`}>
         Escolher dosagem
+        <IconeSeta />
       </Link>
     );
   }
@@ -68,13 +76,15 @@ export function BotaoAdicionar({
     window.setTimeout(() => setAdicionado(false), 1800);
   }
 
+  const feito = adicionado ? "botao-carrinho-feito" : "";
+
   if (compacto) {
     return (
       <button
         type="button"
         onClick={aoAdicionar}
         aria-label={`Adicionar ${produto.nome} ao carrinho`}
-        className={`botao botao-secundario !min-h-10 w-10 !px-0 ${adicionado ? FEITO : ""} ${className}`}
+        className={`botao-carrinho !min-h-10 w-10 !px-0 ${feito} ${className}`}
       >
         {adicionado ? <IconeFeito /> : <IconeCarrinho />}
       </button>
@@ -88,8 +98,11 @@ export function BotaoAdicionar({
       type="button"
       onClick={aoAdicionar}
       aria-label={`Adicionar ${produto.nome} ao carrinho`}
-      className={`botao botao-secundario botao-compacto w-full ${adicionado ? FEITO : ""} ${className}`}
+      className={`botao-carrinho w-full ${feito} ${className}`}
     >
+      <span className="sr-only" aria-live="polite">
+        {adicionado ? "Produto adicionado ao carrinho" : ""}
+      </span>
       {adicionado ? <IconeFeito /> : <IconeCarrinho />}
       {adicionado ? (
         "Adicionado"

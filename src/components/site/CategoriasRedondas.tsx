@@ -1,7 +1,10 @@
 // "Compre por área": as categorias em círculos com foto (modelo de loja,
 // referência biovittare.com.br). A foto de cada área fica em
 // public/fotos/categorias/<slug>.jpg; sem ela, entra o pote de um produto
-// da categoria sobre o gelo e, sem pote, um círculo em ouro com a inicial.
+// da categoria sobre o gelo e, sem pote, um círculo em azul-noite com a
+// inicial em ouro.
+// Sem o respiro de seção em cima: fica colada nas vantagens (pedido do
+// usuário em 06/10/2026, "tire a parte em branco").
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
@@ -11,14 +14,17 @@ export type ImagemCategoria = { tipo: "foto" | "produto"; src: string };
 export function CategoriasRedondas({
   categorias,
   imagens = {},
+  contagens = {},
 }: {
   categorias: CategoriaDTO[];
   imagens?: Record<number, ImagemCategoria>;
+  /** Quantos produtos cada área tem (id da categoria -> total) */
+  contagens?: Record<number, number>;
 }) {
   if (categorias.length === 0) return null;
 
   return (
-    <section aria-labelledby="titulo-categorias" className="secao max-w-7xl mx-auto px-5 md:px-8">
+    <section aria-labelledby="titulo-categorias" className="pt-0.5 md:pt-1 max-w-7xl mx-auto px-5 md:px-8">
       <div className="revelar text-center">
         <p className="rotulo">compre por área</p>
         <h2 id="titulo-categorias" className="titulo-secao vao-rotulo">
@@ -32,7 +38,7 @@ export function CategoriasRedondas({
           return (
             <li key={c.id}>
               <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-3 text-center">
-                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-fio shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
+                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
                   {img?.tipo === "foto" ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -58,13 +64,20 @@ export function CategoriasRedondas({
                       />
                     </span>
                   ) : (
-                    <span className="flex w-full h-full items-center justify-center bg-[image:var(--ouro-degrade)] text-white text-4xl font-[family-name:var(--font-destaque)] italic">
+                    <span className="banner-noite flex w-full h-full items-center justify-center text-ouro-claro text-[3.5rem] font-[family-name:var(--font-destaque)] italic">
                       {c.nome.charAt(0)}
                     </span>
                   )}
                 </span>
-                <span className="font-medium text-navy text-[0.9rem] md:text-base leading-tight transition-colors group-hover:text-tinta">
-                  {c.nome}
+                <span className="leading-tight">
+                  <span className="block font-semibold text-navy text-[0.9rem] md:text-base transition-colors group-hover:text-tinta">
+                    {c.nome}
+                  </span>
+                  {contagens[c.id] ? (
+                    <span className="block mt-1 text-xs text-cinza">
+                      {contagens[c.id]} {contagens[c.id] === 1 ? "produto" : "produtos"}
+                    </span>
+                  ) : null}
                 </span>
               </Link>
             </li>

@@ -53,7 +53,7 @@ export default function PaginaLojas() {
                 <h2 className="text-2xl md:text-[1.75rem] font-semibold tracking-[-0.03em] text-navy">{u.bairro}</h2>
                 <p className="text-cinza leading-relaxed mt-1">{u.endereco}</p>
                 {u.telefone && (
-                  <p className="text-grafite-claro text-sm mt-1.5 tabular-nums">Telefone {u.telefone}</p>
+                  <p className="text-cinza text-sm mt-1.5 tabular-nums">Telefone {u.telefone}</p>
                 )}
               </div>
 

@@ -1,7 +1,7 @@
 // Rodapé do site em azul profundo, para fechar a página com peso.
 //
-// Abre com o "Fale com a gente" (ver FaleComAGente). Embaixo dele, desde
-// 05/10/2026, o rodapé segue a estrutura do da Cabana Afrodite, a pedido:
+// Logo acima vem o "Fale com a gente" (FaleComAGente), em bloco CLARO
+// desde 06/10/2026; o rodapé em si, desde 05/10/2026, segue a estrutura do da Cabana Afrodite, a pedido:
 // tudo centralizado, em três tempos. A marca respirando no alto com a
 // frase no itálico do site; os contatos em ícones (que acendem em azul) e
 // a navegação numa fileira de caixa alta; e a linha legal embaixo. Ao
@@ -14,12 +14,10 @@ import {
   ANOS_TRADICAO,
   CNPJ_FARMACIA,
   INSTAGRAM_URL,
-  UNIDADES,
   WHATSAPP_NUMERO,
 } from "@/lib/tipos";
 
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}`;
-const TELEFONE_FIXO = UNIDADES.find((u) => u.telefone)?.telefone ?? null;
 
 const NAVEGACAO = [
   { href: "/", rotulo: "Início" },
@@ -48,19 +46,6 @@ function IconeInstagram() {
   );
 }
 
-function IconeTelefone() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
-      <path
-        d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function IconeMapa() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
@@ -74,17 +59,6 @@ function IconeMapa() {
 const CONTATOS = [
   { id: "whatsapp", rotulo: "WhatsApp", href: LINK_WHATSAPP, externo: true, icone: IconeWhatsApp },
   { id: "instagram", rotulo: "Instagram", href: INSTAGRAM_URL, externo: true, icone: IconeInstagram },
-  ...(TELEFONE_FIXO
-    ? [
-        {
-          id: "telefone",
-          rotulo: `Telefone fixo ${TELEFONE_FIXO}`,
-          href: `tel:+55${TELEFONE_FIXO.replace(/\D/g, "")}`,
-          externo: false,
-          icone: IconeTelefone,
-        },
-      ]
-    : []),
   { id: "lojas", rotulo: "Nossas lojas", href: "/lojas", externo: false, icone: IconeMapa },
 ];
 
@@ -92,7 +66,9 @@ export function Footer() {
   const ano = new Date().getFullYear();
 
   return (
-    <footer className="em-noite relative isolate mt-auto overflow-hidden bg-noite text-white">
+    <div className="mt-auto">
+      <FaleComAGente />
+    <footer className="em-noite relative isolate overflow-hidden bg-noite text-white">
       {/* Assinatura gigante ao fundo, quase invisível, cortada pela base.
           É SVG, e não texto, porque texto quase transparente reprova o
           contraste no Lighthouse mesmo escondido. */}
@@ -116,11 +92,6 @@ export function Footer() {
           Viver Bem
         </text>
       </svg>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* ---------- Fale com a gente ---------- */}
-        <FaleComAGente />
-      </div>
 
       {/* ---------- Rodapé centralizado ---------- */}
       <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-28 md:pb-16 flex flex-col items-center text-center">
@@ -190,7 +161,7 @@ export function Footer() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors duration-300 hover:bg-white/[0.06] hover:text-white"
+                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:bg-white/[0.06] hover:text-white"
                 >
                   {l.rotulo}
                 </Link>
@@ -200,7 +171,7 @@ export function Footer() {
         </nav>
 
         {/* Aviso legal, curto e centralizado */}
-        <p className="mt-8 max-w-2xl text-xs leading-relaxed text-white/40">
+        <p className="mt-8 max-w-2xl text-xs leading-relaxed text-white/60">
           Medicamentos manipulados são preparados somente mediante prescrição de profissional
           habilitado. Os dados informados no pedido (nome e WhatsApp) são usados apenas pela
           Viver Bem para atendimento e ofertas, conforme a LGPD.
@@ -208,7 +179,7 @@ export function Footer() {
 
         {/* Linha final */}
         <div className="mt-10 w-full border-t border-white/10 pt-7">
-          <div className="flex flex-col items-center gap-2 text-[0.75rem] text-white/45 sm:flex-row sm:justify-between">
+          <div className="flex flex-col items-center gap-2 text-[0.78rem] text-white/60 sm:flex-row sm:justify-between">
             <p>
               © {ano} Manipulação Viver Bem · CNPJ {CNPJ_FARMACIA}
             </p>
@@ -217,5 +188,6 @@ export function Footer() {
         </div>
       </div>
     </footer>
+    </div>
   );
 }

@@ -5,9 +5,10 @@ import type { NextConfig } from "next";
 // src/lib/dados-demo.json). Veja scripts/gerar-demo.js.
 const ehDemo = process.env.DEMO === "1";
 
-// No GitHub Pages o site fica em /app_viverbem-, e não na raiz do
-// domínio (o hífen final faz parte do nome do repositório)
-const basePath = ehDemo ? process.env.DEMO_BASE_PATH || "/app_viverbem-" : "";
+// No GitHub Pages o site fica em /viverbem (repositório da remodelagem,
+// criado em 06/10/2026), e não na raiz do domínio. A primeira versão
+// continua em /app_viverbem-, no repositório antigo.
+const basePath = ehDemo ? process.env.DEMO_BASE_PATH || "/viverbem" : "";
 
 // A prévia precisa do próprio endereço: sem ele o link compartilhado no
 // WhatsApp sai sem imagem e o canonical aponta para um domínio que não existe

@@ -68,7 +68,7 @@ export default function PaginaContato() {
                 <h3 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy">{u.bairro}</h3>
                 <p className="text-cinza leading-relaxed mt-1">{u.endereco}, Petrópolis/RJ</p>
                 {u.telefone && (
-                  <p className="text-grafite-claro text-sm mt-1 tabular-nums">Telefone {u.telefone}</p>
+                  <p className="text-cinza text-sm mt-1 tabular-nums">Telefone {u.telefone}</p>
                 )}
               </div>
               <a

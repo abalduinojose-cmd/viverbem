@@ -7,7 +7,8 @@
 //   - congela os produtos num JSON gerado a partir do banco atual
 //
 // Uso:  npm run demo:build   -> gera a pasta docs/, que o Pages publica
-//       (repositório abalduinojose-cmd/app_viverbem-, branch main, /docs)
+//       (repositório abalduinojose-cmd/viverbem, branch main, /docs;
+//        a primeira versão segue em app_viverbem-)
 //
 // PARE o `npm run dev` antes: os dois disputam a pasta .next.
 // O projeto volta ao estado original no final, mesmo se der erro.

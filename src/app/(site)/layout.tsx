@@ -12,8 +12,14 @@ export default async function LayoutSite({ children }: { children: React.ReactNo
 
   return (
     <CarrinhoGlobal>
+      {/* Para quem navega pelo teclado: pula o cabeçalho inteiro */}
+      <a href="#conteudo" className="pular-conteudo">
+        Pular para o conteúdo
+      </a>
       <Header categorias={categorias} />
-      <div className="flex-1 flex flex-col">{children}</div>
+      <div id="conteudo" tabIndex={-1} className="flex-1 flex flex-col outline-none">
+        {children}
+      </div>
       <Footer />
     </CarrinhoGlobal>
   );

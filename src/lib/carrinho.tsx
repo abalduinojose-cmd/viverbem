@@ -7,6 +7,12 @@
 // Desde 05/10/2026 o site não tem preço: o carrinho leva só nome e
 // quantidade, e o farmacêutico passa o valor pelo WhatsApp.
 //
+// Os itens vivem num "store externo" (memória + localStorage) que o React
+// assina com useSyncExternalStore: no servidor o carrinho é sempre vazio,
+// no navegador vem o que está guardado, sem setState dentro de efeito e
+// sem divergência de hidratação. Mudanças em outra aba chegam pelo evento
+// "storage".
+//
 // A gaveta também mora aqui, para qualquer botão "Enviar receita" do
 // site (cabeçalho, home, página de produto) conseguir abri-la.
 //
@@ -16,9 +22,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 export interface ItemCarrinho {
@@ -60,71 +66,92 @@ const Contexto = createContext<ContextoCarrinho | null>(null);
 // ficou salvo no navegador de quem já visitou é ignorado.
 const CHAVE_STORAGE = "viverbem_pedido_v3";
 
+// ---------- O store dos itens, fora do React ----------
+
+const VAZIO: ItemCarrinho[] = [];
+// null = ainda não lido do localStorage
+let itensMemoria: ItemCarrinho[] | null = null;
+const ouvintes = new Set<() => void>();
+
+function lerDoStorage(): ItemCarrinho[] {
+  try {
+    const salvo = localStorage.getItem(CHAVE_STORAGE);
+    const lista = salvo ? JSON.parse(salvo) : [];
+    return Array.isArray(lista) ? lista : [];
+  } catch {
+    /* storage indisponível ou corrompido: começa vazio */
+    return [];
+  }
+}
+
+/** Snapshot atual (mesma referência enquanto nada muda, como o React exige). */
+function lerItens(): ItemCarrinho[] {
+  if (itensMemoria === null) itensMemoria = lerDoStorage();
+  return itensMemoria;
+}
+
+function gravarItens(novos: ItemCarrinho[]) {
+  itensMemoria = novos;
+  try {
+    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(novos));
+  } catch {
+    /* sem storage, o pedido vive só em memória */
+  }
+  ouvintes.forEach((avisar) => avisar());
+}
+
+function assinar(avisar: () => void) {
+  ouvintes.add(avisar);
+  // Outra aba mexeu no pedido: relê e avisa
+  const aoMudarStorage = (e: StorageEvent) => {
+    if (e.key !== null && e.key !== CHAVE_STORAGE) return;
+    itensMemoria = null;
+    avisar();
+  };
+  window.addEventListener("storage", aoMudarStorage);
+  return () => {
+    ouvintes.delete(avisar);
+    window.removeEventListener("storage", aoMudarStorage);
+  };
+}
+
+// Mesmo produto com dosagens diferentes = itens separados
+const mesmaLinha = (a: ItemCarrinho, produtoId: number, dosagem: string | null) =>
+  a.produtoId === produtoId && a.dosagem === dosagem;
+
 export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
-  const [itens, setItens] = useState<ItemCarrinho[]>([]);
+  const itens = useSyncExternalStore(assinar, lerItens, () => VAZIO);
   const [receita, setReceita] = useState(false);
   const [produtoVisto, setProdutoVisto] = useState<string | null>(null);
   const [aberto, setAberto] = useState(false);
 
-  // Carrega o que ficou salvo (sobrevive a navegações e recarregamentos)
-  useEffect(() => {
-    try {
-      const salvo = localStorage.getItem(CHAVE_STORAGE);
-      if (salvo) setItens(JSON.parse(salvo));
-    } catch {
-      /* storage indisponível ou corrompido: começa vazio */
-    }
+  const adicionar = useCallback((item: Omit<ItemCarrinho, "quantidade">, quantidade = 1) => {
+    const atual = lerItens();
+    const existente = atual.find((i) => mesmaLinha(i, item.produtoId, item.dosagem));
+    gravarItens(
+      existente
+        ? atual.map((i) =>
+            mesmaLinha(i, item.produtoId, item.dosagem) ? { ...i, quantidade: i.quantidade + quantidade } : i
+          )
+        : [...atual, { ...item, quantidade }]
+    );
   }, []);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(CHAVE_STORAGE, JSON.stringify(itens));
-    } catch {
-      /* sem storage, o pedido vive só em memória */
-    }
-  }, [itens]);
-
-  // Mesmo produto com dosagens diferentes = itens separados
-  const mesmaLinha = (a: ItemCarrinho, produtoId: number, dosagem: string | null) =>
-    a.produtoId === produtoId && a.dosagem === dosagem;
-
-  const adicionar = useCallback(
-    (item: Omit<ItemCarrinho, "quantidade">, quantidade = 1) => {
-      setItens((atual) => {
-        const existente = atual.find((i) => mesmaLinha(i, item.produtoId, item.dosagem));
-        if (existente) {
-          return atual.map((i) =>
-            mesmaLinha(i, item.produtoId, item.dosagem)
-              ? { ...i, quantidade: i.quantidade + quantidade }
-              : i
-          );
-        }
-        return [...atual, { ...item, quantidade }];
-      });
-    },
-    []
-  );
-
-  const mudarQuantidade = useCallback(
-    (produtoId: number, dosagem: string | null, delta: number) => {
-      setItens((atual) =>
-        atual
-          .map((i) =>
-            mesmaLinha(i, produtoId, dosagem) ? { ...i, quantidade: i.quantidade + delta } : i
-          )
-          .filter((i) => i.quantidade > 0)
-      );
-    },
-    []
-  );
+  const mudarQuantidade = useCallback((produtoId: number, dosagem: string | null, delta: number) => {
+    gravarItens(
+      lerItens()
+        .map((i) => (mesmaLinha(i, produtoId, dosagem) ? { ...i, quantidade: i.quantidade + delta } : i))
+        .filter((i) => i.quantidade > 0)
+    );
+  }, []);
 
   const remover = useCallback((produtoId: number, dosagem: string | null) => {
-    setItens((atual) => atual.filter((i) => !mesmaLinha(i, produtoId, dosagem)));
+    gravarItens(lerItens().filter((i) => !mesmaLinha(i, produtoId, dosagem)));
   }, []);
 
   // Depois do envio: esvazia tudo, receita inclusive
   const limpar = useCallback(() => {
-    setItens([]);
+    gravarItens([]);
     setReceita(false);
     setProdutoVisto(null);
   }, []);

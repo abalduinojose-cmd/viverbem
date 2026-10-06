@@ -1,5 +1,277 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 16 (06/10/2026, noite): sai o rótulo em vidro; banners e "Como funciona" novos; a receita em destaque na gaveta; flutuantes discretos.**
+> O rótulo "Preparado para [nome]" em vidro saiu do site inteiro a pedido
+> ("exclua isso de todo o site"): da bancada da abertura e do banner "Mais
+> procurados"; `RotuloVidro` e os nomes fictícios foram apagados de
+> `Abertura.tsx`, e `BannerVitrine` trocou `rotulo`/`legenda`/`contador`
+> por `pilula`. Banners das vitrines ("melhore todos os LinkComponent,
+> deixe mais moderno"): malha fina de laboratório (`.malha-banner`, linhas
+> brancas a 8% mascaradas no alto à direita), luz dourada e azul, um anel,
+> a inicial da área como marca d'água preenchida (branco 7% + fio de ouro)
+> que desce mais devagar que a página (`.paralaxe-vista`, view timeline),
+> pílula de vidro com ponto de ouro e o total ("10 produtos"), título em
+> duas vozes (a parte entre *asteriscos* dos textos em `page.tsx` sai em
+> itálico ouro, via `TituloDuasVozes` e `.titulo-banner`) e o botão "Ver
+> produtos" em vidro com a seta no círculo de ouro (irmão noturno do
+> `BotaoVerMais`). "Como funciona" (3ª versão, "modernize a seção"):
+> título em duas vozes com o apoio ao lado; quatro cartões brancos lado a
+> lado (1/2/4 colunas), cada um com o número num círculo de ouro saindo
+> pela borda de cima (`.passo-numero`) e o ícone do passo (receita,
+> prancheta com visto, frasco, moto) em círculo ouro/10; no computador a
+> `.trilha-h-linha` liga os quatro números e a `.trilha-h-progresso`
+> cresce com a rolagem (view timeline, `cover 0% 55%`); fecha com o
+> convite em azul-noite ("Receita em mãos? Envie a foto agora *e o
+> farmacêutico confere.*", malha, ícone em ouro, botão branco "Enviar
+> receita" com o ícone em círculo de ouro e "Tirar uma dúvida antes" em
+> contorno; o parágrafo some no celular); aviso legal embaixo. "Melhore a
+> parte de enviar a receita": na gaveta, o cartão da receita ligado vira
+> azul-noite com a malha, o ícone e a chave em ouro (botão navy) e três
+> mini-passos ("Seus dados", "Mensagem pronta", "Foto na conversa") com
+> numerais em ouro; desligado, "Tire uma foto da prescrição e envie pelo
+> WhatsApp". O "Ver carrinho" flutuante no celular virou só o círculo navy
+> com o contador (o texto cobria os botões das seções, visto no print do
+> usuário); o "Enviar receita" flutuante some enquanto um botão de receita
+> da página está na tela (`data-receita-cta` no `BotaoEnviarReceita`,
+> IntersectionObserver reconsultado a cada `usePathname`). Capturas em
+> `scratchpad/etapa24/` e `etapa25/`.
+
+> **ADENDO 15 (06/10/2026, noite): gaveta do pedido refeita, "mais clean e fácil para o cliente".**
+> `CarrinhoDrawer.tsx` reescrito por inteiro mantendo a lógica (estado,
+> `enviarPedido`, Esc/Tab, foco e trava de rolagem, botões flutuantes,
+> `role="switch"`, `aria-pressed`). Cabeçalho enxuto: "passo 1 de 2" em
+> rótulo cinza, título ("Seu pedido" / "Seus dados" / "Tudo certo"), botões
+> redondos em gelo (voltar só na etapa 2, fechar) e DOIS TRAÇOS de progresso
+> em ouro no lugar das pílulas de etapa; a linha de resumo duplicada saiu
+> do topo. Etapa 1: cartão da receita com ícone em quadrado e uma chave
+> (switch) visual à direita, azul quando ligada; "você viu" numa pílula
+> fina; lista "Produtos" com um "Limpar" discreto no lugar do "Tirar todos
+> os produtos"; cartões menores (foto 64px em gelo, nome, lixeira, chip da
+> dosagem e stepper em pílula de gelo com o "+" em navy); vazio com borda
+> tracejada, ícone do carrinho e "Ver produtos"; só a receita marcada
+> mostra um convite em uma linha para juntar produtos. Rodapé com UMA linha
+> ("2 produtos · valor pelo WhatsApp") e "Continuar" com seta. Etapa 2:
+> campos agrupados (nome e WhatsApp; "Como você quer receber" em dois
+> cartões com ícone, navy quando escolhido; lojas em rádios; endereço com
+> aviso da taxa), e Observação e Resumo em SANFONAS (`<details>`) fechadas,
+> para a tela caber no celular. Rodapé: "Enviar pedido no WhatsApp" com o
+> ícone, a dica em `aria-live` enquanto falta algo e, quando dá, "Pedido
+> VB-XXXX · seus dados ficam só com a Viver Bem, conforme a LGPD" (código
+> sem quebrar no hífen). Confirmação: círculo de ouro com o check, "Pedido
+> enviado" e "Concluir". `summary::-webkit-details-marker` escondido para
+> o Safari. Verificado por script: Continuar desabilitado no vazio, switch
+> com `aria-checked`, retirada exige loja, link do WhatsApp com os dados,
+> foco preso em 12 Tabs, Esc devolve o foco ao botão do carrinho, zero erros
+> de console. Capturas em `scratchpad/etapa23/`.
+
+> **ADENDO 14 (06/10/2026, noite): vídeo na dobra testado e reprovado; barra do cabeçalho no celular.**
+> O usuário mandou um vídeo de 10s dos produtos ("Hero Viver Bem.mp4",
+> 1920x1080, fundo preto com legendas próprias) para o lugar dos potes no
+> computador. Foi colocado numa tela arredondada à direita (H.264 720p,
+> sem som, `<source media="(min-width: 768px)">` para o celular não
+> baixar), ele viu e reprovou na hora ("não ficou bom, volte o que era
+> antes"): a dobra voltou aos potes em todas as telas e os arquivos
+> `public/videos/hero*.{mp4,jpg}` foram apagados. O que ficou da rodada:
+> os botões do cabeçalho do celular viraram uma barra branca com fio e
+> sombra, o carrinho num círculo de ouro (como os "Adicionar") com o
+> contador em navy, e a lupa e o menu redondos dentro da barra (navy quando
+> abertos).
+
+> **ADENDO 13 (06/10/2026, noite): dobra mais curta e larga, folga nas avaliações, transições de rolagem.**
+> Dobra "mais curta e rente às bordas": a seção passou a `max-w-[90rem]`
+> com recuo de 12/20px (era 20/32 dentro de 1280px), o miolo com menos
+> respiro (pt-7, md:py-9, md:min-h-[26rem]), a bancada de 13,5/22rem com
+> os potes 18% menores e o display de 44-80px (era 48-90): no computador
+> o banner caiu de ~630 para ~470px, no celular de ~800 para ~710px. A
+> bancada ganhou paralaxe (`.paralaxe`, desce 3rem mais devagar que a
+> página, scroll-driven). Avaliações no celular: o encaixe (`snap`) levava
+> o primeiro cartão até o limite da tela, ignorando o recuo; entrou
+> `scroll-pl-5 md:scroll-pl-8`, e o cartão fica a 20px da borda.
+> Transições de rolagem mais presentes: `.revelar` sobe 56px com escala
+> 0,98 ao longo de 45% da entrada (era 28px em 30%), a folha que sai recua
+> para 0,92 e 25% de opacidade (era 0,95 e 35%), e uma linha de progresso
+> em ouro (2px) cresce sob o cabeçalho conforme a página rola
+> (`.progresso-rolagem`, scroll-driven). Tudo roda com "reduzir movimento"
+> ligado; vídeo da rolagem em `scratchpad/video-r10/rolagem-390.mp4`.
+
+> **ADENDO 12 (06/10/2026, noite): banners editoriais, vantagens centralizadas no celular.**
+> Os banners das vitrines ("quero esse layout muito mais moderno") viraram
+> peças editoriais em azul-noite: borda interna de vidro (`ring-inset`),
+> luz dourada no canto, a inicial da área GIGANTE em contorno de ouro
+> (SVG `<text>` com stroke, cortada pela borda), anéis finos como cápsulas
+> vistas de cima, legenda em ouro (no celular e ao lado do rótulo em vidro
+> só o total, "10 produtos"; no computador "Área · 10 produtos"), título,
+> texto e a chamada "veja os produtos" com a seta num círculo de ouro, sem
+> pílula branca. No "Mais procurados" o rótulo em vidro aparece em todas
+> as telas. Vantagens no celular com ícone e textos centralizados. Botões
+> secundários da dobra com ícone também no celular (grade em círculo e
+> seta), com `shrink-0` nos ícones: o flex estava esmagando a seta para
+> 3px; a dobra ganhou 8px de largura no celular (px-5) para os dois
+> caberem lado a lado.
+
+> **ADENDO 11 (06/10/2026, noite): três botões na dobra, fotos nas áreas, produtos maiores, contato sem telefone fixo.**
+> Dobra com três botões em hierarquia (regra da skill ui-ux-pro-max: uma
+> ação principal por tela): "Enviar receita" em branco com o ícone num
+> círculo de ouro, "Ver produtos" em vidro com o ícone de grade e "Como
+> funciona" só com o contorno; no celular a receita ocupa a linha e os
+> outros dois dividem a seguinte. Círculos das áreas: as áreas sem foto
+> própria usam frascos que já temos onde combinam (Vitaminas = Ômega 3,
+> Saúde da Mulher = CitoRepair, Saúde do Homem = VitaFlex, mapa
+> `FOTO_REPRESENTATIVA` na home); Cabelos & Unhas e Homeopatia & Florais
+> ficam com a inicial em ouro sobre azul-noite até chegar foto. Fotos de
+> produto 10% maiores (só a foto: o recuo do cartão caiu de 24 para 14px
+> e o da página do produto de 32/48 para 24/36px). "Fale com a gente" com
+> três cartões: a receita em azul-noite na linha inteira com a pílula
+> "Começar", WhatsApp e Nossas lojas (bairros em chips) com a seta em ouro
+> e uma linha de ação no pé; o telefone fixo saiu daqui e do rodapé
+> (segue na página das lojas).
+
+> **ADENDO 10 (06/10/2026, noite): auditoria de front-end, acessibilidade e UX (skill ui-ux-pro-max).**
+> Auditoria automática (axe-core WCAG 2.1 AA + boas práticas, rolagem
+> horizontal, alvos de toque, imagens sem dimensão, ordem de títulos,
+> console) em 7 páginas x 4 larguras (320/390/768/1440), mais revisão de
+> código. Corrigido: contraste do rodapé (textos de 40-50% de branco
+> passaram a 60%) e dos textos pequenos em cinza-claro (3,1:1 -> cinza,
+> 6,3:1); foco visível igual no site inteiro (`:focus-visible`, anel azul,
+> ouro sobre o azul-noite); link "Pular para o conteúdo" e alvo
+> `#conteudo` no layout; `cursor: pointer` nos botões (o Tailwind v4 deixa
+> padrão) e `touch-action: manipulation`; rolagem suave nas âncoras com
+> `data-scroll-behavior` no html (o Next 16 só suspende na troca de
+> página com o atributo); `theme-color` e `color-scheme`. Catálogo: a
+> página inteira virou `<main>` (conteúdo fora de landmark), o `nav` das
+> áreas ganhou nome próprio (duplicava o do cabeçalho), h2 só para leitor
+> de tela na página de categoria (h1 -> h3 pulava nível), só o "&" em
+> itálico como na home. Toque: pílulas do cabeçalho com 40px, trilha de
+> navegação com 44px, pílula da área do produto com 40px e 11,5px de
+> texto; o cartão de produto inteiro virou o link (pseudo-elemento do
+> nome; o botão fica por cima), a foto deixou de ser um segundo link.
+> Imagens: `width`/`height` nas fotos de produto (500) e nos avatares
+> (CLS). Gaveta do pedido: foco vai para a gaveta ao abrir e volta para
+> quem abriu ao fechar, Tab preso dentro, rolagem da página travada,
+> `type="text"`/`"tel"` nos campos e aviso do que falta para enviar; os
+> botões "Adicionar" anunciam "Produto adicionado" (`aria-live`).
+> `lib/carrinho.tsx` virou store externo com `useSyncExternalStore`
+> (sem setState em efeito, sem divergência de hidratação, sincroniza entre
+> abas). `video.play()` com catch. Apagados os componentes mortos
+> `SecaoCategorias`, `SecaoQueridinhos`, `Numeros`, `SecaoTitulo`,
+> `Revelar`. Resultado: 0 violações do axe nas 28 combinações (medidas com
+> as animações de entrada desligadas; com elas ligadas o axe mede a cor
+> na opacidade do momento e acusa falso positivo), 0 rolagem horizontal
+> (inclusive em 320px), 0 erros de console, 0 imagens sem dimensão.
+> Teste funcional do carrinho novo: adiciona, persiste ao recarregar,
+> +/-, remover, foco e Esc conferidos por script.
+
+> **ADENDO 9 (06/10/2026, noite, sétima rodada): dobra, categorias, arraste, cabeçalho do celular, cartão da nota e "Fale com a gente".**
+> Botões da dobra: "Enviar receita" em branco com o ícone num círculo de
+> ouro e "Como funciona" em pílula de vidro (antes era link sublinhado).
+> Categorias: contagem de produtos embaixo de cada nome (vem da home,
+> `contagens`). Saiu a numeração "01, 02" dos títulos das vitrines
+> (reprovada). Arraste com o mouse nas faixas de produtos e de avaliações
+> pelo hook `useArrasteHorizontal` (lib): o arrasto nativo de links e
+> imagens era o que cancelava o ponteiro; testado por script (scrollLeft
+> 4 -> 280 sem abrir produto). Logo do cabeçalho: na home, só volta ao
+> topo com rolagem suave. Cabeçalho do celular: a cápsula em gelo virou
+> três botões redondos, o carrinho em navy com o contador em ouro.
+> Cartão da nota nas avaliações preenchido: "5,0 de 5, nota máxima",
+> estrelas maiores, fotos de quem avaliou empilhadas, total e "Ver todas
+> no Google". "Fale com a gente" reformulado e tirado do rodapé escuro:
+> bloco claro com o título em duas vozes, pílula "Aberto agora" e a
+> semana num cartão, e quatro cartões de contato (WhatsApp em verde,
+> receita, telefone fixo, lojas) com a seta num círculo de ouro; o
+> `Footer` devolve `<div class="mt-auto">` com o Fale com a gente e o
+> rodapé navy. Botões de categoria (pílulas do cabeçalho, círculos da
+> home e chips do catálogo) testados: todos navegam.
+
+> **ADENDO 8 (06/10/2026, noite, sexta rodada): "Como funciona" claro, títulos das vitrines e botão do Instagram.**
+> O painel em azul-noite do "Como funciona" saiu ("tire o azul forte do
+> fundo"): a seção voltou para a folha clara, com a coluna do título
+> presa ao rolar no computador e os quatro passos em cartões brancos
+> pendurados na trilha clara (`.trilha-clara`): números em ouro, linha de
+> ouro que cresce ao rolar, chips das lojas com o pino em ouro; o botão
+> "Enviar receita" voltou a ser o principal azul. Títulos das vitrines
+> maiores (1,75/2,5rem), com o índice da vitrine em ouro antes ("01 Mais
+> procurados", "02 Dermatologia & Estética"...) e, nos nomes das áreas, só
+> o "&" em itálico ouro (dividir o nome ao meio ficava estranho). O botão
+> do Instagram virou pílula branca com o ícone num círculo de ouro, o
+> @ em navy e a setinha de link externo em ouro.
+
+> **ADENDO 7 (06/10/2026, noite, quinta rodada): banners sem foto de produto e botões "Adicionar" em ouro.**
+> Os potes saíram dos banners das vitrines (pedido). Sem foto, o banner é
+> o azul-noite com a inicial da área como marca d'água em itálico
+> serifado (branco a 8%), uma pílula de vidro com o contador ("N
+> produtos", total da área), um traço de ouro acima do título e o botão
+> "veja os produtos" em branco com a seta num círculo de ouro; o banner
+> virou coluna flex com altura mínima (18/20/26rem), contador em cima e
+> texto embaixo, para nada se sobrepor no celular. No "Mais procurados" o
+> rótulo em vidro continua (computador) e o contador vai para a direita.
+> `.botao-carrinho` passou a **ouro** (degradê `--ouro-degrade`, texto em
+> navy, sombra dourada, brilho no hover; verde com texto branco quando o
+> produto entrou), nos cartões, nos relacionados e no cartão de compra da
+> página do produto. O flutuante "Ver carrinho" segue navy com o contador
+> em ouro, para se distinguir do "Adicionar".
+
+> **ADENDO 6 (06/10/2026, noite, quarta rodada): página do produto, 2x2 e mais ouro.**
+> Página do produto modernizada: a foto num ladrilho com a luz dourada e
+> três selos de logística embaixo (Delivery, Retirada sem taxa, Receita
+> conferida); a pílula da área em branco com fio e ponto em ouro (era o
+> chip azul); o nome em 2,4/3,25rem; a segunda voz em itálico serifado
+> ouro ("Preparado a partir da sua receita" ou "Pronta entrega nas
+> lojas"); cartão de compra (`AcoesProduto`) com dosagens em pílulas,
+> stepper em gelo com o "+" em navy e o `.botao-carrinho` grande; sanfonas
+> dos industrializados em cartões; "Como pedir" como trilha clara
+> (`.trilha-clara`, três passos, linha de ouro que cresce ao rolar).
+> Vantagens no celular em 2x2 (cartões com o ícone em cima; do md em
+> diante seguem pílulas). Botão flutuante "Ver carrinho" em navy com o
+> ícone e o contador em ouro. Mais 10% de ouro no site: ícone dos botões
+> do carrinho em ouro-claro, seta do "ver mais" num círculo de ouro (navy
+> no hover), fio das vitrines começando em ouro, anel ouro/30 nos
+> círculos de categoria e ícones das vantagens em círculos ouro/10.
+
+> **ADENDO 5 (06/10/2026, noite, terceira rodada): sete pedidos por print.**
+> "Delivery" no lugar de "Entrega de moto" nas vantagens e na faixa do
+> topo, com o ícone do scooter (a partir do "moped" do Tabler Icons, MIT),
+> que lê melhor pequeno. A seção de categorias colou nas vantagens: saiu
+> o respiro de seção dela e `.folha` passou a 1,5rem de padding no topo
+> (o vão caiu de ~139px para ~40px no computador). Vitrines: a pílula
+> "ver mais" com a seta num círculo em azul-noite (`BotaoVerMais`); o
+> banner sem foto ganha um pote .png da própria área flutuando sobre a luz
+> dourada e, no "Mais procurados", o rótulo em vidro (`RotuloVidro`,
+> exportado da Abertura) no computador; o cartão de produto ganhou a luz
+> dourada no pé do pote e o botão virou `.botao-carrinho` (pílula cheia em
+> azul-noite, azul no hover, verde por um instante quando o produto entrou,
+> branca dentro de `.em-noite`). Reels centralizados: título no centro, os
+> dois vídeos lado a lado no celular e no computador (o segundo desce um
+> pouco no computador), legenda em vidro com o título do vídeo e o botão
+> do Instagram embaixo. "Como funciona" virou um painel em azul-noite com
+> a trilha do pedido: os quatro passos numa linha vertical, números em
+> ouro e a linha de progresso que cresce com a rolagem (`.trilha-*`,
+> scroll-driven, roda com "reduzir movimento"). O botão vermelho "1 Issue"
+> dos prints é o indicador de erros do Next em desenvolvimento (não existe
+> no site publicado).
+> Passada de revisão depois dos prints: a mesma pílula (`BotaoVerMais`, em
+> arquivo próprio) nos "Ver categoria" do catálogo e da página do produto;
+> o banner "Mais procurados" escolhe um pote que nenhuma vitrine de área
+> já usa, para não repetir o frasco em dois banners seguidos.
+
+> **ADENDO 4 (06/10/2026, noite, segunda rodada): "modernize mais ainda" e a faixa do topo.**
+> Cabeçalho translúcido (branco a 85% com desfoque); no celular os três
+> botões (carrinho, busca, menu) ficam numa cápsula em gelo e o contador do
+> carrinho é em ouro. A faixa de vantagens do computador passou a azul-noite
+> (degradê navy → azul), cada vantagem com ícone em ouro e um fio entre elas
+> (a do meio some abaixo de lg, para caber no tablet); os links
+> institucionais viraram pílulas, com a página atual acesa
+> (`--altura-cabecalho` = 7,25rem / 10,25rem). Categorias em pílulas em
+> gelo com a ativa em navy e "Todos" com o ícone de grade. Vantagens em
+> pílulas roláveis, com o ícone num círculo (ouro só na nota do Google).
+> Avaliações abrem com o cartão da nota em azul-noite (5,0, estrelas em
+> ouro, total) e seguem em cartões com aspas em ouro, texto na sans e rodapé
+> com foto, nome e estrelas; "Ver no Google" ao lado do título. Gaveta do
+> pedido como folha de baixo no celular (92dvh, com alça) e painel flutuante
+> arredondado no computador; campos `.campo` em gelo, stepper com "+" em
+> navy e pílulas de resumo no rodapé. Lógica do carrinho intacta. Ícones
+> da loja e da estrela foram para `IconesVantagens.tsx`, usados no
+> cabeçalho e nas vantagens.
+
 > **ADENDO 3 (06/10/2026, noite): cinco ajustes pedidos por print.**
 > Cabeçalho do celular com três botões redondos (carrinho, busca, menu) em
 > gelo; a barra de categorias deixou o azul-noite e virou uma fileira de

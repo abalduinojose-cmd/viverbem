@@ -1,15 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#EAF2FB"/><stop offset="1" stop-color="#FFFFFF"/>
-    </linearGradient>
-  </defs>
-  <rect width="800" height="600" fill="url(#bg)"/>
-  <circle cx="400" cy="290" r="170" fill="#FFFFFF"/>
-  <!-- bisnaga de gel -->
-  <path d="M340 390 L 460 390 L 445 250 L 355 250 Z" fill="#1C69B5"/>
-  <rect x="352" y="222" width="96" height="30" rx="6" fill="#14508C"/>
-  <rect x="376" y="192" width="48" height="32" rx="8" fill="#E02129"/>
-  <path d="M362 300 L 438 300 L 432 350 L 368 350 Z" fill="#FFFFFF" opacity="0.92"/>
-  <path d="M375 325 q 12 -10 25 0 t 25 0" fill="none" stroke="#1C69B5" stroke-width="5" stroke-linecap="round"/>
+  <defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F7FD"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#f)"/>
+  <ellipse cx="400" cy="462" rx="128" ry="11" fill="#1C69B5" opacity=".07"/>
+  <g fill="none" stroke="#1C69B5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M326 176 H474 L448 398 H352 Z"/>
+    <line x1="330" y1="198" x2="470" y2="198" stroke-width="3.5" opacity=".55"/>
+    <rect x="368" y="398" width="64" height="52" rx="10"/>
+    <line x1="362" y1="262" x2="438" y2="262" stroke-width="4"/>
+    <line x1="370" y1="284" x2="426" y2="284" stroke-width="4"/>
+    <circle cx="400" cy="330" r="7" fill="#E02129" stroke="none"/>
+  </g>
 </svg>

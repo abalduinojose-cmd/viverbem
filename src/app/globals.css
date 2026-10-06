@@ -60,7 +60,7 @@
 
 :root {
   /* Escala tipográfica, de 390px (celular) a 1440px (computador) */
-  --tam-display: clamp(3rem, 1.9rem + 4.1vw, 5.75rem); /* 48 -> 90px */
+  --tam-display: clamp(2.75rem, 1.75rem + 3.4vw, 5rem); /* 44 -> 80px (dobra mais curta, 06/10) */
   --tam-titulo: clamp(2.4rem, 1.85rem + 2.1vw, 3.75rem); /* 38 -> 60px */
   --tam-apoio: clamp(1.0625rem, 0.99rem + 0.29vw, 1.25rem); /* 17 -> 20px */
   --tam-numero: clamp(2.75rem, 2.2rem + 1.9vw, 4.25rem); /* 44 -> 68px */
@@ -75,13 +75,13 @@
 
   /* Altura do cabeçalho (preso ao topo, no fluxo): celular = linha
      principal 64px + fileira de categorias 52px; computador soma a faixa de
-     vantagens de 32px e a linha principal de 76px. A barra do catálogo e as
+     vantagens de 36px e a linha principal de 76px. A barra do catálogo e as
      âncoras usam este valor. */
   --altura-cabecalho: 7.25rem;
 }
 @media (min-width: 768px) {
   :root {
-    --altura-cabecalho: 10rem;
+    --altura-cabecalho: 10.25rem;
   }
 }
 
@@ -114,7 +114,7 @@ body {
 
   /* A palavra em itálico dos títulos ("pela receita", "sobre a gente") é
      a voz humana, serifada e em ouro. Fora de título, a classe .tinta. */
-  :is(h1, h2, h3, h4, .font-display, .titulo-secao, .titulo-display) .italic,
+  :is(h1, h2, h3, h4, .font-display, .titulo-secao, .titulo-display, .titulo-banner) .italic,
   .tinta {
     font-family: var(--font-destaque);
     font-style: italic;
@@ -323,6 +323,40 @@ body {
     color: #fff;
   }
 
+  /* 4. Carrinho: o "Adicionar" das fichas de produto, pílula em OURO com
+     o texto em navy (pedido do usuário em 06/10/2026; verde por um
+     instante quando o produto entrou) */
+  .botao-carrinho {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border-radius: 9999px;
+    background: var(--ouro-degrade);
+    color: var(--color-navy);
+    font-weight: 600;
+    font-size: 0.92rem;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 14px 28px -18px rgba(179, 144, 79, 0.8);
+    transition: filter 0.25s, color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .botao-carrinho:hover {
+    filter: brightness(1.07);
+  }
+  .botao-carrinho:active {
+    transform: scale(0.98);
+  }
+  .botao-carrinho-feito,
+  .botao-carrinho-feito:hover {
+    background: #15803d;
+    color: #fff;
+    filter: none;
+  }
+
   /* ---------- Superfícies ---------- */
 
   /* Ladrilho: a caixa do sistema, branca com um degradê suave e uma luz
@@ -402,7 +436,7 @@ body {
     background: var(--color-papel);
     box-shadow: 0 -30px 60px -40px rgba(13, 35, 64, 0.35);
     margin-top: -2.25rem;
-    padding-top: 2.25rem;
+    padding-top: 1.5rem;
     transform-origin: 50% 0%;
   }
   .folha:first-child {
@@ -446,6 +480,40 @@ body {
 .animar-surgir {
   animation: surgir 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* A folha do pedido sobe de baixo no celular */
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animar-subir {
+  animation: subir 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Campo de formulário preenchido: gelo em repouso, branco com fio azul no foco */
+.campo {
+  width: 100%;
+  background: color-mix(in srgb, var(--color-gelo) 60%, #fff);
+  border: 1.5px solid transparent;
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  color: var(--color-grafite);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.campo::placeholder {
+  color: var(--color-grafite-claro);
+}
+.campo:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--color-tinta);
+  box-shadow: 0 0 0 4px rgba(28, 105, 181, 0.1);
+}
 .cascata > * {
   animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -465,7 +533,7 @@ body {
 @keyframes revelar-rolagem {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(56px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -475,8 +543,8 @@ body {
 /* A folha que sai recua e escurece de leve enquanto a próxima cobre */
 @keyframes folha-recua {
   to {
-    transform: scale(0.95) translateY(-1.5rem);
-    opacity: 0.35;
+    transform: scale(0.92) translateY(-3rem);
+    opacity: 0.25;
   }
 }
 /* A abertura, presa ao topo, recua enquanto a primeira folha a cobre */
@@ -496,7 +564,7 @@ body {
   .revelar {
     animation: revelar-rolagem linear both;
     animation-timeline: view();
-    animation-range: entry 0% entry 30%;
+    animation-range: entry 0% entry 45%;
   }
   .escalonado > * {
     animation: revelar-rolagem linear both;
@@ -611,5 +679,243 @@ body {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+}
+
+/* ---------- Trilha do pedido ("Como funciona") ---------- */
+/* Os passos numa linha vertical, como o acompanhamento de um pedido. A
+   linha em ouro cresce com a rolagem da própria pessoa (scroll-driven),
+   por isso roda também com "reduzir movimento". */
+.trilha-linha,
+.trilha-progresso {
+  position: absolute;
+  left: calc(1.375rem - 1px);
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 2px;
+  border-radius: 1px;
+}
+.trilha-linha {
+  background: rgba(255, 255, 255, 0.14);
+}
+.trilha-progresso {
+  background: linear-gradient(180deg, #dcc38a 0%, #b3904f 100%);
+  transform-origin: 50% 0%;
+}
+.trilha-ponto {
+  position: absolute;
+  left: -3.5rem; /* dentro do recuo (pl-14) da lista, centrado na linha */
+  top: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-navy);
+  background: var(--ouro-degrade);
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.6);
+}
+@keyframes trilha-cresce {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@supports (animation-timeline: view()) {
+  .trilha-progresso {
+    animation: trilha-cresce linear both;
+    animation-timeline: view();
+    animation-range: entry 40% exit 60%;
+  }
+}
+
+
+/* Trilha clara (página do produto, "Como pedir"): linha em fio e pontos
+   menores, para uma lista com recuo de 3rem (pl-12) */
+.trilha-clara .trilha-linha {
+  background: var(--color-fio);
+}
+.trilha-clara .trilha-linha,
+.trilha-clara .trilha-progresso {
+  left: calc(1.125rem - 1px);
+  top: 1.125rem;
+  bottom: 1.125rem;
+}
+.trilha-clara .trilha-ponto {
+  left: -3rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1rem;
+  box-shadow: 0 8px 18px -10px rgba(143, 113, 55, 0.6);
+}
+
+/* ---------- Acessibilidade e toque (auditoria de 06/10/2026) ---------- */
+/* Foco visível igual no site inteiro (teclado): anel azul; ouro sobre o
+   azul-noite. Os campos .campo têm o próprio anel no :focus. */
+:focus-visible {
+  outline: 2px solid var(--color-tinta);
+  outline-offset: 3px;
+}
+.em-noite :focus-visible,
+.banner-noite :focus-visible {
+  outline-color: var(--color-ouro-claro);
+}
+/* O Tailwind v4 deixa botão com cursor padrão; botão é clicável */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary {
+  cursor: pointer;
+}
+/* Sem o atraso de toque de 300ms em quem ainda o aplica */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+label,
+summary {
+  touch-action: manipulation;
+}
+/* Âncoras (#como-funciona) deslizam; quem reduz movimento vai direto */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+/* Link "Pular para o conteúdo": fora da tela até receber foco */
+.pular-conteudo {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  padding: 0.75rem 1.1rem;
+  border-radius: 9999px;
+  background: var(--color-navy);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 18px 40px -16px rgba(13, 35, 64, 0.6);
+  transition: transform 0.2s;
+}
+.pular-conteudo:focus-visible {
+  transform: translateY(0);
+  outline-color: var(--color-ouro-claro);
+}
+
+/* ---------- Linha de progresso da leitura (cabeçalho) ---------- */
+/* Cresce da esquerda para a direita conforme a página rola (scroll-driven,
+   roda com "reduzir movimento"); sem suporte, fica escondida. */
+.progresso-rolagem {
+  transform: scaleX(0);
+}
+@supports (animation-timeline: scroll()) {
+  .progresso-rolagem {
+    animation: progresso-rolagem linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes progresso-rolagem {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Sanfonas da gaveta do pedido ---------- */
+/* O Safari ignora list-none no summary; a seta própria fica no ícone */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ---------- Malha de laboratório (banners e convite da receita) ---------- */
+/* Linhas finas, como papel milimetrado, só no alto à direita (máscara) */
+.malha-banner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 2.25rem 2.25rem;
+  opacity: 0.08;
+  -webkit-mask-image: radial-gradient(70% 65% at 75% 25%, #000, transparent 75%);
+  mask-image: radial-gradient(70% 65% at 75% 25%, #000, transparent 75%);
+}
+
+/* Marca d'água e outros detalhes que descem mais devagar enquanto o
+   elemento atravessa a tela (scroll-driven; roda com "reduzir movimento") */
+@supports (animation-timeline: view()) {
+  .paralaxe-vista {
+    animation: paralaxe linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+}
+
+/* ---------- Passos do "Como funciona", lado a lado ---------- */
+/* O número num círculo de ouro que sai pela borda de cima do cartão
+   (o item tem pt-7, o cartão começa 1,75rem abaixo) */
+.passo-numero {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  z-index: 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-navy);
+  background: var(--ouro-degrade);
+  box-shadow: 0 10px 24px -12px rgba(143, 113, 55, 0.7);
+}
+/* A linha que liga os quatro números (só no computador); a parte em ouro
+   cresce enquanto a fila de passos sobe pela tela */
+.trilha-h-linha,
+.trilha-h-progresso {
+  position: absolute;
+  z-index: 1;
+  top: calc(1.375rem - 1px);
+  left: 2.625rem;
+  right: 2.625rem;
+  height: 2px;
+  border-radius: 1px;
+}
+.trilha-h-linha {
+  background: var(--color-fio);
+}
+.trilha-h-progresso {
+  background: linear-gradient(90deg, #dcc38a 0%, #b3904f 100%);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+@keyframes trilha-cresce-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@supports (animation-timeline: view()) {
+  .trilha-h-progresso {
+    animation: trilha-cresce-x linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 55%;
   }
 }

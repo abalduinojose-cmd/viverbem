@@ -16,6 +16,7 @@ import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { infoCategoria } from "@/lib/categorias";
 import { combinaComTermos, normalizar, termosDaBusca } from "@/lib/texto";
 import { ProdutoCard } from "./ProdutoCard";
+import { BotaoVerMais } from "./BotaoVerMais";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 
 // A busca que veio no endereço (?busca=). No site com servidor ela já
@@ -49,13 +50,13 @@ function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategor
   );
 }
 
-/** Nome da área com a última parte em ouro ("Dermatologia & Estética") */
+/** Nome da área com só o "&" em itálico ouro ("Dermatologia & Estética") */
 function TituloArea({ nome }: { nome: string }) {
   const e = nome.indexOf(" & ");
   if (e > 0) {
     return (
       <>
-        {nome.slice(0, e)} <span className="italic">&amp; {nome.slice(e + 3)}</span>
+        {nome.slice(0, e)} <span className="italic">&amp;</span> {nome.slice(e + 3)}
       </>
     );
   }
@@ -107,16 +108,16 @@ export function CatalogoClient({
     : "Fórmulas preparadas a partir da receita, separadas por área.";
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen">
+    <main className="flex-1 flex flex-col min-h-screen">
       {/* ---------- Abertura ---------- */}
       <div className="halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-8">
         <div className="max-w-7xl mx-auto">
           <nav className="flex items-center gap-2 text-sm text-cinza min-h-10" aria-label="Você está em">
-            <Link href="/" className="inline-flex items-center min-h-10 hover:text-tinta transition-colors">Início</Link>
+            <Link href="/" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">Início</Link>
             <span aria-hidden="true" className="text-ouro">/</span>
             {categoriaAtiva ? (
               <>
-                <Link href="/produtos" className="inline-flex items-center min-h-10 hover:text-tinta transition-colors">Categorias</Link>
+                <Link href="/produtos" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">Categorias</Link>
                 <span aria-hidden="true" className="text-ouro">/</span>
                 <span className="text-navy">{categoriaAtiva.nome}</span>
               </>
@@ -190,7 +191,7 @@ export function CatalogoClient({
         </div>
 
         <nav
-          aria-label="Categorias"
+          aria-label="Áreas do catálogo"
           className="flex gap-2.5 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3.5 max-w-7xl mx-auto w-full"
         >
           <Link href="/produtos" className={`chip ${!categoriaAtiva ? "chip-ativo" : ""}`} aria-current={!categoriaAtiva ? "page" : undefined}>
@@ -210,7 +211,7 @@ export function CatalogoClient({
       </div>
 
       {/* ---------- Conteúdo ---------- */}
-      <main className="flex-1 px-5 md:px-8 py-10 pb-24 max-w-7xl mx-auto w-full">
+      <div className="flex-1 px-5 md:px-8 py-10 pb-24 max-w-7xl mx-auto w-full">
         {buscando ? (
           <>
             <h2 className="text-2xl font-semibold text-navy mb-6 tracking-[-0.03em]">
@@ -239,7 +240,12 @@ export function CatalogoClient({
             )}
           </>
         ) : categoriaAtiva ? (
-          <Grade lista={produtos} comCategoria={false} />
+          <>
+            {/* O h1 é o nome da área; os cartões são h3, então um h2 (só para
+                leitor de tela) mantém a ordem dos títulos */}
+            <h2 className="sr-only">Produtos de {categoriaAtiva.nome}</h2>
+            <Grade lista={produtos} comCategoria={false} />
+          </>
         ) : (
           <div className="flex flex-col gap-16">
             {/* Industrializados com registro */}
@@ -264,12 +270,9 @@ export function CatalogoClient({
                     </h2>
                     <p className="text-cinza text-sm md:text-base mt-1.5">{infoCategoria(c.slug).descricao}</p>
                   </div>
-                  <Link href={`/produtos/${c.slug}`} className="botao botao-secundario botao-compacto shrink-0 hidden sm:inline-flex">
-                    Ver categoria
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </Link>
+                  <span className="shrink-0 hidden sm:inline-flex">
+                    <BotaoVerMais href={`/produtos/${c.slug}`}>Ver categoria</BotaoVerMais>
+                  </span>
                 </div>
                 {/* A seção já leva o nome da categoria: não repetir no cartão */}
                 <Grade lista={produtos.filter((p) => p.categoriaId === c.id)} comCategoria={false} />
@@ -277,7 +280,7 @@ export function CatalogoClient({
             ))}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

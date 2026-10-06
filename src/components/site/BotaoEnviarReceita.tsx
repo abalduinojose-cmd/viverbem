@@ -1,7 +1,9 @@
 "use client";
 // "Enviar receita": abre a gaveta do pedido já com a receita marcada.
 // É o caminho de quem tem receita; os produtos vão pelo carrinho.
-// Usado no cabeçalho, na home, na página de produto e no "Sobre".
+// Usado no cabeçalho, na home, na página de produto e no "Sobre". O
+// data-receita-cta avisa o "Enviar receita" flutuante do celular para
+// sumir enquanto um destes botões está na tela (senão ele cobria o botão).
 import { useCarrinho } from "@/lib/carrinho";
 
 export function IconeReceita({ tamanho = 20 }: { tamanho?: number }) {
@@ -35,6 +37,7 @@ export function BotaoEnviarReceita({
       type="button"
       onClick={() => abrirPedido({ receita: true, produtoVisto })}
       className={className}
+      data-receita-cta=""
     >
       {comIcone && <IconeReceita />}
       {children ?? "Enviar receita"}

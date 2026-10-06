@@ -1,73 +1,53 @@
-// Faixa de vantagens logo abaixo do banner (modelo de loja): entrega,
-// retirada, receita conferida e a nota do Google, em quatro ladrilhos
-// (dois por linha no celular). Só o que dá para comprovar.
+// Vantagens logo abaixo do banner: delivery, retirada, receita conferida
+// e a nota do Google. No celular são quatro cartões em 2x2 com ícone e
+// textos centralizados (pedidos do usuário em 06/10/2026); do md para cima viram
+// pílulas numa fileira centralizada. Ícones em ouro. Só o que dá para
+// comprovar.
 import { IconeMoto } from "./IconeMoto";
 import { IconeReceita } from "./BotaoEnviarReceita";
+import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 
-function IconeLoja() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      <circle cx="12" cy="11" r="2.3" stroke="currentColor" strokeWidth="1.7" />
-    </svg>
-  );
-}
-
-function IconeEstrela() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
-    </svg>
-  );
-}
-
-const BAIRROS = UNIDADES.map((u) => u.bairro)
-  .join(", ")
-  .replace(/, ([^,]*)$/, " e $1");
-
 const ITENS = [
-  { icone: <IconeMoto tamanho={22} />, titulo: "Entrega de moto", texto: "por toda Petrópolis" },
-  { icone: <IconeLoja />, titulo: "Retirada sem taxa", texto: `${UNIDADES.length} lojas: ${BAIRROS}` },
-  { icone: <IconeReceita tamanho={20} />, titulo: "Receita conferida", texto: "pelo farmacêutico, antes do preparo" },
+  { icone: <IconeMoto tamanho={20} />, titulo: "Delivery", texto: "por toda Petrópolis" },
+  { icone: <IconeLoja tamanho={18} />, titulo: "Retirada sem taxa", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeReceita tamanho={18} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
   {
-    icone: <IconeEstrela />,
+    icone: <IconeEstrela tamanho={17} />,
     titulo: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google`,
-    texto: `${AVALIACOES_GOOGLE_TOTAL} avaliações de clientes`,
+    texto: `${AVALIACOES_GOOGLE_TOTAL} avaliações`,
     href: PERFIL_GOOGLE_URL,
-    ouro: true,
   },
 ];
 
+// Cartão no celular (ícone em cima), pílula no computador (ícone ao lado)
+const classeItem =
+  "flex h-full flex-col items-center text-center gap-2.5 rounded-2xl border border-fio bg-white/90 px-3 py-4 shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] transition hover:border-ouro/40 md:h-14 md:flex-row md:items-center md:text-left md:gap-3 md:rounded-full md:py-0 md:pl-1.5 md:pr-5 md:backdrop-blur";
+
 export function Beneficios() {
   return (
-    <section aria-label="Vantagens" className="max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5">
-      <ul className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+    <section aria-label="Vantagens" className="max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
+      <ul className="grid grid-cols-2 gap-2.5 md:flex md:flex-wrap md:justify-center">
         {ITENS.map((i) => {
           const miolo = (
             <>
-              <span
-                className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-[0_6px_14px_-8px_rgba(16,42,74,0.35)] ${
-                  i.ouro ? "text-ouro" : "text-tinta"
-                }`}
-              >
+              <span className="shrink-0 w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center bg-ouro/10 text-ouro-escuro">
                 {i.icone}
               </span>
-              <span className="min-w-0">
-                <b className="block font-semibold text-navy text-[0.92rem] md:text-[0.95rem] leading-tight">{i.titulo}</b>
-                <span className="block text-cinza text-[0.8rem] md:text-sm leading-snug mt-1">{i.texto}</span>
+              <span className="min-w-0 leading-tight">
+                <b className="block font-semibold text-navy text-[0.85rem] md:text-[0.9rem]">{i.titulo}</b>
+                <span className="block text-cinza text-[0.75rem] md:text-[0.78rem] mt-0.5">{i.texto}</span>
               </span>
             </>
           );
-          const classe = "ladrilho h-full p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-3 md:gap-3.5";
           return (
-            <li key={i.titulo}>
+            <li key={i.titulo} className="min-w-0 md:shrink-0">
               {i.href ? (
-                <a href={i.href} target="_blank" rel="noopener noreferrer" className={`${classe} transition hover:-translate-y-0.5`}>
+                <a href={i.href} target="_blank" rel="noopener noreferrer" className={classeItem}>
                   {miolo}
                 </a>
               ) : (
-                <div className={classe}>{miolo}</div>
+                <div className={classeItem}>{miolo}</div>
               )}
             </li>
           );

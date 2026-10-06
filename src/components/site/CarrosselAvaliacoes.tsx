@@ -1,9 +1,12 @@
 "use client";
-// Avaliações do Google em faixa horizontal (rola para o lado), em
-// cartões limpos: foto, nome e estrelas em cima, o texto na sans do site
-// (o itálico serifado saiu daqui a pedido do usuário em 06/10/2026) e o
-// selo do Google embaixo. Acima dos cartões, só a média e a quantidade de
-// avaliações do perfil (pedido do cliente em 05/10/2026).
+// Avaliações do Google em faixa horizontal (rola para o lado; no
+// computador também arrasta com o mouse). A faixa abre com o cartão da
+// nota em azul-noite (a média com as estrelas em ouro, as fotos de quem
+// avaliou e o total do perfil) e segue com os cartões dos clientes: aspas
+// em ouro, o texto na sans do site e, embaixo, a foto, o nome e as
+// estrelas. (Pedidos do usuário em 06/10/2026: sem o itálico serifado
+// aqui, visual mais limpo e moderno; o cartão da nota preenchido, "estava
+// muito vago".)
 
 import { useRef } from "react";
 import {
@@ -12,6 +15,7 @@ import {
   AVALIACOES_GOOGLE_TOTAL,
   PERFIL_GOOGLE_URL,
 } from "@/lib/tipos";
+import { useArrasteHorizontal } from "@/lib/useArrasteHorizontal";
 import { Estrelas } from "./Estrelas";
 import { asset } from "@/lib/asset";
 
@@ -23,6 +27,15 @@ function IconeGoogle({ tamanho = 20 }: { tamanho?: number }) {
       <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-3l-3.9-3c-1 .7-2.4 1.1-4 1.1-3 0-5.6-2-6.6-4.8h-4v3.1A12 12 0 0 0 12 24z" />
       <path fill="#FBBC04" d="M5.4 14.3a7.2 7.2 0 0 1 0-4.6v-3.1h-4a12 12 0 0 0 0 10.8l4-3.1z" />
       <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.5 1.8l3.4-3.4A12 12 0 0 0 1.4 6.6l4 3.1C6.4 6.8 9 4.8 12 4.8z" />
+    </svg>
+  );
+}
+
+// Aspas de abertura, em ouro, no alto de cada cartão
+function Aspas() {
+  return (
+    <svg width="28" height="22" viewBox="0 0 28 22" fill="currentColor" aria-hidden="true" className="text-ouro-claro">
+      <path d="M0 22V12.6C0 5.4 3.9 1.3 11.7 0l1.1 2.6C8.4 3.9 6.2 6.3 6 10h5.8v12H0Zm16.2 0V12.6C16.2 5.4 20.1 1.3 27.9 0L29 2.6c-4.4 1.3-6.6 3.7-6.8 7.4H28v12H16.2Z" />
     </svg>
   );
 }
@@ -58,8 +71,11 @@ function SetaBotao({
   );
 }
 
+const NOTA = AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 });
+
 export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] }) {
   const faixaRef = useRef<HTMLDivElement>(null);
+  const arraste = useArrasteHorizontal(faixaRef);
 
   // Rola uma "página" de cartões para o lado
   function rolar(direcao: -1 | 1) {
@@ -68,82 +84,126 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
     faixa.scrollBy({ left: direcao * (faixa.clientWidth * 0.8), behavior: "smooth" });
   }
 
+  // As fotos de quem avaliou, empilhadas no cartão da nota
+  const rostos = avaliacoes.filter((a) => a.fotoUrl).slice(0, 4);
+
   return (
     <section aria-labelledby="titulo-avaliacoes" className="secao">
-      <div className="revelar px-5 md:px-8 max-w-6xl mx-auto md:text-center">
-        <p className="rotulo">quem já é cliente</p>
-        <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
-          O que dizem <span className="italic">sobre a gente</span>
-        </h2>
+      <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+        <div className="max-w-2xl">
+          <p className="rotulo">quem já é cliente</p>
+          <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
+            O que dizem <span className="italic">sobre a gente</span>
+          </h2>
+        </div>
+        <a href={PERFIL_GOOGLE_URL} target="_blank" rel="noopener noreferrer" className="botao botao-secundario self-start md:self-auto">
+          <IconeGoogle tamanho={18} />
+          Ver no Google
+        </a>
+      </div>
 
-        {/* A média e a quantidade de avaliações, levando ao perfil do Google */}
+      {/* Faixa rolável (e arrastável com o mouse) */}
+      <div
+        ref={faixaRef}
+        {...arraste.props}
+        className={`vao-titulo flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra px-5 md:px-8 scroll-pl-5 md:scroll-pl-8 pb-3 snap-x snap-mandatory md:cursor-grab ${
+          arraste.arrastando ? "md:cursor-grabbing select-none snap-none" : ""
+        }`}
+      >
+        {/* espaçador para alinhar com o container central em telas largas */}
+        <div className="shrink-0 w-0 md:w-[max(0px,calc((100vw-80rem)/2))]" aria-hidden="true" />
+
+        {/* O cartão da nota, abrindo a faixa */}
         <a
           href={PERFIL_GOOGLE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="botao botao-secundario mt-6 !gap-2.5 text-grafite"
+          className="banner-noite em-noite snap-start shrink-0 w-[16rem] md:w-[18rem] rounded-[1.75rem] p-6 md:p-7 flex flex-col text-white transition duration-300 hover:-translate-y-1"
         >
-          <IconeGoogle tamanho={20} />
-          <b className="font-semibold tabular-nums">
-            {AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
-          </b>
-          <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={13} />
-          <span className="text-cinza">
-            <b className="font-semibold text-grafite tabular-nums">{AVALIACOES_GOOGLE_TOTAL}</b>{" "}
-            avaliações<span className="hidden sm:inline"> no Google</span>
+          <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-xs font-medium">
+            <IconeGoogle tamanho={14} />
+            Avaliações no Google
+          </span>
+
+          {/* A nota, grande, com a escala ao lado e as estrelas embaixo */}
+          <span className="mt-6 flex items-end gap-3">
+            <span className="text-[4rem] md:text-[4.5rem] font-semibold leading-none tracking-[-0.05em] tabular-nums">{NOTA}</span>
+            <span className="pb-2 text-white/60 text-sm leading-tight">
+              de 5<br />
+              nota máxima
+            </span>
+          </span>
+          <span className="mt-3 inline-flex">
+            <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={20} />
+          </span>
+
+          {/* Quem avaliou: fotos empilhadas e o total do perfil */}
+          <span className="mt-auto pt-7 flex items-center gap-3">
+            {rostos.length > 0 && (
+              <span className="flex -space-x-2.5 shrink-0">
+                {rostos.map((a) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={a.id}
+                    src={asset(a.fotoUrl as string)}
+                    alt=""
+                    width={36}
+                    height={36}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-9 h-9 rounded-full object-cover ring-2 ring-navy"
+                    draggable={false}
+                  />
+                ))}
+              </span>
+            )}
+            <span className="text-xs text-white/65 leading-snug">
+              <b className="block text-white text-sm font-semibold tabular-nums">{AVALIACOES_GOOGLE_TOTAL} avaliações</b>
+              de quem já é cliente
+            </span>
+          </span>
+
+          <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ouro-claro">
+            Ver todas no Google
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </span>
         </a>
-      </div>
-
-      {/* Faixa rolável */}
-      <div
-        ref={faixaRef}
-        className="vao-titulo flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3 snap-x snap-mandatory"
-      >
-        {/* espaçador para alinhar com o container central em telas largas */}
-        <div className="shrink-0 w-0 md:w-[max(0px,calc((100vw-72rem)/2))]" aria-hidden="true" />
 
         {avaliacoes.map((a) => (
           <figure
             key={a.id}
-            className="snap-start shrink-0 w-[18rem] md:w-[21rem] rounded-[1.5rem] border border-fio bg-white p-5 md:p-6 flex flex-col gap-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
+            className="snap-start shrink-0 w-[18rem] md:w-[21rem] rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/50 p-6 flex flex-col gap-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
           >
-            <figcaption className="flex items-center gap-3">
-              {/* Foto do cliente ou inicial do nome */}
+            <Aspas />
+            <blockquote className="flex-1 text-[0.98rem] leading-relaxed text-grafite">{a.texto}</blockquote>
+            <figcaption className="flex items-center gap-3 pt-4 border-t border-fio/70">
               {a.fotoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={asset(a.fotoUrl)}
                   alt=""
+                  width={40}
+                  height={40}
                   loading="lazy"
                   decoding="async"
-                  className="w-11 h-11 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-white"
                   draggable={false}
                 />
               ) : (
-                <span className="w-11 h-11 rounded-full bg-gelo text-tinta flex items-center justify-center font-semibold">
+                <span className="w-10 h-10 rounded-full bg-gelo text-tinta flex items-center justify-center font-semibold">
                   {a.nome.charAt(0).toUpperCase()}
                 </span>
               )}
-              <span className="min-w-0">
-                <span className="block font-semibold text-navy truncate">{a.nome}</span>
-                <span className="mt-0.5 flex items-center gap-1.5">
-                  <Estrelas nota={a.nota} tamanho={12} />
-                  <span className="text-xs text-cinza">
-                    {a.nota.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
-                  </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-navy text-[0.95rem] truncate">{a.nome}</span>
+                <span className="mt-0.5 flex items-center gap-1.5 text-xs text-cinza">
+                  <Estrelas nota={a.nota} tamanho={11} />
+                  {a.fonte === "Google" && <span>no Google</span>}
                 </span>
               </span>
             </figcaption>
-
-            <blockquote className="flex-1 text-[0.98rem] leading-relaxed text-grafite">{a.texto}</blockquote>
-
-            {a.fonte === "Google" && (
-              <span className="flex items-center gap-1.5 text-xs text-cinza">
-                <IconeGoogle tamanho={13} />
-                Avaliação no Google
-              </span>
-            )}
           </figure>
         ))}
 

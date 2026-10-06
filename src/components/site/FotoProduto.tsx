@@ -32,6 +32,8 @@ export function FotoProduto({
     <img
       src={asset(fotoUrl)}
       alt={nome}
+      width={500}
+      height={500}
       className={`object-cover ${className}`}
       draggable={false}
       loading={prioritaria ? "eager" : "lazy"}
