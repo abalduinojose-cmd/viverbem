@@ -1,5 +1,17 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 17 (06/10/2026, noite): prévia publicada no repositório novo.**
+> A pedido ("crie um repositório no GitHub e um link de visualização"), a
+> remodelagem foi commitada (`04ca686`, adendos 4 a 16) e publicada no
+> repositório público **abalduinojose-cmd/viverbem** (remoto `novo`; a
+> branch `remodelagem-receita-rotulo` virou a `main` de lá). O GitHub
+> Pages serve a pasta `docs/` da `main`:
+> **https://abalduinojose-cmd.github.io/viverbem/**. A vitrine estática
+> agora tem o `basePath` `/viverbem` por padrão (`next.config.ts`); o
+> repositório antigo `app_viverbem-` continua intocado, com a primeira
+> versão. Para atualizar a prévia: parar o `next dev`, `npm run
+> demo:build`, commit e `git push novo remodelagem-receita-rotulo:main`.
+
 > **ADENDO 16 (06/10/2026, noite): sai o rótulo em vidro; banners e "Como funciona" novos; a receita em destaque na gaveta; flutuantes discretos.**
 > O rótulo "Preparado para [nome]" em vidro saiu do site inteiro a pedido
 > ("exclua isso de todo o site"): da bancada da abertura e do banner "Mais
