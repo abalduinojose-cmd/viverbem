@@ -53,7 +53,7 @@ export function BotaoAdicionar({
         type="button"
         onClick={aoAdicionar}
         aria-label={`Adicionar ${produto.nome} ao carrinho`}
-        className={`botao-carrinho !min-h-10 w-10 !px-0 ${feito} ${className}`}
+        className={`botao-carrinho !min-h-11 w-11 !px-0 ${feito} ${className}`}
       >
         {adicionado ? <IconeFeito /> : <IconeCarrinho tamanho={17} />}
       </button>

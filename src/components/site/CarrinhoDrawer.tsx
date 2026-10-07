@@ -265,27 +265,29 @@ export function CarrinhoDrawer() {
 
   return (
     <>
-      {/* Botão flutuante. Com produto no carrinho: pílula navy com o ícone
-          num círculo de ouro e a contagem (no computador também "Ver
-          pedido"; 07/10/2026). Sem produto, vira o "Enviar receita"
-          do celular (no computador ele fica na home, na página do produto e
-          na gaveta). */}
+      {/* Botão flutuante. Com produto no carrinho: no celular um círculo navy
+          com a sacola e o selo de ouro da contagem no canto (que pulsa quando
+          o número muda); no computador a pílula "Ver pedido" com o selo
+          (07/10/2026, "melhore o carrinho"). Some enquanto a gaveta está
+          aberta. Sem produto, vira o "Enviar receita" do celular (no
+          computador ele fica na home, na página do produto e na gaveta). */}
       {temProdutos ? (
         <button
           type="button"
           onClick={() => abrirPedido()}
           aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
-          className="bg-navy hover:bg-tinta fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 text-white rounded-full h-14 pl-2 pr-4 md:pr-5 flex items-center gap-2.5 md:gap-3 ring-1 ring-white/15 shadow-[0_20px_40px_-16px_rgba(13,35,64,0.7)] active:scale-95 transition"
+          className={`fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 flex items-center justify-center bg-navy text-white rounded-full w-14 h-14 md:w-auto md:h-12 md:pl-5 md:pr-2 md:gap-3 shadow-[0_16px_34px_-16px_rgba(13,35,64,0.65)] hover:bg-tinta active:scale-95 transition duration-300 ${
+            aberto ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
         >
-          <span className="w-10 h-10 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
-            <IconeCarrinho tamanho={20} />
-          </span>
-          <span className="md:hidden text-[0.95rem] font-semibold tabular-nums">{totalItens}</span>
-          <span className="hidden md:flex flex-col items-start leading-none">
-            <span className="text-[0.95rem] font-semibold">Ver pedido</span>
-            <span className="mt-1 text-[0.72rem] text-white/60 tabular-nums">
-              {totalItens} {totalItens === 1 ? "item" : "itens"}
-            </span>
+          <IconeCarrinho tamanho={22} />
+          <span className="hidden md:inline text-[0.95rem] font-semibold">Ver pedido</span>
+          {/* A key troca a cada mudança: o selo remonta e pulsa */}
+          <span
+            key={totalItens}
+            className="animar-pulso absolute -top-1 -right-1 md:static min-w-6 h-6 px-1.5 md:min-w-8 md:h-8 md:px-2 rounded-full bg-ouro-claro text-navy text-[0.78rem] md:text-[0.8rem] font-semibold tabular-nums flex items-center justify-center ring-2 ring-white md:ring-0"
+          >
+            {totalItens}
           </span>
         </button>
       ) : (
@@ -294,12 +296,12 @@ export function CarrinhoDrawer() {
           onClick={() => abrirPedido({ receita: true })}
           tabIndex={mostrarReceitaFlutuante ? 0 : -1}
           aria-hidden={!mostrarReceitaFlutuante}
-          className={`md:hidden bg-tinta fixed bottom-5 right-5 z-40 text-white rounded-full h-14 pl-5 pr-6 flex items-center gap-2.5 shadow-[0_18px_40px_-16px_rgba(28,105,181,0.65)] active:scale-95 transition duration-300 ${
+          className={`md:hidden bg-navy fixed bottom-5 right-5 z-40 text-white rounded-full h-12 pl-4 pr-5 flex items-center gap-2.5 shadow-[0_14px_30px_-16px_rgba(13,35,64,0.6)] active:scale-95 transition duration-300 ${
             mostrarReceitaFlutuante ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
         >
-          <IconeReceita tamanho={22} />
-          <span className="font-semibold">Enviar receita</span>
+          <IconeReceita tamanho={20} />
+          <span className="text-[0.95rem] font-semibold">Enviar receita</span>
         </button>
       )}
 
@@ -360,7 +362,7 @@ export function CarrinhoDrawer() {
             {/* ---------- Confirmação de envio ---------- */}
             {enviado ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-8 gap-4">
-                <div className="w-20 h-20 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center shadow-[0_18px_40px_-20px_rgba(179,144,79,0.8)]">
+                <div className="w-20 h-20 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center shadow-[0_18px_40px_-20px_rgba(192,160,96,0.8)]">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

@@ -208,7 +208,7 @@ export default async function PaginaProduto({ params }: Props) {
               {produto.categoriaNome && (
                 <Link
                   href={hrefCategoria}
-                  className="inline-flex items-center gap-2 h-10 pl-3 pr-4 rounded-full bg-white border border-ouro/40 text-ouro-escuro text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition-colors hover:border-ouro hover:bg-ouro/5"
+                  className="inline-flex items-center gap-2 h-11 pl-3 pr-4 rounded-full bg-white border border-ouro/40 text-ouro-escuro text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition-colors hover:border-ouro hover:bg-ouro/5"
                 >
                   <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
                   {produto.categoriaNome}
@@ -306,7 +306,7 @@ export default async function PaginaProduto({ params }: Props) {
           <div className="flex items-end justify-between gap-4 mt-10 mb-6">
             <div>
               <p className="rotulo">da mesma área</p>
-              <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
+              <h2 className="titulo-bloco mt-2">
                 Mais em <span className="italic">{categoria?.nome ?? "nossas categorias"}</span>
               </h2>
             </div>

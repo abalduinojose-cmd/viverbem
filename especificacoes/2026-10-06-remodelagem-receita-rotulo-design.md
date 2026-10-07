@@ -1,5 +1,117 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 36 (07/10/2026): capas dos reels, seção dos reels, "quem já é cliente", carrinho flutuante, lojas e "Como funciona". Não publicado.**
+> Pedido com oito prints. Capas: escolhidas quadro a quadro com o ffmpeg
+> (folhas de contato a cada 4s e a cada 0,5s nos trechos candidatos):
+> reel 1 em 14s (o farmacêutico na loja, sem legenda queimada), reel 2 em
+> 1,5s (os irmãos), reel 3 em 2,4s (o olho com o tubo) e reel 4 em 1s (o
+> pote dos pads, no lugar do quadro final com o logo); `gerar-posteres.js`
+> atualizado. Reels: cabeçalho em duas colunas no computador com o botão
+> do Instagram ao lado do título (abaixo do lg ele volta para baixo); os
+> cartões perderam o ícone do Instagram repetido e a caixa de vidro da
+> legenda: véu escuro embaixo, rótulo "REEL" em ouro e o título em branco;
+> barra de progresso mais fina; autoplay só a partir do lg. Avaliações: o
+> selo do Google deu lugar aos rostos empilhados com o "+676" em ouro, as
+> estrelas, "5,0 no Google" e "680 avaliações · ver todas", sem caixa (o
+> cartão navy da nota segue abrindo a faixa). Carrinho flutuante: no celular
+> um círculo navy de 56px com a sacola e o selo de ouro da contagem no canto
+> (pulsa quando o número muda, `.animar-pulso`, desligado com "reduzir
+> movimento"); no computador a pílula "Ver pedido" com o selo; some com a
+> gaveta aberta. Lojas do "Fale com a gente": os três cartões viraram UM
+> cartão com as unidades em linhas numeradas em ouro itálico, endereço e
+> "Como chegar" (sem telefone, como pedido antes); o horário passou a ocupar
+> a linha inteira no tablet. "Como funciona" v4: os quatro cartões
+> pendurados viraram um cartão só, dividido por fios (4 colunas no
+> computador, 2x2 no tablet, empilhado no celular), número grande em ouro
+> itálico, ícone pequeno e a linha de ouro crescendo na borda de cima
+> (`.trilha-topo`, scroll-driven). Capturas em `scratchpad/etapa52`.
+
+> **ADENDO 35 (07/10/2026): a paleta voltou ao "Branco, azul e ouro". Não publicado.**
+> Pedido: "volte as cores como estava antes", logo depois de ver a paleta do
+> Instagram aplicada. O adendo 34 foi desfeito por script
+> (`scratchpad/despaletar-r35.cjs`: os casos com dois valores de origem
+> tratados por contexto, o resto pelo mapa inverso), sem tocar no que mais
+> entrou no dia (bloqueio do login, painel em linhas, 10 fotos, duas artes).
+> O token `--color-areia` saiu junto. Fica registrado: a paleta do Instagram
+> foi testada e reprovada no site; não propor de novo.
+
+> **ADENDO 34 (07/10/2026): a paleta do Instagram no site e no painel. DESFEITO no adendo 35.**
+> Pedido: "atualize o site nessa paleta de cores, quero o site clean":
+> primária #322F69 (azul-marinho arroxeado, o "Viver Bem" do logo),
+> dourado #C9A56B, creme #F9F4EA (fundo principal) e areia #E6DDD3 (fundo
+> dos posts de produto). O sistema passou a se chamar "Creme, roxo-marinho e
+> ouro": `--color-papel` virou creme (fundo do site), `--color-gelo` um
+> creme-areia (#EFE8DC) para preenchimentos leves, `--color-areia` novo
+> (fundo das fotos de produto: cartão, galeria, miniaturas, círculos das
+> áreas), `--color-fio` quente (#E3D9CC), navy e tinta (a ação) viraram a
+> primária #322F69 (escura #262457), ouro #C9A56B / claro #D6B885 / escuro
+> #85673A (4,5:1 sobre creme), grafite e cinza quentes (#2A2740, #6A6480),
+> degradê de ouro e luzes dos banners refeitos (lavanda no lugar do azul).
+> Trocado por script (`scratchpad/repaletar-r34.cjs`): 26 arquivos, 58
+> literais hex e todas as sombras rgba. Cabeçalho, menu do celular, barra do
+> catálogo e "Fale com a gente" em creme; cartões brancos sobre o creme. O
+> painel acompanha (névoa #F7F3EB). Vermelho segue só no logo.
+
+> **ADENDO 33 (07/10/2026): bloqueio do login, painel em linhas, 10 fotos, duas artes na dobra. Não publicado.**
+> Pedidos: "criptografia no site para acessar o painel; tentou 5 vezes,
+> bloqueia e não deixa mais tentar / painel mais moderno e clean / mais
+> fotos no produto / duas fotos na home, para PC e para mobile".
+> Login: as senhas já eram hash (bcrypt, agora custo 12) e a sessão já ia em
+> cookie criptografado (iron-session; agora com validade de 12h). Entrou a
+> camada que faltava, `src/lib/protecaoLogin.ts` + tabela `TentativaLogin`
+> (migração `20261007210419_tentativas_de_login`): cada senha errada conta
+> no e-mail e no IP; na 5ª, bloqueio de 30 min (429 com `bloqueadoAte`), a
+> tela mostra o tempo e desliga o botão, o log registra; atraso aleatório
+> de 250 a 600 ms em toda tentativa; acerto zera; o gestor desbloqueia em
+> Acessos ao painel (`PATCH { desbloquear: true }`). Testado: 4 x 401 com a
+> contagem, depois 429. Painel: produtos em LINHAS (capa, nome com selos,
+> preço editável, chaves "No site" e "Preço no site", ações; novidade e
+> destaque ficam no formulário). Galeria: até 10 fotos (`MAX_FOTOS_PRODUTO`).
+> Dobra: até DUAS artes (`heroDesktop2`/`heroCelular2`), cada uma com a
+> versão do computador e a do celular; com duas, `CarrosselArte` alterna em
+> fade a cada 7s (para no hover e com a aba escondida) com bolinhas no alto;
+> `obterArtesHero()` devolve a lista; a página "Home e arte da dobra" tem
+> Arte 1 e Arte 2. A vitrine estática leva as duas. Capturas em
+> `scratchpad/etapa50` (artes de teste subidas e removidas; nenhuma arte
+> ficou no banco).
+
+> **ADENDO 32 (07/10/2026): botões mais clean (cápsula do celular, flutuantes, Adicionar). Não publicado.**
+> Pedido com quatro prints: "deixe esses botões mais clean". A cápsula do
+> celular deixou de ser navy com o carrinho num círculo de ouro: virou uma
+> cápsula branca com fio, os três ícones em navy (40px), o que estiver
+> aberto em círculo navy e a contagem do carrinho num selo pequeno de ouro
+> chapado (`BotaoCarrinho` ganhou a prop `selo`). Os dois flutuantes do
+> celular viraram pílulas navy simples de 48px, sem círculo e com sombra
+> menor: "Enviar receita" (ícone + texto) e o carrinho (ícone + contagem num
+> selo de ouro de 28px; no computador, "Ver pedido" + selo, numa linha só).
+> O `.botao-carrinho` ("Adicionar", "Adicionar ao carrinho", compacto)
+> ficou em ouro chapado (`--color-ouro-claro`, hover `--color-ouro`),
+> sem o brilho metálico e sem sombra; o degradê de ouro segue só nos
+> acentos pequenos (círculos de ícone, fios, bolinha ativa). Capturas em
+> `scratchpad/etapa49`.
+
+> **ADENDO 31 (07/10/2026): revisão de design medida, ajustes pontuais. Não publicado.**
+> Pedido: "deixar mais clean, moderno, sofisticado e profissional, mantendo
+> a estrutura, os conteúdos, as funcionalidades e a identidade; evolução,
+> não reconstrução". Em vez de redesenhar, uma auditoria medida (skill
+> design-review + `scratchpad/auditar-r31.cjs`: 7 páginas em 1440, 1024,
+> 768 e 390) e só o que a medição apontou, registrado em
+> `especificacoes/2026-10-07-design-review.md`. Corrigido: estouro de 97px
+> da home no tablet (a faixa dos reels deixava de rolar no md; agora rola até
+> o lg, com cartões de 14rem no lg e 16rem no xl); potes da dobra cortados
+> no md (tamanho intermediário até o lg); avatares das avaliações de 256px e
+> 1,9 MB para 120px e 76 KB (o download pede 128px); logo de 1.133px/210 KB
+> para 560px/76 KB (original em `midia/logo-original.png`); um só título de
+> segundo nível, `.titulo-bloco` (`--tam-bloco` 28 a 38px), nas vitrines,
+> áreas do catálogo, "Mais em", lojas e contato (eram 34, 36 e 40px);
+> alvos de toque em 44px (bolinhas dos reels com área de toque e bolinha
+> pequena, Instagram dos reels, pílulas "ver mais" e as do cabeçalho, pílula
+> da área do produto, adicionar compacto da coluna lateral, "Página das
+> lojas"; a cápsula do celular foi para 40px, 48 no total, para não brigar
+> com a logo); rótulos da régua do horário de 3,1:1 para 6,6:1. Ficou de
+> fora, de propósito: os links da faixa do topo (36px, só mouse) e as fotos
+> de produto de 500px nos círculos pequenos (certas no celular com 2 a 3x).
+
 > **ADENDO 30 (07/10/2026): quatro retoques no site e os dois painéis (gestor e colaborador). Não publicado.**
 > Site: os links institucionais da faixa do topo viraram texto fino com um
 > ponto de ouro entre eles e um fio de ouro que nasce no hover e fica na

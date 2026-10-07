@@ -54,7 +54,7 @@ export default function PaginaContato() {
       {/* As unidades, em lista com fio */}
       <section className="px-5 md:px-8 max-w-6xl mx-auto pt-12 md:pt-16 pb-20 md:pb-24">
         <p className="rotulo">onde nos encontrar</p>
-        <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
+        <h2 className="titulo-bloco mt-2">
           {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>
         </h2>
 
@@ -65,7 +65,7 @@ export default function PaginaContato() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
-                <h3 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy">{u.bairro}</h3>
+                <h3 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy leading-tight">{u.bairro}</h3>
                 <p className="text-cinza leading-relaxed mt-1">{u.endereco}, Petrópolis/RJ</p>
                 {u.telefone && (
                   <p className="text-cinza text-sm mt-1 tabular-nums">Telefone {u.telefone}</p>

@@ -1,7 +1,10 @@
 "use client";
 // Tela de login do painel (gestor e equipe entram pela mesma porta; o
 // papel decide o que cada um vê depois).
-import { useState } from "react";
+//
+// Cinco senhas erradas bloqueiam por 30 minutos (a API responde 429 com
+// "bloqueadoAte"); a tela mostra o tempo que falta e desliga o botão.
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
@@ -14,9 +17,23 @@ export default function PaginaLogin() {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [verSenha, setVerSenha] = useState(false);
+  // Até quando o acesso está bloqueado (null = livre)
+  const [bloqueadoAte, setBloqueadoAte] = useState<Date | null>(null);
+  const [agora, setAgora] = useState(() => Date.now());
+
+  // Com bloqueio, o relógio anda a cada 15s para o texto acompanhar
+  useEffect(() => {
+    if (!bloqueadoAte) return;
+    const relogio = setInterval(() => setAgora(Date.now()), 15_000);
+    return () => clearInterval(relogio);
+  }, [bloqueadoAte]);
+
+  const bloqueado = bloqueadoAte !== null && bloqueadoAte.getTime() > agora;
+  const minutos = bloqueadoAte ? Math.max(1, Math.ceil((bloqueadoAte.getTime() - agora) / 60_000)) : 0;
 
   async function entrar(e: React.FormEvent) {
     e.preventDefault();
+    if (bloqueado) return;
     setErro("");
     setCarregando(true);
     try {
@@ -27,6 +44,10 @@ export default function PaginaLogin() {
       });
       const dados = await resposta.json();
       if (!resposta.ok) {
+        if (resposta.status === 429 && dados.bloqueadoAte) {
+          setBloqueadoAte(new Date(dados.bloqueadoAte));
+          setAgora(Date.now());
+        }
         setErro(dados.erro || "Não foi possível entrar.");
         return;
       }
@@ -54,8 +75,8 @@ export default function PaginaLogin() {
             src={asset("/logo.png")}
             alt="Manipulação Viver Bem"
             draggable={false}
-            width={220}
-            height={97}
+            width={560}
+            height={246}
             className="h-11 w-auto object-contain mx-auto"
           />
           <p className="rotulo-pilula justify-center w-full mt-6 !text-[0.62rem]">Painel</p>
@@ -88,6 +109,7 @@ export default function PaginaLogin() {
                   required
                   autoFocus
                   autoComplete="username"
+                  disabled={bloqueado}
                   className={campo}
                   placeholder="voce@viverbem.com.br"
                 />
@@ -114,6 +136,7 @@ export default function PaginaLogin() {
                   onChange={(e) => setSenha(e.target.value)}
                   required
                   autoComplete="current-password"
+                  disabled={bloqueado}
                   className={`${campo} !pr-12`}
                   placeholder="••••••••"
                 />
@@ -138,17 +161,24 @@ export default function PaginaLogin() {
               </div>
             </label>
 
-            {erro && <AvisoAdmin className="animar-surgir">{erro}</AvisoAdmin>}
+            {bloqueado ? (
+              <AvisoAdmin className="animar-surgir">
+                Acesso bloqueado por tentativas erradas. Tente de novo em {minutos} min, ou peça ao gestor
+                para desbloquear em Acessos ao painel.
+              </AvisoAdmin>
+            ) : (
+              erro && <AvisoAdmin className="animar-surgir">{erro}</AvisoAdmin>
+            )}
 
             <button
               type="submit"
-              disabled={carregando}
-              className="bg-navy hover:bg-tinta disabled:opacity-60 text-white font-semibold rounded-xl h-12 px-4 mt-1 flex items-center justify-center gap-2.5 transition-colors active:scale-[0.98]"
+              disabled={carregando || bloqueado}
+              className="bg-navy hover:bg-tinta disabled:opacity-60 disabled:hover:bg-navy text-white font-semibold rounded-xl h-12 px-4 mt-1 flex items-center justify-center gap-2.5 transition-colors active:scale-[0.98]"
             >
               {carregando && (
                 <span aria-hidden="true" className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
               )}
-              {carregando ? "Entrando..." : "Entrar"}
+              {bloqueado ? `Bloqueado por ${minutos} min` : carregando ? "Entrando..." : "Entrar"}
             </button>
           </form>
         </div>
@@ -156,7 +186,7 @@ export default function PaginaLogin() {
         <p className="text-white/50 text-xs text-center mt-6 leading-relaxed">
           Esqueceu a senha? Peça ao gestor para gerar uma nova
           <br />
-          em Acessos ao painel.
+          em Acessos ao painel. Cinco erros bloqueiam por 30 minutos.
         </p>
 
         <Link

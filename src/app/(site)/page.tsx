@@ -23,7 +23,7 @@ import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
 import { obterSecoesHome } from "@/lib/configuracao";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { Abertura } from "@/components/site/Abertura";
-import { obterArteHero } from "@/lib/hero";
+import { obterArtesHero } from "@/lib/hero";
 import { Beneficios } from "@/components/site/Beneficios";
 import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
@@ -91,10 +91,10 @@ function TituloComItalico({ nome }: { nome: string }) {
 }
 
 export default async function Home() {
-  const [{ categorias, produtos }, avaliacoes, arte, secoes] = await Promise.all([
+  const [{ categorias, produtos }, avaliacoes, artes, secoes] = await Promise.all([
     obterCatalogo(),
     obterAvaliacoes(),
-    obterArteHero(),
+    obterArtesHero(),
     obterSecoesHome(),
   ]);
 
@@ -157,7 +157,7 @@ export default async function Home() {
   return (
     <main className="flex-1">
       {/* 1 ─ Banner de abertura e 2 ─ vantagens (sempre) */}
-      <Abertura arte={arte} />
+      <Abertura artes={artes} />
       <Beneficios />
 
       <div className="folhas">

@@ -97,28 +97,42 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
             O que dizem <span className="italic">sobre a gente</span>
           </h2>
         </div>
-        {/* O selo do Google no lugar do botão (07/10/2026, "modernize"): a
-            nota com as estrelas em ouro, o total e a seta, levando ao perfil */}
+        {/* Quem avaliou (07/10/2026, "modernize"): os rostos empilhados, o
+            total num círculo de ouro e a nota, sem caixa. Leva ao perfil. */}
         <a
           href={PERFIL_GOOGLE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group self-start md:self-auto inline-flex items-center gap-3.5 rounded-full bg-white border border-fio p-2 pr-2 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:border-ouro/40 hover:-translate-y-0.5"
+          className="group self-start md:self-auto flex items-center gap-4 md:pb-1"
         >
-          <span className="w-11 h-11 shrink-0 rounded-full bg-gelo flex items-center justify-center">
-            <IconeGoogle tamanho={20} />
+          <span className="flex -space-x-3 shrink-0">
+            {rostos.map((a) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={a.id}
+                src={asset(a.fotoUrl as string)}
+                alt=""
+                width={44}
+                height={44}
+                loading="lazy"
+                decoding="async"
+                className="w-11 h-11 rounded-full object-cover ring-[3px] ring-white shadow-[0_6px_14px_-8px_rgba(16,42,74,0.5)]"
+                draggable={false}
+              />
+            ))}
+            <span className="w-11 h-11 rounded-full bg-[image:var(--ouro-degrade)] text-navy ring-[3px] ring-white flex items-center justify-center text-[0.72rem] font-semibold tabular-nums">
+              +{AVALIACOES_GOOGLE_TOTAL - rostos.length}
+            </span>
           </span>
-          <span className="leading-tight pr-1">
+          <span className="leading-tight">
             <span className="flex items-center gap-2">
-              <span className="text-[1.15rem] font-semibold text-navy tabular-nums">{NOTA}</span>
               <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={13} />
+              <span className="text-sm font-semibold text-navy tabular-nums">{NOTA} no Google</span>
             </span>
-            <span className="block text-xs text-cinza mt-0.5 whitespace-nowrap">
-              {AVALIACOES_GOOGLE_TOTAL} avaliações · Ver no Google
+            <span className="mt-1 inline-flex items-center gap-1.5 text-sm text-cinza transition-colors group-hover:text-tinta">
+              {AVALIACOES_GOOGLE_TOTAL} avaliações · ver todas
+              <SetaDireita tamanho={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
             </span>
-          </span>
-          <span className="w-10 h-10 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
-            <SetaDireita tamanho={15} />
           </span>
         </a>
       </div>

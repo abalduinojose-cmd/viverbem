@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   }
 
   const usuario = await db.usuario.create({
-    data: { nome, email, papel, senhaHash: bcrypt.hashSync(senha, 10) },
+    data: { nome, email, papel, senhaHash: bcrypt.hashSync(senha, 12) },
   });
   await registrarLog(
     sessao.nome ?? "?",

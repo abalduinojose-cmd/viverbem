@@ -1,4 +1,5 @@
-// PATCH  /api/admin/usuarios/:id — liga/desliga o acesso ou troca a senha
+// PATCH  /api/admin/usuarios/:id — liga/desliga o acesso, troca a senha ou
+//        desbloqueia o login travado por tentativas erradas ({ desbloquear: true })
 // DELETE /api/admin/usuarios/:id — remove o acesso
 // Permissão: SOMENTE ADMIN.
 //
@@ -11,6 +12,7 @@ import { db } from "@/lib/db";
 import { exigirAdminApi } from "@/lib/sessao";
 import { registrarLog } from "@/lib/log";
 import { PAPEL_ADMIN } from "@/lib/tipos";
+import { chaveEmail, limparFalhas } from "@/lib/protecaoLogin";
 
 type Contexto = { params: Promise<{ id: string }> };
 
@@ -39,6 +41,13 @@ export async function PATCH(req: Request, contexto: Contexto) {
     return NextResponse.json({ erro: "Acesso não encontrado." }, { status: 404 });
   }
 
+  // Desbloqueio do login (cinco senhas erradas travam por 30 minutos)
+  if (corpo.desbloquear === true) {
+    await limparFalhas([chaveEmail(usuario.email)]);
+    await registrarLog(sessao.nome ?? "?", "desbloqueou o login", `de ${usuario.nome}`);
+    return NextResponse.json({ ok: true });
+  }
+
   // Troca de senha
   if (typeof corpo.senha === "string") {
     if (corpo.senha.length < 6) {
@@ -49,7 +58,7 @@ export async function PATCH(req: Request, contexto: Contexto) {
     }
     await db.usuario.update({
       where: { id: alvoId },
-      data: { senhaHash: bcrypt.hashSync(corpo.senha, 10) },
+      data: { senhaHash: bcrypt.hashSync(corpo.senha, 12) },
     });
     await registrarLog(sessao.nome ?? "?", "trocou a senha", `de ${usuario.nome}`);
     return NextResponse.json({ ok: true });

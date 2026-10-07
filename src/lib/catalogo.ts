@@ -32,6 +32,8 @@ export interface RetratoDemo {
     secoesHome?: Record<string, boolean>;
     heroDesktop?: string | null;
     heroCelular?: string | null;
+    heroDesktop2?: string | null;
+    heroCelular2?: string | null;
   };
 }
 

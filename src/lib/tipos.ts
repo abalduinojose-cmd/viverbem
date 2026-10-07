@@ -13,8 +13,9 @@ export function nomePapel(papel: string | null | undefined): string {
   return papel === PAPEL_ADMIN ? "Gestor" : "Colaborador";
 }
 
-// Até quantas fotos um produto pode ter na galeria (painel, 07/10/2026)
-export const MAX_FOTOS_PRODUTO = 5;
+// Até quantas fotos um produto pode ter na galeria (painel, 07/10/2026;
+// eram 5, o usuário pediu "a opção de colocar mais fotos")
+export const MAX_FOTOS_PRODUTO = 10;
 
 // Como o produto pode ser oferecido no site. Manipulado não pode ser
 // exposto ao público com preço para venda (RDC 67/2007, item 5.14):

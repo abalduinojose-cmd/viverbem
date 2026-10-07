@@ -85,7 +85,7 @@ Detalhes de modelagem:
 - **Dosagens** (`dosagens`): texto livre separado por vírgula (ex.: `250mg, 500mg`). Se preenchido, o cliente escolhe a dosagem no totem antes de adicionar ao carrinho.
 - **Carrinho + finalização**: vive no navegador do tablet (localStorage) — nada é gravado no servidor. Ao "Finalizar pedido" o cliente informa o nome (e observação); é gerado um código (ex.: `VB-8F3A`) e o pedido completo vira uma mensagem no WhatsApp da loja com todas as especificações (item, dosagem, quantidade, preço unitário, subtotal, total) para a recepção receber e mandar preparar (`src/lib/whatsapp.ts`).
 - **Papéis**: `ADMIN` é o **gestor** (tudo: números, clientes, log, acessos, publicar e apagar) e `OPERADOR` é o **colaborador** (cuida do catálogo: produtos com até 5 fotos, preço no site, categorias com as chaves "No site" e "Vitrine na home", seções da home e a arte da dobra; não apaga, não publica, não reordena e não vê números).
-- **Galeria** (`FotoProduto`): até 5 fotos por produto, reordenáveis no formulário; a primeira é a capa e fica copiada em `fotoUrl` para as listas.
+- **Galeria** (`FotoProduto`): até 10 fotos por produto, reordenáveis no formulário; a primeira é a capa e fica copiada em `fotoUrl` para as listas.
 - **Preço no site** (`mostrarPreco`): desligado por padrão; só liga em industrializado com registro (a rota recusa em manipulado, RDC 67/2007). O site não mostra preço de nada enquanto a chave estiver desligada.
 - **Categoria no site** (`visivel`) e **vitrine na home** (`vitrineHome`): tirar uma área do site esconde também os produtos dela, sem apagar nada.
 - **Ajustes do site** (`Configuracao`, chave/valor em JSON): as seções da home ligadas e a arte da dobra enviada pelo painel (`src/lib/configuracao.ts`, `src/lib/secoes.ts`).
@@ -121,6 +121,7 @@ Recomendações:
 - Use um gerenciador de processo (ex.: `pm2 start npm --name viverbem -- start`) para reiniciar sozinho.
 - Coloque um proxy reverso com HTTPS na frente (Caddy ou Nginx) — o cookie de sessão exige HTTPS em produção.
 - **Troque `SESSION_SECRET`** e a senha do admin.
+- **Login protegido**: senhas em hash (bcrypt), sessão em cookie criptografado com validade de 12h e bloqueio de 30 minutos depois de 5 senhas erradas (por e-mail e por IP, tabela `TentativaLogin`). O gestor desbloqueia em Acessos ao painel. Atrás de proxy, mantenha o cabeçalho `X-Forwarded-For` para o bloqueio por IP funcionar.
 - Faça backup do arquivo `prisma/dev.db` (banco) e da pasta `public/uploads/` (fotos) — são os dois únicos lugares com dados.
 
 ### Migrar para Postgres (quando precisar)
@@ -131,7 +132,11 @@ Recomendações:
 
 ### Arte da dobra (home)
 
-A farmácia troca a abertura da home pela própria arte em **Painel → Home e arte da dobra**: a versão do computador (~1920x760) liga o modo arte e a do celular (~1080x1350) é opcional. Com a arte, a dobra mostra a imagem inteira com só os três botões por cima (ver `src/lib/hero.ts` e `Abertura.tsx`). Também funciona copiar os arquivos direto em `public/uploads/hero/desktop.jpg` e `celular.jpg`; o que foi enviado pelo painel tem prioridade.
+A farmácia troca a abertura da home pelas próprias artes em **Painel → Home e arte da dobra**: até duas artes, cada uma com a versão do computador (~1920x760, obrigatória) e a do celular (~1080x1350, opcional). Com uma arte, a dobra mostra a imagem inteira com só os três botões por cima; com duas, alterna entre elas (ver `src/lib/hero.ts`, `Abertura.tsx` e `CarrosselArte.tsx`). Para a primeira arte também funciona copiar os arquivos direto em `public/uploads/hero/desktop.jpg` e `celular.jpg`; o que foi enviado pelo painel tem prioridade.
+
+### Paleta
+
+O site usa o sistema "Branco, azul e ouro": azul da marca #1C69B5 (ação), azul-noite #0D2340 (títulos, banners, rodapé), ouro #B3904F / #C0A060 (acentos) sobre fundo branco e gelo #EEF3F9. Tudo está em tokens no `src/app/globals.css` (`@theme`); para mudar uma cor, mude lá. A paleta do Instagram (#322F69 / #C9A56B / creme / areia) foi testada em 07/10/2026 e desfeita a pedido.
 
 ### Migrar para MySQL (hospedagem do cliente)
 

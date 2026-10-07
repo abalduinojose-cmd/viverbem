@@ -164,7 +164,7 @@ export function VitrineCategoria({
     <section aria-labelledby={id} className="secao-vitrine max-w-7xl mx-auto px-5 md:px-8">
       {/* Cabeçalho: título, fio e "ver mais" na mesma linha */}
       <div className="revelar flex items-center gap-4 md:gap-6">
-        <h2 id={id} className="text-[1.75rem] md:text-[2.5rem] font-semibold tracking-[-0.04em] text-navy leading-[1.02]">
+        <h2 id={id} className="titulo-bloco">
           {titulo}
         </h2>
         <span aria-hidden="true" className="hidden sm:block h-px flex-1 bg-gradient-to-r from-ouro/50 via-fio to-fio" />

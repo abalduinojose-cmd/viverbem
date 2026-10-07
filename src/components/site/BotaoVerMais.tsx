@@ -15,10 +15,10 @@ export function BotaoVerMais({
   return (
     <Link
       href={href}
-      className={`group/vm inline-flex items-center gap-2.5 h-10 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.88rem] font-medium whitespace-nowrap transition-colors hover:border-navy/40 ${className}`}
+      className={`group/vm inline-flex items-center gap-2.5 h-11 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.88rem] font-medium whitespace-nowrap transition-colors hover:border-navy/40 ${className}`}
     >
       {children}
-      <span className="w-7 h-7 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-colors group-hover/vm:bg-none group-hover/vm:bg-navy group-hover/vm:text-white">
+      <span className="w-8 h-8 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-colors group-hover/vm:bg-none group-hover/vm:bg-navy group-hover/vm:text-white">
         <SetaDireita />
       </span>
     </Link>

@@ -1,11 +1,11 @@
-// Home e arte da dobra: quais seções da página inicial aparecem e a arte
-// que abre o site. Gestor e colaborador entram.
-import { obterArteHeroConfigurada, obterSecoesHome } from "@/lib/configuracao";
+// Home e arte da dobra: quais seções da página inicial aparecem e as até
+// duas artes que abrem o site. Gestor e colaborador entram.
+import { obterArtesHeroConfiguradas, obterSecoesHome } from "@/lib/configuracao";
 import { ConfiguracaoSite } from "@/components/admin/ConfiguracaoSite";
 
 export const dynamic = "force-dynamic";
 
 export default async function PaginaSite() {
-  const [secoes, arte] = await Promise.all([obterSecoesHome(), obterArteHeroConfigurada()]);
-  return <ConfiguracaoSite secoes={secoes} arte={arte} />;
+  const [secoes, artes] = await Promise.all([obterSecoesHome(), obterArtesHeroConfiguradas()]);
+  return <ConfiguracaoSite secoes={secoes} artes={artes} />;
 }

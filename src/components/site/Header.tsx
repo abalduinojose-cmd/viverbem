@@ -31,11 +31,14 @@ function BotaoCarrinho({
   className,
   rotulo = true,
   contagemInline = false,
+  selo = "navy",
 }: {
   className: string;
   rotulo?: boolean;
   /** Celular: a contagem vai dentro da pílula, ao lado do ícone, em vez do selo */
   contagemInline?: boolean;
+  /** Cor do selo da contagem: navy sobre o botão branco do computador, ouro na cápsula do celular */
+  selo?: "navy" | "ouro";
 }) {
   const { totalItens, abrirPedido } = useCarrinho();
   const descricao =
@@ -53,7 +56,11 @@ function BotaoCarrinho({
         <span className="relative">
           <IconeCarrinho tamanho={20} />
           {totalItens > 0 && (
-            <span className="absolute -top-2 -right-2.5 bg-navy text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white">
+            <span
+              className={`absolute -top-2 -right-2.5 text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white ${
+                selo === "ouro" ? "bg-ouro-claro text-navy" : "bg-navy text-white"
+              }`}
+            >
               {totalItens}
             </span>
           )}
@@ -130,21 +137,20 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
 
 // Pílula da fileira de categorias: a ativa em navy, as outras em gelo
 const classeCategoria = (ativo: boolean) =>
-  `shrink-0 inline-flex items-center h-10 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
+  `shrink-0 inline-flex items-center h-11 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
     ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
   }`;
 
-// Botões do celular (busca e menu) dentro da cápsula navy: ícones brancos;
-// o que estiver aberto vira um círculo branco
+// Botões do celular (carrinho, busca e menu) numa cápsula branca com fio,
+// ícones em navy; o que estiver aberto vira um círculo navy (07/10/2026,
+// "deixe esses botões mais clean": a cápsula navy com o círculo de ouro saiu)
 const classeBotaoCapsula = (ativo = false) =>
-  `w-9 h-9 rounded-full flex items-center justify-center transition active:scale-95 ${
-    ativo ? "bg-white text-navy" : "text-white/90 hover:bg-white/10"
+  `w-10 h-10 rounded-full flex items-center justify-center transition active:scale-95 ${
+    ativo ? "bg-navy text-white" : "text-navy hover:bg-gelo"
   }`;
-// O carrinho: pílula de OURO dentro da cápsula navy, com o ícone e a
-// contagem em navy (07/10, 2ª rodada: "modernize o botão do carrinho");
-// vazia, é só o círculo de ouro com o ícone
-const classeBotaoCarrinhoCelular =
-  "h-9 min-w-9 px-2.5 rounded-full flex items-center justify-center gap-1.5 bg-[image:var(--ouro-degrade)] text-navy transition active:scale-95";
+// O carrinho na cápsula: o mesmo botão dos outros dois, com a contagem num
+// selo pequeno de ouro quando há itens
+const classeBotaoCarrinhoCelular = classeBotaoCapsula();
 
 // "Aberto agora · Fecha às 19h" na faixa do topo (07/10/2026). No servidor
 // é null: sai um texto neutro, sem horário congelado no HTML.
@@ -293,9 +299,9 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           <BotaoEnviarReceita className="hidden md:inline-flex botao botao-principal botao-compacto !min-h-12" />
           <BotaoCarrinho className="hidden md:inline-flex botao botao-secundario botao-compacto !min-h-12" />
 
-          {/* Celular: cápsula navy com o carrinho em ouro, a lupa e o menu */}
-          <div className="md:hidden flex items-center gap-1 p-1 rounded-full bg-navy shadow-[0_14px_30px_-16px_rgba(13,35,64,0.7)]">
-            <BotaoCarrinho rotulo={false} contagemInline className={classeBotaoCarrinhoCelular} />
+          {/* Celular: cápsula branca com fio, com o carrinho, a lupa e o menu */}
+          <div className="md:hidden flex items-center gap-0.5 p-0.5 rounded-full border border-fio bg-white">
+            <BotaoCarrinho rotulo={false} selo="ouro" className={classeBotaoCarrinhoCelular} />
             <button
               type="button"
               onClick={() => {
@@ -361,10 +367,10 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           ))}
           <Link
             href="/sobre#como-funciona"
-            className="group ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-10 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.82rem] font-medium whitespace-nowrap transition-colors hover:border-ouro/50"
+            className="group ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-11 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.82rem] font-medium whitespace-nowrap transition-colors hover:border-ouro/50"
           >
             Como funciona
-            <span className="w-7 h-7 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+            <span className="w-8 h-8 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

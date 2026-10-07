@@ -5,15 +5,21 @@
 //
 // Versão interativa (07/10/2026, "modernize a seção e o botão do
 // Instagram, faça algo em JavaScript"): quatro reels numa fileira (faixa
-// que arrasta no celular, com o ativo no centro e vídeos dos dois lados;
-// lado a lado no computador). Um deles é o
-// "ativo": maior, com o anel de ouro e a barra de progresso que enche
-// enquanto toca, como nos stories; quando termina, o próximo entra
-// sozinho (e a faixa centraliza nele no celular). Botão de som no cartão
-// que está tocando. No computador, sem "reduzir movimento", o ativo começa
-// mudo quando a seção entra na tela e para quando sai; quem pausou não é
-// interrompido de novo. O botão do Instagram tem o anel de ouro que gira e
-// um leve "ímã" que segue o mouse.
+// que arrasta no celular e no tablet, com o ativo no centro e vídeos dos
+// dois lados; lado a lado no computador). Um deles é o "ativo": maior, com
+// o anel de ouro e a barra de progresso que enche enquanto toca, como nos
+// stories; quando termina, o próximo entra sozinho (e a faixa centraliza
+// nele no celular). Botão de som no cartão que está tocando. No
+// computador, sem "reduzir movimento", o ativo começa mudo quando a seção
+// entra na tela e para quando sai; quem pausou não é interrompido de novo.
+// O botão do Instagram tem o anel de ouro que gira e um leve "ímã" que
+// segue o mouse.
+//
+// Terceira passada (07/10/2026, "modernize mas deixe clean"): o cabeçalho
+// ficou em duas colunas no computador, com o botão do Instagram ao lado
+// do título (como o selo do Google nas avaliações); os cartões perderam o
+// ícone do Instagram repetido e a caixa de vidro da legenda: só a capa, um
+// véu escuro embaixo, o título em branco e o botão de tocar.
 //
 // Cada vídeo só é baixado quando toca (preload="none"), para a home não
 // pesar. Antes de colocar um reel novo aqui, o farmacêutico precisa ver (e
@@ -50,7 +56,7 @@ function IconeSom({ mudo }: { mudo: boolean }) {
 // O botão do Instagram: anel de ouro que gira enquanto o mouse está em
 // cima e um leve "ímã" que acompanha o ponteiro (só mouse; no toque fica
 // parado). Tudo em JavaScript, sem animação permanente.
-function BotaoInstagram() {
+function BotaoInstagram({ className = "" }: { className?: string }) {
   const anel = useRef<HTMLSpanElement>(null);
   const giro = useRef(0);
   const quadro = useRef<number | null>(null);
@@ -90,7 +96,7 @@ function BotaoInstagram() {
       onPointerMove={aoMover}
       onPointerLeave={aoSair}
       style={{ "--giro": "0deg" } as React.CSSProperties}
-      className="inline-flex rounded-full p-[2px] bg-[conic-gradient(from_var(--giro),#b3904f,#efe2b8,#b3904f,#8f7137,#b3904f)] shadow-[0_18px_40px_-26px_rgba(143,113,55,0.8)] transition-transform duration-200 ease-out will-change-transform"
+      className={`inline-flex rounded-full p-[2px] bg-[conic-gradient(from_var(--giro),#b3904f,#efe2b8,#b3904f,#8f7137,#b3904f)] shadow-[0_18px_40px_-26px_rgba(143,113,55,0.8)] transition-transform duration-200 ease-out will-change-transform ${className}`}
     >
       <a
         href={INSTAGRAM_URL}
@@ -207,7 +213,7 @@ export function ReelsInstagram() {
           pausarTodos();
           return;
         }
-        const computador = window.matchMedia("(min-width: 768px)").matches;
+        const computador = window.matchMedia("(min-width: 1024px)").matches;
         const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (computador && !semMovimento && !pausouPorConta.current) tocar(ativoRef.current);
       },
@@ -254,22 +260,27 @@ export function ReelsInstagram() {
 
   return (
     <section ref={secaoRef} aria-labelledby="titulo-reels" className="secao max-w-7xl mx-auto px-5 md:px-8">
-      {/* Cabeçalho centralizado */}
-      <div className="revelar text-center max-w-2xl mx-auto">
-        <p className="rotulo-pilula">acompanhe a gente</p>
-        <h2 id="titulo-reels" className="titulo-secao vao-rotulo">
-          Por dentro da <span className="italic">Viver Bem</span>
-        </h2>
-        <p className="texto-apoio mt-4 mx-auto max-w-md">
-          O laboratório, a loja e quem faz a farmácia no dia a dia, direto do nosso
-          Instagram.
-        </p>
+      {/* ---------- Cabeçalho: título à esquerda, o Instagram à direita ---------- */}
+      <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-5 lg:items-end">
+        <div className="lg:col-span-7 max-w-2xl">
+          <p className="rotulo-pilula">acompanhe a gente</p>
+          <h2 id="titulo-reels" className="titulo-secao vao-rotulo">
+            Por dentro da <span className="italic">Viver Bem</span>
+          </h2>
+          <p className="texto-apoio mt-4 max-w-md">
+            O laboratório, a loja e quem faz a farmácia no dia a dia, direto do nosso
+            Instagram.
+          </p>
+        </div>
+        <div className="hidden lg:flex lg:col-span-5 lg:justify-end lg:pb-1.5">
+          <BotaoInstagram />
+        </div>
       </div>
 
-      {/* Os reels: faixa no celular, fileira centralizada no computador */}
+      {/* ---------- Os reels: faixa no celular e no tablet, fileira no computador ---------- */}
       <div
         ref={faixaRef}
-        className="revelar vao-titulo flex items-end gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none rolagem-sem-barra px-[calc(50%-min(7.5rem,35vw))] pb-2 md:px-0 md:pb-0 md:justify-center"
+        className="revelar vao-titulo flex items-end gap-3 md:gap-4 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none rolagem-sem-barra px-[calc(50%-min(7.5rem,35vw))] pb-2 lg:px-0 lg:pb-0 lg:justify-center"
       >
         {REELS.map((reel, i) => {
           const ehAtivo = i === ativo;
@@ -280,10 +291,10 @@ export function ReelsInstagram() {
               ref={(el) => {
                 cartoes.current[i] = el;
               }}
-              className={`group relative shrink-0 snap-center w-[min(15rem,70vw)] md:w-[14.5rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-gelo ring-1 transition duration-500 ${
+              className={`group relative shrink-0 snap-center w-[min(15rem,70vw)] lg:w-[14rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-navy ring-1 transition duration-500 ${
                 ehAtivo
                   ? "ring-ouro/60 shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
-                  : "ring-fio md:scale-[0.94] md:opacity-80 md:hover:opacity-100"
+                  : "ring-fio lg:scale-[0.94] lg:opacity-80 lg:hover:opacity-100"
               }`}
             >
               <video
@@ -300,8 +311,8 @@ export function ReelsInstagram() {
                 className="w-full h-full object-cover"
               />
 
-              {/* Barra de progresso, como nos stories */}
-              <span aria-hidden="true" className="absolute top-3 left-3 right-3 h-1 rounded-full bg-white/30 overflow-hidden">
+              {/* Barra de progresso fina no alto, como nos stories */}
+              <span aria-hidden="true" className="absolute top-3 left-4 right-4 h-[3px] rounded-full bg-white/30 overflow-hidden">
                 <span
                   ref={(el) => {
                     barras.current[i] = el;
@@ -311,33 +322,34 @@ export function ReelsInstagram() {
                 />
               </span>
 
-              {/* Tocar e pausar */}
+              {/* Tocar e pausar: o cartão inteiro */}
               <button
                 type="button"
                 onClick={() => alternar(i)}
                 aria-label={estaTocando ? `Pausar: ${reel.titulo}` : `Assistir: ${reel.titulo}`}
                 className="absolute inset-0 flex items-center justify-center"
               >
+                {/* O véu escuro embaixo, para o título ler bem; some enquanto toca */}
                 <span
                   aria-hidden="true"
-                  className={`absolute inset-0 bg-gradient-to-t from-noite/55 via-transparent to-noite/10 transition-opacity duration-300 ${
+                  className={`absolute inset-0 bg-gradient-to-t from-noite/75 via-noite/10 to-noite/15 transition-opacity duration-300 ${
                     estaTocando ? "opacity-0" : "opacity-100"
                   }`}
                 />
                 <span
-                  className={`relative w-14 h-14 rounded-full bg-white/95 text-tinta flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
+                  className={`relative w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-navy flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
                     estaTocando
                       ? "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
                       : "opacity-100 group-hover:scale-105"
                   }`}
                 >
                   {estaTocando ? (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <rect x="6" y="5" width="4" height="14" rx="1.2" />
                       <rect x="14" y="5" width="4" height="14" rx="1.2" />
                     </svg>
                   ) : (
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="translate-x-px">
                       <path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5Z" />
                     </svg>
                   )}
@@ -351,31 +363,21 @@ export function ReelsInstagram() {
                   onClick={alternarSom}
                   aria-label={mudo ? "Ativar o som" : "Silenciar"}
                   aria-pressed={!mudo}
-                  className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition"
+                  className="absolute bottom-3 right-3 w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition"
                 >
                   <IconeSom mudo={mudo} />
                 </button>
               )}
 
-              {/* Selo do Instagram, fora do botão para poder ser clicado */}
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Ver no Instagram de @${INSTAGRAM_PERFIL}`}
-                className={`absolute top-6 right-3 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition duration-300 ${
-                  estaTocando ? "opacity-0 group-hover:opacity-100" : "opacity-100"
-                }`}
-              >
-                <IconeInstagram tamanho={18} />
-              </a>
-
-              {/* Legenda em vidro; some enquanto toca */}
+              {/* O título, em branco sobre o véu; some enquanto toca */}
               <span
-                className={`pointer-events-none absolute left-3 right-3 bottom-3 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-2.5 text-white text-[0.78rem] sm:text-[0.85rem] font-medium leading-tight text-center transition-opacity duration-300 ${
+                className={`pointer-events-none absolute left-4 right-4 bottom-4 text-white text-[0.95rem] sm:text-[1rem] font-semibold leading-snug tracking-[-0.015em] transition-opacity duration-300 ${
                   estaTocando ? "opacity-0" : "opacity-100"
                 }`}
               >
+                <span className="block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-ouro-claro mb-1">
+                  Reel
+                </span>
                 {reel.titulo}
               </span>
             </div>
@@ -384,7 +386,7 @@ export function ReelsInstagram() {
       </div>
 
       {/* Bolinhas: qual reel está ativo (e atalho para ele) */}
-      <div className="mt-5 flex justify-center gap-2" role="tablist" aria-label="Qual vídeo mostrar">
+      <div className="mt-4 flex justify-center gap-1" role="tablist" aria-label="Qual vídeo mostrar">
         {REELS.map((reel, i) => (
           <button
             key={reel.arquivo}
@@ -399,14 +401,21 @@ export function ReelsInstagram() {
               setAtivo(i);
               centralizar(i);
             }}
-            className={`h-2.5 rounded-full transition-all duration-300 ${
-              i === ativo ? "w-7 bg-[image:var(--ouro-degrade)]" : "w-2.5 bg-fio hover:bg-ouro/50"
-            }`}
-          />
+            className="group/ponto flex h-11 min-w-8 items-center justify-center px-1"
+          >
+            {/* A bolinha é pequena; a área de toque é o botão inteiro (44px) */}
+            <span
+              aria-hidden="true"
+              className={`block h-2.5 rounded-full transition-all duration-300 ${
+                i === ativo ? "w-7 bg-[image:var(--ouro-degrade)]" : "w-2.5 bg-fio group-hover/ponto:bg-ouro/50"
+              }`}
+            />
+          </button>
         ))}
       </div>
 
-      <div className="revelar mt-8 md:mt-10 flex justify-center">
+      {/* Abaixo do computador o botão do Instagram fica embaixo, centralizado */}
+      <div className="revelar mt-8 flex justify-center lg:hidden">
         <BotaoInstagram />
       </div>
     </section>

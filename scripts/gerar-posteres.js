@@ -11,11 +11,15 @@ const { execFileSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
+// Capas escolhidas quadro a quadro em 07/10/2026 ("melhore a capa desses
+// vídeos"): o farmacêutico na loja sem legenda queimada (reel 1), os irmãos
+// (reel 2), o olho com o tubo (reel 3) e o pote dos pads em vez do quadro
+// final com o logo (reel 4).
 const REELS = [
-  { arquivo: "reel-1.mp4", capaEm: 3 },
-  { arquivo: "reel-2.mp4", capaEm: 2 },
-  { arquivo: "reel-3.mp4", capaEm: 0.6 },
-  { arquivo: "reel-4.mp4", capaEm: 44.5 },
+  { arquivo: "reel-1.mp4", capaEm: 14 },
+  { arquivo: "reel-2.mp4", capaEm: 1.5 },
+  { arquivo: "reel-3.mp4", capaEm: 2.4 },
+  { arquivo: "reel-4.mp4", capaEm: 1 },
 ];
 
 const ffmpeg = process.env.FFMPEG || "ffmpeg";

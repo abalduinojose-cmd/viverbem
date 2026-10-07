@@ -16,7 +16,7 @@ import { SetaDireita } from "./icones";
 function ItemCompacto({ produto }: { produto: ProdutoDTO }) {
   const href = `/produto/${produto.slug}`;
   return (
-    <li className="flex items-center gap-3 py-3">
+    <li className="relative flex items-center gap-3 py-3">
       <Link
         href={href}
         className="shrink-0 w-14 h-14 rounded-xl bg-gelo/70 flex items-center justify-center p-1.5 transition-colors hover:bg-gelo"
@@ -31,13 +31,13 @@ function ItemCompacto({ produto }: { produto: ProdutoDTO }) {
       <div className="min-w-0 flex-1">
         <Link
           href={href}
-          className="block text-[0.9rem] font-medium text-navy leading-snug line-clamp-2 transition-colors hover:text-tinta"
+          className="block text-[0.9rem] font-medium text-navy leading-snug line-clamp-2 transition-colors hover:text-tinta after:absolute after:inset-0 after:rounded-xl"
         >
           {produto.nome}
         </Link>
         {produto.categoriaNome && <span className="block mt-0.5 text-xs text-cinza truncate">{produto.categoriaNome}</span>}
       </div>
-      <BotaoAdicionar produto={produto} compacto />
+      <BotaoAdicionar produto={produto} compacto className="relative z-[1]" />
     </li>
   );
 }

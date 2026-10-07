@@ -281,7 +281,7 @@ export function CatalogoClient({
               <section>
                 <div className="mb-5">
                   <p className="rotulo">com registro na Anvisa</p>
-                  <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
+                  <h2 className="titulo-bloco mt-2">
                     Pronta <span className="italic">entrega</span>
                   </h2>
                 </div>
@@ -293,7 +293,7 @@ export function CatalogoClient({
               <section key={c.id}>
                 <div className="flex items-end justify-between gap-4 mb-5">
                   <div className="min-w-0">
-                    <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06]">
+                    <h2 className="titulo-bloco">
                       <TituloArea nome={c.nome} />
                     </h2>
                     <p className="text-cinza text-sm md:text-base mt-1.5">{infoCategoria(c.slug).descricao}</p>

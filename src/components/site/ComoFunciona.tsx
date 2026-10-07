@@ -2,17 +2,16 @@
 // até a retirada ou a entrega, em quatro passos. Aparece na home e na
 // página A Viver Bem.
 //
-// Composição (06/10/2026, noite, terceira versão, "modernize a seção"):
-// sobre a folha clara, o título em duas vozes com o texto de apoio ao
-// lado; abaixo, os quatro passos em cartões brancos lado a lado (um só no
-// celular, dois no tablet), cada um com o número num círculo de ouro que
-// sai pela borda de cima e o ícone do passo; no computador uma linha liga
-// os quatro números e a parte em ouro cresce conforme a pessoa rola
-// (scroll-driven, roda também com "reduzir movimento"). Fecha com o
-// convite da receita em azul-noite, com a malha de laboratório, o ícone
-// em ouro e os dois botões. (O painel inteiro em azul-noite tinha sido
-// reprovado antes, "tire o azul forte do fundo": o azul agora é só o
-// convite.)
+// Quarta versão (07/10/2026, "modernize a seção, deixe clean"): os quatro
+// passos deixaram de ser quatro cartões pendurados num fio e viraram UM
+// cartão branco dividido por fios finos, um passo por coluna no
+// computador (duas por linha no tablet, empilhados no celular). Cada passo
+// abre com o número grande em ouro itálico (a mesma voz dos números da
+// página A Viver Bem) e o ícone pequeno; a linha de ouro que cresce com a
+// rolagem passou para a borda de cima do cartão (scroll-driven, roda também
+// com "reduzir movimento"). Fecha com o convite da receita em azul-noite.
+// (O painel inteiro em azul-noite tinha sido reprovado antes, "tire o azul
+// forte do fundo": o azul segue só no convite.)
 //
 // Esta seção já tinha absorvido as duas que contavam o mesmo processo
 // ("Cada pessoa tem sua fórmula" virou o passo 03 e o aviso legal;
@@ -31,7 +30,7 @@ import { IconeWhatsApp } from "./icones";
 // Prancheta com o visto: o farmacêutico confere
 function IconeConfere() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M9 5H7.5A1.5 1.5 0 0 0 6 6.5v13A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 16.5 5H15"
         stroke="currentColor"
@@ -47,7 +46,7 @@ function IconeConfere() {
 // Frasco de laboratório: o preparo
 function IconeFrasco() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M9 3h6M10 3v6.5L4.6 19a1.5 1.5 0 0 0 1.3 2.2h12.2a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M7.2 16h9.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
@@ -59,7 +58,7 @@ const PASSOS = [
     titulo: "Envie a receita",
     texto: "Mande a foto da prescrição pelo WhatsApp, ou traga na loja.",
     detalhe: "Pelo site, o pedido já chega com o seu código.",
-    icone: <IconeReceita tamanho={22} />,
+    icone: <IconeReceita tamanho={20} />,
   },
   {
     titulo: "O farmacêutico confere",
@@ -78,10 +77,19 @@ const PASSOS = [
     titulo: "Retire ou receba",
     texto: `Sem taxa, numa das ${UNIDADES.length} lojas, ou em casa, de moto, por toda Petrópolis.`,
     detalhe: "A taxa e o prazo da entrega são combinados pelo WhatsApp antes de sair.",
-    icone: <IconeMoto tamanho={22} />,
+    icone: <IconeMoto tamanho={20} />,
     lojas: true,
   },
 ];
+
+// Os fios entre os passos: um passo por linha no celular, 2x2 no tablet e
+// quatro colunas no computador
+function fiosDoPasso(i: number) {
+  const celular = i > 0 ? "border-t border-fio" : "";
+  const tablet = `${i % 2 === 1 ? "md:border-l" : "md:border-l-0"} ${i >= 2 ? "md:border-t" : "md:border-t-0"}`;
+  const computador = `lg:border-t-0 ${i > 0 ? "lg:border-l" : "lg:border-l-0"}`;
+  return `${celular} ${tablet} ${computador}`;
+}
 
 export function ComoFunciona({ className = "secao" }: { className?: string }) {
   return (
@@ -104,38 +112,34 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
         </p>
       </div>
 
-      {/* ---------- Os quatro passos, lado a lado, ligados pela linha ---------- */}
-      {/* No celular os passos viram uma faixa que arrasta para o lado (07/10);
-          do md em diante, a grade */}
-      <ol className="revelar vao-titulo relative flex items-stretch overflow-x-auto snap-x snap-mandatory rolagem-sem-barra -mx-5 px-5 scroll-pl-5 pb-2 gap-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible md:mx-0 md:px-0 md:scroll-pl-0 md:pb-0 md:gap-5 lg:gap-4">
-        <span aria-hidden="true" className="trilha-h-linha hidden lg:block" />
-        <span aria-hidden="true" className="trilha-h-progresso hidden lg:block" />
-        {PASSOS.map((p, i) => (
-          <li key={p.titulo} className="relative pt-7 w-[82%] sm:w-[58%] md:w-auto shrink-0 snap-start">
-            {/* O número, saindo pela borda de cima do cartão */}
-            <span aria-hidden="true" className="passo-numero">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <div className="h-full rounded-[1.5rem] bg-white ring-1 ring-fio/80 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] p-4 sm:p-5 md:p-6 flex flex-col transition duration-300 hover:-translate-y-0.5 hover:ring-ouro/40">
-              <span className="self-end w-11 h-11 rounded-full bg-ouro/10 text-ouro-escuro flex items-center justify-center">
-                {p.icone}
-              </span>
-              <h3 className="mt-4 text-[1.1rem] md:text-[1.2rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
+      {/* ---------- Os quatro passos num só cartão ---------- */}
+      <div className="revelar vao-titulo relative overflow-hidden rounded-[2rem] border border-fio bg-white shadow-[0_28px_60px_-44px_rgba(16,42,74,0.4)]">
+        {/* A linha de ouro na borda de cima, que cresce com a rolagem */}
+        <span aria-hidden="true" className="absolute top-0 inset-x-0 h-[3px] bg-fio" />
+        <span aria-hidden="true" className="trilha-topo" />
+
+        <ol className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {PASSOS.map((p, i) => (
+            <li key={p.titulo} className={`relative flex flex-col p-5 sm:p-6 md:p-7 border-fio ${fiosDoPasso(i)}`}>
+              {/* O número em ouro itálico e o ícone do passo */}
+              <div className="flex items-start justify-between gap-3">
+                <span aria-hidden="true" className="numero-tinta text-[2.4rem] md:text-[2.75rem]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="mt-1 w-10 h-10 rounded-full bg-ouro/10 text-ouro-escuro flex items-center justify-center">
+                  {p.icone}
+                </span>
+              </div>
+              <h3 className="mt-4 text-[1.15rem] md:text-[1.2rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
+                <span className="sr-only">Passo {i + 1}: </span>
                 {p.titulo}
               </h3>
               <p className="mt-2 text-grafite text-[0.95rem] leading-relaxed">{p.texto}</p>
               <p className="mt-1.5 text-cinza text-sm leading-relaxed">{p.detalhe}</p>
 
-              {/* Passo 04: as lojas. No celular (faixa) só os bairros numa linha,
-                  para o cartão não ficar mais alto que os outros; do sm em
-                  diante, chips com o mapa */}
+              {/* Passo 04: as lojas, em chips com o mapa */}
               {p.lojas && (
-                <p className="sm:hidden mt-auto pt-3 text-sm font-medium text-navy">
-                  {UNIDADES.map((u) => u.bairro).join(" · ")}
-                </p>
-              )}
-              {p.lojas && (
-                <ul className="hidden sm:flex flex-wrap gap-2 mt-auto pt-4">
+                <ul className="flex flex-wrap gap-2 mt-auto pt-4">
                   {UNIDADES.map((u) => (
                     <li key={u.bairro}>
                       <a
@@ -154,10 +158,10 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
                   ))}
                 </ul>
               )}
-            </div>
-          </li>
-        ))}
-      </ol>
+            </li>
+          ))}
+        </ol>
+      </div>
 
       {/* ---------- O convite: receita em mãos ---------- */}
       <div className="revelar mt-5 md:mt-6 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-5 sm:p-6 md:p-8 lg:px-10 lg:py-9 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)]">

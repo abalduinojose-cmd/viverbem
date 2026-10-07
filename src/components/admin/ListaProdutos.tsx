@@ -1,10 +1,12 @@
 "use client";
 // Produtos e preços: a tela principal do colaborador (e do gestor).
-// - Cartões em grade com a capa, quantas fotos a galeria tem, o tipo de
-//   venda e as chaves do site: "No site" (ativo) e, em industrializado,
-//   "Preço no site" (07/10/2026), "Novidade" e "Destaque". Manipulado
-//   não tem preço no site (RDC 67/2007, item 5.14).
-// - Preço editável no lugar, só em industrializado
+//
+// Lista em LINHAS (07/10/2026, "painel mais moderno e clean": os cartões
+// em grade tinham muita informação repetida): capa, nome com a área e os
+// selos, o preço (só industrializado, editável no lugar), as duas chaves
+// do site ("No site" e, em industrializado, "Preço no site") e as ações.
+// Novidade e destaque ficam no formulário do produto. Manipulado não tem
+// preço no site (RDC 67/2007, item 5.14).
 // - Filtro por texto, por categoria e por situação
 // - Resumo no topo (total, no site, em falta, aguardando aprovação)
 // - Produto cadastrado pelo colaborador espera o gestor publicar
@@ -36,7 +38,7 @@ import {
 } from "./PecasAdmin";
 
 type FiltroSituacao = "todos" | "no-site" | "inativos" | "aguardando" | "industrializados" | "sem-foto";
-type CampoChave = "ativo" | "novidade" | "destaque" | "aprovado" | "mostrarPreco";
+type CampoChave = "ativo" | "aprovado" | "mostrarPreco";
 
 // Chip de filtro da situação. Fica fora do componente: criado dentro, era
 // um componente novo a cada renderização (perdia o foco e remontava).
@@ -181,7 +183,7 @@ export function ListaProdutos({
     }
   }
 
-  // Salva só o preço (edição rápida no cartão). Manda SÓ o preço: antes
+  // Salva só o preço (edição rápida na linha). Manda SÓ o preço: antes
   // mandava o produto pela metade, e a composição, as indicações e o
   // modo de uso sumiam a cada ajuste de preço.
   async function salvarPreco(p: ProdutoDTO) {
@@ -227,7 +229,7 @@ export function ListaProdutos({
   }
 
   return (
-    <div>
+    <div className="max-w-6xl">
       {/* ---------- Cabeçalho ---------- */}
       <CabecalhoAdmin
         rotulo="Catálogo"
@@ -336,150 +338,133 @@ export function ListaProdutos({
       )}
 
       {podeArrastar && (
-        <p className="mt-3 text-sm text-grafite-claro">
-          Arraste os cartões pela alça para mudar a ordem no site.
-        </p>
+        <p className="mt-3 text-sm text-grafite-claro">Arraste as linhas pela alça para mudar a ordem no site.</p>
       )}
 
       {erro && <AvisoAdmin className="mt-4">{erro}</AvisoAdmin>}
 
-      {/* ---------- Grade de produtos ---------- */}
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {listaFiltrada.length === 0 && (
-          <div className="col-span-full bg-white rounded-2xl border border-fio">
-            <VazioAdmin
-              titulo="Nenhum produto encontrado"
-              descricao="Tente outro termo de busca ou limpe os filtros."
-            />
-          </div>
-        )}
-
-        {listaFiltrada.map((p, indice) => {
-          const industrializado = ehIndustrializado(p);
-          const totalFotos = p.fotos.length;
-          return (
-            <div
-              key={p.id}
-              draggable={podeArrastar}
-              onDragStart={() => (indiceArrastado.current = indice)}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => aoSoltar(indice)}
-              className={`bg-white rounded-2xl border overflow-hidden flex flex-col transition-all hover:shadow-[0_18px_40px_-30px_rgba(16,42,74,0.35)] ${
-                p.ativo ? "border-fio" : "border-carimbo/25"
-              } ${ocupado === p.id ? "opacity-60" : ""}`}
-            >
-              {/* Topo: capa + nome + preço */}
-              <div className="p-4 flex gap-4">
-                {podeArrastar && (
-                  <span className="-ml-1 mt-1">
-                    <Alca />
-                  </span>
-                )}
-
-                <div className="shrink-0 flex flex-col items-center gap-1.5">
-                  <div className="w-20 h-20 rounded-xl bg-gelo/70 border border-fio overflow-hidden flex items-center justify-center p-1.5">
+      {/* ---------- A lista ---------- */}
+      {listaFiltrada.length === 0 ? (
+        <div className="mt-5 bg-white rounded-2xl border border-fio">
+          <VazioAdmin titulo="Nenhum produto encontrado" descricao="Tente outro termo de busca ou limpe os filtros." />
+        </div>
+      ) : (
+        <ul className="mt-5 flex flex-col gap-2">
+          {listaFiltrada.map((p, indice) => {
+            const industrializado = ehIndustrializado(p);
+            const totalFotos = p.fotos.length;
+            return (
+              <li
+                key={p.id}
+                draggable={podeArrastar}
+                onDragStart={() => (indiceArrastado.current = indice)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => aoSoltar(indice)}
+                className={`bg-white rounded-2xl border px-4 py-3 md:px-5 grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto_auto] items-center gap-x-4 gap-y-3 transition-all hover:shadow-[0_18px_40px_-30px_rgba(16,42,74,0.35)] ${
+                  p.ativo ? "border-fio" : "border-carimbo/25"
+                } ${ocupado === p.id ? "opacity-60" : ""}`}
+              >
+                {/* Capa (com a alça do gestor ao lado) */}
+                <div className="flex items-center gap-3">
+                  {podeArrastar && <Alca />}
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-gelo/70 overflow-hidden flex items-center justify-center p-1.5">
                     {p.fotoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.fotoUrl} alt={p.nome} className="max-w-full max-h-full object-contain" />
+                      <img src={p.fotoUrl} alt="" className="max-w-full max-h-full object-contain" />
                     ) : (
-                      <span className="text-[0.6rem] text-grafite-claro text-center">sem foto</span>
+                      <span className="text-[0.58rem] text-grafite-claro text-center leading-tight">sem foto</span>
                     )}
                   </div>
-                  <span className={`text-[0.62rem] font-medium tabular-nums ${totalFotos === 0 ? "text-carimbo" : "text-grafite-claro"}`}>
-                    {totalFotos === 0 ? "sem foto" : totalFotos === 1 ? "1 foto" : `${totalFotos} fotos`}
-                  </span>
                 </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start gap-2">
-                    <p className="font-semibold text-navy leading-snug line-clamp-2 flex-1">{p.nome}</p>
+                {/* Nome, área e selos */}
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <Link href={`/admin/produtos/${p.id}/editar`} className="font-semibold text-navy leading-snug hover:text-tinta transition-colors">
+                      {p.nome}
+                    </Link>
                     {p.tipo === TIPO_COMBO && <Selo tom="azul">Combo</Selo>}
+                    {!p.aprovado && <Selo tom="ambar">Aguardando o gestor</Selo>}
+                    {!p.ativo && <Selo tom="vermelho">Em falta</Selo>}
                   </div>
-                  <p className="text-xs text-cinza mt-0.5 truncate">
+                  <p className="mt-0.5 text-xs text-cinza truncate">
+                    {industrializado ? "Industrializado" : "Manipulado"}
+                    {" · "}
                     {p.categoriaNome ?? "Sem categoria"}
                     {p.dosagens ? ` · ${p.dosagens}` : ""}
+                    {" · "}
+                    <span className={totalFotos === 0 ? "text-carimbo font-medium" : ""}>
+                      {totalFotos === 0 ? "sem foto" : totalFotos === 1 ? "1 foto" : `${totalFotos} fotos`}
+                    </span>
                   </p>
-
-                  {/* Tipo de venda e situação */}
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    <Selo tom={industrializado ? "verde" : "azul"}>{industrializado ? "Industrializado" : "Manipulado"}</Selo>
-                    {!p.aprovado && <Selo tom="ambar">Aguardando o gestor</Selo>}
-                    {industrializado && p.mostrarPreco && <Selo tom="ouro">Preço no site</Selo>}
-                  </div>
-
-                  {/* Preço com edição rápida (manipulado não tem preço no site) */}
-                  {!industrializado ? (
-                    <p className="mt-2.5 text-xs text-cinza leading-snug">Sem preço no site: o pedido vai pela receita</p>
-                  ) : editandoPreco === p.id ? (
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <span className="text-cinza text-sm">R$</span>
-                      <input
-                        value={precoTexto}
-                        onChange={(e) => setPrecoTexto(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") salvarPreco(p);
-                          if (e.key === "Escape") setEditandoPreco(null);
-                        }}
-                        autoFocus
-                        inputMode="decimal"
-                        aria-label="Novo preço"
-                        className="w-24 border border-tinta/40 rounded-lg px-2 h-9 text-lg font-semibold text-navy focus:outline-none focus:ring-4 focus:ring-tinta/10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => salvarPreco(p)}
-                        disabled={ocupado === p.id}
-                        aria-label="Salvar preço"
-                        className="w-9 h-9 rounded-lg bg-navy text-white flex items-center justify-center disabled:opacity-50"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditandoPreco(null)}
-                        aria-label="Cancelar"
-                        className="w-9 h-9 rounded-lg bg-nevoa text-cinza flex items-center justify-center"
-                      >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                        </svg>
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditandoPreco(p.id);
-                        setPrecoTexto(centavosParaInput(p.precoCentavos));
-                        setErroPreco("");
-                      }}
-                      title="Clique para alterar o preço"
-                      className="group mt-2 inline-flex items-center gap-1.5 text-navy font-semibold text-xl tabular-nums hover:text-tinta transition-colors"
-                    >
-                      {formatarPreco(p.precoCentavos)}
-                      <span className="text-grafite-claro opacity-0 group-hover:opacity-100 transition-opacity">
-                        <IconeLapis />
-                      </span>
-                    </button>
-                  )}
-                  {erroPreco && editandoPreco === p.id && <p className="text-carimbo text-xs mt-1">{erroPreco}</p>}
                 </div>
-              </div>
 
-              {/* Chaves do site */}
-              <div className="px-4 flex flex-wrap gap-x-5 border-t border-fio pt-2 mt-1">
-                <Interruptor
-                  ligado={p.ativo}
-                  rotulo={p.ativo ? "No site" : "Em falta"}
-                  aoAlternar={() => alternar(p, "ativo")}
-                  desabilitado={ocupado === p.id}
-                  cor="verde"
-                />
-                {/* Preço exposto e vitrine promocional só existem para industrializado */}
-                {industrializado && (
-                  <>
+                {/* Preço (industrializado) e as chaves do site */}
+                <div className="col-span-2 md:col-span-1 flex flex-wrap items-center gap-x-5 gap-y-1 md:justify-end border-t border-fio pt-2 md:border-0 md:pt-0">
+                  {industrializado &&
+                    (editandoPreco === p.id ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-cinza text-sm">R$</span>
+                        <input
+                          value={precoTexto}
+                          onChange={(e) => setPrecoTexto(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") salvarPreco(p);
+                            if (e.key === "Escape") setEditandoPreco(null);
+                          }}
+                          autoFocus
+                          inputMode="decimal"
+                          aria-label="Novo preço"
+                          className="w-24 border border-tinta/40 rounded-lg px-2 h-9 text-base font-semibold text-navy focus:outline-none focus:ring-4 focus:ring-tinta/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => salvarPreco(p)}
+                          disabled={ocupado === p.id}
+                          aria-label="Salvar preço"
+                          className="w-9 h-9 rounded-lg bg-navy text-white flex items-center justify-center disabled:opacity-50"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditandoPreco(null)}
+                          aria-label="Cancelar"
+                          className="w-9 h-9 rounded-lg bg-nevoa text-cinza flex items-center justify-center"
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                        {erroPreco && <span className="text-carimbo text-xs">{erroPreco}</span>}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoPreco(p.id);
+                          setPrecoTexto(centavosParaInput(p.precoCentavos));
+                          setErroPreco("");
+                        }}
+                        title="Clique para alterar o preço"
+                        className="group inline-flex items-center gap-1.5 h-10 text-navy font-semibold text-[1.05rem] tabular-nums hover:text-tinta transition-colors"
+                      >
+                        {formatarPreco(p.precoCentavos)}
+                        <span className="text-grafite-claro opacity-0 group-hover:opacity-100 transition-opacity">
+                          <IconeLapis />
+                        </span>
+                      </button>
+                    ))}
+                  <Interruptor
+                    ligado={p.ativo}
+                    rotulo="No site"
+                    aoAlternar={() => alternar(p, "ativo")}
+                    desabilitado={ocupado === p.id}
+                    cor="verde"
+                  />
+                  {industrializado && (
                     <Interruptor
                       ligado={p.mostrarPreco}
                       rotulo="Preço no site"
@@ -487,62 +472,45 @@ export function ListaProdutos({
                       desabilitado={ocupado === p.id}
                       cor="ouro"
                     />
-                    <Interruptor
-                      ligado={p.novidade}
-                      rotulo="Novidade"
-                      aoAlternar={() => alternar(p, "novidade")}
-                      desabilitado={ocupado === p.id}
-                    />
-                    <Interruptor
-                      ligado={p.destaque}
-                      rotulo="Destaque"
-                      aoAlternar={() => alternar(p, "destaque")}
-                      desabilitado={ocupado === p.id}
-                    />
-                  </>
-                )}
-              </div>
+                  )}
+                </div>
 
-              {/* Ações */}
-              <div className="p-4 pt-3 mt-auto flex gap-2">
-                {/* O gestor publica o que o colaborador cadastrou */}
-                {ehGestor && !p.aprovado && (
-                  <BotaoAdmin
-                    variante="primario"
-                    onClick={() => alternar(p, "aprovado")}
-                    disabled={ocupado === p.id}
-                    className="flex-1"
-                  >
-                    Publicar
-                  </BotaoAdmin>
-                )}
-                <Link href={`/admin/produtos/${p.id}/editar`} className={`${classeBotaoAdmin("secundario")} flex-1`}>
-                  <IconeLapis tamanho={15} />
-                  Editar
-                </Link>
-                {ehGestor && (
-                  <BotaoAdmin
-                    variante="perigo"
-                    onClick={() => apagar(p)}
-                    disabled={ocupado === p.id}
-                    aria-label={`Apagar ${p.nome}`}
-                    className="!px-0 w-11"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path
-                        d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0-.8 12a2 2 0 0 1-2 1.9H8.8a2 2 0 0 1-2-1.9L6 7"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </BotaoAdmin>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                {/* Ações */}
+                <div className="col-span-2 md:col-span-1 flex items-center gap-2 md:justify-end">
+                  {ehGestor && !p.aprovado && (
+                    <BotaoAdmin variante="primario" tamanho="pequeno" onClick={() => alternar(p, "aprovado")} disabled={ocupado === p.id}>
+                      Publicar
+                    </BotaoAdmin>
+                  )}
+                  <Link href={`/admin/produtos/${p.id}/editar`} className={classeBotaoAdmin("secundario", "pequeno")}>
+                    <IconeLapis tamanho={14} />
+                    Editar
+                  </Link>
+                  {ehGestor && (
+                    <BotaoAdmin
+                      variante="perigo"
+                      tamanho="pequeno"
+                      onClick={() => apagar(p)}
+                      disabled={ocupado === p.id}
+                      aria-label={`Apagar ${p.nome}`}
+                      className="!px-0 w-9"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                          d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0-.8 12a2 2 0 0 1-2 1.9H8.8a2 2 0 0 1-2-1.9L6 7"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </BotaoAdmin>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

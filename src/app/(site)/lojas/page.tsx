@@ -50,7 +50,7 @@ export default function PaginaLojas() {
               </span>
 
               <div className="min-w-0">
-                <h2 className="text-2xl md:text-[1.75rem] font-semibold tracking-[-0.03em] text-navy">{u.bairro}</h2>
+                <h2 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy leading-tight">{u.bairro}</h2>
                 <p className="text-cinza leading-relaxed mt-1">{u.endereco}</p>
                 {u.telefone && (
                   <p className="text-cinza text-sm mt-1.5 tabular-nums">Telefone {u.telefone}</p>
@@ -93,7 +93,7 @@ export default function PaginaLojas() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-start">
           <div>
             <p className="rotulo">horário de atendimento</p>
-            <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
+            <h2 className="titulo-bloco mt-2">
               O mesmo nas <span className="italic">{UNIDADES.length} unidades</span>
             </h2>
             <p className="text-cinza leading-relaxed mt-4">

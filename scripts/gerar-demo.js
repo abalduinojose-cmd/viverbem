@@ -129,6 +129,8 @@ async function gerarRetrato() {
         secoesHome: configuracao.secoesHome ?? null,
         heroDesktop: configuracao.heroDesktop ?? null,
         heroCelular: configuracao.heroCelular ?? null,
+        heroDesktop2: configuracao.heroDesktop2 ?? null,
+        heroCelular2: configuracao.heroCelular2 ?? null,
       },
     };
 

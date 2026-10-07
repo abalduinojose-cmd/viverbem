@@ -15,6 +15,8 @@ export interface DadosSessao {
 const opcoesSessao: SessionOptions = {
   password: process.env.SESSION_SECRET as string,
   cookieName: "viverbem_admin",
+  // A sessão vence em 12 horas: quem esqueceu o painel aberto precisa entrar de novo
+  ttl: 60 * 60 * 12,
   cookieOptions: {
     // secure exige HTTPS — ativado só em produção para funcionar em localhost
     secure: process.env.NODE_ENV === "production",

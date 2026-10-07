@@ -118,7 +118,7 @@ function ReguaDoDia({ estado }: { estado: EstadoLoja }) {
           />
         )}
       </div>
-      <div className="mt-1.5 flex justify-between text-[0.66rem] text-grafite-claro tabular-nums">
+      <div className="mt-1.5 flex justify-between text-[0.7rem] text-cinza tabular-nums">
         <span>7h</span>
         <span>14h</span>
         <span>21h</span>
@@ -221,39 +221,54 @@ export function FaleComAGente() {
             </span>
           </a>
 
-          {/* As 3 lojas, com endereço e o mapa. No celular cada loja é uma
-              linha (ícone, bairro e endereço, seta); do sm em diante, cartão */}
-          {UNIDADES.map((u) => (
-            <a
-              key={u.bairro}
-              href={linkMapaUnidade(u.bairro, u.endereco)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group h-full w-full flex flex-row items-center gap-4 sm:flex-col sm:items-stretch sm:gap-0 lg:col-span-3 text-left rounded-[1.75rem] border border-fio bg-white p-4 sm:p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] active:scale-[0.99]"
-            >
-              <span className="flex items-center justify-between gap-3 shrink-0">
-                <span className="w-11 h-11 rounded-full flex items-center justify-center bg-ouro/10 text-ouro-escuro">
-                  <IconeLoja tamanho={20} />
-                </span>
-                <span className="hidden sm:inline rotulo !text-cinza text-[0.68rem]">loja</span>
+          {/* As 3 lojas num só cartão (07/10/2026, "modernize as localidades"):
+              número em ouro itálico, bairro e endereço, e a seta do mapa que
+              vira ouro no hover. Sem o telefone fixo aqui (pedido): ele fica
+              na página das lojas. */}
+          <div className="sm:col-span-2 lg:col-span-9 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
+            <div className="flex items-center justify-between gap-3">
+              <span className="w-11 h-11 rounded-full flex items-center justify-center bg-ouro/10 text-ouro-escuro">
+                <IconeLoja tamanho={20} />
               </span>
-              <span className="flex-1 min-w-0 sm:mt-4">
-                <span className="block text-[1.1rem] sm:text-[1.2rem] font-semibold text-navy tracking-[-0.02em] leading-tight">{u.bairro}</span>
-                <span className="mt-0.5 sm:mt-1 block text-sm text-cinza leading-snug">{u.endereco}</span>
-              </span>
-              <span className="shrink-0 flex items-center justify-between gap-3 sm:mt-auto sm:pt-5">
-                <span className="hidden sm:inline text-sm font-semibold text-navy">Como chegar</span>
-                <span className="w-10 h-10 rounded-full bg-gelo text-navy flex items-center justify-center transition duration-300 group-hover:bg-[image:var(--ouro-degrade)] group-hover:translate-x-1">
-                  <IconeRota />
-                </span>
-              </span>
-            </a>
-          ))}
+              <span className="rotulo !text-cinza text-[0.68rem]">{UNIDADES.length} lojas em Petrópolis</span>
+            </div>
+            <ul className="mt-3 lista-fichas">
+              {UNIDADES.map((u, i) => (
+                <li key={u.bairro}>
+                  <a
+                    href={linkMapaUnidade(u.bairro, u.endereco)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-4 py-4"
+                  >
+                    <span aria-hidden="true" className="numero-tinta shrink-0 w-9 text-[1.35rem] md:text-[1.5rem]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[1.05rem] md:text-[1.15rem] font-semibold text-navy tracking-[-0.02em] leading-tight transition-colors group-hover:text-tinta">
+                        {u.bairro}
+                      </span>
+                      <span className="mt-0.5 block text-sm text-cinza leading-snug">{u.endereco}</span>
+                    </span>
+                    <span className="shrink-0 flex items-center gap-3">
+                      <span className="hidden sm:inline text-sm font-semibold text-navy">Como chegar</span>
+                      <span className="w-10 h-10 rounded-full bg-gelo text-navy flex items-center justify-center transition duration-300 group-hover:bg-[image:var(--ouro-degrade)] group-hover:translate-x-1">
+                        <IconeRota />
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-auto pt-4 text-xs text-cinza leading-relaxed">
+              Retirada sem taxa em qualquer unidade. Entrega de moto por toda Petrópolis.
+            </p>
+          </div>
 
           {/* O horário (07/10/2026, "modernize"): o estado ao vivo no alto, o
               horário de hoje grande, a régua do dia com a hora de agora, a
               semana em sete círculos (hoje em ouro) e as linhas */}
-          <div className="lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
+          <div className="sm:col-span-2 lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
             <span className="flex items-center justify-between gap-3">
               <span className="w-11 h-11 rounded-full flex items-center justify-center bg-gelo text-tinta">
                 <IconeRelogio />
@@ -315,7 +330,7 @@ export function FaleComAGente() {
                 );
               })}
             </ul>
-            <Link href="/lojas" className="botao-link !min-h-0 !text-sm mt-auto pt-4 self-start">
+            <Link href="/lojas" className="botao-link !min-h-11 !text-sm mt-auto pt-2 self-start">
               Página das lojas
               <SetaDireita tamanho={14} />
             </Link>

@@ -111,6 +111,17 @@ model Configuracao {
   atualizadoEm DateTime @updatedAt
 }
 
+// Tentativas de login erradas, por e-mail e por endereço IP (chave =
+// "email:..." ou "ip:..."). Cinco erros bloqueiam a chave por 30 minutos
+// (src/lib/protecaoLogin.ts); o gestor pode desbloquear em Acessos ao
+// painel. Acerto zera a contagem.
+model TentativaLogin {
+  chave        String    @id
+  falhas       Int       @default(0)
+  bloqueadoAte DateTime?
+  atualizadoEm DateTime  @updatedAt
+}
+
 // Usuário do painel administrativo.
 // papel = "ADMIN" (gestor: acesso total) ou "OPERADOR" (colaborador: cuida
 // do catálogo, fotos, preços no site, categorias e seções do site; não

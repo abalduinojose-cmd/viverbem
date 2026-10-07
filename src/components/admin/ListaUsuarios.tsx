@@ -25,6 +25,9 @@ export interface UsuarioDTO {
   ativo: boolean;
   ultimoAcesso: string | null;
   criadoEm: string;
+  // Login travado por tentativas erradas (até quando) e quantas falhas há
+  bloqueadoAte: string | null;
+  falhasLogin: number;
 }
 
 function formatarData(iso: string | null) {
@@ -111,6 +114,18 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
     const dados = await r.json();
     if (!r.ok) setErro(dados.erro ?? "Não foi possível trocar a senha.");
     else window.alert(`Senha de ${u.nome} atualizada.`);
+  }
+
+  async function desbloquear(u: UsuarioDTO) {
+    setErro("");
+    const r = await fetch(`/api/admin/usuarios/${u.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ desbloquear: true }),
+    });
+    const dados = await r.json();
+    if (!r.ok) setErro(dados.erro ?? "Não foi possível desbloquear.");
+    router.refresh();
   }
 
   async function remover(u: UsuarioDTO) {
@@ -241,6 +256,7 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
                     <Selo tom={u.papel === PAPEL_ADMIN ? "azul" : "cinza"}>{nomePapel(u.papel)}</Selo>
                     {souEu && <Selo tom="ouro">você</Selo>}
                     {!u.ativo && <Selo tom="vermelho">desligado</Selo>}
+                    {u.bloqueadoAte && <Selo tom="ambar">login bloqueado</Selo>}
                   </div>
                   <p className="text-cinza text-sm truncate mt-0.5">{u.email}</p>
                   <p className="text-grafite-claro text-xs mt-1 tabular-nums">Último acesso: {formatarData(u.ultimoAcesso)}</p>
@@ -252,6 +268,11 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
                 <BotaoAdmin tamanho="pequeno" onClick={() => trocarSenha(u)}>
                   Trocar senha
                 </BotaoAdmin>
+                {(u.bloqueadoAte || u.falhasLogin > 0) && (
+                  <BotaoAdmin tamanho="pequeno" onClick={() => desbloquear(u)}>
+                    {u.bloqueadoAte ? "Desbloquear login" : `Zerar ${u.falhasLogin} erro${u.falhasLogin === 1 ? "" : "s"} de senha`}
+                  </BotaoAdmin>
+                )}
                 {!souEu && (
                   <>
                     <BotaoAdmin tamanho="pequeno" onClick={() => alternarAtivo(u)}>

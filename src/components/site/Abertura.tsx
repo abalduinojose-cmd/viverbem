@@ -19,6 +19,7 @@ import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { UNIDADES } from "@/lib/tipos";
 import type { ArteHero } from "@/lib/hero";
+import { CarrosselArte } from "./CarrosselArte";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 
 // Os potes, do fundo para a frente. Provisórios (07/10/2026, "coloque os
@@ -26,8 +27,8 @@ import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 // de Creatina e a Creatina Gummy, fotos com fundo transparente. O da
 // frente é a maior imagem da dobra, por isso carrega com prioridade (LCP).
 const POTES = [
-  { src: "/uploads/caramelo-creatina.png", classe: "left-[6%] h-[12.5rem] md:left-[4%] md:h-[20rem] z-[3]" },
-  { src: "/uploads/creatina-gummy.png", classe: "left-[46%] h-[13.5rem] md:left-[44%] md:h-[21.5rem] z-[4]", prioridade: true },
+  { src: "/uploads/caramelo-creatina.png", classe: "left-[6%] h-[12.5rem] md:-left-[2%] md:h-[14rem] lg:left-[4%] lg:h-[20rem] z-[3]" },
+  { src: "/uploads/creatina-gummy.png", classe: "left-[46%] h-[13.5rem] md:left-[34%] md:h-[15rem] lg:left-[44%] lg:h-[21.5rem] z-[4]", prioridade: true },
 ];
 
 // Grade de quatro quadrados, do botão "Ver produtos" (o mesmo desenho da
@@ -96,31 +97,43 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
   );
 }
 
-export function Abertura({ arte = null }: { arte?: ArteHero | null }) {
-  // ---------- Modo arte: a imagem da farmácia e só os botões por cima ----------
-  if (arte) {
+export function Abertura({ artes = [] }: { artes?: ArteHero[] }) {
+  // ---------- Modo arte: a(s) arte(s) da farmácia e só os botões por cima ----------
+  // Uma arte: a imagem no fluxo. Duas: alternam num fade (CarrosselArte).
+  if (artes.length > 0) {
+    const sobreposicao = (
+      <>
+        {/* O título fica só para leitores de tela: a arte já diz o resto */}
+        <h1 id="titulo-abertura" className="sr-only">
+          Manipulação Viver Bem
+        </h1>
+        <div className="absolute inset-x-0 bottom-6 md:inset-0 flex items-end md:items-center justify-center px-5">
+          <BotoesDaDobra centralizados />
+        </div>
+      </>
+    );
     return (
       <section aria-labelledby="titulo-abertura" className="max-w-[90rem] mx-auto px-3 md:px-5 pt-3 md:pt-4">
         <div className="em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] bg-navy ring-1 ring-inset ring-white/10 text-white">
-          <picture>
-            {arte.celular && <source media="(max-width: 767px)" srcSet={asset(arte.celular)} />}
-            <img
-              src={asset(arte.desktop)}
-              alt=""
-              width={1920}
-              height={760}
-              decoding="async"
-              fetchPriority="high"
-              className="block w-full h-auto min-h-[26rem] md:min-h-[22rem] md:max-h-[34rem] object-cover"
-            />
-          </picture>
-          {/* O título fica só para leitores de tela: a arte já diz o resto */}
-          <h1 id="titulo-abertura" className="sr-only">
-            Manipulação Viver Bem
-          </h1>
-          <div className="absolute inset-x-0 bottom-6 md:inset-0 flex items-end md:items-center justify-center px-5">
-            <BotoesDaDobra centralizados />
-          </div>
+          {artes.length === 1 ? (
+            <>
+              <picture>
+                {artes[0].celular && <source media="(max-width: 767px)" srcSet={asset(artes[0].celular)} />}
+                <img
+                  src={asset(artes[0].desktop)}
+                  alt=""
+                  width={1920}
+                  height={760}
+                  decoding="async"
+                  fetchPriority="high"
+                  className="block w-full h-auto min-h-[26rem] md:min-h-[22rem] md:max-h-[34rem] object-cover"
+                />
+              </picture>
+              {sobreposicao}
+            </>
+          ) : (
+            <CarrosselArte artes={artes}>{sobreposicao}</CarrosselArte>
+          )}
         </div>
       </section>
     );

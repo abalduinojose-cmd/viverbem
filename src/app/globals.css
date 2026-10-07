@@ -2,13 +2,15 @@
 
 /* ============================================================
    Identidade visual — Manipulação Viver Bem
-   Sistema "Branco, azul e ouro" (06/10/2026, ver especificacoes/):
+   Sistema "Branco, azul e ouro" (06/10/2026, ver especificacoes/). A paleta
+   do Instagram (roxo-marinho, dourado, creme e areia) foi aplicada e desfeita
+   no mesmo dia, 07/10/2026, a pedido ("volte as cores como estava antes").
 
    - Fundo branco em tudo, com luz azul e dourada atrás dos potes.
    - Azul da marca (#1C69B5) como estrutura e ação: botão principal,
      rótulos, links. Azul-noite (#0D2340) nos títulos, numa única folha
      escura (a vitrine) e no rodapé.
-   - Dourado da paleta da farmácia (#B3904F e #C0A060) como acento
+   - Dourado da paleta da farmácia (#b3904f e #c0a060) como acento
      metálico: a palavra-chave dos títulos, os números, o nome no rótulo,
      a luz quente sob os potes e fios finos. Nunca em texto pequeno.
    - Duas vozes: Instrument Sans (texto; títulos em peso 600) e
@@ -65,6 +67,9 @@
   --tam-display: clamp(2.75rem, 1.75rem + 3.4vw, 5rem); /* 44 -> 80px (dobra mais curta, 06/10) */
   --tam-titulo: clamp(2.4rem, 1.85rem + 2.1vw, 3.75rem); /* 38 -> 60px */
   --tam-apoio: clamp(1.0625rem, 0.99rem + 0.29vw, 1.25rem); /* 17 -> 20px */
+  /* Segundo nível: vitrines, áreas do catálogo e blocos das páginas internas
+     (um tamanho só, revisão de 07/10/2026: eram 34, 36 e 40px) */
+  --tam-bloco: clamp(1.75rem, 1.5rem + 0.85vw, 2.375rem); /* 28 -> 38px */
   --tam-numero: clamp(2.75rem, 2.2rem + 1.9vw, 4.25rem); /* 44 -> 68px */
 
   /* Respiro em três passos fixos */
@@ -193,6 +198,20 @@ body {
     text-wrap: balance;
   }
   .em-noite .titulo-secao {
+    color: #fff;
+  }
+
+  /* Título de bloco: o segundo nível, abaixo do título de seção */
+  .titulo-bloco {
+    font-family: var(--font-sans);
+    font-size: var(--tam-bloco);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+  .em-noite .titulo-bloco {
     color: #fff;
   }
 
@@ -344,7 +363,9 @@ body {
 
   /* 4. Carrinho: o "Adicionar" das fichas de produto, pílula em OURO com
      o texto em navy (pedido do usuário em 06/10/2026; verde por um
-     instante quando o produto entrou) */
+     instante quando o produto entrou). Em 07/10/2026 ("deixe esses botões
+     mais clean") o ouro ficou chapado, sem o brilho metálico nem a sombra;
+     o degradê segue só nos acentos pequenos (círculos de ícone, fios). */
   .botao-carrinho {
     display: inline-flex;
     align-items: center;
@@ -353,18 +374,17 @@ body {
     min-height: 2.75rem;
     padding: 0 1.1rem;
     border-radius: 9999px;
-    background: var(--ouro-degrade);
+    background: var(--color-ouro-claro);
     color: var(--color-navy);
     font-weight: 600;
     font-size: 0.92rem;
     letter-spacing: -0.01em;
     line-height: 1;
     white-space: nowrap;
-    box-shadow: 0 14px 28px -18px rgba(179, 144, 79, 0.8);
-    transition: filter 0.25s, color 0.25s, box-shadow 0.25s, transform 0.25s;
+    transition: background-color 0.25s, color 0.25s, transform 0.25s;
   }
   .botao-carrinho:hover {
-    filter: brightness(1.07);
+    background: var(--color-ouro);
   }
   .botao-carrinho:active {
     transform: scale(0.98);
@@ -373,7 +393,6 @@ body {
   .botao-carrinho-feito:hover {
     background: #15803d;
     color: #fff;
-    filter: none;
   }
 
   /* ---------- Superfícies ---------- */
@@ -485,6 +504,21 @@ body {
 }
 .animar-surgir {
   animation: surgir 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* O selo da contagem do carrinho dá um pulso quando o número muda */
+@keyframes pulso {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animar-pulso {
+  animation: pulso 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 /* A folha do pedido sobe de baixo no celular */
 @keyframes subir {
@@ -634,6 +668,9 @@ body {
   .animar-surgir,
   .cascata > * {
     animation-duration: 0.3s;
+  }
+  .animar-pulso {
+    animation: none;
   }
   @keyframes surgir {
     from {
@@ -868,6 +905,24 @@ summary::-webkit-details-marker {
   background: linear-gradient(90deg, #dcc38a 0%, #b3904f 100%);
   transform-origin: 0% 50%;
   transform: scaleX(0);
+}
+/* A mesma linha, na borda de cima de um cartão ("Como funciona", v4) */
+.trilha-topo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #dcc38a 0%, #b3904f 100%);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+@supports (animation-timeline: view()) {
+  .trilha-topo {
+    animation: trilha-cresce-x linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 45%;
+  }
 }
 @keyframes trilha-cresce-x {
   from {
