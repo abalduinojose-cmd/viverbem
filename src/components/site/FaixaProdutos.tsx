@@ -23,7 +23,7 @@ export function FaixaProdutos({
   /** Falso quando o título da seção já diz a categoria */
   comCategoria?: boolean;
   /** "estreita" nas grades do catálogo, "padrao" nas vitrines da home
-   *  (20rem no computador, pedido de 06/10/2026 para destacar os produtos) */
+   *  (18rem no computador: 20 ficou "muito grande", 06/10/2026) */
   largura?: "padrao" | "estreita";
   /** Cartão que abre a faixa (o banner da área), com a largura dele mesmo */
   antes?: React.ReactNode;
@@ -40,7 +40,7 @@ export function FaixaProdutos({
   const arraste = useArrasteHorizontal(faixaRef);
 
   const classeItem =
-    largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-64 md:w-80 shrink-0 snap-start";
+    largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-60 md:w-72 shrink-0 snap-start";
 
   return (
     <div

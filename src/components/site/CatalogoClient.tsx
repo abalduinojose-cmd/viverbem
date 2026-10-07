@@ -8,7 +8,10 @@
 //
 // Sistema "Branco, azul e ouro" (06/10/2026): abertura leve com o título
 // em navy e a palavra-chave em ouro, chips do sistema, fichas de produto
-// em ladrilhos e os títulos de área no tamanho padrão.
+// em ladrilhos e os títulos de área no tamanho padrão. Em /produtos cada
+// categoria é uma FAIXA que arrasta para o lado, como na home (pedido do
+// usuário em 06/10/2026); a busca e a página de uma categoria seguem em
+// grade, porque aí a lista é o conteúdo inteiro.
 
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -16,6 +19,7 @@ import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { infoCategoria } from "@/lib/categorias";
 import { combinaComTermos, normalizar, termosDaBusca } from "@/lib/texto";
 import { ProdutoCard } from "./ProdutoCard";
+import { FaixaProdutos } from "./FaixaProdutos";
 import { BotaoVerMais } from "./BotaoVerMais";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 
@@ -247,23 +251,23 @@ export function CatalogoClient({
             <Grade lista={produtos} comCategoria={false} />
           </>
         ) : (
-          <div className="flex flex-col gap-16">
+          <div className="flex flex-col gap-12 md:gap-14">
             {/* Industrializados com registro */}
             {industrializados.length > 0 && (
               <section>
-                <div className="mb-6">
+                <div className="mb-5">
                   <p className="rotulo">com registro na Anvisa</p>
                   <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06] mt-2">
                     Pronta <span className="italic">entrega</span>
                   </h2>
                 </div>
-                <Grade lista={industrializados} />
+                <FaixaProdutos produtos={industrializados} className="cascata" />
               </section>
             )}
 
             {categoriasComItens.map((c) => (
               <section key={c.id}>
-                <div className="flex items-end justify-between gap-4 mb-6">
+                <div className="flex items-end justify-between gap-4 mb-5">
                   <div className="min-w-0">
                     <h2 className="text-[1.75rem] md:text-[2.25rem] font-semibold tracking-[-0.035em] text-navy leading-[1.06]">
                       <TituloArea nome={c.nome} />
@@ -274,8 +278,13 @@ export function CatalogoClient({
                     <BotaoVerMais href={`/produtos/${c.slug}`}>Ver categoria</BotaoVerMais>
                   </span>
                 </div>
-                {/* A seção já leva o nome da categoria: não repetir no cartão */}
-                <Grade lista={produtos.filter((p) => p.categoriaId === c.id)} comCategoria={false} />
+                {/* A seção já leva o nome da categoria: não repetir no cartão.
+                    Faixa que arrasta para o lado, como na home */}
+                <FaixaProdutos
+                  produtos={produtos.filter((p) => p.categoriaId === c.id)}
+                  comCategoria={false}
+                  className="cascata"
+                />
               </section>
             ))}
           </div>

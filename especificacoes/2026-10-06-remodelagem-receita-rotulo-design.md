@@ -1,5 +1,17 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 20 (06/10/2026, noite): produtos um pouco menores; catálogo em faixas por categoria. Não publicado.**
+> "Os produtos ficaram muito grandes": os cartões das faixas voltaram de
+> 16/20rem para 15/18rem (no computador cabem o banner e 3 produtos
+> inteiros, com o 4º aparecendo) e a foto ganhou um pouco mais de ar no
+> ladrilho (`p-3`). Catálogo `/produtos` ("com os produtos arrastando
+> para o lado também e separados por categoria"): cada categoria, e a
+> "Pronta entrega", passou da grade para a `FaixaProdutos` que arrasta,
+> com o mesmo título, descrição e "Ver categoria"; a busca e a página de
+> uma categoria seguem em grade. Respiro entre as categorias de 16 para
+> 12/14. Lint e tsc limpos; capturas em `scratchpad/etapa29/`. GitHub
+> não atualizado (sem pedido nesta rodada).
+
 > **ADENDO 19 (06/10/2026, noite): banner dentro da faixa, produtos grandes, site mais compacto. Publicado a pedido.**
 > Vitrines ("diminua mais o quadrado azul", "coloque as categorias com os
 > produtos maiores e arrastando para o lado"): o banner deixou de ser uma
