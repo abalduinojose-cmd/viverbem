@@ -154,6 +154,30 @@ const AVALIACOES = [
     texto: "Ótimo atendimento, bom preço e entrega rápida. Super indico!",
     foto: "https://lh3.googleusercontent.com/a/ACg8ocLDQXYDHrlvybNmgiwNdEJiT0nKRz9ANxg6Xwlo-DxbX-ASgItk=s256-c-rp-mo-br100",
   },
+  {
+    nome: "João Luis",
+    texto:
+      "A atendente Olivia foi bastante atenciosa, buscando resolver minha necessidade de maneira objetiva e rápida. Obrigado!",
+    foto: "https://lh3.googleusercontent.com/a-/ALV-UjUV6OA2Z63bakrJ2CkpRvw95E3TzOBJIDwNr1O0B53h8UOOHMQ6uQ=s256-c-rp-mo-br100",
+  },
+  {
+    nome: "Shirlei Mayworm",
+    texto:
+      "Ótimo atendimento, entrega rápida. Produtos de qualidade. Minha preferida!",
+    foto: "https://lh3.googleusercontent.com/a-/ALV-UjXDqtX7MYQrj3wRxZXFC8_rLwvpfaHGODGNlBONR6cJB-NwmHVSSA=s256-c-rp-mo-br100",
+  },
+  {
+    nome: "Andresa Neumann",
+    texto:
+      "A atendente foi muito solícita e respondeu bem rápido. Os produtos são de ótima qualidade.",
+    foto: "https://lh3.googleusercontent.com/a-/ALV-UjVx9CVowHRBApFzxFi6NcWExeJNSbXFIAe1Wx-nub-WWh8RItJD=s256-c-rp-mo-br100",
+  },
+  {
+    nome: "Marcela A Kuster",
+    texto:
+      "Atendimento excelente! Preço e prazo de entrega justos.",
+    foto: "https://lh3.googleusercontent.com/a-/ALV-UjVbfgV73kWZYMTdLBNOXbbi1LoXySBBIEkyG7q_Nl0jh7QMrHY93w=s256-c-rp-mo-br100",
+  },
 ];
 
 const DESTINO = path.join(process.cwd(), "public", "uploads", "avaliacoes");

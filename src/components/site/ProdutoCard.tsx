@@ -38,7 +38,7 @@ export function ProdutoCard({
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}
-          className="relative max-h-full w-auto max-w-full !object-contain drop-shadow-[0_16px_14px_rgba(16,42,74,0.22)] transition-transform duration-500 group-hover:-translate-y-1.5"
+          className="relative max-h-full w-auto max-w-full !object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.3)] transition-transform duration-500 group-hover:-translate-y-1.5"
         />
         {industrializado && produto.novidade && (
           <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">

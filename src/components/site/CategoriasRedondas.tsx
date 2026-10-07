@@ -14,20 +14,16 @@ export type ImagemCategoria = { tipo: "foto" | "produto"; src: string };
 export function CategoriasRedondas({
   categorias,
   imagens = {},
-  contagens = {},
 }: {
   categorias: CategoriaDTO[];
   imagens?: Record<number, ImagemCategoria>;
-  /** Quantos produtos cada área tem (id da categoria -> total) */
-  contagens?: Record<number, number>;
 }) {
   if (categorias.length === 0) return null;
 
   return (
     <section aria-labelledby="titulo-categorias" className="pt-0.5 md:pt-1 max-w-7xl mx-auto px-5 md:px-8">
       <div className="revelar text-center">
-        <p className="rotulo">compre por área</p>
-        <h2 id="titulo-categorias" className="titulo-secao vao-rotulo">
+        <h2 id="titulo-categorias" className="titulo-secao">
           Nossas <span className="italic">categorias</span>
         </h2>
       </div>
@@ -60,7 +56,7 @@ export function CategoriasRedondas({
                         height={400}
                         loading="lazy"
                         decoding="async"
-                        className="max-w-full max-h-full object-contain drop-shadow-[0_12px_12px_rgba(16,42,74,0.2)] transition-transform duration-500 group-hover:-translate-y-1"
+                        className="max-w-full max-h-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.28)] transition-transform duration-500 group-hover:-translate-y-1"
                       />
                     </span>
                   ) : (
@@ -73,11 +69,6 @@ export function CategoriasRedondas({
                   <span className="block font-semibold text-navy text-[0.9rem] md:text-base transition-colors group-hover:text-tinta">
                     {c.nome}
                   </span>
-                  {contagens[c.id] ? (
-                    <span className="block mt-1 text-xs text-cinza">
-                      {contagens[c.id]} {contagens[c.id] === 1 ? "produto" : "produtos"}
-                    </span>
-                  ) : null}
                 </span>
               </Link>
             </li>

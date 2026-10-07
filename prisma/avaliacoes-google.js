@@ -116,5 +116,25 @@ module.exports = [
     "nome": "Tânia Falch",
     "texto": "Ótimo atendimento, bom preço e entrega rápida. Super indico!",
     "fotoUrl": null
+  },
+  {
+    "nome": "João Luis",
+    "texto": "A atendente Olivia foi bastante atenciosa, buscando resolver minha necessidade de maneira objetiva e rápida. Obrigado!",
+    "fotoUrl": "/uploads/avaliacoes/joao-luis.jpg"
+  },
+  {
+    "nome": "Shirlei Mayworm",
+    "texto": "Ótimo atendimento, entrega rápida. Produtos de qualidade. Minha preferida!",
+    "fotoUrl": "/uploads/avaliacoes/shirlei-mayworm.jpg"
+  },
+  {
+    "nome": "Andresa Neumann",
+    "texto": "A atendente foi muito solícita e respondeu bem rápido. Os produtos são de ótima qualidade.",
+    "fotoUrl": "/uploads/avaliacoes/andresa-neumann.jpg"
+  },
+  {
+    "nome": "Marcela A Kuster",
+    "texto": "Atendimento excelente! Preço e prazo de entrega justos.",
+    "fotoUrl": "/uploads/avaliacoes/marcela-a-kuster.jpg"
   }
 ];

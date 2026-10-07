@@ -17,10 +17,11 @@ import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 // Os potes, do fundo para a frente. O Ômega 3 é a maior imagem da dobra,
 // por isso é ele que carrega com prioridade (LCP).
 const POTES = [
-  { src: "/uploads/vitaflex.png", classe: "left-[62%] h-[9rem] md:left-[58%] md:h-[15.5rem] z-[2]" },
-  { src: "/uploads/omega3.png", classe: "left-[34%] h-[11rem] md:left-[22%] md:h-[18.5rem] z-[3]", prioridade: true },
-  { src: "/uploads/citorepair.png", classe: "left-[8%] h-[8rem] md:-left-[3%] md:h-[14rem] z-[4]" },
-  { src: "/uploads/glow-cream.png", classe: "left-1/2 h-[4.75rem] md:left-[44%] md:h-[8.5rem] z-[5]" },
+// Três potes (07/10/2026, "deixe só 3": o Glow Cream pequeno saiu), um
+// pouco maiores e mais espaçados
+  { src: "/uploads/vitaflex.png", classe: "left-[60%] h-[10rem] md:left-[57%] md:h-[17rem] z-[2]" },
+  { src: "/uploads/omega3.png", classe: "left-[31%] h-[12rem] md:left-[24%] md:h-[20.5rem] z-[3]", prioridade: true },
+  { src: "/uploads/citorepair.png", classe: "left-[6%] h-[9rem] md:-left-[2%] md:h-[15.5rem] z-[4]" },
 ];
 
 // Grade de quatro quadrados, do botão "Ver produtos" (o mesmo desenho da
@@ -51,7 +52,7 @@ export function Abertura() {
         <div className="grid grid-cols-1 md:grid-cols-[6.4fr_5.6fr] md:items-center gap-2 md:gap-8 px-5 pt-7 pb-0 md:px-12 md:py-9 md:min-h-[26rem]">
           {/* ---------- Texto ---------- */}
           <div className="cascata relative z-[1]">
-            <p className="rotulo">Manipulação e homeopatia · Petrópolis, desde 2007</p>
+            <p className="rotulo">Manipulação e homeopatia · Petrópolis, desde 2006</p>
 
             <h1 id="titulo-abertura" className="titulo-display vao-rotulo !text-white">
               Sua fórmula começa
@@ -92,10 +93,10 @@ export function Abertura() {
                 </Link>
                 <Link
                   href="#como-funciona"
-                  className="botao border border-white/20 text-white transition-colors hover:bg-white/10 !px-3 sm:!px-4 !gap-1.5 !text-[0.875rem] sm:!text-[1.05rem]"
+                  className="group botao bg-white/[0.06] border border-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/12 !pl-4 sm:!pl-5 !pr-1.5 sm:!pr-2 !gap-2.5 !text-[0.875rem] sm:!text-[1.05rem]"
                 >
                   Como funciona
-                  <span className="shrink-0 inline-flex">
+                  <span className="shrink-0 inline-flex w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 ring-1 ring-inset ring-white/20 items-center justify-center transition-transform duration-300 group-hover:translate-y-0.5">
                     <SetaBaixo />
                   </span>
                 </Link>
@@ -106,7 +107,7 @@ export function Abertura() {
           {/* ---------- A bancada ---------- */}
           {/* A bancada desce um pouco mais devagar que a página (paralaxe, scroll-driven) */}
           <div
-            className="cascata paralaxe relative -mx-5 h-[13.5rem] md:mx-0 md:-mr-6 md:h-[22rem]"
+            className="cascata paralaxe relative -mx-5 h-[14rem] md:mx-0 md:-mr-6 md:h-[23rem]"
             style={{ "--paralaxe": "3rem" } as React.CSSProperties}
             aria-hidden="true"
           >
@@ -124,7 +125,7 @@ export function Abertura() {
                 loading={p.prioridade ? "eager" : "lazy"}
                 decoding="async"
                 {...(p.prioridade ? { fetchPriority: "high" as const } : {})}
-                className={`absolute bottom-3 md:bottom-7 w-auto drop-shadow-[0_24px_22px_rgba(3,12,30,0.55)] ${p.classe}`}
+                className={`absolute bottom-3 md:bottom-7 w-auto drop-shadow-[0_10px_12px_rgba(3,12,30,0.5)] ${p.classe}`}
               />
             ))}
           </div>

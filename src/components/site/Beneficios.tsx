@@ -22,7 +22,7 @@ const ITENS = [
 
 // Cartão no celular (ícone em cima), pílula no computador (ícone ao lado)
 const classeItem =
-  "flex h-full flex-col items-center text-center gap-2.5 rounded-2xl border border-fio bg-white/90 px-3 py-4 shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] transition hover:border-ouro/40 md:h-14 md:flex-row md:items-center md:text-left md:gap-3 md:rounded-full md:py-0 md:pl-1.5 md:pr-5 md:backdrop-blur";
+  "flex h-full flex-col items-center text-center gap-2.5 rounded-2xl border border-fio bg-white/90 px-3 py-4 md:shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] transition hover:border-ouro/40 md:h-14 md:flex-row md:items-center md:text-left md:gap-3 md:rounded-full md:py-0 md:pl-1.5 md:pr-5 md:backdrop-blur";
 
 export function Beneficios() {
   return (

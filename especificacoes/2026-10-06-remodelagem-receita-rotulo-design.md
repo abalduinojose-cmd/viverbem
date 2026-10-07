@@ -1,5 +1,108 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 25 (07/10/2026): sem contagens, sem linha de progresso, faixa do topo de volta, rodapé novo, coluna na página do produto. Não publicado.**
+> As contagens de produtos saíram do site ("não mostre a quantidade"): do
+> banner da vitrine (`pilula` apagada de `BannerVitrine`) e dos círculos
+> das áreas (`contagens` apagada de `CategoriasRedondas` e da home). A
+> linha de progresso em ouro sob o cabeçalho saiu (`.progresso-rolagem`
+> apagada). Faixa do topo ("antes estava melhor, volte e melhore
+> suavemente"): voltou ao formato de texto com fio entre as vantagens, sem
+> pílulas, agora com o selo ao vivo "Aberto agora · Fecha às 19h" como
+> primeiro item e `whitespace-nowrap`; para nunca quebrar linha, a nota do
+> Google entra de lg e a retirada só de xl; altura 36px e
+> `--altura-cabecalho` md de volta a 10,25rem. Rodapé: a versão em grade
+> (marca à esquerda, navegação em duas colunas, ícones à direita) foi
+> testada e REPROVADA na hora ("não gostei do rodapé, aperfeiçoe o que já
+> estava"); voltou o rodapé centralizado em três tempos, com retoques: fio
+> de ouro no alto, a malha fina e a luz de ouro ao fundo, links um pouco
+> mais legíveis e hover em ouro-claro. A mesma informação de sempre. "Como funciona"
+> da fileira de categorias virou pílula branca com a seta em círculo de
+> ouro. Página do produto ("coluna de os mais procurados e os que a pessoa
+> já visitou"): nova `ColunaLateralProduto` com dois blocos compactos
+> (foto 56px, nome, área, adicionar compacto): "Mais procurados" (4 do
+> catálogo com foto, sem o atual) e "Você viu recentemente" (histórico do
+> navegador via o novo hook `useVistosRecentemente`, extraído de
+> `VistosRecentemente`); no xl é a 3ª coluna presa (`xl:grid-cols-[1fr_1fr_16rem]`,
+> página em `xl:max-w-7xl`), abaixo disso dois blocos lado a lado embaixo
+> do produto, no lugar da faixa antiga de vistos.
+
+> **ADENDO 24 (07/10/2026): acabamentos, "mais elegante e moderno". Não publicado.**
+> Rótulo das seções (`.rotulo-pilula`): branco com fio de ouro a 35%, texto
+> navy em caixa alta mais espaçada, ponto de ouro com halo e sombra curta
+> (era gelo com fio cinza e texto azul). Banner da vitrine: a pílula
+> "10 PRODUTOS" virou o número grande em ouro (`numero-tinta`) com a
+> palavra pequena ao lado; o pé ficou em duas linhas, "VER PRODUTOS" e,
+> embaixo, um fio de ouro que corre até a seta em círculo de ouro com anel
+> translúcido. Dobra: "Como funciona" virou pílula de vidro (branco 6%,
+> fio branco, desfoque) com a seta para baixo num círculo no fim, que
+> desce um pouco no hover (mesma família do "Ver produtos").
+
+> **ADENDO 23 (07/10/2026): faixa do topo, sacola, rodapé, horário, 4 avaliações novas, banner e potes. Não publicado.**
+> Faixa do topo (computador): o selo ao vivo "Aberto agora · Fecha às 19h"
+> (`SeloAbertoFaixa`, via `useEstadoLoja`), as vantagens em pílulas de
+> vidro com ícone em ouro, o WhatsApp com o número e os links em pílulas;
+> altura de 36 para 40px (`--altura-cabecalho` md 10,5rem). Ícone do
+> carrinho virou uma SACOLA com alça (`IconeCarrinho`), em todos os usos.
+> Rodapé: a assinatura gigante "Viver Bem" em marca d'água saiu e o site
+> termina na linha do © (padding 10/12). Horário ("modernize a parte de
+> horários"): hoje em destaque (horas grandes + "Hoje · fecha às 19h"), a
+> semana em sete quadradinhos (hoje em navy, dias fechados apagados) e as
+> três linhas compactas. Avaliações: +4 do Google com foto real (João
+> Luis, Shirlei Mayworm, Andresa Neumann, Marcela A Kuster; lidas no Google
+> Maps pelo navegador do painel, fotos em public/uploads/avaliacoes/,
+> gravadas no banco e nos arquivos de seed/script), total do perfil
+> atualizado de 634 para 680, e os cartões 1rem/1,5rem menores. Banner da
+> vitrine ("modernize mais"): título em cima, "VER PRODUTOS" pequeno e a
+> seta grande em círculo de ouro no pé, marca d'água maior e um brilho que
+> acende no hover. Dobra: só 3 potes (o Glow Cream saiu), 10% maiores.
+
+> **ADENDO 22 (07/10/2026): carrinho, banner da vitrine com setas, reels interativos, história da farmácia. Não publicado.**
+> Carrinho: no celular a barra branca virou uma CÁPSULA NAVY com o carrinho
+> em pílula de ouro (ícone e contagem em navy), lupa e menu em branco; o
+> flutuante virou pílula navy com o ícone num círculo de ouro e a contagem
+> (no computador também "Ver pedido · N itens"). O rótulo "compre por área"
+> saiu: só "Nossas categorias". Vitrines: o banner da faixa encolheu para
+> 11/12rem, só pílula, título e botão (produtos em destaque), e a
+> `FaixaProdutos` ganhou SETAS redondas nas bordas no computador (somem na
+> ponta; prop `setas`), também no catálogo. Instagram: dois reels novos
+> (`reel-3.mp4` área dos olhos, 25s; `reel-4.mp4` pads faciais, 46s;
+> 720p, faststart, pôsteres em 0,6s e 44,5s) e a seção virou interativa em
+> JavaScript: fileira de quatro com o ativo maior e anel de ouro, barra de
+> progresso como nos stories, o próximo entra sozinho ao terminar, botão de
+> som, bolinhas de navegação, faixa com snap no celular; no computador sem
+> "reduzir movimento" o ativo começa mudo ao entrar na tela; botão do
+> Instagram com anel de ouro que gira e "ímã" que segue o mouse (só mouse).
+> **Pendência regulatória**: os reels 3 e 4 anunciam manipulados com
+> promessa de efeito e menção a preço, o mesmo motivo que tirou o 3º reel
+> antes (RDC 67/2007 item 5.14); o farmacêutico precisa aprovar antes de
+> publicar. Página "A Viver Bem": texto da farmácia em versão conceitual,
+> abertura "Tudo começou com um propósito" com três números em ouro
+> (1999, 20 anos, 3 lojas), linha do tempo em quatro cartões (1999, 2006,
+> 2012, 2017) ligados pela linha de ouro (`.marco-ano`, `.trilha-h-*`),
+> fecho em azul-noite com o "20" gigante e os botões. `ANOS_TRADICAO` 19
+> -> 20 e "desde 2007" -> "desde 2006" (outubro de 2006, conforme o texto).
+
+> **ADENDO 21 (07/10/2026): seis ajustes do celular. Não publicado (pedido: "não atualize o github").**
+> 1) Carrinho do cabeçalho no celular ("algo mais elegante e moderno"):
+> pílula navy com o ícone em ouro-claro e a contagem ao lado, dentro da
+> barra branca (`BotaoCarrinho` ganhou `contagemInline`); vazia, é só o
+> círculo com o ícone. 2) Sombra sob as vantagens: os cartões 2x2 ficaram
+> sem sombra no celular e a primeira folha perdeu a sombra do topo
+> (`.folha:first-child { box-shadow: none }`). 3) Rótulo "compre por
+> área" virou PÍLULA com ponto de ouro (`.rotulo-pilula`: gelo, fio,
+> caixa alta), e o mesmo rótulo-pílula entrou nas outras seções da home
+> (como funciona, acompanhe a gente, quem já é cliente, fale com a gente)
+> para o sistema ficar coerente. 4) "Como funciona" no celular: os quatro
+> passos viram uma FAIXA que arrasta para o lado (cartões de 82% da
+> largura, mesma altura, snap, sangria até a borda; o cartão das lojas
+> mostra só os bairros numa linha para não ficar mais alto), e do md em
+> diante seguem na grade.
+> 5) Sombra dos produtos mais perto e um pouco mais escura: cartões
+> `0 6px 8px / 0.30` (era `0 16px 14px / 0.22`), potes da dobra `0 10px
+> 12px / 0.5` (era `0 24px 22px / 0.55`), círculos das áreas e "vistos
+> recentemente" no mesmo espírito. 6) Logo 14% maior no celular (2,5rem ->
+> 2,85rem); o cabeçalho manteve a altura (`--altura-cabecalho`).
+
 > **ADENDO 20 (06/10/2026, noite): produtos um pouco menores; catálogo em faixas por categoria. Não publicado.**
 > "Os produtos ficaram muito grandes": os cartões das faixas voltaram de
 > 16/20rem para 15/18rem (no computador cabem o banner e 3 produtos

@@ -56,7 +56,7 @@ function ItemVisto({ produto }: { produto: ProdutoDTO }) {
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}
-          className="max-w-full max-h-full !object-contain drop-shadow-[0_8px_8px_rgba(16,42,74,0.18)]"
+          className="max-w-full max-h-full !object-contain drop-shadow-[0_5px_7px_rgba(16,42,74,0.26)]"
         />
       </Link>
 
@@ -74,13 +74,10 @@ function ItemVisto({ produto }: { produto: ProdutoDTO }) {
   );
 }
 
-export function VistosRecentemente({
-  slugAtual,
-  catalogo,
-}: {
-  slugAtual: string;
-  catalogo: ProdutoDTO[];
-}) {
+/** O que a pessoa viu ANTES desta página (sem o produto atual), já
+ *  registrando o atual no topo do histórico. Usado pela faixa e pela
+ *  coluna lateral da página do produto. */
+export function useVistosRecentemente(slugAtual: string, catalogo: ProdutoDTO[]) {
   const bruto = useSyncExternalStore(assinar, lerBruto, () => "[]");
 
   // Mostra o que a pessoa já tinha visto ANTES de abrir esta página
@@ -102,6 +99,18 @@ export function VistosRecentemente({
       // Sem storage não dá para lembrar, e tudo bem
     }
   }, [slugAtual]);
+
+  return vistos;
+}
+
+export function VistosRecentemente({
+  slugAtual,
+  catalogo,
+}: {
+  slugAtual: string;
+  catalogo: ProdutoDTO[];
+}) {
+  const vistos = useVistosRecentemente(slugAtual, catalogo);
 
   if (vistos.length === 0) return null;
 

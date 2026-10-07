@@ -100,7 +100,7 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
       {/* ---------- Cabeçalho: título em duas vozes e o apoio ao lado ---------- */}
       <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">
         <div className="lg:col-span-7">
-          <p className="rotulo">como funciona</p>
+          <p className="rotulo-pilula">como funciona</p>
           <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
             Da receita <span className="italic">até a sua mão</span>
           </h2>
@@ -112,11 +112,13 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
       </div>
 
       {/* ---------- Os quatro passos, lado a lado, ligados pela linha ---------- */}
-      <ol className="revelar vao-titulo relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-4">
+      {/* No celular os passos viram uma faixa que arrasta para o lado (07/10);
+          do md em diante, a grade */}
+      <ol className="revelar vao-titulo relative flex items-stretch overflow-x-auto snap-x snap-mandatory rolagem-sem-barra -mx-5 px-5 scroll-pl-5 pb-2 gap-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible md:mx-0 md:px-0 md:scroll-pl-0 md:pb-0 md:gap-5 lg:gap-4">
         <span aria-hidden="true" className="trilha-h-linha hidden lg:block" />
         <span aria-hidden="true" className="trilha-h-progresso hidden lg:block" />
         {PASSOS.map((p, i) => (
-          <li key={p.titulo} className="relative pt-7">
+          <li key={p.titulo} className="relative pt-7 w-[82%] sm:w-[58%] md:w-auto shrink-0 snap-start">
             {/* O número, saindo pela borda de cima do cartão */}
             <span aria-hidden="true" className="passo-numero">
               {String(i + 1).padStart(2, "0")}
@@ -131,9 +133,16 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
               <p className="mt-2 text-grafite text-[0.95rem] leading-relaxed">{p.texto}</p>
               <p className="mt-1.5 text-cinza text-sm leading-relaxed">{p.detalhe}</p>
 
-              {/* Passo 04: as lojas, cada uma com o mapa */}
+              {/* Passo 04: as lojas. No celular (faixa) só os bairros numa linha,
+                  para o cartão não ficar mais alto que os outros; do sm em
+                  diante, chips com o mapa */}
               {p.lojas && (
-                <ul className="flex flex-wrap gap-2 mt-auto pt-4">
+                <p className="sm:hidden mt-auto pt-3 text-sm font-medium text-navy">
+                  {UNIDADES.map((u) => u.bairro).join(" · ")}
+                </p>
+              )}
+              {p.lojas && (
+                <ul className="hidden sm:flex flex-wrap gap-2 mt-auto pt-4">
                   {UNIDADES.map((u) => (
                     <li key={u.bairro}>
                       <a

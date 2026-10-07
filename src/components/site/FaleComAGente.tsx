@@ -19,6 +19,17 @@ import { IconeLoja } from "./IconesVantagens";
 import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
 
 // A mensagem que já vai pronta no WhatsApp: a pessoa só aperta enviar
+// A semana, no índice do getDay() (0 = domingo)
+const DIAS_SEMANA = [
+  { curto: "D", nome: "Domingo" },
+  { curto: "S", nome: "Segunda" },
+  { curto: "T", nome: "Terça" },
+  { curto: "Q", nome: "Quarta" },
+  { curto: "Q", nome: "Quinta" },
+  { curto: "S", nome: "Sexta" },
+  { curto: "S", nome: "Sábado" },
+];
+
 const MENSAGEM_WHATSAPP = "Olá, Viver Bem! Vim pelo site e queria tirar uma dúvida.";
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM_WHATSAPP)}`;
 
@@ -111,6 +122,9 @@ const classeCartao =
 
 export function FaleComAGente() {
   const estado = useEstadoLoja();
+  // A linha de horário de hoje e o detalhe ("fecha às 19h") em minúscula
+  const linhaHoje = estado ? HORARIOS.find((l) => l.dias.includes(estado.dia)) : undefined;
+  const detalheHoje = estado ? estado.detalhe.charAt(0).toLowerCase() + estado.detalhe.slice(1) : "";
 
   return (
     <section aria-labelledby="fale-com-a-gente" className="relative bg-white border-t border-fio">
@@ -118,7 +132,7 @@ export function FaleComAGente() {
         {/* ---------- Cabeçalho: título em duas vozes e o selo ao vivo ---------- */}
         <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-5 lg:items-end">
           <div className="lg:col-span-8">
-            <p className="rotulo">fale com a gente</p>
+            <p className="rotulo-pilula">fale com a gente</p>
             <h2 id="fale-com-a-gente" className="titulo-secao vao-rotulo">
               WhatsApp, receita <span className="italic">ou na loja</span>
             </h2>
@@ -225,7 +239,8 @@ export function FaleComAGente() {
             </a>
           ))}
 
-          {/* O horário da semana, com o dia de hoje marcado */}
+          {/* O horário: hoje em destaque, a semana em sete dias e as linhas
+              (07/10/2026, "modernize a parte de horários") */}
           <div className="lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6">
             <span className="flex items-center justify-between gap-3">
               <span className="w-11 h-11 rounded-full flex items-center justify-center bg-gelo text-tinta">
@@ -233,19 +248,39 @@ export function FaleComAGente() {
               </span>
               <span className="rotulo !text-cinza text-[0.68rem]">horário</span>
             </span>
-            <ul className="mt-4 text-sm lista-fichas">
+            <span className="mt-4 block text-[1.6rem] font-semibold text-navy tracking-[-0.03em] leading-none tabular-nums">
+              {linhaHoje ? linhaHoje.horas : HORARIOS[0].horas}
+            </span>
+            <span className="mt-1.5 block text-sm text-cinza">{estado ? `Hoje · ${detalheHoje}` : HORARIOS[0].rotulo}</span>
+
+            {/* A semana: hoje em navy, dias fechados apagados */}
+            <ul className="mt-4 grid grid-cols-7 gap-1" aria-label="Dias da semana">
+              {DIAS_SEMANA.map((d, i) => {
+                const linha = HORARIOS.find((l) => l.dias.includes(i));
+                const fechado = !linha || linha.horas === "Fechado";
+                const hoje = estado?.dia === i;
+                return (
+                  <li
+                    key={d.nome}
+                    title={`${d.nome}: ${linha?.horas ?? "Fechado"}`}
+                    className={`h-9 rounded-xl flex items-center justify-center text-[0.72rem] font-semibold ${
+                      hoje ? "bg-navy text-white" : fechado ? "bg-gelo/70 text-cinza/60" : "bg-white ring-1 ring-fio text-navy"
+                    }`}
+                  >
+                    <span aria-hidden="true">{d.curto}</span>
+                    <span className="sr-only">{d.nome}</span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <ul className="mt-4 text-[0.82rem] lista-fichas">
               {HORARIOS.map((linha) => {
                 const hoje = estado ? linha.dias.includes(estado.dia) : false;
                 return (
-                  <li
-                    key={linha.rotulo}
-                    className={`flex items-center justify-between gap-3 py-2.5 ${hoje ? "text-navy" : "text-cinza"}`}
-                  >
-                    <span className="flex items-center gap-2">
-                      {linha.rotulo}
-                      {hoje && <span className="rotulo text-[0.62rem] !text-ouro-escuro">hoje</span>}
-                    </span>
-                    <span className={`tabular-nums ${hoje ? "font-semibold" : ""}`}>{linha.horas}</span>
+                  <li key={linha.rotulo} className={`flex items-center justify-between gap-3 py-2 ${hoje ? "text-navy font-semibold" : "text-cinza"}`}>
+                    <span>{linha.rotulo}</span>
+                    <span className="tabular-nums">{linha.horas}</span>
                   </li>
                 );
               })}

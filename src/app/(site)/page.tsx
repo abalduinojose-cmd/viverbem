@@ -34,9 +34,6 @@ const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerC
 // Quantas fotos reais uma área precisa ter para ganhar vitrine própria
 const MINIMO_PARA_VITRINE = 3;
 
-// Pílula do banner de cada vitrine
-const contar = (n: number) => `${n} ${n === 1 ? "produto" : "produtos"}`;
-
 /** Caminho público da imagem, se o arquivo existir em public/ */
 function imagemSeExistir(caminho: string): string | null {
   return fs.existsSync(path.join(process.cwd(), "public", caminho)) ? caminho : null;
@@ -104,10 +101,6 @@ export default async function Home() {
   // Só as categorias que têm algo no site
   const categoriasComItens = categorias.filter((c) => produtos.some((p) => p.categoriaId === c.id));
 
-  // Quantos produtos cada área tem (círculos e banners)
-  const contagens: Record<number, number> = {};
-  for (const c of categoriasComItens) contagens[c.id] = produtos.filter((p) => p.categoriaId === c.id).length;
-
   // Imagem de cada área para os círculos: a foto da área, senão o pote
   // de um produto dela
   const imagensCategorias: Record<number, ImagemCategoria> = {};
@@ -133,7 +126,6 @@ export default async function Home() {
         ...texto,
         imagem: imagemSeExistir(`/fotos/banners/${c.slug}.jpg`),
         inicial: c.nome.charAt(0),
-        pilula: contar(contagens[c.id] ?? 0),
       },
     });
   }
@@ -143,7 +135,6 @@ export default async function Home() {
     texto: "Preparada depois do pedido, conforme a receita.",
     imagem: imagemSeExistir("/fotos/banners/mais-procurados.jpg"),
     inicial: "M",
-    pilula: contar(comFoto.length),
   };
 
   return (
@@ -155,7 +146,7 @@ export default async function Home() {
       <div className="folhas">
         {/* 3 ─ Categorias em círculos + 4 ─ vitrines de produtos */}
         <Folha>
-          <CategoriasRedondas categorias={categoriasComItens} imagens={imagensCategorias} contagens={contagens} />
+          <CategoriasRedondas categorias={categoriasComItens} imagens={imagensCategorias} />
 
           <VitrineCategoria
             id="titulo-mais-procurados"

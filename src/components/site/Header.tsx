@@ -19,6 +19,7 @@ import { asset } from "@/lib/asset";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho } from "./CarrinhoDrawer";
+import { useEstadoLoja } from "./HorarioAtendimento";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 import { IconeMoto } from "./IconeMoto";
 import { IconeLoja, IconeEstrela } from "./IconesVantagens";
@@ -26,20 +27,38 @@ import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 // Abre a gaveta do pedido. A contagem só aparece com item no carrinho
 // (o carrinho vem do localStorage depois da hidratação, então começa 0
 // no servidor e no cliente, sem divergência).
-function BotaoCarrinho({ className, rotulo = true }: { className: string; rotulo?: boolean }) {
+function BotaoCarrinho({
+  className,
+  rotulo = true,
+  contagemInline = false,
+}: {
+  className: string;
+  rotulo?: boolean;
+  /** Celular: a contagem vai dentro da pílula, ao lado do ícone, em vez do selo */
+  contagemInline?: boolean;
+}) {
   const { totalItens, abrirPedido } = useCarrinho();
   const descricao =
     totalItens > 0 ? `Carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}` : "Carrinho";
   return (
     <button type="button" onClick={() => abrirPedido()} aria-label={descricao} className={className}>
-      <span className="relative">
-        <IconeCarrinho tamanho={20} />
-        {totalItens > 0 && (
-          <span className="absolute -top-2 -right-2.5 bg-navy text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white">
-            {totalItens}
+      {contagemInline ? (
+        <>
+          <span className="flex">
+            <IconeCarrinho tamanho={19} />
           </span>
-        )}
-      </span>
+          {totalItens > 0 && <span className="text-[0.8rem] font-semibold tabular-nums leading-none">{totalItens}</span>}
+        </>
+      ) : (
+        <span className="relative">
+          <IconeCarrinho tamanho={20} />
+          {totalItens > 0 && (
+            <span className="absolute -top-2 -right-2.5 bg-navy text-white text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white">
+              {totalItens}
+            </span>
+          )}
+        </span>
+      )}
       {rotulo && "Carrinho"}
     </button>
   );
@@ -51,16 +70,17 @@ const INSTITUCIONAL = [
   { href: "/contato", rotulo: "Contato" },
 ];
 
-// Vantagens da faixa do topo (computador). A do meio só aparece de lg para
-// cima, para a faixa caber no tablet.
+// Vantagens da faixa do topo (computador). Para a faixa nunca quebrar
+// linha, a nota do Google entra de lg para cima e a retirada só de xl.
 const VANTAGENS = [
   { icone: <IconeMoto tamanho={16} />, texto: "Delivery por toda Petrópolis" },
-  { icone: <IconeLoja tamanho={15} />, texto: `Retirada sem taxa em ${UNIDADES.length} lojas`, soLg: true },
   {
     icone: <IconeEstrela tamanho={14} />,
     texto: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google · ${AVALIACOES_GOOGLE_TOTAL} avaliações`,
     href: PERFIL_GOOGLE_URL,
+    aPartirDe: "lg" as const,
   },
+  { icone: <IconeLoja tamanho={15} />, texto: `Retirada sem taxa em ${UNIDADES.length} lojas`, aPartirDe: "xl" as const },
 ];
 
 // Itens do submenu "A Viver Bem" (âncoras da página Sobre), no menu do celular
@@ -114,15 +134,31 @@ const classeCategoria = (ativo: boolean) =>
     ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
   }`;
 
-// Botões do celular (busca e menu) dentro da barra branca: redondos; o
-// que estiver aberto fica em navy
+// Botões do celular (busca e menu) dentro da cápsula navy: ícones brancos;
+// o que estiver aberto vira um círculo branco
 const classeBotaoCapsula = (ativo = false) =>
   `w-9 h-9 rounded-full flex items-center justify-center transition active:scale-95 ${
-    ativo ? "bg-navy text-white" : "text-navy hover:bg-gelo"
+    ativo ? "bg-white text-navy" : "text-white/90 hover:bg-white/10"
   }`;
-// O carrinho, em ouro, como os botões "Adicionar" do site
+// O carrinho: pílula de OURO dentro da cápsula navy, com o ícone e a
+// contagem em navy (07/10, 2ª rodada: "modernize o botão do carrinho");
+// vazia, é só o círculo de ouro com o ícone
 const classeBotaoCarrinhoCelular =
-  "w-9 h-9 rounded-full flex items-center justify-center bg-[image:var(--ouro-degrade)] text-navy transition active:scale-95";
+  "h-9 min-w-9 px-2.5 rounded-full flex items-center justify-center gap-1.5 bg-[image:var(--ouro-degrade)] text-navy transition active:scale-95";
+
+// "Aberto agora · Fecha às 19h" na faixa do topo (07/10/2026). No servidor
+// é null: sai um texto neutro, sem horário congelado no HTML.
+function SeloAbertoFaixa() {
+  const estado = useEstadoLoja();
+  if (!estado) return <span className="text-white/80">Horário de atendimento</span>;
+  return (
+    <span role="status" className="inline-flex items-center gap-2">
+      <span aria-hidden="true" className={`w-2 h-2 rounded-full ${estado.aberto ? "bg-green-400" : "bg-white/40"}`} />
+      <span className="font-semibold text-white">{estado.aberto ? "Aberto agora" : "Fechado agora"}</span>
+      <span className="text-white/60">· {estado.detalhe}</span>
+    </span>
+  );
+}
 
 export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   const pathname = usePathname();
@@ -153,15 +189,19 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl shadow-[0_1px_0_var(--color-fio)]">
-      {/* Linha de progresso da leitura, em ouro, que cresce com a rolagem */}
-      <span aria-hidden="true" className="progresso-rolagem pointer-events-none absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[image:var(--ouro-degrade)]" />
-      {/* ---------- 1. Faixa de vantagens (computador) ---------- */}
-      {/* Em azul-noite, como a dobra: as vantagens com ícone em ouro e um
-          fio entre elas; os links institucionais em pílulas na ponta. */}
+      {/* ---------- 1. Faixa do topo (computador) ---------- */}
+      {/* Em azul-noite, como a dobra: o selo ao vivo "Aberto agora" e as
+          vantagens com ícone em ouro, separadas por um fio; os links
+          institucionais em pílulas na ponta. Nada quebra linha: cada item
+          entra só a partir da largura em que cabe. */}
       <div className="hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-9 flex items-center justify-between text-[0.78rem]">
-          <ul className="flex items-center">
-            {VANTAGENS.map((v, i) => {
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
+          <ul className="flex items-center min-w-0">
+            <li className="flex items-center">
+              <SeloAbertoFaixa />
+            </li>
+            {VANTAGENS.map((v) => {
+              const visivel = v.aPartirDe === "xl" ? "hidden xl:flex" : v.aPartirDe === "lg" ? "hidden lg:flex" : "flex";
               const miolo = (
                 <>
                   <span className="text-ouro-claro">{v.icone}</span>
@@ -169,8 +209,8 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
                 </>
               );
               return (
-                <li key={v.texto} className={`${v.soLg ? "hidden lg:flex" : "flex"} items-center`}>
-                  {i > 0 && <span aria-hidden="true" className="mx-5 h-3.5 w-px bg-white/15" />}
+                <li key={v.texto} className={`${visivel} items-center`}>
+                  <span aria-hidden="true" className="mx-4 h-3.5 w-px bg-white/15" />
                   {v.href ? (
                     <a
                       href={v.href}
@@ -187,7 +227,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
               );
             })}
           </ul>
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-1 shrink-0">
             {INSTITUCIONAL.map((l) => {
               const ativo = pathname.startsWith(l.href);
               return (
@@ -230,7 +270,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             draggable={false}
             width={220}
             height={97}
-            className="h-10 md:h-12 w-auto object-contain"
+            className="h-[2.85rem] md:h-12 w-auto object-contain"
           />
         </Link>
 
@@ -243,9 +283,9 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           <BotaoEnviarReceita className="hidden md:inline-flex botao botao-principal botao-compacto !min-h-12" />
           <BotaoCarrinho className="hidden md:inline-flex botao botao-secundario botao-compacto !min-h-12" />
 
-          {/* Celular: barra branca com o carrinho em ouro, a lupa e o menu */}
-          <div className="md:hidden flex items-center gap-0.5 p-1 rounded-full bg-white border border-fio shadow-[0_12px_30px_-18px_rgba(13,35,64,0.45)]">
-            <BotaoCarrinho rotulo={false} className={classeBotaoCarrinhoCelular} />
+          {/* Celular: cápsula navy com o carrinho em ouro, a lupa e o menu */}
+          <div className="md:hidden flex items-center gap-1 p-1 rounded-full bg-navy shadow-[0_14px_30px_-16px_rgba(13,35,64,0.7)]">
+            <BotaoCarrinho rotulo={false} contagemInline className={classeBotaoCarrinhoCelular} />
             <button
               type="button"
               onClick={() => {
@@ -311,12 +351,14 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           ))}
           <Link
             href="/sobre#como-funciona"
-            className="botao-link !min-h-0 ml-auto shrink-0 hidden lg:inline-flex text-[0.85rem] pl-4"
+            className="group ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-10 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.82rem] font-medium whitespace-nowrap transition-colors hover:border-ouro/50"
           >
             Como funciona
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <span className="w-7 h-7 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </Link>
         </div>
       </nav>

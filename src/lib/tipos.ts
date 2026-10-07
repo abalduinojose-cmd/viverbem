@@ -86,7 +86,8 @@ export function listarDosagens(dosagens: string | null | undefined): string[] {
 // Contato oficial da loja
 export const WHATSAPP_LOJA = "(24) 98873-3934"; // exibição
 export const WHATSAPP_NUMERO = "5524988733934"; // formato do link wa.me
-export const ANOS_TRADICAO = 19;
+// A manipulação nasceu em outubro de 2006 (a drogaria, em 1999)
+export const ANOS_TRADICAO = 20;
 
 // As 3 lojas, conforme o perfil de cada uma no Google. Ficam aqui
 // porque o rodapé, a página Sobre e a retirada no carrinho usam a
@@ -128,7 +129,7 @@ export const CNPJ_FARMACIA = "08.303.445/0001-52";
 
 // Total de avaliações no perfil do Google (o site mostra só uma
 // seleção delas). Conferido em ago/2026 — atualize quando crescer.
-export const AVALIACOES_GOOGLE_TOTAL = 634;
+export const AVALIACOES_GOOGLE_TOTAL = 680; // perfil do Centro em 07/10/2026
 export const AVALIACOES_GOOGLE_NOTA = 5.0;
 
 export const PERFIL_GOOGLE_URL =

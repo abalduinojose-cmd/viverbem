@@ -152,6 +152,33 @@ body {
   .em-noite .rotulo {
     color: var(--color-ouro-claro);
   }
+  /* Rótulo de seção em pílula, com o ponto de ouro (07/10/2026, "deixe o
+     escrito 'compre por área' mais moderno"): gelo, fio, caixa alta */
+  .rotulo-pilula {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: 1.9rem;
+    padding: 0 1rem 0 0.8rem;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid rgba(179, 144, 79, 0.35);
+    box-shadow: 0 10px 24px -18px rgba(13, 35, 64, 0.45);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--color-navy);
+  }
+  .rotulo-pilula::before {
+    content: "";
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 9999px;
+    background: var(--ouro-degrade);
+    box-shadow: 0 0 0 3px rgba(179, 144, 79, 0.16);
+  }
 
   /* Título de seção: UM tamanho para o site inteiro, peso 600, navy */
   .titulo-secao {
@@ -447,6 +474,8 @@ body {
   }
   .folha:first-child {
     margin-top: 0;
+    /* Logo abaixo das vantagens a sombra parecia sujeira (pedido de 07/10) */
+    box-shadow: none;
   }
   .folha-gelo {
     background: linear-gradient(180deg, #f3f6fa 0%, #ffffff 100%);
@@ -816,27 +845,6 @@ html {
   outline-color: var(--color-ouro-claro);
 }
 
-/* ---------- Linha de progresso da leitura (cabeçalho) ---------- */
-/* Cresce da esquerda para a direita conforme a página rola (scroll-driven,
-   roda com "reduzir movimento"); sem suporte, fica escondida. */
-.progresso-rolagem {
-  transform: scaleX(0);
-}
-@supports (animation-timeline: scroll()) {
-  .progresso-rolagem {
-    animation: progresso-rolagem linear both;
-    animation-timeline: scroll(root);
-  }
-}
-@keyframes progresso-rolagem {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
 /* ---------- Sanfonas da gaveta do pedido ---------- */
 /* O Safari ignora list-none no summary; a seta própria fica no ícone */
 summary::-webkit-details-marker {
@@ -885,6 +893,27 @@ summary::-webkit-details-marker {
   font-family: var(--font-destaque);
   font-style: italic;
   font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-navy);
+  background: var(--ouro-degrade);
+  box-shadow: 0 10px 24px -12px rgba(143, 113, 55, 0.7);
+}
+/* O ano da linha do tempo (página A Viver Bem): a mesma pílula de ouro do
+   número do passo, mas larga o bastante para "2006" */
+.marco-ano {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  z-index: 2;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-size: 1.2rem;
   line-height: 1;
   color: var(--color-navy);
   background: var(--ouro-degrade);

@@ -5,9 +5,11 @@
 //
 // Proporção (06/10/2026, pedidos do usuário em três rodadas: "diminua o
 // espaço do quadrado azul", "diminua mais", "coloque as categorias com os
-// produtos maiores e arrastando para o lado"): o banner deixou de ser uma
-// coluna da grade e virou o primeiro cartão da faixa, com 14/16rem de
-// largura e a mesma altura dos cartões de produto, que foram para 16/20rem.
+// produtos maiores e arrastando para o lado"; 07/10: "pode diminuir, quero
+// os produtos em mais destaque"): o banner deixou de ser uma coluna da
+// grade e virou o primeiro cartão da faixa, com 11/12rem de largura, só a
+// pílula, o título e o botão, e a mesma altura dos cartões de produto
+// (15/18rem).
 // No celular ele também entra na faixa, em vez de ocupar a tela inteira.
 //
 // O banner aceita uma foto (public/fotos/banners/*.jpg). Sem ela, é a
@@ -34,8 +36,6 @@ export type BannerVitrine = {
   imagem?: string | null;
   /** Letra gigante como marca d'água (a inicial da área) */
   inicial?: string;
-  /** Texto da pílula de vidro no alto, ex.: "10 produtos" */
-  pilula?: string;
 };
 
 function SetaDireita() {
@@ -76,7 +76,7 @@ function InicialMarca({ letra }: { letra: string }) {
       className="paralaxe-vista pointer-events-none select-none absolute -right-5 -top-6"
       style={{ "--paralaxe": "2rem" } as React.CSSProperties}
     >
-      <svg viewBox="0 0 100 110" className="block h-[8.5rem] md:h-[9.5rem] w-auto transition-transform duration-700 group-hover:-translate-y-2">
+      <svg viewBox="0 0 100 110" className="block h-[8rem] md:h-[9rem] w-auto transition-transform duration-700 group-hover:-translate-y-2">
         <text
           x="50"
           y="96"
@@ -101,7 +101,7 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
   return (
     <Link
       href={href}
-      className="group banner-noite em-noite relative flex h-full w-56 md:w-64 flex-col justify-between overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
+      className="group banner-noite em-noite relative flex h-full w-44 md:w-48 flex-col justify-between overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
     >
       {banner.imagem ? (
         <>
@@ -135,24 +135,24 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
         </>
       )}
 
-      {/* Pílula de vidro com o total */}
-      {banner.pilula && (
-        <span className="relative z-[1] self-start inline-flex items-center gap-2 h-7 pl-2.5 pr-3 rounded-full bg-white/10 ring-1 ring-inset ring-white/15 backdrop-blur-sm text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-white/90">
-          <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
-          {banner.pilula}
-        </span>
-      )}
+      {/* Brilho que acende no hover */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(255,255,255,0.14),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      />
 
-      <span className="relative z-[1] mt-8 flex flex-col items-start gap-2.5 text-white">
-        <span className="titulo-banner text-[1.35rem] md:text-[1.5rem] font-semibold leading-[1.05] tracking-[-0.03em] text-balance">
+      <span className="relative z-[1] flex-1 flex flex-col text-white">
+        <span className="titulo-banner text-[1.3rem] md:text-[1.45rem] font-semibold leading-[1.06] tracking-[-0.03em] text-balance">
           <TituloDuasVozes texto={banner.titulo} />
         </span>
-        {banner.texto && <span className="text-white/70 text-[0.85rem] leading-snug">{banner.texto}</span>}
-        {/* O botão em vidro, com a seta no círculo de ouro */}
-        <span className="mt-1 inline-flex items-center gap-2.5 h-11 pl-4 pr-1.5 rounded-full bg-white/10 ring-1 ring-inset ring-white/15 backdrop-blur-sm text-[0.9rem] font-semibold transition-colors duration-300 group-hover:bg-white/15">
-          Ver produtos
-          <span className="w-8 h-8 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
-            <SetaDireita />
+        {/* "Ver produtos", um fio de ouro e a seta, no pé */}
+        <span className="mt-auto pt-6 flex flex-col gap-2.5">
+          <span className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-white/70">Ver produtos</span>
+          <span className="flex items-center gap-3">
+            <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-ouro/15 via-ouro/55 to-ouro-claro" />
+            <span className="w-10 h-10 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center ring-4 ring-white/[0.08] shadow-[0_12px_24px_-10px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:translate-x-1">
+              <SetaDireita />
+            </span>
           </span>
         </span>
       </span>

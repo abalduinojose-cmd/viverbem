@@ -31,18 +31,18 @@ type Etapa = "pedido" | "dados";
 // O que acontece depois de marcar a receita, em três passos curtos
 const PASSOS_RECEITA = ["Seus dados", "Mensagem pronta", "Foto na conversa"];
 
+// A sacola de compras, com a alça (07/10/2026, "melhore o ícone do botão
+// de carrinho"): mais elegante que o carrinho de supermercado
 export function IconeCarrinho({ tamanho = 24 }: { tamanho?: number }) {
   return (
     <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.8h7.9a2 2 0 0 0 2-1.6L21 8H6"
+        d="M6.3 8.5h11.4l.9 10.6a1.7 1.7 0 0 1-1.7 1.9H7.1a1.7 1.7 0 0 1-1.7-1.9l.9-10.6Z"
         stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
+        strokeWidth="1.8"
         strokeLinejoin="round"
       />
-      <circle cx="10" cy="20.5" r="1.5" fill="currentColor" />
-      <circle cx="17" cy="20.5" r="1.5" fill="currentColor" />
+      <path d="M9 10.5V7a3 3 0 0 1 6 0v3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -288,9 +288,9 @@ export function CarrinhoDrawer() {
 
   return (
     <>
-      {/* Botão flutuante. Com produto no carrinho, mostra quantos itens
-          em qualquer tela (no celular só o círculo com o contador: o texto
-          cobria os botões das seções). Sem produto, vira o "Enviar receita"
+      {/* Botão flutuante. Com produto no carrinho: pílula navy com o ícone
+          num círculo de ouro e a contagem (no computador também "Ver
+          pedido"; 07/10/2026). Sem produto, vira o "Enviar receita"
           do celular (no computador ele fica na home, na página do produto e
           na gaveta). */}
       {temProdutos ? (
@@ -298,15 +298,18 @@ export function CarrinhoDrawer() {
           type="button"
           onClick={() => abrirPedido()}
           aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
-          className="bg-navy hover:bg-tinta fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 text-white rounded-full h-14 w-14 md:w-auto md:pl-5 md:pr-6 flex items-center justify-center gap-3 shadow-[0_18px_40px_-16px_rgba(13,35,64,0.65)] active:scale-95 transition"
+          className="bg-navy hover:bg-tinta fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 text-white rounded-full h-14 pl-2 pr-4 md:pr-5 flex items-center gap-2.5 md:gap-3 ring-1 ring-white/15 shadow-[0_20px_40px_-16px_rgba(13,35,64,0.7)] active:scale-95 transition"
         >
-          <span className="relative text-ouro-claro">
-            <IconeCarrinho />
-            <span className="absolute -top-2.5 -right-2.5 bg-[image:var(--ouro-degrade)] text-navy text-[0.7rem] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center shadow-sm">
-              {totalItens}
+          <span className="w-10 h-10 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
+            <IconeCarrinho tamanho={20} />
+          </span>
+          <span className="md:hidden text-[0.95rem] font-semibold tabular-nums">{totalItens}</span>
+          <span className="hidden md:flex flex-col items-start leading-none">
+            <span className="text-[0.95rem] font-semibold">Ver pedido</span>
+            <span className="mt-1 text-[0.72rem] text-white/60 tabular-nums">
+              {totalItens} {totalItens === 1 ? "item" : "itens"}
             </span>
           </span>
-          <span className="hidden md:inline font-semibold">Ver carrinho</span>
         </button>
       ) : (
         <button

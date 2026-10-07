@@ -91,7 +91,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
     <section aria-labelledby="titulo-avaliacoes" className="secao">
       <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-5">
         <div className="max-w-2xl">
-          <p className="rotulo">quem já é cliente</p>
+          <p className="rotulo-pilula">quem já é cliente</p>
           <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
             O que dizem <span className="italic">sobre a gente</span>
           </h2>
@@ -118,7 +118,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
           href={PERFIL_GOOGLE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="banner-noite em-noite snap-start shrink-0 w-[16rem] md:w-[18rem] rounded-[1.75rem] p-6 md:p-7 flex flex-col text-white transition duration-300 hover:-translate-y-1"
+          className="banner-noite em-noite snap-start shrink-0 w-[15rem] md:w-[17rem] rounded-[1.75rem] p-5 md:p-6 flex flex-col text-white transition duration-300 hover:-translate-y-1"
         >
           <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-xs font-medium">
             <IconeGoogle tamanho={14} />
@@ -174,10 +174,10 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
         {avaliacoes.map((a) => (
           <figure
             key={a.id}
-            className="snap-start shrink-0 w-[18rem] md:w-[21rem] rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/50 p-6 flex flex-col gap-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
+            className="snap-start shrink-0 w-[17rem] md:w-[19.5rem] rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/50 p-5 flex flex-col gap-3.5 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
           >
             <Aspas />
-            <blockquote className="flex-1 text-[0.98rem] leading-relaxed text-grafite">{a.texto}</blockquote>
+            <blockquote className="flex-1 text-[0.95rem] leading-relaxed text-grafite">{a.texto}</blockquote>
             <figcaption className="flex items-center gap-3 pt-4 border-t border-fio/70">
               {a.fotoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element

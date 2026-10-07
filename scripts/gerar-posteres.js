@@ -14,6 +14,8 @@ const fs = require("fs");
 const REELS = [
   { arquivo: "reel-1.mp4", capaEm: 3 },
   { arquivo: "reel-2.mp4", capaEm: 2 },
+  { arquivo: "reel-3.mp4", capaEm: 0.6 },
+  { arquivo: "reel-4.mp4", capaEm: 44.5 },
 ];
 
 const ffmpeg = process.env.FFMPEG || "ffmpeg";

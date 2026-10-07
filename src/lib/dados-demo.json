@@ -895,6 +895,46 @@
       "fotoUrl": "/uploads/avaliacoes/bruna-oliveira.jpg",
       "ativo": true,
       "ordem": 17
+    },
+    {
+      "id": 84,
+      "nome": "João Luis",
+      "texto": "A atendente Olivia foi bastante atenciosa, buscando resolver minha necessidade de maneira objetiva e rápida. Obrigado!",
+      "nota": 5,
+      "fonte": "Google",
+      "fotoUrl": "/uploads/avaliacoes/joao-luis.jpg",
+      "ativo": true,
+      "ordem": 23
+    },
+    {
+      "id": 85,
+      "nome": "Shirlei Mayworm",
+      "texto": "Ótimo atendimento, entrega rápida. Produtos de qualidade. Minha preferida!",
+      "nota": 5,
+      "fonte": "Google",
+      "fotoUrl": "/uploads/avaliacoes/shirlei-mayworm.jpg",
+      "ativo": true,
+      "ordem": 24
+    },
+    {
+      "id": 86,
+      "nome": "Andresa Neumann",
+      "texto": "A atendente foi muito solícita e respondeu bem rápido. Os produtos são de ótima qualidade.",
+      "nota": 5,
+      "fonte": "Google",
+      "fotoUrl": "/uploads/avaliacoes/andresa-neumann.jpg",
+      "ativo": true,
+      "ordem": 25
+    },
+    {
+      "id": 87,
+      "nome": "Marcela A Kuster",
+      "texto": "Atendimento excelente! Preço e prazo de entrega justos.",
+      "nota": 5,
+      "fonte": "Google",
+      "fotoUrl": "/uploads/avaliacoes/marcela-a-kuster.jpg",
+      "ativo": true,
+      "ordem": 26
     }
   ]
 }

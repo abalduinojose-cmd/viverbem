@@ -22,7 +22,7 @@ import { FotoProduto } from "@/components/site/FotoProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
-import { VistosRecentemente } from "@/components/site/VistosRecentemente";
+import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
 import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
 import { IconeMoto } from "@/components/site/IconeMoto";
 import { IconeLoja } from "@/components/site/IconesVantagens";
@@ -163,10 +163,15 @@ export default async function PaginaProduto({ params }: Props) {
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id)
     .slice(0, 8);
 
+  // Para a coluna lateral: os primeiros do catálogo com foto real, sem este
+  const maisProcurados = produtos
+    .filter((p) => p.id !== produto.id && p.fotoUrl && !p.fotoUrl.toLowerCase().endsWith(".svg"))
+    .slice(0, 4);
+
   return (
     <main className="flex-1">
       {/* Trilha de navegação */}
-      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-6">
+      <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-6">
         <nav className="flex items-center gap-1.5 text-sm text-cinza min-h-10" aria-label="Você está em">
           <Link href="/" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">
             Início
@@ -184,8 +189,8 @@ export default async function PaginaProduto({ params }: Props) {
       </div>
 
       {/* Produto */}
-      <section className="max-w-6xl mx-auto px-5 md:px-8 pt-4 pb-14 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-14 items-start">
+      <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-14 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_16rem] gap-8 lg:gap-10 items-start">
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
             <div className="relative overflow-hidden rounded-[2rem] border border-fio bg-gradient-to-b from-gelo to-white flex items-end justify-center min-h-[20rem] md:min-h-[30rem] p-6 md:p-9">
@@ -282,15 +287,30 @@ export default async function PaginaProduto({ params }: Props) {
               .
             </p>
           </div>
+
+          {/* Coluna lateral (computador largo): mais procurados e o que a pessoa já viu */}
+          <ColunaLateralProduto
+            slugAtual={produto.slug}
+            catalogo={produtos}
+            maisProcurados={maisProcurados}
+            className="hidden xl:flex xl:flex-col xl:gap-5 xl:sticky xl:top-[calc(var(--altura-cabecalho)+1.5rem)]"
+          />
         </div>
       </section>
 
-      {/* O que a pessoa já abriu no site, para retomar de onde parou */}
-      <VistosRecentemente slugAtual={produto.slug} catalogo={produtos} />
+      {/* Abaixo do xl, os mesmos dois blocos, lado a lado */}
+      <section className="xl:hidden max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pb-6">
+        <ColunaLateralProduto
+          slugAtual={produto.slug}
+          catalogo={produtos}
+          maisProcurados={maisProcurados}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+        />
+      </section>
 
       {/* Da mesma área */}
       {relacionados.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 md:px-8 pt-4 pb-16 border-t border-fio">
+        <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-16 border-t border-fio">
           <div className="flex items-end justify-between gap-4 mt-10 mb-6">
             <div>
               <p className="rotulo">da mesma área</p>

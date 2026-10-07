@@ -5,7 +5,9 @@
 // tudo centralizado, em três tempos. A marca respirando no alto com a
 // frase no itálico do site; os contatos em ícones (que acendem em azul) e
 // a navegação numa fileira de caixa alta; e a linha legal embaixo. Ao
-// fundo, a assinatura "Viver Bem" em marca d'água, cortada pela base como
+// fundo, a malha fina de laboratório e a luz de ouro dos cartões em azul-noite
+// (a assinatura em marca d'água saiu em 07/10/2026; o rodapé em grade, testado
+// no mesmo dia, foi reprovado: "aperfeiçoe o que já estava").
 // um carimbo. É o único bloco escuro do site (sistema "Receita e rótulo").
 import Link from "next/link";
 import { asset } from "@/lib/asset";
@@ -69,32 +71,15 @@ export function Footer() {
     <div className="mt-auto">
       <FaleComAGente />
     <footer className="em-noite relative isolate overflow-hidden bg-noite text-white">
-      {/* Assinatura gigante ao fundo, quase invisível, cortada pela base.
-          É SVG, e não texto, porque texto quase transparente reprova o
-          contraste no Lighthouse mesmo escondido. */}
-      <svg
+      {/* Fio de ouro no alto, a malha fina e a luz de ouro: a mesma atmosfera dos cartões em azul-noite */}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ouro/60 to-transparent" />
+      <span aria-hidden="true" className="malha-banner" />
+      <span
         aria-hidden="true"
-        viewBox="0 0 1200 230"
-        className="pointer-events-none select-none absolute -bottom-10 md:-bottom-16 left-1/2 -z-10 w-[64rem] max-w-none md:w-[78rem] -translate-x-1/2"
-      >
-        <text
-          x="600"
-          y="200"
-          textAnchor="middle"
-          fill="#c0a060"
-          fillOpacity="0.07"
-          style={{
-            fontFamily: "var(--font-instrument-serif), Georgia, serif",
-            fontStyle: "italic",
-            fontSize: 250,
-          }}
-        >
-          Viver Bem
-        </text>
-      </svg>
-
+        className="pointer-events-none absolute -right-32 -top-40 -z-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.18),transparent_62%)]"
+      />
       {/* ---------- Rodapé centralizado ---------- */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-28 md:pb-16 flex flex-col items-center text-center">
+      <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-16 md:pt-20 pb-10 md:pb-12 flex flex-col items-center text-center">
         {/* Luz azul bem baixa atrás da marca: profundidade sem chamar atenção */}
         <div
           aria-hidden="true"
@@ -161,7 +146,7 @@ export function Footer() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 hover:bg-white/[0.06] hover:text-white"
+                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors duration-300 hover:bg-white/[0.06] hover:text-ouro-claro"
                 >
                   {l.rotulo}
                 </Link>
