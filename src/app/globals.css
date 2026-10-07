@@ -34,6 +34,8 @@
   --color-ouro-escuro: #8f7137;
   --color-carimbo: #e02129;
   --color-carimbo-escuro: #b81b22;
+  /* Fundo do painel administrativo: um gelo ainda mais claro */
+  --color-nevoa: #f5f8fc;
 
   /* Nomes antigos, mantidos para o que ainda não foi redesenhado */
   --color-royal: #1c69b5;
@@ -130,18 +132,8 @@ body {
     padding-right: 0.08em;
   }
 
-  /* O nome no rótulo e outras palavras humanas em azul */
-  .tinta-azul {
-    font-family: var(--font-destaque);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    color: var(--color-tinta);
-  }
-
   /* Rótulo: caixa alta espaçada, em azul */
-  .rotulo,
-  .selo-secao {
+  .rotulo {
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.2em;
@@ -152,32 +144,42 @@ body {
   .em-noite .rotulo {
     color: var(--color-ouro-claro);
   }
-  /* Rótulo de seção em pílula, com o ponto de ouro (07/10/2026, "deixe o
-     escrito 'compre por área' mais moderno"): gelo, fio, caixa alta */
+  /* Rótulo de seção: caixa alta pequena com um fio de ouro na frente
+     (07/10/2026, "mais clean": a pílula com caixa saiu) */
   .rotulo-pilula {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    height: 1.9rem;
-    padding: 0 1rem 0 0.8rem;
-    border-radius: 9999px;
-    background: #fff;
-    border: 1px solid rgba(179, 144, 79, 0.35);
-    box-shadow: 0 10px 24px -18px rgba(13, 35, 64, 0.45);
-    font-size: 0.68rem;
+    gap: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    line-height: 1;
-    color: var(--color-navy);
+    line-height: 1.4;
+    color: var(--color-tinta);
   }
   .rotulo-pilula::before {
     content: "";
-    width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 9999px;
+    width: 1.25rem;
+    height: 1px;
     background: var(--ouro-degrade);
-    box-shadow: 0 0 0 3px rgba(179, 144, 79, 0.16);
+  }
+  .em-noite .rotulo-pilula {
+    color: var(--color-ouro-claro);
+  }
+  /* Depois do rótulo, o título ganha um traço curto de ouro embaixo
+     (07/10/2026, "quero mais moderno"); centralizado nas seções centradas */
+  .rotulo-pilula + .titulo-secao::after,
+  .rotulo-pilula + .titulo-display::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--ouro-degrade);
+    margin-top: 1rem;
+  }
+  .text-center .rotulo-pilula + .titulo-secao::after {
+    margin-inline: auto;
   }
 
   /* Título de seção: UM tamanho para o site inteiro, peso 600, navy */
@@ -233,18 +235,6 @@ body {
     color: transparent;
     padding-right: 0.06em;
     width: max-content;
-  }
-
-  /* Frase de cliente, nas avaliações: a voz humana, em navy */
-  .citacao {
-    font-family: var(--font-destaque);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 1.5rem;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    color: var(--color-navy);
-    text-wrap: pretty;
   }
 
   /* ---------- Botões: três estilos no site inteiro ---------- */
@@ -409,21 +399,6 @@ body {
     background: radial-gradient(circle, rgba(192, 160, 96, 0.22), transparent 70%);
     pointer-events: none;
   }
-  /* Ladrilho de vidro, sobre a folha escura */
-  .ladrilho-vidro {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-caixa);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    transition: border-color 0.3s, background-color 0.3s, transform 0.3s;
-  }
-  .ladrilho-vidro:hover {
-    border-color: rgba(192, 160, 96, 0.45);
-    background: rgba(255, 255, 255, 0.09);
-  }
-
   /* Listas com fio */
   .lista-fichas > * + * {
     border-top: 1px solid var(--color-fio);
@@ -432,10 +407,6 @@ body {
     border-top: 1px solid var(--color-fio);
     border-bottom: 1px solid var(--color-fio);
   }
-  .fio-ouro {
-    border-color: rgba(179, 144, 79, 0.35);
-  }
-
   /* ---------- Respiro ---------- */
   .secao {
     padding-top: var(--espaco-secao);
@@ -582,13 +553,6 @@ body {
     opacity: 0.25;
   }
 }
-/* A abertura, presa ao topo, recua enquanto a primeira folha a cobre */
-@keyframes abertura-recua {
-  to {
-    transform: scale(0.94) translateY(-2rem);
-    opacity: 0.3;
-  }
-}
 /* Os potes sobem mais devagar que a página (paralaxe) */
 @keyframes paralaxe {
   to {
@@ -623,25 +587,12 @@ body {
     animation-range: 0 100vh;
   }
 }
-@supports (animation-timeline: scroll()) {
-  @media (min-width: 1024px) {
-    .abertura-presa {
-      position: sticky;
-      top: 0;
-      animation: abertura-recua linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100vh;
-      transform-origin: 50% 30%;
-    }
-  }
-}
 /* Na impressão não há rolagem: tudo visível */
 @media print {
   .revelar,
   .escalonado > *,
   .folha,
   .paralaxe,
-  .abertura-presa,
   .cascata > * {
     animation: none !important;
   }
@@ -676,27 +627,6 @@ body {
 .sombra-card {
   box-shadow: var(--shadow-card);
 }
-.sombra-card-hover {
-  box-shadow: var(--shadow-card-hover);
-}
-
-/* ------------------------------------------------------------
-   Só o PAINEL ADMINISTRATIVO (/admin) ainda usa estes degradês; o site
-   público não tem mais nenhum. Quando o painel for revisto, apagar.
-   ------------------------------------------------------------ */
-.degrade-marca {
-  background-image: linear-gradient(100deg, #1c69b5 0%, #2f7cc4 42%, #e0403f 100%);
-}
-.degrade-suave {
-  background-image: linear-gradient(120deg, #1c69b5 0%, #2f7cc4 45%, #8f4c8e 78%, #d33a41 100%);
-}
-.texto-degrade {
-  background-image: var(--ouro-degrade);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 @media (prefers-reduced-motion: reduce) {
   /* A cascata da carga continua, mais curta e mais baixa: é um fade
      único, não um movimento contínuo. O que anda com a rolagem fica,
@@ -861,7 +791,7 @@ summary::-webkit-details-marker {
     linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
   background-size: 2.25rem 2.25rem;
-  opacity: 0.08;
+  opacity: 0.06;
   -webkit-mask-image: radial-gradient(70% 65% at 75% 25%, #000, transparent 75%);
   mask-image: radial-gradient(70% 65% at 75% 25%, #000, transparent 75%);
 }

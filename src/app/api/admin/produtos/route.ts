@@ -1,7 +1,7 @@
-// POST /api/admin/produtos — cria um produto.
-// Permissão: qualquer usuário logado (admin ou operador).
+// POST /api/admin/produtos — cria um produto (com a galeria de fotos).
+// Permissão: qualquer usuário logado (gestor ou colaborador).
 //
-// Produto criado pelo OPERADOR nasce aguardando aprovação: só aparece
+// Produto criado pelo COLABORADOR nasce aguardando aprovação: só aparece
 // no site depois que o gestor publicar. É quem revisa a peça antes de
 // ela entrar no ar (farmácia de manipulação responde pelo que publica).
 import { NextResponse } from "next/server";
@@ -29,14 +29,21 @@ export async function POST(req: Request) {
   // e não muda depois: os links postados no Instagram continuam válidos.
   const slug = await gerarSlugProdutoUnico(resultado.dados.nome);
   const aprovado = sessao.papel === PAPEL_ADMIN;
-  const produto = await db.produto.create({ data: { ...resultado.dados, slug, aprovado } });
+  const produto = await db.produto.create({
+    data: {
+      ...resultado.dados,
+      slug,
+      aprovado,
+      fotos: { create: resultado.fotos.map((url, ordem) => ({ url, ordem })) },
+    },
+  });
 
   const preco =
     produto.venda === VENDA_INDUSTRIALIZADO ? ` (${formatarPreco(produto.precoCentavos)})` : " (manipulado)";
   await registrarLog(
     sessao.nome ?? "?",
     "criou produto",
-    `"${produto.nome}"${preco}${aprovado ? "" : ", aguardando aprovação"}`
+    `"${produto.nome}"${preco}, ${resultado.fotos.length} foto(s)${aprovado ? "" : ", aguardando aprovação"}`
   );
   return NextResponse.json(produto, { status: 201 });
 }

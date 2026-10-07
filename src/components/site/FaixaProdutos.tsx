@@ -33,6 +33,7 @@ export function FaixaProdutos({
   className = "",
   comCategoria = true,
   antes,
+  depois,
   setas = true,
   children,
 }: {
@@ -44,8 +45,10 @@ export function FaixaProdutos({
   largura?: "padrao" | "estreita";
   /** Classes extras na própria fileira (ex.: "cascata") */
   className?: string;
-  /** Cartão que abre a faixa (o banner da área), com a largura dele mesmo */
+  /** Cartão que abre a faixa, com a largura dele mesmo */
   antes?: React.ReactNode;
+  /** Cartão que fecha a faixa (o banner da área, depois dos produtos) */
+  depois?: React.ReactNode;
   /** Setas nas bordas, no computador */
   setas?: boolean;
   /**
@@ -110,6 +113,7 @@ export function FaixaProdutos({
                 <ProdutoCard produto={p} mostrarCategoria={comCategoria} />
               </div>
             ))}
+        {depois && <div className="shrink-0 snap-start flex">{depois}</div>}
       </div>
 
       {setas && !pontas.inicio && (

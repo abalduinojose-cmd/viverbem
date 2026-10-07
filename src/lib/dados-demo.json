@@ -5,37 +5,49 @@
         "id": 62,
         "nome": "Dermatologia & Estética",
         "slug": "dermatologia-estetica",
-        "ordem": 0
+        "ordem": 0,
+        "visivel": true,
+        "vitrineHome": true
       },
       {
         "id": 63,
         "nome": "Vitaminas & Suplementos",
         "slug": "vitaminas-suplementos",
-        "ordem": 1
+        "ordem": 1,
+        "visivel": true,
+        "vitrineHome": true
       },
       {
         "id": 64,
         "nome": "Cabelos & Unhas",
         "slug": "cabelos-unhas",
-        "ordem": 2
+        "ordem": 2,
+        "visivel": true,
+        "vitrineHome": true
       },
       {
         "id": 65,
         "nome": "Saúde da Mulher",
         "slug": "saude-da-mulher",
-        "ordem": 3
+        "ordem": 3,
+        "visivel": true,
+        "vitrineHome": true
       },
       {
         "id": 66,
         "nome": "Saúde do Homem",
         "slug": "saude-do-homem",
-        "ordem": 4
+        "ordem": 4,
+        "visivel": true,
+        "vitrineHome": true
       },
       {
         "id": 67,
         "nome": "Homeopatia & Florais",
         "slug": "homeopatia-florais",
-        "ordem": 5
+        "ordem": 5,
+        "visivel": true,
+        "vitrineHome": true
       }
     ],
     "produtos": [
@@ -49,6 +61,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/creme.svg",
+        "fotos": [
+          "/uploads/creme.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -71,6 +87,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/serum.svg",
+        "fotos": [
+          "/uploads/serum.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -93,6 +113,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/gel.svg",
+        "fotos": [
+          "/uploads/gel.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -115,6 +139,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -137,6 +165,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/vitamina.svg",
+        "fotos": [
+          "/uploads/vitamina.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -159,6 +191,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/vitamina.svg",
+        "fotos": [
+          "/uploads/vitamina.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -181,6 +217,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -203,6 +243,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/citorepair.png",
+        "fotos": [
+          "/uploads/citorepair.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -225,6 +269,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/omega3.png",
+        "fotos": [
+          "/uploads/omega3.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -247,6 +295,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/vitaflex.png",
+        "fotos": [
+          "/uploads/vitaflex.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -269,6 +321,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/creatina-gummy.png",
+        "fotos": [
+          "/uploads/creatina-gummy.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -291,6 +347,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/caramelo-creatina.png",
+        "fotos": [
+          "/uploads/caramelo-creatina.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -313,6 +373,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/glow-cream.png",
+        "fotos": [
+          "/uploads/glow-cream.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -335,6 +399,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/firm-defense-serum.png",
+        "fotos": [
+          "/uploads/firm-defense-serum.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -357,6 +425,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/zincblock-fps.png",
+        "fotos": [
+          "/uploads/zincblock-fps.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -379,6 +451,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/bastao-clareador.png",
+        "fotos": [
+          "/uploads/bastao-clareador.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -401,6 +477,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/po-finalizador.png",
+        "fotos": [
+          "/uploads/po-finalizador.png"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -423,6 +503,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -445,6 +529,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/locao.svg",
+        "fotos": [
+          "/uploads/locao.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -467,6 +555,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -489,6 +581,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -511,6 +607,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -533,6 +633,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/floral.svg",
+        "fotos": [
+          "/uploads/floral.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -555,6 +659,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/floral.svg",
+        "fotos": [
+          "/uploads/floral.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -577,6 +685,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -599,6 +711,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/vitamina.svg",
+        "fotos": [
+          "/uploads/vitamina.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -621,6 +737,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -643,6 +763,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/creme.svg",
+        "fotos": [
+          "/uploads/creme.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -665,6 +789,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/creme.svg",
+        "fotos": [
+          "/uploads/creme.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -687,6 +815,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/locao.svg",
+        "fotos": [
+          "/uploads/locao.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -709,6 +841,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/feminino.svg",
+        "fotos": [
+          "/uploads/feminino.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -731,6 +867,10 @@
         "venda": "MANIPULADO",
         "aprovado": true,
         "fotoUrl": "/uploads/capsulas.svg",
+        "fotos": [
+          "/uploads/capsulas.svg"
+        ],
+        "mostrarPreco": false,
         "ativo": true,
         "novidade": false,
         "destaque": false,
@@ -936,5 +1076,18 @@
       "ativo": true,
       "ordem": 26
     }
-  ]
+  ],
+  "configuracao": {
+    "secoesHome": {
+      "categorias": true,
+      "maisProcurados": true,
+      "vitrinesAreas": true,
+      "prontaEntrega": true,
+      "comoFunciona": true,
+      "reels": true,
+      "avaliacoes": true
+    },
+    "heroDesktop": null,
+    "heroCelular": null
+  }
 }

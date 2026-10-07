@@ -12,6 +12,7 @@
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { FaleComAGente } from "./FaleComAGente";
+import { IconeWhatsApp, IconeInstagram } from "./icones";
 import {
   ANOS_TRADICAO,
   CNPJ_FARMACIA,
@@ -30,24 +31,6 @@ const NAVEGACAO = [
   { href: "/contato", rotulo: "Contato" },
 ];
 
-function IconeWhatsApp() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="relative size-[1.15rem]">
-      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
-    </svg>
-  );
-}
-
-function IconeInstagram() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
-      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
-    </svg>
-  );
-}
-
 function IconeMapa() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="relative size-[1.15rem]">
@@ -57,10 +40,18 @@ function IconeMapa() {
   );
 }
 
+// Os ícones compartilhados no tamanho do rodapé
+function IconeWhatsAppRodape() {
+  return <IconeWhatsApp className="relative size-[1.15rem]" />;
+}
+function IconeInstagramRodape() {
+  return <IconeInstagram className="relative size-[1.15rem]" />;
+}
+
 // Contatos em ícone: só o desenho, com o nome no aria-label e no title
 const CONTATOS = [
-  { id: "whatsapp", rotulo: "WhatsApp", href: LINK_WHATSAPP, externo: true, icone: IconeWhatsApp },
-  { id: "instagram", rotulo: "Instagram", href: INSTAGRAM_URL, externo: true, icone: IconeInstagram },
+  { id: "whatsapp", rotulo: "WhatsApp", href: LINK_WHATSAPP, externo: true, icone: IconeWhatsAppRodape },
+  { id: "instagram", rotulo: "Instagram", href: INSTAGRAM_URL, externo: true, icone: IconeInstagramRodape },
   { id: "lojas", rotulo: "Nossas lojas", href: "/lojas", externo: false, icone: IconeMapa },
 ];
 

@@ -84,7 +84,11 @@ Detalhes de modelagem:
 - **Desativar ≠ apagar**: o toggle "Ativo" esconde o produto do totem na hora, mantendo o cadastro (para itens em falta).
 - **Dosagens** (`dosagens`): texto livre separado por vírgula (ex.: `250mg, 500mg`). Se preenchido, o cliente escolhe a dosagem no totem antes de adicionar ao carrinho.
 - **Carrinho + finalização**: vive no navegador do tablet (localStorage) — nada é gravado no servidor. Ao "Finalizar pedido" o cliente informa o nome (e observação); é gerado um código (ex.: `VB-8F3A`) e o pedido completo vira uma mensagem no WhatsApp da loja com todas as especificações (item, dosagem, quantidade, preço unitário, subtotal, total) para a recepção receber e mandar preparar (`src/lib/whatsapp.ts`).
-- **Papéis**: `ADMIN` (tudo) e `OPERADOR` (cadastra/edita produtos e preços; não apaga, não gerencia categorias/depoimentos e não vê o log).
+- **Papéis**: `ADMIN` é o **gestor** (tudo: números, clientes, log, acessos, publicar e apagar) e `OPERADOR` é o **colaborador** (cuida do catálogo: produtos com até 5 fotos, preço no site, categorias com as chaves "No site" e "Vitrine na home", seções da home e a arte da dobra; não apaga, não publica, não reordena e não vê números).
+- **Galeria** (`FotoProduto`): até 5 fotos por produto, reordenáveis no formulário; a primeira é a capa e fica copiada em `fotoUrl` para as listas.
+- **Preço no site** (`mostrarPreco`): desligado por padrão; só liga em industrializado com registro (a rota recusa em manipulado, RDC 67/2007). O site não mostra preço de nada enquanto a chave estiver desligada.
+- **Categoria no site** (`visivel`) e **vitrine na home** (`vitrineHome`): tirar uma área do site esconde também os produtos dela, sem apagar nada.
+- **Ajustes do site** (`Configuracao`, chave/valor em JSON): as seções da home ligadas e a arte da dobra enviada pelo painel (`src/lib/configuracao.ts`, `src/lib/secoes.ts`).
 - **Log de alterações** (`LogAlteracao`): registrado automaticamente pelas rotas de API a cada mutação — consulte em Painel → Log de alterações.
 
 ## Tarefas comuns
@@ -96,6 +100,8 @@ node -e "console.log(require('bcryptjs').hashSync('SENHA_NOVA', 10))"
 ```
 
 **Resetar os dados de exemplo:** `npm run db:seed` (recria produtos/categorias; não mexe em usuários).
+
+**Ligar e desligar seções da home, trocar a arte da dobra:** Painel → Home e arte da dobra (gestor e colaborador). **Tirar uma área do site ou da home:** Painel → Categorias, chaves "No site" e "Vitrine na home".
 
 **Modo quiosque no tablet:** abra a URL do totem no navegador do tablet e use o modo tela cheia/quiosque do próprio navegador (Chrome: "Adicionar à tela inicial" ou um app de kiosk como Fully Kiosk). O totem volta sozinho à tela inicial após 90s sem toques (ajuste em `SEGUNDOS_INATIVIDADE`, `src/components/totem/CatalogoClient.tsx`).
 
@@ -123,6 +129,19 @@ Recomendações:
 2. Aponte `DATABASE_URL` para o Postgres (ex.: `postgresql://usuario:senha@host:5432/viverbem`).
 3. Rode `npx prisma migrate dev` (novo histórico de migrações será criado).
 
+### Arte da dobra (home)
+
+A farmácia troca a abertura da home pela própria arte em **Painel → Home e arte da dobra**: a versão do computador (~1920x760) liga o modo arte e a do celular (~1080x1350) é opcional. Com a arte, a dobra mostra a imagem inteira com só os três botões por cima (ver `src/lib/hero.ts` e `Abertura.tsx`). Também funciona copiar os arquivos direto em `public/uploads/hero/desktop.jpg` e `celular.jpg`; o que foi enviado pelo painel tem prioridade.
+
+### Migrar para MySQL (hospedagem do cliente)
+
+1. `npm run db:mysql` troca o provider do Prisma e marca os textos longos com `@db.Text`.
+2. No `.env` do servidor: `DATABASE_URL="mysql://usuario:senha@servidor:3306/viverbem"`.
+3. `npx prisma db push` cria as tabelas; `npm run db:seed` carrega categorias, produtos e avaliações.
+4. Para voltar ao SQLite local: `npm run db:sqlite`.
+
+As fotos enviadas pelo painel continuam em `public/uploads/` (ou no Vercel Blob, quando houver token). O MySQL guarda só os caminhos.
+
 ### Publicar na internet (Vercel)
 
 Veja o guia completo em **[DEPLOY.md](DEPLOY.md)** — sobe o app inteiro
@@ -147,3 +166,4 @@ com o selo do Google. Os textos que vêm no seed são apenas exemplos.
 - **Fase 2 (entregue):** dosagens por produto, carrinho com envio do pedido por WhatsApp, botão de WhatsApp por produto, página "Como funciona a manipulação" com 19 anos + avaliações (gerenciáveis no painel), vitrine especial da linha dermatológica, drag-and-drop de produtos/categorias, papéis admin/operador e log de alterações.
 - **Redesign clean (entregue):** tipografia Figtree + Inter, layout com mais respiro, sombras suaves, cantos generosos, avaliações estilo Google.
 - **Fase 3 (pendente):** modo offline do totem (a rota `/api/totem/catalogo` já expõe o JSON para cache local), métricas (mais vistos/clicados), gestão multi-lojas, integração com fila/senha.
+- **Painéis gestor e colaborador (07/10/2026):** painel na paleta do site, galeria de até 5 fotos por produto, preço no site por produto (só industrializado), categorias com "No site" e "Vitrine na home", seções da home e arte da dobra pelo painel, visão geral do gestor com os números, o catálogo, a equipe e o log.

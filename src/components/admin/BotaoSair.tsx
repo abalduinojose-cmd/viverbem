@@ -15,7 +15,7 @@ export function BotaoSair() {
     <button
       type="button"
       onClick={sair}
-      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-grafite-medio border border-linha hover:text-escarlate hover:border-escarlate/40 hover:bg-escarlate/5 transition-colors"
+      className="w-full flex items-center gap-2.5 rounded-xl px-3 h-10 text-sm font-medium text-cinza border border-fio hover:text-carimbo hover:border-carimbo/40 hover:bg-carimbo/5 transition-colors"
     >
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
         <path

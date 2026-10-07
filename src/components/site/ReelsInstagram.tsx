@@ -5,7 +5,8 @@
 //
 // Versão interativa (07/10/2026, "modernize a seção e o botão do
 // Instagram, faça algo em JavaScript"): quatro reels numa fileira (faixa
-// que arrasta no celular, lado a lado no computador). Um deles é o
+// que arrasta no celular, com o ativo no centro e vídeos dos dois lados;
+// lado a lado no computador). Um deles é o
 // "ativo": maior, com o anel de ouro e a barra de progresso que enche
 // enquanto toca, como nos stories; quando termina, o próximo entra
 // sozinho (e a faixa centraliza nele no celular). Botão de som no cartão
@@ -24,6 +25,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { INSTAGRAM_PERFIL, INSTAGRAM_URL } from "@/lib/tipos";
 import { asset } from "@/lib/asset";
+import { IconeInstagram } from "./icones";
 
 const REELS = [
   { arquivo: "/videos/reel-1.mp4", capa: "/videos/reel-1.jpg", titulo: "Curiosidades da manipulação" },
@@ -31,16 +33,6 @@ const REELS = [
   { arquivo: "/videos/reel-3.mp4", capa: "/videos/reel-3.jpg", titulo: "Área dos olhos" },
   { arquivo: "/videos/reel-4.mp4", capa: "/videos/reel-4.jpg", titulo: "Pads faciais" },
 ];
-
-function IconeInstagram({ tamanho = 20 }: { tamanho?: number }) {
-  return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.8" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
-      <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" />
-    </svg>
-  );
-}
 
 function IconeSom({ mudo }: { mudo: boolean }) {
   return (
@@ -225,6 +217,15 @@ export function ReelsInstagram() {
     return () => observador.disconnect();
   }, [tocar, pausarTodos]);
 
+  // No celular a faixa abre com o SEGUNDO reel no centro, para já haver
+  // vídeo dos dois lados (07/10/2026); só mexe na rolagem, sem estado
+  useEffect(() => {
+    const faixa = faixaRef.current;
+    const cartao = cartoes.current[1];
+    if (!faixa || !cartao || faixa.scrollWidth <= faixa.clientWidth + 4) return;
+    faixa.scrollTo({ left: Math.max(0, cartao.offsetLeft - (faixa.clientWidth - cartao.clientWidth) / 2) });
+  }, []);
+
   // No celular, o cartão que a pessoa deixou no centro vira o ativo
   useEffect(() => {
     const faixa = faixaRef.current;
@@ -268,7 +269,7 @@ export function ReelsInstagram() {
       {/* Os reels: faixa no celular, fileira centralizada no computador */}
       <div
         ref={faixaRef}
-        className="revelar vao-titulo flex items-end gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none rolagem-sem-barra -mx-5 px-5 scroll-pl-5 pb-2 md:mx-0 md:px-0 md:scroll-pl-0 md:pb-0 md:justify-center"
+        className="revelar vao-titulo flex items-end gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none rolagem-sem-barra px-[calc(50%-min(7.5rem,35vw))] pb-2 md:px-0 md:pb-0 md:justify-center"
       >
         {REELS.map((reel, i) => {
           const ehAtivo = i === ativo;
@@ -279,7 +280,7 @@ export function ReelsInstagram() {
               ref={(el) => {
                 cartoes.current[i] = el;
               }}
-              className={`group relative shrink-0 snap-center w-[68%] max-w-[16rem] md:w-[14.5rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-gelo ring-1 transition duration-500 ${
+              className={`group relative shrink-0 snap-center w-[min(15rem,70vw)] md:w-[14.5rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-gelo ring-1 transition duration-500 ${
                 ehAtivo
                   ? "ring-ouro/60 shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
                   : "ring-fio md:scale-[0.94] md:opacity-80 md:hover:opacity-100"

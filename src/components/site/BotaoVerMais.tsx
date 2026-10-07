@@ -1,14 +1,7 @@
 // Pílula "ver mais" das vitrines, do catálogo e da página do produto: o
 // texto e a seta num círculo em ouro, que vira azul-noite no hover.
 import Link from "next/link";
-
-function SetaDireita({ tamanho = 14 }: { tamanho?: number }) {
-  return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+import { SetaDireita } from "./icones";
 
 export function BotaoVerMais({
   href,

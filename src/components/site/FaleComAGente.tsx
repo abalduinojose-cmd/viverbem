@@ -14,8 +14,9 @@
 // página das lojas.
 import Link from "next/link";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
-import { HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
+import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
 import { IconeLoja } from "./IconesVantagens";
+import { IconeWhatsApp, SetaDireita, IconeRelogio } from "./icones";
 import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
 
 // A mensagem que já vai pronta no WhatsApp: a pessoa só aperta enviar
@@ -33,36 +34,11 @@ const DIAS_SEMANA = [
 const MENSAGEM_WHATSAPP = "Olá, Viver Bem! Vim pelo site e queria tirar uma dúvida.";
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM_WHATSAPP)}`;
 
-function IconeWhatsApp() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
-    </svg>
-  );
-}
-
-function SetaDireita({ tamanho = 16 }: { tamanho?: number }) {
-  return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 // Seta de navegação (como chegar)
 function IconeRota() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3 4.5 20.5l7.5-3.6 7.5 3.6L12 3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconeRelogio() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -113,6 +89,41 @@ function SeloAberto({ estado }: { estado: EstadoLoja }) {
       </span>
       <span className="text-cinza">· {estado.detalhe}</span>
     </p>
+  );
+}
+
+// A régua do dia (07/10/2026, "modernize o horário"): das 7h às 21h, o
+// horário de hoje em ouro e a hora de agora num ponto navy. Só decoração;
+// o texto ao lado diz o mesmo.
+const REGUA = { inicio: 7 * 60, fim: 21 * 60 };
+function ReguaDoDia({ estado }: { estado: EstadoLoja }) {
+  const faixa = estado ? GRADE[estado.dia] : null;
+  const pct = (m: number) => Math.min(100, Math.max(0, ((m - REGUA.inicio) / (REGUA.fim - REGUA.inicio)) * 100));
+  const abre = faixa && faixa.abre !== null ? pct(faixa.abre * 60) : null;
+  const fecha = faixa && faixa.fecha !== null ? pct(faixa.fecha * 60) : null;
+  const agora = estado ? pct(estado.minutos) : null;
+  return (
+    <div className="mt-5" aria-hidden="true">
+      <div className="relative h-2 rounded-full bg-gelo">
+        {abre !== null && fecha !== null && (
+          <span
+            className="absolute inset-y-0 rounded-full bg-[image:var(--ouro-degrade)]"
+            style={{ left: `${abre}%`, width: `${fecha - abre}%` }}
+          />
+        )}
+        {agora !== null && (
+          <span
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-navy ring-2 ring-white shadow-[0_4px_10px_rgba(13,35,64,0.35)]"
+            style={{ left: `${agora}%` }}
+          />
+        )}
+      </div>
+      <div className="mt-1.5 flex justify-between text-[0.66rem] text-grafite-claro tabular-nums">
+        <span>7h</span>
+        <span>14h</span>
+        <span>21h</span>
+      </div>
+    </div>
   );
 }
 
@@ -239,22 +250,34 @@ export function FaleComAGente() {
             </a>
           ))}
 
-          {/* O horário: hoje em destaque, a semana em sete dias e as linhas
-              (07/10/2026, "modernize a parte de horários") */}
-          <div className="lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6">
+          {/* O horário (07/10/2026, "modernize"): o estado ao vivo no alto, o
+              horário de hoje grande, a régua do dia com a hora de agora, a
+              semana em sete círculos (hoje em ouro) e as linhas */}
+          <div className="lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
             <span className="flex items-center justify-between gap-3">
               <span className="w-11 h-11 rounded-full flex items-center justify-center bg-gelo text-tinta">
                 <IconeRelogio />
               </span>
-              <span className="rotulo !text-cinza text-[0.68rem]">horário</span>
+              {estado ? (
+                <span role="status" className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em]">
+                  <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
+                  <span className={estado.aberto ? "text-green-700" : "text-cinza"}>{estado.aberto ? "Aberto" : "Fechado"}</span>
+                </span>
+              ) : (
+                <span className="rotulo !text-cinza text-[0.68rem]">horário</span>
+              )}
             </span>
-            <span className="mt-4 block text-[1.6rem] font-semibold text-navy tracking-[-0.03em] leading-none tabular-nums">
+            <span className="mt-4 block text-[1.7rem] font-semibold text-navy tracking-[-0.03em] leading-none tabular-nums">
               {linhaHoje ? linhaHoje.horas : HORARIOS[0].horas}
             </span>
-            <span className="mt-1.5 block text-sm text-cinza">{estado ? `Hoje · ${detalheHoje}` : HORARIOS[0].rotulo}</span>
+            <span className="mt-1.5 block text-sm text-cinza">
+              {estado ? `Hoje, ${GRADE[estado.dia].curto} · ${detalheHoje}` : HORARIOS[0].rotulo}
+            </span>
 
-            {/* A semana: hoje em navy, dias fechados apagados */}
-            <ul className="mt-4 grid grid-cols-7 gap-1" aria-label="Dias da semana">
+            <ReguaDoDia estado={estado} />
+
+            {/* A semana: hoje em ouro, dias fechados apagados */}
+            <ul className="mt-5 grid grid-cols-7 gap-1" aria-label="Dias da semana">
               {DIAS_SEMANA.map((d, i) => {
                 const linha = HORARIOS.find((l) => l.dias.includes(i));
                 const fechado = !linha || linha.horas === "Fechado";
@@ -263,8 +286,12 @@ export function FaleComAGente() {
                   <li
                     key={d.nome}
                     title={`${d.nome}: ${linha?.horas ?? "Fechado"}`}
-                    className={`h-9 rounded-xl flex items-center justify-center text-[0.72rem] font-semibold ${
-                      hoje ? "bg-navy text-white" : fechado ? "bg-gelo/70 text-cinza/60" : "bg-white ring-1 ring-fio text-navy"
+                    className={`aspect-square rounded-full flex items-center justify-center text-[0.72rem] font-semibold ${
+                      hoje
+                        ? "bg-[image:var(--ouro-degrade)] text-navy shadow-[0_10px_20px_-12px_rgba(143,113,55,0.8)]"
+                        : fechado
+                          ? "bg-gelo/60 text-cinza/50"
+                          : "bg-white ring-1 ring-fio text-navy"
                     }`}
                   >
                     <span aria-hidden="true">{d.curto}</span>
@@ -279,13 +306,16 @@ export function FaleComAGente() {
                 const hoje = estado ? linha.dias.includes(estado.dia) : false;
                 return (
                   <li key={linha.rotulo} className={`flex items-center justify-between gap-3 py-2 ${hoje ? "text-navy font-semibold" : "text-cinza"}`}>
-                    <span>{linha.rotulo}</span>
+                    <span className="flex items-center gap-2">
+                      {hoje && <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />}
+                      {linha.rotulo}
+                    </span>
                     <span className="tabular-nums">{linha.horas}</span>
                   </li>
                 );
               })}
             </ul>
-            <Link href="/lojas" className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-tinta hover:underline underline-offset-4 self-start">
+            <Link href="/lojas" className="botao-link !min-h-0 !text-sm mt-auto pt-4 self-start">
               Página das lojas
               <SetaDireita tamanho={14} />
             </Link>

@@ -1,27 +1,29 @@
 // POST /api/admin/categorias — cria uma categoria.
-// Permissão: SOMENTE ADMIN (operador não gerencia categorias).
+// Permissão: qualquer usuário logado. Desde 07/10/2026 o colaborador
+// também cuida das categorias (criar, renomear, tirar do site); só
+// APAGAR continua com o gestor.
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { exigirAdminApi } from "@/lib/sessao";
+import { exigirSessaoApi } from "@/lib/sessao";
 import { gerarSlug } from "@/lib/slug";
 import { registrarLog } from "@/lib/log";
 
 export async function POST(req: Request) {
-  const sessao = await exigirAdminApi();
+  const sessao = await exigirSessaoApi();
   if (!sessao) {
-    return NextResponse.json(
-      { erro: "Apenas administradores podem gerenciar categorias." },
-      { status: 403 }
-    );
+    return NextResponse.json({ erro: "Não autorizado." }, { status: 401 });
   }
 
   const corpo = await req.json().catch(() => ({}));
-  const nome = String(corpo.nome ?? "").trim();
+  const nome = String(corpo.nome ?? "").trim().slice(0, 60);
   if (!nome) {
     return NextResponse.json({ erro: "Informe o nome da categoria." }, { status: 400 });
   }
 
   const slug = gerarSlug(nome);
+  if (!slug) {
+    return NextResponse.json({ erro: "Use letras ou números no nome." }, { status: 400 });
+  }
   const jaExiste = await db.categoria.findUnique({ where: { slug } });
   if (jaExiste) {
     return NextResponse.json({ erro: "Já existe uma categoria com esse nome." }, { status: 409 });

@@ -14,6 +14,10 @@ const eslintConfig = defineConfig([
     "docs/**",
     "build/**",
     "next-env.d.ts",
+    // scripts de manutenção em CommonJS (seed, vitrine estática, fotos):
+    // rodam no Node, fora do app, e usam require()
+    "prisma/**",
+    "scripts/**",
   ]),
 ]);
 

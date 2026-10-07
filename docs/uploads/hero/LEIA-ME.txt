@@ -1,0 +1,9 @@
+Arte da dobra (abertura da home).
+
+Coloque aqui:
+  desktop.jpg  (ou .png/.webp)  ~1920 x 760 px, obrigatoria
+  celular.jpg  (ou .png/.webp)  ~1080 x 1350 px, opcional
+
+Com o arquivo desktop presente, a dobra do site mostra a arte inteira com
+so os tres botoes por cima. Sem ele, fica a composicao padrao (texto e
+potes). O envio pelo painel administrativo ainda vai ser feito.

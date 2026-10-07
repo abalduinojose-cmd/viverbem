@@ -4,32 +4,10 @@
 // em navy), que fecha pelo WhatsApp. Sem preço: o farmacêutico
 // passa o valor na conversa.
 import { useState } from "react";
-import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
+import { ProdutoDTO, listarDosagens, precoVisivel } from "@/lib/tipos";
+import { formatarPreco } from "@/lib/preco";
 import { useCarrinho } from "@/lib/carrinho";
-
-function IconeCarrinho() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.8h7.9a2 2 0 0 0 2-1.6L21 8H6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="10" cy="20.5" r="1.5" fill="currentColor" />
-      <circle cx="17" cy="20.5" r="1.5" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconeFeito() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+import { IconeCarrinho, IconeFeito } from "./icones";
 
 export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   const { adicionar } = useCarrinho();
@@ -37,6 +15,8 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   const [dosagem, setDosagem] = useState<string | null>(dosagens[0] ?? null);
   const [quantidade, setQuantidade] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
+  // Só industrializado com a chave "Preço no site" ligada no painel
+  const preco = precoVisivel(produto);
 
   function adicionarAoCarrinho() {
     adicionar(
@@ -80,7 +60,9 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
       <div className={`flex items-center justify-between gap-4 ${dosagens.length > 0 ? "mt-5" : ""}`}>
         <div>
           <p className="text-sm font-semibold text-navy">Quantidade</p>
-          <p className="text-xs text-cinza mt-0.5">O valor vem pelo WhatsApp</p>
+          <p className="text-xs text-cinza mt-0.5 tabular-nums">
+            {preco !== null ? `Total ${formatarPreco(preco * quantidade)}, confirmado no WhatsApp` : "O valor vem pelo WhatsApp"}
+          </p>
         </div>
 
         <div className="flex items-center gap-1 rounded-full bg-gelo p-1">
@@ -116,12 +98,12 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         </span>
         {adicionado ? (
           <>
-            <IconeFeito />
+            <IconeFeito tamanho={22} />
             Adicionado ao carrinho
           </>
         ) : (
           <>
-            <IconeCarrinho />
+            <IconeCarrinho tamanho={22} />
             Adicionar ao carrinho
           </>
         )}

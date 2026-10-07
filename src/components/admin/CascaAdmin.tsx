@@ -1,14 +1,19 @@
 "use client";
 // Casca do painel: barra lateral clara no desktop e gaveta no celular.
 //
-// A lateral antiga era um bloco azul fixo de 256px, que no celular
-// sobrava pouco mais de 100px para o conteúdo. Agora ela some abaixo
-// de lg e vira uma gaveta, aberta por um botão na barra do topo.
+// Dois painéis na mesma casca (07/10/2026): o do GESTOR, que abre na
+// visão geral com os números e tem o grupo "Gestão" primeiro, e o da
+// EQUIPE (colaborador), que vê só o catálogo e o site. A página ativa
+// ganha uma marca de ouro na borda e o ícone em azul; quem está logado
+// aparece embaixo com a inicial num círculo de ouro.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PAPEL_ADMIN, nomePapel } from "@/lib/tipos";
 import { BotaoSair } from "./BotaoSair";
+import { Inicial } from "./PecasAdmin";
+import { ICONES } from "./iconesAdmin";
 
 export interface ItemNav {
   href: string;
@@ -18,56 +23,6 @@ export interface ItemNav {
   externo?: boolean;
 }
 
-export const ICONES = {
-  painel: (
-    <>
-      <rect x="3.5" y="3.5" width="7.5" height="9" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="3.5" y="15.5" width="7.5" height="5" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="13.5" y="3.5" width="7" height="5" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="13.5" y="11.5" width="7" height="9" rx="2" stroke="currentColor" strokeWidth="1.7" />
-    </>
-  ),
-  acessos: (
-    <>
-      <circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M5 20c.8-3.4 3.5-5.3 7-5.3s6.2 1.9 7 5.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </>
-  ),
-  produtos: (
-    <>
-      <path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5v-9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      <path d="m3.5 7.5 8.5 4.6 8.5-4.6M12 21v-8.9" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-    </>
-  ),
-  categorias: (
-    <>
-      <rect x="3.5" y="4" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="13.5" y="4" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="3.5" y="13" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.7" />
-      <rect x="13.5" y="13" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.7" />
-    </>
-  ),
-  log: (
-    <>
-      <rect x="4.5" y="3" width="15" height="18" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M8.5 8h7M8.5 12h7M8.5 16h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </>
-  ),
-  clientes: (
-    <>
-      <circle cx="9" cy="8.5" r="3.5" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M3.5 19.5c.6-3 2.8-4.7 5.5-4.7s4.9 1.7 5.5 4.7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M15.5 5.6a3.5 3.5 0 0 1 0 5.8M18 15.2c1.4.8 2.3 2.2 2.6 4.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </>
-  ),
-  site: (
-    <>
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-    </>
-  ),
-};
-
 export function CascaAdmin({
   itens,
   nome,
@@ -76,14 +31,21 @@ export function CascaAdmin({
 }: {
   itens: ItemNav[];
   nome: string;
+  /** "ADMIN" (gestor) ou "OPERADOR" (colaborador) */
   papel: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const [gaveta, setGaveta] = useState(false);
+  const ehGestor = papel === PAPEL_ADMIN;
 
-  // Trocar de página fecha a gaveta
-  useEffect(() => setGaveta(false), [pathname]);
+  // Trocar de página fecha a gaveta. Feito durante a renderização, ao
+  // notar que o endereço mudou (um efeito com setState renderizaria duas vezes).
+  const [caminhoAnterior, setCaminhoAnterior] = useState(pathname);
+  if (pathname !== caminhoAnterior) {
+    setCaminhoAnterior(pathname);
+    setGaveta(false);
+  }
 
   // Com a gaveta aberta, o fundo não rola junto
   useEffect(() => {
@@ -98,47 +60,52 @@ export function CascaAdmin({
     return acc;
   }, {});
 
-  const tituloAtual =
-    itens.find((i) => !i.externo && pathname.startsWith(i.href))?.rotulo ?? "Painel";
+  const ativoEm = (i: ItemNav) => !i.externo && pathname.startsWith(i.href);
+  const tituloAtual = itens.find(ativoEm)?.rotulo ?? "Painel";
 
   const menu = (
     <>
-      {/* Marca */}
-      <div className="px-5 py-5 border-b border-linha">
+      {/* Marca e qual painel é este */}
+      <div className="px-5 pt-5 pb-4 border-b border-fio">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo.png"
           alt="Manipulação Viver Bem"
+          width={220}
+          height={97}
           className="h-9 w-auto object-contain"
           draggable={false}
         />
-        <p className="text-[0.6rem] tracking-[0.22em] uppercase mt-2.5 text-grafite-claro">
-          Painel do gestor
-        </p>
+        <p className="rotulo-pilula mt-3 !text-[0.62rem]">{ehGestor ? "Painel do gestor" : "Painel da equipe"}</p>
       </div>
 
-      <nav className="flex-1 p-3 overflow-y-auto">
+      <nav className="flex-1 px-3 py-2 overflow-y-auto" aria-label="Páginas do painel">
         {Object.entries(grupos).map(([grupo, lista]) => (
           <div key={grupo}>
             <p className="px-3 pt-4 pb-1.5 text-[0.6rem] font-semibold tracking-[0.2em] uppercase text-grafite-claro">
               {grupo}
             </p>
             {lista.map((i) => {
-              const ativo = !i.externo && pathname.startsWith(i.href);
-              const classe = `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.95rem] font-medium transition-colors ${
-                ativo
-                  ? "bg-royal-claro text-royal"
-                  : "text-grafite-medio hover:text-royal hover:bg-royal-nevoa"
+              const ativo = ativoEm(i);
+              const classe = `group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.92rem] font-medium transition-colors ${
+                ativo ? "bg-gelo text-navy" : "text-cinza hover:text-navy hover:bg-nevoa"
               }`;
               const conteudo = (
                 <>
+                  {/* A marca de ouro da página ativa */}
+                  {ativo && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-[image:var(--ouro-degrade)]"
+                    />
+                  )}
                   <svg
                     width="19"
                     height="19"
                     viewBox="0 0 24 24"
                     fill="none"
                     aria-hidden="true"
-                    className={`shrink-0 ${ativo ? "text-royal" : "text-grafite-claro group-hover:text-royal"}`}
+                    className={`shrink-0 transition-colors ${ativo ? "text-tinta" : "text-grafite-claro group-hover:text-tinta"}`}
                   >
                     {ICONES[i.icone]}
                   </svg>
@@ -156,7 +123,7 @@ export function CascaAdmin({
                   {conteudo}
                 </a>
               ) : (
-                <Link key={i.href} href={i.href} className={classe}>
+                <Link key={i.href} href={i.href} aria-current={ativo ? "page" : undefined} className={classe}>
                   {conteudo}
                 </Link>
               );
@@ -166,14 +133,12 @@ export function CascaAdmin({
       </nav>
 
       {/* Quem está logado */}
-      <div className="p-3 border-t border-linha">
+      <div className="p-3 border-t border-fio">
         <div className="flex items-center gap-3 px-1 pb-3">
-          <span className="w-9 h-9 rounded-full degrade-marca text-white flex items-center justify-center font-bold shrink-0">
-            {nome.charAt(0).toUpperCase()}
-          </span>
+          <Inicial nome={nome} />
           <div className="min-w-0">
-            <p className="text-sm font-medium text-grafite truncate">{nome}</p>
-            <p className="text-[0.65rem] uppercase tracking-wider text-grafite-claro">{papel}</p>
+            <p className="text-sm font-medium text-navy truncate">{nome}</p>
+            <p className="text-[0.65rem] uppercase tracking-wider text-grafite-claro">{nomePapel(papel)}</p>
           </div>
         </div>
         <BotaoSair />
@@ -182,16 +147,16 @@ export function CascaAdmin({
   );
 
   return (
-    <div className="flex-1 flex min-h-screen bg-royal-nevoa">
+    <div className="flex-1 flex min-h-screen bg-nevoa text-grafite">
       {/* Lateral fixa (desktop) */}
-      <aside className="hidden lg:flex w-64 shrink-0 bg-white border-r border-linha flex-col sticky top-0 h-screen">
+      <aside className="hidden lg:flex w-64 shrink-0 bg-white border-r border-fio flex-col sticky top-0 h-screen">
         {menu}
       </aside>
 
       {/* Gaveta (celular e tablet) */}
       {gaveta && (
         <div
-          className="lg:hidden fixed inset-0 z-50 bg-noite/50 backdrop-blur-sm flex"
+          className="lg:hidden fixed inset-0 z-50 bg-navy/50 backdrop-blur-sm flex"
           onClick={() => setGaveta(false)}
         >
           <div
@@ -205,22 +170,24 @@ export function CascaAdmin({
 
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Barra do topo, só fora do desktop */}
-        <header className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-linha flex items-center gap-3 px-4 h-14">
+        <header className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-fio flex items-center gap-3 px-4 h-14">
           <button
             type="button"
             onClick={() => setGaveta(true)}
             aria-label="Abrir menu"
-            className="w-10 h-10 -ml-2 rounded-xl text-grafite hover:bg-royal-nevoa flex items-center justify-center transition-colors"
+            className="w-10 h-10 -ml-2 rounded-xl text-navy hover:bg-nevoa flex items-center justify-center transition-colors"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
             </svg>
           </button>
-          <p className="font-semibold text-grafite truncate">{tituloAtual}</p>
+          <p className="font-semibold text-navy truncate">{tituloAtual}</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.png"
             alt=""
+            width={220}
+            height={97}
             className="h-7 w-auto object-contain ml-auto"
             draggable={false}
           />

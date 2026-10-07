@@ -11,7 +11,8 @@
 // Sem preço em nenhum produto (pedido do cliente em 05/10/2026): o pedido
 // vai pelo carrinho e o farmacêutico passa o valor pelo WhatsApp.
 import Link from "next/link";
-import { ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
+import { ProdutoDTO, ehIndustrializado, precoVisivel } from "@/lib/tipos";
+import { formatarPreco } from "@/lib/preco";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
 
@@ -26,6 +27,8 @@ export function ProdutoCard({
 }) {
   const href = `/produto/${produto.slug}`;
   const industrializado = ehIndustrializado(produto);
+  // Só industrializado com a chave "Preço no site" ligada no painel
+  const preco = precoVisivel(produto);
 
   return (
     <article className="group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60">
@@ -60,6 +63,9 @@ export function ProdutoCard({
             {produto.nome}
           </Link>
         </h3>
+        {preco !== null && (
+          <p className="mt-1 text-[1.05rem] font-semibold text-navy tabular-nums tracking-[-0.01em]">{formatarPreco(preco)}</p>
+        )}
         {industrializado && <p className="text-sm text-cinza line-clamp-2 mt-0.5">{produto.descricao}</p>}
         <div className="relative z-[1] mt-auto pt-3">
           <BotaoAdicionar produto={produto} />

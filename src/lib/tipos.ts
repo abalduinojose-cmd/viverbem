@@ -7,6 +7,15 @@ export const TIPO_COMBO = "COMBO";
 export const PAPEL_ADMIN = "ADMIN";
 export const PAPEL_OPERADOR = "OPERADOR";
 
+/** Como cada papel aparece nas telas: o ADMIN é o gestor e o OPERADOR é o
+ *  colaborador da loja (nome pedido pelo usuário em 07/10/2026). */
+export function nomePapel(papel: string | null | undefined): string {
+  return papel === PAPEL_ADMIN ? "Gestor" : "Colaborador";
+}
+
+// Até quantas fotos um produto pode ter na galeria (painel, 07/10/2026)
+export const MAX_FOTOS_PRODUTO = 5;
+
 // Como o produto pode ser oferecido no site. Manipulado não pode ser
 // exposto ao público com preço para venda (RDC 67/2007, item 5.14):
 // aparece sem preço e o pedido parte da receita. Industrializado com
@@ -24,6 +33,10 @@ export interface CategoriaDTO {
   nome: string;
   slug: string;
   ordem: number;
+  // false = fora do site inteiro (menu, home, catálogo), cadastro mantido
+  visivel: boolean;
+  // false = sem a faixa própria na home (segue no menu e no catálogo)
+  vitrineHome: boolean;
 }
 
 export interface ProdutoDTO {
@@ -36,7 +49,12 @@ export interface ProdutoDTO {
   tipo: string; // "PRODUTO" | "COMBO"
   venda: string; // "MANIPULADO" | "INDUSTRIALIZADO"
   aprovado: boolean;
+  // A capa (sempre a primeira da galeria)
   fotoUrl: string | null;
+  // A galeria inteira, até MAX_FOTOS_PRODUTO, na ordem de exibição
+  fotos: string[];
+  // Preço exposto no site (só industrializado; manipulado nunca)
+  mostrarPreco: boolean;
   ativo: boolean;
   novidade: boolean;
   destaque: boolean;
@@ -61,6 +79,13 @@ export interface DepoimentoDTO {
   fotoUrl: string | null; // foto do cliente (opcional)
   ativo: boolean;
   ordem: number;
+}
+
+/** O preço que pode aparecer no site, ou null. Desde 05/10/2026 o site não
+ *  mostra preço de nada por padrão; o painel liga produto a produto, e só
+ *  para industrializado com registro (RDC 67/2007). */
+export function precoVisivel(p: { venda?: string | null; mostrarPreco?: boolean; precoCentavos: number }): number | null {
+  return ehIndustrializado(p) && p.mostrarPreco && p.precoCentavos > 0 ? p.precoCentavos : null;
 }
 
 /** Quebra um texto em itens por quebra de linha ou ";".

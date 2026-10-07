@@ -13,28 +13,44 @@ import {
   VENDA_MANIPULADO,
   ehIndustrializado,
 } from "@/lib/tipos";
-import { produtoParaDTO } from "@/lib/produtoDTO";
+import { INCLUIR_PRODUTO, categoriaParaDTO, produtoParaDTO } from "@/lib/produtoDTO";
 
 export interface Catalogo {
+  // Só as categorias ligadas no painel ("No site")
   categorias: CategoriaDTO[];
-  // Só o que pode aparecer no site: ativo, aprovado pelo gestor e que
-  // não seja combo (combo de manipulado é promoção, e promoção de
-  // manipulado não pode). Vem com o nome da categoria embutido.
+  // Só o que pode aparecer no site: ativo, aprovado pelo gestor, que não
+  // seja combo (combo de manipulado é promoção, e promoção de manipulado
+  // não pode) e cuja categoria esteja no site. Vem com o nome da categoria.
   produtos: ProdutoDTO[];
+}
+
+/** O retrato gravado por scripts/gerar-demo.js para a vitrine estática. */
+export interface RetratoDemo {
+  catalogo: Catalogo;
+  avaliacoes: DepoimentoDTO[];
+  configuracao?: {
+    secoesHome?: Record<string, boolean>;
+    heroDesktop?: string | null;
+    heroCelular?: string | null;
+  };
 }
 
 const EH_DEMO = process.env.DEMO === "1";
 
 /** O que de cada produto pode sair do servidor. Desde 05/10/2026 o site
- *  não mostra preço de nada (o farmacêutico passa o valor pelo WhatsApp),
- *  então o preço interno não vai nem no código da página: se fosse,
+ *  não mostra preço por padrão (o farmacêutico passa o valor pelo
+ *  WhatsApp): o preço só sai quando o painel liga "preço no site" num
+ *  industrializado. Fora disso ele nem vai no código da página: se fosse,
  *  apareceria para quem abrisse o código-fonte, mesmo sem estar na tela.
  *  Do manipulado também não saem dosagem, apresentação e indicações. */
 function paraVitrine(p: ProdutoDTO): ProdutoDTO {
-  if (ehIndustrializado(p)) return { ...p, precoCentavos: 0 };
+  if (ehIndustrializado(p)) {
+    return p.mostrarPreco ? p : { ...p, precoCentavos: 0 };
+  }
   return {
     ...p,
     precoCentavos: 0,
+    mostrarPreco: false,
     novidade: false,
     destaque: false,
     dosagens: null,
@@ -46,59 +62,85 @@ function paraVitrine(p: ProdutoDTO): ProdutoDTO {
 }
 
 /** Carrega o retrato estático usado na vitrine de demonstração. */
-async function lerRetratoDemo(): Promise<{
-  catalogo: Catalogo;
-  avaliacoes: DepoimentoDTO[];
-}> {
+export async function lerRetratoDemo(): Promise<RetratoDemo> {
   const dados = await import("./dados-demo.json");
-  return (dados.default ?? dados) as unknown as {
-    catalogo: Catalogo;
-    avaliacoes: DepoimentoDTO[];
+  return (dados.default ?? dados) as unknown as RetratoDemo;
+}
+
+// Retrato antigo não tem os campos novos: completa com o padrão
+function completarCategoria(c: Partial<CategoriaDTO> & { id: number; nome: string; slug: string }): CategoriaDTO {
+  return { ordem: 0, visivel: true, vitrineHome: true, ...c };
+}
+function completarProduto(p: Partial<ProdutoDTO> & { id: number; nome: string; slug: string }): ProdutoDTO {
+  const fotoUrl = p.fotoUrl ?? null;
+  return {
+    descricao: "",
+    precoCentavos: 0,
+    tipo: "PRODUTO",
+    ativo: true,
+    novidade: false,
+    destaque: false,
+    ordem: 0,
+    categoriaId: null,
+    dosagens: null,
+    composicao: null,
+    modoUso: null,
+    indicacoes: null,
+    apresentacao: null,
+    ...p,
+    venda: p.venda || VENDA_MANIPULADO,
+    aprovado: true,
+    fotoUrl,
+    fotos: p.fotos && p.fotos.length > 0 ? p.fotos : fotoUrl ? [fotoUrl] : [],
+    mostrarPreco: p.mostrarPreco === true,
   };
 }
 
 export async function obterCatalogo(): Promise<Catalogo> {
   if (EH_DEMO) {
-    // O retrato antigo não tem os campos novos: tudo vale como manipulado
     const { catalogo } = await lerRetratoDemo();
+    const categorias = catalogo.categorias.map(completarCategoria).filter((c) => c.visivel);
+    const visiveis = new Set(categorias.map((c) => c.id));
     return {
-      categorias: catalogo.categorias,
+      categorias,
       produtos: catalogo.produtos
         .filter((p) => p.tipo !== TIPO_COMBO)
-        .map((p) => paraVitrine({ ...p, venda: p.venda || VENDA_MANIPULADO, aprovado: true })),
+        .filter((p) => p.categoriaId === null || visiveis.has(p.categoriaId as number))
+        .map((p) => paraVitrine(completarProduto(p))),
     };
   }
 
   const [categorias, produtos] = await Promise.all([
-    db.categoria.findMany({ orderBy: { ordem: "asc" } }),
+    db.categoria.findMany({ where: { visivel: true }, orderBy: { ordem: "asc" } }),
     db.produto.findMany({
-      where: { ativo: true, aprovado: true, NOT: { tipo: TIPO_COMBO } },
+      where: {
+        ativo: true,
+        aprovado: true,
+        NOT: { tipo: TIPO_COMBO },
+        // Categoria tirada do site leva os produtos dela junto
+        OR: [{ categoriaId: null }, { categoria: { visivel: true } }],
+      },
       orderBy: [{ ordem: "asc" }, { nome: "asc" }],
-      include: { categoria: { select: { nome: true } } },
+      include: INCLUIR_PRODUTO,
     }),
   ]);
 
   return {
-    categorias: categorias.map((c) => ({
-      id: c.id,
-      nome: c.nome,
-      slug: c.slug,
-      ordem: c.ordem,
-    })),
+    categorias: categorias.map(categoriaParaDTO),
     produtos: produtos.map((p) => paraVitrine(produtoParaDTO(p))),
   };
 }
 
-/** Só as categorias, para o menu do cabeçalho (sem carregar produtos). */
+/** Só as categorias no site, para o menu do cabeçalho (sem carregar produtos). */
 export async function obterCategorias(): Promise<CategoriaDTO[]> {
   if (EH_DEMO) {
-    return (await lerRetratoDemo()).catalogo.categorias;
+    return (await lerRetratoDemo()).catalogo.categorias.map(completarCategoria).filter((c) => c.visivel);
   }
-  const categorias = await db.categoria.findMany({ orderBy: { ordem: "asc" } });
-  return categorias.map((c) => ({ id: c.id, nome: c.nome, slug: c.slug, ordem: c.ordem }));
+  const categorias = await db.categoria.findMany({ where: { visivel: true }, orderBy: { ordem: "asc" } });
+  return categorias.map(categoriaParaDTO);
 }
 
-/** Avaliações ativas exibidas na página "Como fazer seu pedido". */
+/** Avaliações ativas exibidas na home e na página "A Viver Bem". */
 // Só entram no site as avaliações COM foto do cliente: um cartão com
 // a inicial no lugar do rosto passa impressão de depoimento inventado.
 export async function obterAvaliacoes(): Promise<DepoimentoDTO[]> {

@@ -42,6 +42,8 @@ const PAGINAS_DINAMICAS = [
   path.join("src", "app", "(site)", "sobre", "page.tsx"),
   path.join("src", "app", "(site)", "produto", "[slug]", "page.tsx"),
 ];
+// (a home também lê o banco em obterSecoesHome/obterArteHero: em DEMO as
+// duas funções caem no retrato, então a página fica estática)
 
 const LINHA_DINAMICA = 'export const dynamic = "force-dynamic";';
 
@@ -55,15 +57,26 @@ async function gerarRetrato() {
   const { PrismaClient } = require("@prisma/client");
   const db = new PrismaClient();
   try {
-    const [categorias, produtos, avaliacoes] = await Promise.all([
+    const [categorias, produtos, avaliacoes, configuracoes] = await Promise.all([
       db.categoria.findMany({ orderBy: { ordem: "asc" } }),
       db.produto.findMany({
         where: { ativo: true, aprovado: true, NOT: { tipo: "COMBO" } },
         orderBy: [{ ordem: "asc" }, { nome: "asc" }],
-        include: { categoria: { select: { nome: true } } },
+        include: { categoria: { select: { nome: true } }, fotos: { orderBy: { ordem: "asc" } } },
       }),
       db.depoimento.findMany({ where: { ativo: true }, orderBy: { ordem: "asc" } }),
+      db.configuracao.findMany(),
     ]);
+
+    // Os ajustes do painel (seções da home, arte da dobra), lidos do JSON
+    const configuracao = {};
+    for (const c of configuracoes) {
+      try {
+        configuracao[c.chave] = JSON.parse(c.valor);
+      } catch {
+        /* valor inválido: fica o padrão */
+      }
+    }
 
     const retrato = {
       catalogo: {
@@ -72,6 +85,8 @@ async function gerarRetrato() {
           nome: c.nome,
           slug: c.slug,
           ordem: c.ordem,
+          visivel: c.visivel,
+          vitrineHome: c.vitrineHome,
         })),
         produtos: produtos.map((p) => ({
           id: p.id,
@@ -82,7 +97,9 @@ async function gerarRetrato() {
           tipo: p.tipo,
           venda: p.venda,
           aprovado: p.aprovado,
-          fotoUrl: p.fotoUrl,
+          fotoUrl: p.fotos[0]?.url ?? p.fotoUrl,
+          fotos: p.fotos.length > 0 ? p.fotos.map((f) => f.url) : p.fotoUrl ? [p.fotoUrl] : [],
+          mostrarPreco: p.mostrarPreco,
           ativo: p.ativo,
           novidade: p.novidade,
           destaque: p.destaque,
@@ -108,6 +125,11 @@ async function gerarRetrato() {
           ativo: a.ativo,
           ordem: a.ordem,
         })),
+      configuracao: {
+        secoesHome: configuracao.secoesHome ?? null,
+        heroDesktop: configuracao.heroDesktop ?? null,
+        heroCelular: configuracao.heroCelular ?? null,
+      },
     };
 
     fs.writeFileSync(

@@ -10,7 +10,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 
 // Índice 0 = domingo, igual ao getDay() do JavaScript
-const GRADE = [
+export const GRADE = [
   { curto: "domingo", abre: null, fecha: null },
   { curto: "segunda", abre: 9, fecha: 19 },
   { curto: "terça", abre: 9, fecha: 19 },
@@ -27,7 +27,8 @@ export const HORARIOS = [
   { rotulo: "Domingo", horas: "Fechado", dias: [0] },
 ];
 
-export type EstadoLoja = { aberto: boolean; dia: number; detalhe: string } | null;
+// minutos: a hora de agora em minutos (para a régua do dia no "Fale com a gente")
+export type EstadoLoja = { aberto: boolean; dia: number; detalhe: string; minutos: number } | null;
 
 /** Próximo dia em que a loja abre, a partir de (e incluindo) `apartirDe`. */
 function proximaAbertura(apartirDe: number) {
@@ -65,7 +66,7 @@ function calcularChave(): string {
       detalhe = `Abre ${quando} às ${hora}h`;
     }
   }
-  return JSON.stringify({ aberto, dia, detalhe });
+  return JSON.stringify({ aberto, dia, detalhe, minutos });
 }
 
 // Reavalia a cada minuto para virar o selo na hora certa

@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
-import { IconeCarrinho } from "./CarrinhoDrawer";
+import { IconeCarrinho, Chevron } from "./icones";
 import { useEstadoLoja } from "./HorarioAtendimento";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 import { IconeMoto } from "./IconeMoto";
@@ -227,19 +227,29 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
               );
             })}
           </ul>
-          <ul className="flex items-center gap-1 shrink-0">
-            {INSTITUCIONAL.map((l) => {
+          {/* Os links institucionais: texto fino, um ponto de ouro entre eles e
+              um fio de ouro que nasce da esquerda no hover e fica na página
+              atual (07/10/2026, "melhore esses botões") */}
+          <ul className="flex items-center shrink-0">
+            {INSTITUCIONAL.map((l, i) => {
               const ativo = pathname.startsWith(l.href);
               return (
-                <li key={l.href}>
+                <li key={l.href} className="flex items-center">
+                  {i > 0 && <span aria-hidden="true" className="mx-3.5 w-1 h-1 rounded-full bg-ouro-claro/60" />}
                   <Link
                     href={l.href}
                     aria-current={ativo ? "page" : undefined}
-                    className={`inline-flex items-center h-6 px-2.5 rounded-full transition-colors ${
-                      ativo ? "bg-white/12 text-white font-medium" : "text-white/70 hover:text-white hover:bg-white/8"
+                    className={`group relative inline-flex items-center h-9 tracking-[0.02em] transition-colors ${
+                      ativo ? "text-white font-medium" : "text-white/70 hover:text-white"
                     }`}
                   >
                     {l.rotulo}
+                    <span
+                      aria-hidden="true"
+                      className={`absolute inset-x-0 bottom-0 h-px bg-[image:var(--ouro-degrade)] origin-left transition-transform duration-300 ${
+                        ativo ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      }`}
+                    />
                   </Link>
                 </li>
               );
@@ -374,33 +384,46 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
       {menuAberto && (
         <nav
           aria-label="Principal"
-          className="md:hidden bg-white border-t border-fio px-5 pb-6 pt-3 flex flex-col gap-1 max-h-[calc(100dvh-var(--altura-cabecalho))] overflow-y-auto animar-surgir"
+          className="md:hidden bg-white border-t border-fio px-5 pt-2 pb-6 flex flex-col max-h-[calc(100dvh-var(--altura-cabecalho))] overflow-y-auto animar-surgir"
         >
-          <p className="px-3 pt-2 pb-1 rotulo !text-cinza">A Viver Bem</p>
-          {MENU_SOBRE.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setMenuAberto(false)}
-              className="px-3 py-3 rounded-xl text-base font-medium text-grafite hover:bg-gelo transition-colors"
-            >
-              {l.rotulo}
-            </Link>
-          ))}
-          <div className="border-t border-fio my-2" aria-hidden="true" />
-          {INSTITUCIONAL.slice(1).map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              aria-current={pathname.startsWith(l.href) ? "page" : undefined}
-              className={`px-3 py-3 rounded-xl text-base font-medium transition-colors ${
-                pathname.startsWith(l.href) ? "text-tinta bg-gelo" : "text-grafite hover:bg-gelo"
-              }`}
-            >
-              {l.rotulo}
-            </Link>
-          ))}
-          <div className="pt-3">
+          {/* A Viver Bem: linhas limpas, só o texto e a seta (07/10/2026) */}
+          <p className="pt-3 pb-1 rotulo !text-cinza text-[0.66rem]">A Viver Bem</p>
+          <ul className="lista-fichas">
+            {MENU_SOBRE.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  onClick={() => setMenuAberto(false)}
+                  className="flex items-center gap-3 py-3.5 text-[0.98rem] font-medium text-navy transition-colors hover:text-tinta"
+                >
+                  <span className="flex-1">{l.rotulo}</span>
+                  <Chevron className="shrink-0 text-ouro" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="mt-3 border-t border-fio lista-fichas">
+            {INSTITUCIONAL.slice(1).map((l) => {
+              const ativo = pathname.startsWith(l.href);
+              return (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={ativo ? "page" : undefined}
+                    className={`flex items-center gap-3 py-3.5 text-[0.98rem] font-medium transition-colors ${
+                      ativo ? "text-tinta" : "text-navy hover:text-tinta"
+                    }`}
+                  >
+                    <span className="flex-1">{l.rotulo}</span>
+                    <Chevron className="shrink-0 text-ouro" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="pt-5">
             <BotaoEnviarReceita className="botao botao-principal w-full" />
           </div>
         </nav>

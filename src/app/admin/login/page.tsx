@@ -1,8 +1,11 @@
 "use client";
-// Tela de login do painel administrativo.
+// Tela de login do painel (gestor e equipe entram pela mesma porta; o
+// papel decide o que cada um vê depois).
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { asset } from "@/lib/asset";
+import { AvisoAdmin, classeCampoAdmin } from "@/components/admin/PecasAdmin";
 
 export default function PaginaLogin() {
   const router = useRouter();
@@ -27,8 +30,8 @@ export default function PaginaLogin() {
         setErro(dados.erro || "Não foi possível entrar.");
         return;
       }
-      // /admin decide o destino pelo papel: gestor vai para a visao
-      // geral, operador para os produtos
+      // /admin decide o destino pelo papel: gestor vai para a visão
+      // geral, colaborador para os produtos
       router.push("/admin");
       router.refresh();
     } catch {
@@ -38,23 +41,14 @@ export default function PaginaLogin() {
     }
   }
 
-  const campo =
-    "w-full bg-white border border-linha rounded-xl pl-11 pr-4 py-3.5 text-grafite placeholder:text-grafite-claro/70 focus:outline-none focus:border-royal focus:ring-4 focus:ring-royal/10 transition-shadow";
+  const campo = `${classeCampoAdmin} !pl-11 !h-12`;
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-noite px-4 py-10 relative overflow-hidden">
-      {/* Mesmo brilho das seções escuras do site */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(90% 60% at 20% 0%, rgba(47,124,196,0.45), transparent 60%), radial-gradient(70% 50% at 100% 100%, rgba(224,33,41,0.2), transparent 60%)",
-        }}
-      />
+    <div className="banner-noite em-noite flex-1 flex items-center justify-center px-4 py-10 relative overflow-hidden">
+      <span aria-hidden="true" className="malha-banner" />
 
       <div className="relative w-full max-w-sm">
-        <div className="bg-white rounded-[1.75rem] shadow-[0_24px_60px_rgba(5,17,33,0.35)] p-7 sm:p-9">
+        <div className="bg-white rounded-[1.75rem] shadow-[0_30px_70px_-30px_rgba(5,17,33,0.6)] p-7 sm:p-9">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset("/logo.png")}
@@ -64,16 +58,17 @@ export default function PaginaLogin() {
             height={97}
             className="h-11 w-auto object-contain mx-auto"
           />
-          <h1 className="font-display text-xl font-semibold text-grafite text-center mt-5">
-            Painel do gestor
+          <p className="rotulo-pilula justify-center w-full mt-6 !text-[0.62rem]">Painel</p>
+          <h1 className="text-[1.5rem] font-semibold text-navy text-center tracking-[-0.03em] mt-2">
+            Entrar no painel
           </h1>
-          <p className="text-grafite-claro text-sm text-center mt-1">
-            Entre para gerenciar produtos e pedidos.
+          <p className="text-cinza text-sm text-center mt-1.5">
+            Gestor e equipe entram pela mesma porta.
           </p>
 
           <form onSubmit={entrar} className="mt-7 flex flex-col gap-4">
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-grafite">E-mail</span>
+              <span className="text-sm font-medium text-navy">E-mail</span>
               <div className="relative">
                 <svg
                   width="18"
@@ -100,7 +95,7 @@ export default function PaginaLogin() {
             </label>
 
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-grafite">Senha</span>
+              <span className="text-sm font-medium text-navy">Senha</span>
               <div className="relative">
                 <svg
                   width="18"
@@ -119,7 +114,7 @@ export default function PaginaLogin() {
                   onChange={(e) => setSenha(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className={`${campo} pr-12`}
+                  className={`${campo} !pr-12`}
                   placeholder="••••••••"
                 />
                 {/* Ver a senha evita metade dos erros de digitação */}
@@ -127,7 +122,7 @@ export default function PaginaLogin() {
                   type="button"
                   onClick={() => setVerSenha((v) => !v)}
                   aria-label={verSenha ? "Esconder senha" : "Mostrar senha"}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg text-grafite-claro hover:text-royal hover:bg-royal-nevoa flex items-center justify-center transition-colors"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg text-grafite-claro hover:text-tinta hover:bg-gelo flex items-center justify-center transition-colors"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
@@ -137,51 +132,42 @@ export default function PaginaLogin() {
                       strokeLinejoin="round"
                     />
                     <circle cx="12" cy="12" r="2.8" stroke="currentColor" strokeWidth="1.7" />
-                    {verSenha && (
-                      <path d="M4 20 20 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                    )}
+                    {verSenha && <path d="M4 20 20 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />}
                   </svg>
                 </button>
               </div>
             </label>
 
-            {erro && (
-              <p className="bg-escarlate/10 text-escarlate text-sm font-medium rounded-xl px-4 py-3 animar-surgir">
-                {erro}
-              </p>
-            )}
+            {erro && <AvisoAdmin className="animar-surgir">{erro}</AvisoAdmin>}
 
             <button
               type="submit"
               disabled={carregando}
-              className="degrade-marca disabled:opacity-60 text-white font-semibold rounded-xl px-4 py-3.5 mt-1 flex items-center justify-center gap-2.5 transition-all active:scale-[0.98]"
+              className="bg-navy hover:bg-tinta disabled:opacity-60 text-white font-semibold rounded-xl h-12 px-4 mt-1 flex items-center justify-center gap-2.5 transition-colors active:scale-[0.98]"
             >
               {carregando && (
-                <span
-                  aria-hidden="true"
-                  className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin"
-                />
+                <span aria-hidden="true" className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
               )}
               {carregando ? "Entrando..." : "Entrar"}
             </button>
           </form>
         </div>
 
-        <p className="text-white/40 text-xs text-center mt-6 leading-relaxed">
+        <p className="text-white/50 text-xs text-center mt-6 leading-relaxed">
           Esqueceu a senha? Peça ao gestor para gerar uma nova
           <br />
           em Acessos ao painel.
         </p>
 
-        <a
+        <Link
           href="/"
-          className="mt-4 flex items-center justify-center gap-2 text-sm text-white/55 hover:text-white transition-colors"
+          className="mt-4 flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Voltar para o site
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -1,5 +1,122 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 30 (07/10/2026): quatro retoques no site e os dois painéis (gestor e colaborador). Não publicado.**
+> Site: os links institucionais da faixa do topo viraram texto fino com um
+> ponto de ouro entre eles e um fio de ouro que nasce no hover e fica na
+> página atual; o cabeçalho das avaliações trocou o botão "Ver no Google"
+> por um selo (G, nota com estrelas, total e seta em ouro); o cabeçalho do
+> catálogo trocou o cartão da receita por um bilhete em azul-noite inteiro
+> clicável (ícone em ouro, "Tem a receita? *Envie a foto*", seta em círculo
+> branco); o cartão do horário ganhou o estado ao vivo no alto, a régua do
+> dia (7h a 21h, o horário de hoje em ouro e a hora de agora em navy, via
+> `minutos` no `useEstadoLoja`) e a semana em círculos com hoje em ouro.
+> Painéis, em cima do painel que já existia (pedido: "não precisa começar do
+> zero"): paleta do site (névoa `#f5f8fc`, navy, tinta, ouro nos acentos,
+> vermelho só em ação destrutiva; `.degrade-marca` apagado), peças em
+> `PecasAdmin` (CabecalhoAdmin com rótulo, CartaoAdmin, CartaoNumero,
+> Selo, BotaoAdmin, CampoAdmin, Interruptor com cor ouro, AvisoAdmin,
+> Inicial, Alca); ícones do menu em `iconesAdmin.tsx`, módulo sem "use
+> client" (importados num Server Component a partir da casca, viravam
+> referência de cliente e não renderizavam). Banco (migração
+> `20261007181808_painel_fotos_secoes_visibilidade`): `FotoProduto` (até 5
+> por produto, `fotoUrl` segue como capa), `Produto.mostrarPreco` (só
+> industrializado; a rota recusa em manipulado), `Categoria.visivel` e
+> `vitrineHome`, `Configuracao` chave/valor (`secoesHome`, `heroDesktop`,
+> `heroCelular`; `valor` entra nos `@db.Text` do `trocar-banco`).
+> Colaborador (OPERADOR): produtos com galeria e preço no site, categorias
+> (criar, renomear, "No site", "Vitrine na home"), Home e arte da dobra
+> (seções da home e upload da arte, `/api/admin/site` e `/api/admin/hero`);
+> não apaga, não publica, não reordena. Gestor: tudo isso e a visão geral
+> refeita com a gestão primeiro (KPIs com variação, gráficos tinta/ouro,
+> retrato do catálogo, como recebem, atenção, equipe e últimas ações,
+> últimos pedidos, atalhos por último). O site lê tudo isso: `obterCatalogo`
+> filtra categorias visíveis (e os produtos delas), `paraVitrine` só deixa
+> o preço passar com `mostrarPreco`, a home liga as seções e `obterArteHero`
+> lê a Configuracao antes dos arquivos; página do produto com
+> `GaleriaProduto` (miniaturas, contador) e o preço quando liberado; cartão
+> e cartão de compra idem. Vitrine estática: o retrato ganhou `fotos`,
+> `mostrarPreco`, `visivel`, `vitrineHome` e `configuracao`. ESLint passou
+> a ignorar `prisma/**` e `scripts/**` (CommonJS). Produto de teste
+> "Protetor solar FPS 50 Viver Bem" (id 77) ficou no banco local como "em
+> falta", para o gestor testar galeria e preço; pode ser apagado. Capturas
+> em `scratchpad/etapa45` (gestor), `etapa46` (site) e `etapa47`
+> (colaborador).
+
+> **ADENDO 29 (07/10/2026): reels centralizados no celular; os dois produtos novos na dobra. Não publicado.**
+> Reels no celular ("centralizado, com opção de arrastar para os dois
+> lados"): a faixa ganhou recuo lateral de `calc(50% - min(7,5rem, 35vw))`
+> dos dois lados e o cartão passou a medir `min(15rem, 70vw)` (a largura em
+> porcentagem encolhia com o recuo da faixa), então o cartão ativo fica
+> sempre no centro com os vizinhos aparecendo; ao abrir, a faixa já posiciona o SEGUNDO reel no
+> centro (um efeito que só mexe na rolagem) para haver vídeo dos dois
+> lados desde o início; o observador que marca o ativo segue igual. Dobra
+> ("coloque os produtos em anexo com a frase que estava antes,
+> provisoriamente"): a bancada passou a mostrar o Caramelo de Creatina e a
+> Creatina Gummy (as fotos anexadas são idênticas às do catálogo, então
+> reaproveitam `/uploads/caramelo-creatina.png` e `creatina-gummy.png`),
+> maiores, com a Gummy à frente como LCP; textos iguais. Fica assim até a
+> arte da farmácia entrar pelo modo arte (adendo 28). Os dois são
+> industrializados com registro, então a dobra não exibe manipulado.
+
+> **ADENDO 28 (07/10/2026): menu sem ícones, banner no fim da faixa, traço de ouro nos títulos, cabeçalho do catálogo, dobra com modo arte. Não publicado.**
+> Menu do celular: saíram os ícones das linhas e o "Aberto agora" (pedido
+> "exclua isso"); ficou texto + seta. Vitrines: o banner da área virou o
+> ÚLTIMO cartão da faixa (`FaixaProdutos` ganhou `depois`; `antes` continua
+> disponível) para os produtos virem primeiro. Títulos de seção ("quero
+> mais moderno"): depois do rótulo, o título ganha um traço curto de ouro
+> embaixo (`.rotulo-pilula + .titulo-secao::after`, 3rem x 3px; centrado nas
+> seções centradas; também no `.titulo-display` da dobra); na noite o
+> rótulo sai em ouro-claro. Catálogo (/produtos): o cabeçalho virou uma
+> grade com o título à esquerda e, à direita, o convite da receita num
+> cartão em azul-noite (ícone em ouro, frase e botão branco), no lugar do
+> texto solto com botão. Dobra: dois modos em `Abertura`: com a ARTE da
+> farmácia (`src/lib/hero.ts` lê `public/uploads/hero/desktop.*` e
+> `celular.*`), a dobra mostra a arte inteira e só os três botões por cima,
+> centralizados (h1 só para leitor de tela); sem arte, a composição padrão,
+> agora com anel interno, rótulo com fio de ouro, traço de ouro no título e
+> uma luz azul atrás dos potes. Os botões viraram `BotoesDaDobra`,
+> compartilhado pelos dois modos. LEIA-ME em public/uploads/hero/ e nota no
+> README; o envio pelo painel fica para depois. Testado com uma arte de
+> gradiente temporária, depois apagada.
+
+> **ADENDO 27 (07/10/2026): passada "clean", limpeza do que não era usado, ícones compartilhados e preparo para MySQL. Não publicado.**
+> Menu do celular ("não gostei, quero mais clean"): sem cartões, selo
+> "Aberto agora" como texto, três linhas de "A Viver Bem" com ícone
+> pequeno em ouro e seta, Lojas e Contato na mesma linguagem, botão da
+> receita. Passada clean no site mantendo a estrutura: o rótulo de seção
+> voltou a ser texto (caixa alta pequena com um fio de ouro na frente, sem
+> caixa); o banner da vitrine perdeu a malha, o anel e o brilho de hover;
+> a malha de laboratório ficou mais sutil (6%). Limpeza: saíram as classes
+> CSS sem uso (abertura-presa e o keyframe abertura-recua, citacao,
+> degrade-suave, fio-ouro, ladrilho-vidro, selo-secao, sombra-card-hover,
+> texto-degrade, tinta-azul), três fotos órfãs em public/fotos e a faixa
+> antiga "Você viu recentemente" (o histórico virou o hook
+> `src/lib/useVistosRecentemente.ts`); os quatro reels foram recodificados
+> em 540p (public/videos de 24,4 para 14,7 MB). Engenharia: os ícones
+> repetidos em vários arquivos (WhatsApp, Instagram, seta, chevron, sacola,
+> visto, relógio) viraram um módulo só, `src/components/site/icones.tsx`;
+> os botões "Adicionar" passaram a usar a mesma sacola do carrinho; os
+> erros de lint antigos do painel admin foram corrigidos (Link em vez de
+> `<a>`, estado derivado durante a renderização em vez de setState em
+> efeito, chip de filtro fora do componente): `eslint src` inteiro e
+> `tsc` zerados. MySQL: `scripts/trocar-banco.js` aceita `mysql`
+> (`npm run db:mysql`) e, fora do SQLite, marca os textos longos
+> (descricao, composicao, modoUso, indicacoes, texto, itens, detalhe) com
+> `@db.Text`, porque no MySQL String vira VARCHAR(191); schema validado
+> nos dois providers; .env.example, schema e README atualizados.
+
+> **ADENDO 26 (07/10/2026): menu do celular sem cara de genérico. Não publicado.**
+> O menu que abre no botão do cabeçalho ("modernize essa parte, tire a
+> cara de site genérico") deixou de ser uma lista de links: fundo em
+> degradê branco-gelo; no alto o selo ao vivo "Aberto agora · Fecha às
+> 19h" (`SeloAbertoMenu`, porque a faixa do topo não existe no celular);
+> os três atalhos de "A Viver Bem" num cartão branco, cada um com ícone em
+> círculo de ouro (relógio, receita, estrela), uma linha de apoio ("Desde
+> 1999 em Petrópolis", "Da receita até a sua mão", "5,0 no Google") e a
+> seta em ouro; "Lojas" e "Contato" em dois cartões lado a lado com ícone
+> (a página atual fica em azul); e o "Enviar receita" embaixo. Os mesmos
+> destinos de antes.
+
 > **ADENDO 25 (07/10/2026): sem contagens, sem linha de progresso, faixa do topo de volta, rodapé novo, coluna na página do produto. Não publicado.**
 > As contagens de produtos saíram do site ("não mostre a quantidade"): do
 > banner da vitrine (`pilula` apagada de `BannerVitrine`) e dos círculos

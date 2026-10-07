@@ -21,7 +21,8 @@ import { combinaComTermos, normalizar, termosDaBusca } from "@/lib/texto";
 import { ProdutoCard } from "./ProdutoCard";
 import { FaixaProdutos } from "./FaixaProdutos";
 import { BotaoVerMais } from "./BotaoVerMais";
-import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
+import { SetaDireita } from "./icones";
 
 // A busca que veio no endereço (?busca=). No site com servidor ela já
 // chega pronta em buscaInicial; na vitrine estática quem lê é o navegador.
@@ -130,9 +131,9 @@ export function CatalogoClient({
             )}
           </nav>
 
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mt-4">
-            <div className="max-w-2xl">
-              <p className="rotulo">{categoriaAtiva ? "categoria" : "categorias"}</p>
+          <div className="mt-3 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 lg:items-end">
+            <div className="lg:col-span-7 max-w-2xl">
+              <p className="rotulo-pilula">{categoriaAtiva ? "categoria" : "categorias"}</p>
               <h1 className="titulo-secao vao-rotulo">
                 {categoriaAtiva ? (
                   <TituloArea nome={categoriaAtiva.nome} />
@@ -145,12 +146,35 @@ export function CatalogoClient({
               <p className="texto-apoio mt-4">{apoio}</p>
             </div>
 
-            {/* O convite da página: a receita */}
-            <div className="shrink-0 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-              <p className="text-sm text-cinza leading-snug max-w-[14rem]">
-                Tem a receita? O farmacêutico confere e passa o valor.
-              </p>
-              <BotaoEnviarReceita className="botao botao-principal botao-compacto !min-h-12 self-start" />
+            {/* O convite da página: a receita como um bilhete em azul-noite,
+                inteiro clicável, com o ícone em ouro, o título em duas vozes e
+                a seta num círculo branco (07/10/2026, "modernize essa parte") */}
+            <div className="lg:col-span-5 lg:justify-self-end w-full lg:max-w-md">
+              <BotaoEnviarReceita
+                comIcone={false}
+                className="group banner-noite em-noite relative w-full overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-4 sm:p-5 flex items-center gap-4 text-left text-white shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)] transition duration-300 hover:-translate-y-0.5"
+              >
+                <span aria-hidden="true" className="malha-banner" />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-10 -top-14 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.3),transparent_62%)]"
+                />
+                <span className="relative shrink-0 w-12 h-12 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
+                  <IconeReceita tamanho={22} />
+                </span>
+                <span className="relative flex-1 min-w-0">
+                  <span className="rotulo block !text-[0.62rem]">receita</span>
+                  <span className="titulo-banner block mt-1 text-[1.05rem] sm:text-[1.15rem] font-semibold leading-tight tracking-[-0.02em]">
+                    Tem a receita? <span className="italic">Envie a foto</span>
+                  </span>
+                  <span className="block mt-1 text-[0.82rem] text-white/70 leading-snug">
+                    O farmacêutico confere e passa o valor.
+                  </span>
+                </span>
+                <span className="relative shrink-0 w-11 h-11 rounded-full bg-white text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                  <SetaDireita tamanho={16} />
+                </span>
+              </BotaoEnviarReceita>
             </div>
           </div>
         </div>

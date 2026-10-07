@@ -1,30 +1,58 @@
 "use client";
-// Gestão de categorias: criar, renomear, apagar e reordenar arrastando
-// (a ordem aqui é a ordem dos chips e seções no site).
+// Categorias: criar, renomear, ligar e desligar no site e na home, e
+// reordenar arrastando (a ordem aqui é a ordem dos chips e das faixas
+// no site).
+//
+// Desde 07/10/2026 o colaborador também mexe aqui: cria, renomeia e
+// controla as duas chaves. Só apagar e reordenar seguem com o gestor.
+//   "No site": desligada, a categoria some do site inteiro (menu, home e
+//     catálogo, com os produtos dela), mas nada é apagado.
+//   "Vitrine na home": desligada, a área segue no site, só sem a faixa
+//     própria na página inicial.
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CabecalhoAdmin } from "./PecasAdmin";
+import { PAPEL_ADMIN } from "@/lib/tipos";
+import {
+  Alca,
+  AvisoAdmin,
+  BotaoAdmin,
+  CabecalhoAdmin,
+  IconeMais,
+  Interruptor,
+  Selo,
+  VazioAdmin,
+  classeCampoAdmin,
+} from "./PecasAdmin";
 
-interface CategoriaComTotal {
+export interface CategoriaComTotal {
   id: number;
   nome: string;
   slug: string;
   ordem: number;
+  visivel: boolean;
+  vitrineHome: boolean;
   totalProdutos: number;
 }
 
-export function ListaCategorias({ categorias }: { categorias: CategoriaComTotal[] }) {
+export function ListaCategorias({ categorias, papel }: { categorias: CategoriaComTotal[]; papel: string }) {
   const router = useRouter();
+  const ehGestor = papel === PAPEL_ADMIN;
   const [novoNome, setNovoNome] = useState("");
   const [editando, setEditando] = useState<number | null>(null);
   const [nomeEdicao, setNomeEdicao] = useState("");
   const [erro, setErro] = useState("");
-  const [ocupado, setOcupado] = useState(false);
+  const [ocupado, setOcupado] = useState<number | "nova" | null>(null);
 
   // Cópia local para o drag-and-drop reordenar na hora
   const [lista, setLista] = useState(categorias);
-  useEffect(() => setLista(categorias), [categorias]);
+  // Quando o servidor manda a lista nova, a cópia acompanha (durante a
+  // renderização, sem efeito com setState)
+  const [listaBase, setListaBase] = useState(categorias);
+  if (categorias !== listaBase) {
+    setListaBase(categorias);
+    setLista(categorias);
+  }
   const indiceArrastado = useRef<number | null>(null);
 
   function aoSoltar(indiceDestino: number) {
@@ -44,176 +72,224 @@ export function ListaCategorias({ categorias }: { categorias: CategoriaComTotal[
     }).then(() => router.refresh());
   }
 
+  async function chamar(url: string, metodo: string, corpo?: unknown) {
+    const resposta = await fetch(url, {
+      method: metodo,
+      headers: { "Content-Type": "application/json" },
+      body: corpo === undefined ? undefined : JSON.stringify(corpo),
+    });
+    if (!resposta.ok) {
+      const dados = await resposta.json().catch(() => ({}));
+      throw new Error(dados.erro || "Não foi possível salvar.");
+    }
+  }
+
   async function criar(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
-    setOcupado(true);
+    setOcupado("nova");
     try {
-      const resposta = await fetch("/api/admin/categorias", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome: novoNome }),
-      });
-      const dados = await resposta.json();
-      if (!resposta.ok) {
-        setErro(dados.erro || "Não foi possível criar.");
-        return;
-      }
+      await chamar("/api/admin/categorias", "POST", { nome: novoNome });
       setNovoNome("");
       router.refresh();
+    } catch (e) {
+      setErro((e as Error).message);
     } finally {
-      setOcupado(false);
+      setOcupado(null);
     }
   }
 
   async function renomear(id: number) {
     setErro("");
-    setOcupado(true);
+    setOcupado(id);
     try {
-      const resposta = await fetch(`/api/admin/categorias/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome: nomeEdicao }),
-      });
-      const dados = await resposta.json();
-      if (!resposta.ok) {
-        setErro(dados.erro || "Não foi possível renomear.");
-        return;
-      }
+      await chamar(`/api/admin/categorias/${id}`, "PATCH", { nome: nomeEdicao });
       setEditando(null);
       router.refresh();
+    } catch (e) {
+      setErro((e as Error).message);
     } finally {
-      setOcupado(false);
+      setOcupado(null);
+    }
+  }
+
+  async function alternar(c: CategoriaComTotal, campo: "visivel" | "vitrineHome") {
+    setErro("");
+    setOcupado(c.id);
+    try {
+      await chamar(`/api/admin/categorias/${c.id}`, "PATCH", { [campo]: !c[campo] });
+      router.refresh();
+    } catch (e) {
+      setErro((e as Error).message);
+    } finally {
+      setOcupado(null);
     }
   }
 
   async function apagar(c: CategoriaComTotal) {
     const aviso =
       c.totalProdutos > 0
-        ? `Apagar a categoria "${c.nome}"?\n\nOs ${c.totalProdutos} produto(s) dela NÃO serão apagados — ficarão "sem categoria".`
+        ? `Apagar a categoria "${c.nome}"?\n\nOs ${c.totalProdutos} produto(s) dela NÃO serão apagados: ficarão "sem categoria".\n\nDica: para só tirar a área do site, use a chave "No site".`
         : `Apagar a categoria "${c.nome}"?`;
     if (!confirm(aviso)) return;
 
-    setOcupado(true);
+    setOcupado(c.id);
     try {
-      await fetch(`/api/admin/categorias/${c.id}`, { method: "DELETE" });
+      await chamar(`/api/admin/categorias/${c.id}`, "DELETE");
       router.refresh();
+    } catch (e) {
+      setErro((e as Error).message);
     } finally {
-      setOcupado(false);
+      setOcupado(null);
     }
   }
 
+  const noSite = lista.filter((c) => c.visivel).length;
+
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <CabecalhoAdmin
+        rotulo="Catálogo"
         titulo="Categorias"
-        descricao="Como os produtos ficam agrupados no site."
+        descricao={`Como os produtos ficam agrupados no site. ${noSite} de ${lista.length} no ar.`}
       />
 
       {/* Criar nova */}
-      <form onSubmit={criar} className="mt-5 flex gap-3">
-        <input
-          value={novoNome}
-          onChange={(e) => setNovoNome(e.target.value)}
-          required
-          placeholder="Nome da nova categoria..."
-          className="flex-1 border border-grafite/20 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-royal/50"
-        />
-        <button
-          type="submit"
-          disabled={ocupado}
-          className="bg-escarlate hover:bg-escarlate-escuro disabled:opacity-60 text-white font-bold rounded-xl px-5 py-3 transition-colors"
-        >
-          + Criar
-        </button>
+      <form onSubmit={criar} className="mt-6 flex flex-col sm:flex-row gap-3">
+        <label className="flex-1">
+          <span className="sr-only">Nome da nova categoria</span>
+          <input
+            value={novoNome}
+            onChange={(e) => setNovoNome(e.target.value)}
+            required
+            maxLength={60}
+            placeholder="Nome da nova categoria..."
+            className={classeCampoAdmin}
+          />
+        </label>
+        <BotaoAdmin type="submit" variante="primario" disabled={ocupado === "nova"}>
+          <IconeMais />
+          Criar categoria
+        </BotaoAdmin>
       </form>
 
-      {erro && (
-        <p className="mt-3 bg-escarlate/10 text-escarlate text-sm font-medium rounded-xl px-4 py-3">
-          {erro}
-        </p>
-      )}
+      {erro && <AvisoAdmin className="mt-4">{erro}</AvisoAdmin>}
 
       <p className="mt-4 text-sm text-grafite-claro">
-        Arraste os cartões pela alça para mudar a ordem das categorias no site.
+        {ehGestor
+          ? "Arraste as linhas pela alça para mudar a ordem das categorias no site."
+          : "A ordem das categorias no site é definida pelo gestor."}
       </p>
 
       {/* Lista */}
       <div className="mt-3 flex flex-col gap-3">
+        {lista.length === 0 && (
+          <div className="bg-white rounded-2xl border border-fio">
+            <VazioAdmin titulo="Nenhuma categoria" descricao="Crie a primeira no campo acima." />
+          </div>
+        )}
         {lista.map((c, indice) => (
           <div
             key={c.id}
-            draggable
+            draggable={ehGestor}
             onDragStart={() => (indiceArrastado.current = indice)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => aoSoltar(indice)}
-            className="bg-white rounded-2xl border border-linha p-4 flex items-center gap-4"
+            className={`bg-white rounded-2xl border border-fio p-4 sm:p-5 transition-opacity ${
+              ocupado === c.id ? "opacity-60" : ""
+            } ${c.visivel ? "" : "bg-nevoa/60"}`}
           >
-            <span
-              className="cursor-grab active:cursor-grabbing text-grafite-claro hover:text-royal select-none transition-colors"
-              title="Arraste para reordenar"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <circle cx="9" cy="6" r="1.6" /><circle cx="15" cy="6" r="1.6" />
-                <circle cx="9" cy="12" r="1.6" /><circle cx="15" cy="12" r="1.6" />
-                <circle cx="9" cy="18" r="1.6" /><circle cx="15" cy="18" r="1.6" />
-              </svg>
-            </span>
-            {editando === c.id ? (
-              <>
-                <input
-                  value={nomeEdicao}
-                  onChange={(e) => setNomeEdicao(e.target.value)}
-                  autoFocus
-                  className="flex-1 border border-royal/40 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-royal/50"
-                />
-                <button
-                  type="button"
-                  onClick={() => renomear(c.id)}
-                  disabled={ocupado}
-                  className="bg-royal text-white font-semibold rounded-xl px-4 py-2 text-sm disabled:opacity-50"
-                >
-                  Salvar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditando(null)}
-                  className="text-grafite-claro text-sm font-semibold px-2"
-                >
-                  Cancelar
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="flex-1">
-                  <p className="font-semibold text-grafite">{c.nome}</p>
-                  <p className="text-sm text-grafite-claro">
-                    {c.totalProdutos} produto{c.totalProdutos === 1 ? "" : "s"}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditando(c.id);
-                    setNomeEdicao(c.nome);
+            <div className="flex items-start gap-3 sm:gap-4">
+              {ehGestor && (
+                <span className="mt-1">
+                  <Alca />
+                </span>
+              )}
+
+              {editando === c.id ? (
+                <form
+                  className="flex-1 flex flex-col sm:flex-row gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    renomear(c.id);
                   }}
-                  className="border border-royal text-royal hover:bg-royal hover:text-white font-semibold rounded-xl px-4 py-2 text-sm transition-colors"
                 >
-                  Renomear
-                </button>
-                <button
-                  type="button"
-                  onClick={() => apagar(c)}
-                  disabled={ocupado}
-                  className="border border-escarlate text-escarlate hover:bg-escarlate hover:text-white font-semibold rounded-xl px-4 py-2 text-sm transition-colors disabled:opacity-50"
-                >
-                  Apagar
-                </button>
-              </>
+                  <input
+                    value={nomeEdicao}
+                    onChange={(e) => setNomeEdicao(e.target.value)}
+                    autoFocus
+                    required
+                    maxLength={60}
+                    aria-label="Novo nome da categoria"
+                    className={`${classeCampoAdmin} flex-1`}
+                  />
+                  <div className="flex gap-2">
+                    <BotaoAdmin type="submit" variante="primario" disabled={ocupado === c.id}>
+                      Salvar
+                    </BotaoAdmin>
+                    <BotaoAdmin variante="fantasma" onClick={() => setEditando(null)}>
+                      Cancelar
+                    </BotaoAdmin>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-semibold text-navy">{c.nome}</p>
+                      {!c.visivel && <Selo tom="vermelho">Fora do site</Selo>}
+                      {c.visivel && !c.vitrineHome && <Selo tom="cinza">Sem faixa na home</Selo>}
+                    </div>
+                    <p className="text-sm text-cinza mt-0.5">
+                      {c.totalProdutos} produto{c.totalProdutos === 1 ? "" : "s"} · /produtos/{c.slug}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <BotaoAdmin
+                      tamanho="pequeno"
+                      onClick={() => {
+                        setEditando(c.id);
+                        setNomeEdicao(c.nome);
+                      }}
+                    >
+                      Renomear
+                    </BotaoAdmin>
+                    {ehGestor && (
+                      <BotaoAdmin tamanho="pequeno" variante="perigo" onClick={() => apagar(c)} disabled={ocupado === c.id}>
+                        Apagar
+                      </BotaoAdmin>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* As duas chaves do site */}
+            {editando !== c.id && (
+              <div className={`flex flex-wrap gap-x-6 border-t border-fio mt-3 pt-1 ${ehGestor ? "pl-7 sm:pl-8" : ""}`}>
+                <Interruptor
+                  ligado={c.visivel}
+                  rotulo={c.visivel ? "No site" : "Fora do site"}
+                  aoAlternar={() => alternar(c, "visivel")}
+                  desabilitado={ocupado === c.id}
+                  cor="verde"
+                />
+                <Interruptor
+                  ligado={c.visivel && c.vitrineHome}
+                  rotulo="Vitrine na home"
+                  aoAlternar={() => alternar(c, "vitrineHome")}
+                  desabilitado={ocupado === c.id || !c.visivel}
+                />
+              </div>
             )}
           </div>
         ))}
       </div>
+
+      <p className="mt-5 text-xs text-grafite-claro leading-relaxed">
+        A faixa de uma área só aparece na home quando ela tem pelo menos 3 produtos com foto.
+        As outras seções da página inicial ficam em Home e arte da dobra.
+      </p>
     </div>
   );
 }

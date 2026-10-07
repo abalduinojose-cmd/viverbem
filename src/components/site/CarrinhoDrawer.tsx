@@ -25,27 +25,12 @@ import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeMoto } from "./IconeMoto";
 import { FotoProduto } from "./FotoProduto";
 import { IconeReceita } from "./BotaoEnviarReceita";
+import { IconeCarrinho, IconeWhatsApp } from "./icones";
 
 type Etapa = "pedido" | "dados";
 
 // O que acontece depois de marcar a receita, em três passos curtos
 const PASSOS_RECEITA = ["Seus dados", "Mensagem pronta", "Foto na conversa"];
-
-// A sacola de compras, com a alça (07/10/2026, "melhore o ícone do botão
-// de carrinho"): mais elegante que o carrinho de supermercado
-export function IconeCarrinho({ tamanho = 24 }: { tamanho?: number }) {
-  return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M6.3 8.5h11.4l.9 10.6a1.7 1.7 0 0 1-1.7 1.9H7.1a1.7 1.7 0 0 1-1.7-1.9l.9-10.6Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path d="M9 10.5V7a3 3 0 0 1 6 0v3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function IconeSeta({ direcao = "direita", tamanho = 20 }: { direcao?: "direita" | "esquerda"; tamanho?: number }) {
   return (
@@ -80,14 +65,6 @@ function IconeChevron() {
       className="shrink-0 text-ouro transition-transform group-open:rotate-180"
     >
       <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconeWhatsApp() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
     </svg>
   );
 }

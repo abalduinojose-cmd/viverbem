@@ -1,19 +1,21 @@
 "use client";
-// Gráficos do painel, em SVG puro (sem biblioteca: são dois formatos
-// simples e o painel não precisa carregar 100 kB por causa disso).
+// Gráficos do painel, em SVG puro (sem biblioteca: são formatos simples e
+// o painel não precisa carregar 100 kB por causa disso).
 //
 // Regras seguidas: uma série = uma cor só e sem legenda (o título já
 // diz o que é); barras finas com topo arredondado e base reta; linha
 // de 2px com área lavada; grade em fio de 1px, discreta; rótulo só
-// onde importa (o maior e o último), o resto vai no toque/hover.
-// A dupla azul/vermelho foi validada para daltonismo antes de entrar.
+// onde importa (o maior e o último), o resto vai no toque/hover. Quando
+// há duas séries (entrega x retirada, manipulado x industrializado) a
+// legenda vem junto, com o número ao lado de cada cor: identidade nunca
+// fica só na cor. A dupla azul da marca + ouro é a mesma do site.
 
 import { useState } from "react";
 import { formatarPreco } from "@/lib/preco";
 
-const AZUL = "#1c69b5";
-const VERMELHO = "#e02129";
-const GRADE = "#e7ebf0";
+const AZUL = "#1c69b5"; // --color-tinta
+const OURO = "#b3904f"; // --color-ouro
+const GRADE = "#e4e8ee"; // --color-fio
 
 /** Escala "bonita" para o topo do eixo (1, 2 ou 5 vezes potência de 10). */
 function tetoRedondo(maior: number) {
@@ -30,6 +32,16 @@ function compacto(centavos: number) {
   const reais = centavos / 100;
   if (reais >= 1000) return `R$ ${(reais / 1000).toFixed(reais >= 10000 ? 0 : 1)}k`;
   return `R$ ${Math.round(reais)}`;
+}
+
+// O balão do valor apontado, no canto do gráfico
+function Balao({ titulo, texto }: { titulo: string; texto: string }) {
+  return (
+    <div className="absolute top-0 right-0 bg-navy text-white text-xs rounded-lg px-3 py-2 pointer-events-none shadow-lg">
+      <p className="font-semibold tabular-nums">{titulo}</p>
+      <p className="text-white/70 tabular-nums">{texto}</p>
+    </div>
+  );
 }
 
 /** Faturamento por mês — barras, uma série. */
@@ -82,6 +94,7 @@ export function GraficoFaturamento({
           const x = margem.esq + banda * i + (banda - larguraBarra) / 2;
           const y = margem.topo + altura - h;
           const destacado = ativo === i;
+          const opacidade = ativo === null || destacado ? 1 : 0.45;
           return (
             <g key={d.rotulo + i}>
               {/* Área de toque maior que a barra */}
@@ -95,48 +108,18 @@ export function GraficoFaturamento({
                 onMouseLeave={() => setAtivo(null)}
               />
               {h > 0 && (
-                <rect
-                  x={x}
-                  y={y}
-                  width={larguraBarra}
-                  height={h}
-                  rx="4"
-                  fill={AZUL}
-                  opacity={ativo === null || destacado ? 1 : 0.45}
-                  className="transition-opacity"
-                  pointerEvents="none"
-                />
+                <rect x={x} y={y} width={larguraBarra} height={h} rx="4" fill={AZUL} opacity={opacidade} className="transition-opacity" pointerEvents="none" />
               )}
               {/* Base reta: tampa o arredondamento de baixo da barra */}
               {h > 4 && (
-                <rect
-                  x={x}
-                  y={margem.topo + altura - 4}
-                  width={larguraBarra}
-                  height={4}
-                  fill={AZUL}
-                  opacity={ativo === null || destacado ? 1 : 0.45}
-                  pointerEvents="none"
-                />
+                <rect x={x} y={margem.topo + altura - 4} width={larguraBarra} height={4} fill={AZUL} opacity={opacidade} pointerEvents="none" />
               )}
-              <text
-                x={margem.esq + banda * i + banda / 2}
-                y={A - 8}
-                textAnchor="middle"
-                className="fill-grafite-claro"
-                style={{ fontSize: 10 }}
-              >
+              <text x={margem.esq + banda * i + banda / 2} y={A - 8} textAnchor="middle" className="fill-grafite-claro" style={{ fontSize: 10 }}>
                 {d.rotulo}
               </text>
               {/* Rótulo só no maior mês */}
               {i === indiceMaior && (
-                <text
-                  x={margem.esq + banda * i + banda / 2}
-                  y={y - 6}
-                  textAnchor="middle"
-                  className="fill-grafite"
-                  style={{ fontSize: 10, fontWeight: 600 }}
-                >
+                <text x={margem.esq + banda * i + banda / 2} y={y - 6} textAnchor="middle" className="fill-navy" style={{ fontSize: 10, fontWeight: 600 }}>
                   {compacto(d.faturamento)}
                 </text>
               )}
@@ -146,24 +129,17 @@ export function GraficoFaturamento({
       </svg>
 
       {ativo !== null && (
-        <div className="absolute top-0 right-0 bg-noite text-white text-xs rounded-lg px-3 py-2 pointer-events-none">
-          <p className="font-semibold">{dados[ativo].rotulo}</p>
-          <p className="text-white/70 tabular-nums">
-            {formatarPreco(dados[ativo].faturamento)} · {dados[ativo].pedidos}{" "}
-            {dados[ativo].pedidos === 1 ? "pedido" : "pedidos"}
-          </p>
-        </div>
+        <Balao
+          titulo={dados[ativo].rotulo}
+          texto={`${formatarPreco(dados[ativo].faturamento)} · ${dados[ativo].pedidos} ${dados[ativo].pedidos === 1 ? "pedido" : "pedidos"}`}
+        />
       )}
     </div>
   );
 }
 
 /** Pedidos por dia — linha com área, uma série. */
-export function GraficoPedidosDia({
-  dados,
-}: {
-  dados: { rotulo: string; pedidos: number }[];
-}) {
+export function GraficoPedidosDia({ dados }: { dados: { rotulo: string; pedidos: number }[] }) {
   const [ativo, setAtivo] = useState<number | null>(null);
 
   const L = 520;
@@ -198,13 +174,7 @@ export function GraficoPedidosDia({
           return (
             <g key={t}>
               <line x1={margem.esq} y1={y} x2={L - margem.dir} y2={y} stroke={GRADE} strokeWidth="1" />
-              <text
-                x={margem.esq - 8}
-                y={y + 4}
-                textAnchor="end"
-                className="fill-grafite-claro"
-                style={{ fontSize: 10, fontVariantNumeric: "tabular-nums" }}
-              >
+              <text x={margem.esq - 8} y={y + 4} textAnchor="end" className="fill-grafite-claro" style={{ fontSize: 10, fontVariantNumeric: "tabular-nums" }}>
                 {t}
               </text>
             </g>
@@ -215,8 +185,8 @@ export function GraficoPedidosDia({
         <path d={area} fill={AZUL} opacity="0.1" />
         <path d={linha} fill="none" stroke={AZUL} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
 
-        {/* Marcador do último dia, com anel na cor da superfície */}
-        <circle cx={ultimo.x} cy={ultimo.y} r="5" fill={AZUL} stroke="#ffffff" strokeWidth="2" />
+        {/* Marcador do último dia, em ouro: é o "hoje" */}
+        <circle cx={ultimo.x} cy={ultimo.y} r="5" fill={OURO} stroke="#ffffff" strokeWidth="2" />
 
         {/* Faixas de toque + marcador do ponto ativo */}
         {dados.map((d, i) => (
@@ -232,14 +202,7 @@ export function GraficoPedidosDia({
             />
             {ativo === i && (
               <>
-                <line
-                  x1={pontos[i].x}
-                  y1={margem.topo}
-                  x2={pontos[i].x}
-                  y2={margem.topo + altura}
-                  stroke={GRADE}
-                  strokeWidth="1"
-                />
+                <line x1={pontos[i].x} y1={margem.topo} x2={pontos[i].x} y2={margem.topo + altura} stroke={GRADE} strokeWidth="1" />
                 <circle cx={pontos[i].x} cy={pontos[i].y} r="5" fill={AZUL} stroke="#ffffff" strokeWidth="2" />
               </>
             )}
@@ -256,76 +219,101 @@ export function GraficoPedidosDia({
       </svg>
 
       {ativo !== null && (
-        <div className="absolute top-0 right-0 bg-noite text-white text-xs rounded-lg px-3 py-2 pointer-events-none">
-          <p className="font-semibold tabular-nums">{dados[ativo].rotulo}</p>
-          <p className="text-white/70 tabular-nums">
-            {dados[ativo].pedidos} {dados[ativo].pedidos === 1 ? "pedido" : "pedidos"}
-          </p>
-        </div>
+        <Balao titulo={dados[ativo].rotulo} texto={`${dados[ativo].pedidos} ${dados[ativo].pedidos === 1 ? "pedido" : "pedidos"}`} />
       )}
     </div>
   );
 }
 
-/** Entrega x retirada — barra empilhada, duas categorias.
- *  Com duas séries a legenda é obrigatória, então ela vem junto. */
-export function GraficoEntregas({
-  entregas,
-  retiradas,
+// Barra empilhada horizontal com duas partes e a legenda com os números
+function BarraDupla({
+  partes,
 }: {
-  entregas: number;
-  retiradas: number;
+  partes: { cor: string; rotulo: string; valor: number }[];
 }) {
+  const total = partes.reduce((s, p) => s + p.valor, 0);
+  return (
+    <>
+      <div className="flex h-4 rounded-full overflow-hidden bg-nevoa gap-[2px]">
+        {partes.map((p, i) => (
+          <div
+            key={p.rotulo}
+            style={{ width: `${(p.valor / total) * 100}%`, backgroundColor: p.cor }}
+            className={i === 0 ? "rounded-l-full" : i === partes.length - 1 ? "rounded-r-full" : ""}
+          />
+        ))}
+      </div>
+      <dl className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-sm">
+        {partes.map((p) => (
+          <div key={p.rotulo} className="inline-flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: p.cor }} aria-hidden="true" />
+            <dt className="text-cinza">{p.rotulo}</dt>
+            <dd className="flex items-baseline gap-1">
+              <b className="text-navy tabular-nums">{p.valor}</b>
+              <span className="text-grafite-claro tabular-nums text-xs">({Math.round((p.valor / total) * 100)}%)</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </>
+  );
+}
+
+/** Entrega x retirada — barra empilhada, duas categorias. */
+export function GraficoEntregas({ entregas, retiradas }: { entregas: number; retiradas: number }) {
   const total = entregas + retiradas;
   if (total === 0) {
-    return (
-      <p className="text-grafite-claro text-sm mt-3">
-        Ainda sem pedidos com essa informação neste mês.
-      </p>
-    );
+    return <p className="text-cinza text-sm mt-3">Ainda sem pedidos com essa informação neste mês.</p>;
   }
 
   const pctEntrega = Math.round((entregas / total) * 100);
 
   return (
     <div className="mt-4">
-      {/* Empilhada horizontal, com 2px de respiro entre os pedaços */}
-      <div className="flex h-4 rounded-full overflow-hidden bg-royal-nevoa gap-[2px]">
-        <div
-          style={{ width: `${(entregas / total) * 100}%`, backgroundColor: AZUL }}
-          className="rounded-l-full"
-        />
-        <div
-          style={{ width: `${(retiradas / total) * 100}%`, backgroundColor: VERMELHO }}
-          className="rounded-r-full"
-        />
-      </div>
-
-      {/* Legenda: identidade nunca fica só na cor */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-sm">
-        {[
+      <BarraDupla
+        partes={[
           { cor: AZUL, rotulo: "Entrega", valor: entregas },
-          { cor: VERMELHO, rotulo: "Retirada", valor: retiradas },
-        ].map((s) => (
-          <span key={s.rotulo} className="inline-flex items-center gap-2">
-            <span
-              className="w-2.5 h-2.5 rounded-full shrink-0"
-              style={{ backgroundColor: s.cor }}
-              aria-hidden="true"
-            />
-            <span className="text-grafite-medio">{s.rotulo}</span>
-            <b className="text-grafite tabular-nums">{s.valor}</b>
-            <span className="text-grafite-claro tabular-nums">
-              ({Math.round((s.valor / total) * 100)}%)
-            </span>
-          </span>
-        ))}
-      </div>
-
+          { cor: OURO, rotulo: "Retirada", valor: retiradas },
+        ]}
+      />
       <p className="text-grafite-claro text-xs mt-4 leading-relaxed">
         {pctEntrega >= 50
           ? "A maior parte sai de moto: vale acompanhar a fila de entrega."
           : "A maior parte é retirada na loja: vale ter o pedido pronto na frente."}
+      </p>
+    </div>
+  );
+}
+
+/** Manipulados x industrializados no catálogo, com quantos industrializados
+ *  expõem o preço no site. */
+export function GraficoCatalogo({
+  manipulados,
+  industrializados,
+  comPrecoNoSite,
+}: {
+  manipulados: number;
+  industrializados: number;
+  comPrecoNoSite: number;
+}) {
+  const total = manipulados + industrializados;
+  if (total === 0) {
+    return <p className="text-cinza text-sm mt-3">Nenhum produto cadastrado ainda.</p>;
+  }
+  return (
+    <div className="mt-4">
+      <BarraDupla
+        partes={[
+          { cor: AZUL, rotulo: "Manipulados", valor: manipulados },
+          { cor: OURO, rotulo: "Industrializados", valor: industrializados },
+        ]}
+      />
+      <p className="text-grafite-claro text-xs mt-4 leading-relaxed">
+        {industrializados === 0
+          ? "Só manipulados: nenhum produto mostra preço no site, como pede a RDC 67/2007."
+          : comPrecoNoSite === 0
+            ? "Nenhum industrializado mostra o preço no site ainda. A chave fica em Produtos e preços."
+            : `${comPrecoNoSite} de ${industrializados} industrializados mostram o preço no site.`}
       </p>
     </div>
   );

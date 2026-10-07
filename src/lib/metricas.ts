@@ -4,8 +4,12 @@
 // itens em JSON. Como o volume é pequeno (uma farmácia, não um
 // marketplace), lemos os pedidos do período e contamos em memória —
 // mais simples do que espalhar SQL pelo código.
+//
+// Desde 07/10/2026 a visão geral também traz o retrato do catálogo
+// (manipulados x industrializados, fotos, preço no site) e a atividade da
+// equipe (acessos ativos e as últimas ações do log).
 import { db } from "./db";
-import { ENTREGA_RETIRADA, VENDA_INDUSTRIALIZADO } from "./tipos";
+import { ENTREGA_RETIRADA, PAPEL_ADMIN, VENDA_INDUSTRIALIZADO } from "./tipos";
 
 export interface ItemDoPedido {
   nome: string;
@@ -35,20 +39,7 @@ function variacao(atual: number, anterior: number): number | null {
   return Math.round(((atual - anterior) / anterior) * 100);
 }
 
-const MESES_CURTOS = [
-  "jan",
-  "fev",
-  "mar",
-  "abr",
-  "mai",
-  "jun",
-  "jul",
-  "ago",
-  "set",
-  "out",
-  "nov",
-  "dez",
-];
+const MESES_CURTOS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
 export async function obterMetricas() {
   const comecoDesteMes = inicioDoMes();
@@ -56,30 +47,35 @@ export async function obterMetricas() {
   // Janela dos gráficos: 6 meses cheios contando o atual
   const comecoDaJanela = inicioDoMes(-5);
 
-  const [doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela] = await Promise.all([
-    db.cliente.findMany({ where: { criadoEm: { gte: comecoDesteMes } } }),
-    db.cliente.findMany({
-      where: { criadoEm: { gte: comecoDoMesPassado, lt: comecoDesteMes } },
-    }),
-    db.cliente.count(),
-    db.produto.findMany({
-      select: {
-        id: true,
-        nome: true,
-        ativo: true,
-        aprovado: true,
-        venda: true,
-        precoCentavos: true,
-        fotoUrl: true,
-        categoriaId: true,
-      },
-    }),
-    db.cliente.findMany({ orderBy: { criadoEm: "desc" }, take: 5 }),
-    db.cliente.findMany({
-      where: { criadoEm: { gte: comecoDaJanela } },
-      select: { criadoEm: true, totalCentavos: true },
-    }),
-  ]);
+  const [doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes] =
+    await Promise.all([
+      db.cliente.findMany({ where: { criadoEm: { gte: comecoDesteMes } } }),
+      db.cliente.findMany({
+        where: { criadoEm: { gte: comecoDoMesPassado, lt: comecoDesteMes } },
+      }),
+      db.cliente.count(),
+      db.produto.findMany({
+        select: {
+          id: true,
+          nome: true,
+          ativo: true,
+          aprovado: true,
+          venda: true,
+          precoCentavos: true,
+          mostrarPreco: true,
+          fotoUrl: true,
+          categoriaId: true,
+        },
+      }),
+      db.cliente.findMany({ orderBy: { criadoEm: "desc" }, take: 5 }),
+      db.cliente.findMany({
+        where: { criadoEm: { gte: comecoDaJanela } },
+        select: { criadoEm: true, totalCentavos: true },
+      }),
+      db.categoria.findMany({ select: { id: true, nome: true, visivel: true, vitrineHome: true } }),
+      db.usuario.findMany({ select: { id: true, nome: true, papel: true, ativo: true, ultimoAcesso: true } }),
+      db.logAlteracao.findMany({ orderBy: { criadoEm: "desc" }, take: 6 }),
+    ]);
 
   // Faturamento = só o que tem preço no site (industrializados). Pedido
   // só de receita entra com total zero: o valor do manipulado é passado
@@ -115,6 +111,35 @@ export async function obterMetricas() {
     semFoto: produtos.filter((p) => !p.fotoUrl).length,
     semPreco: produtos.filter((p) => p.venda === VENDA_INDUSTRIALIZADO && p.precoCentavos <= 0).length,
     semCategoria: produtos.filter((p) => p.categoriaId === null).length,
+    categoriasForaDoSite: categorias.filter((c) => !c.visivel).length,
+  };
+
+  // O retrato do catálogo: o que é manipulado e o que é industrializado,
+  // e quantos industrializados expõem o preço no site
+  const industrializados = produtos.filter((p) => p.venda === VENDA_INDUSTRIALIZADO);
+  const catalogo = {
+    total: produtos.length,
+    noSite: produtos.filter((p) => p.ativo && p.aprovado).length,
+    manipulados: produtos.length - industrializados.length,
+    industrializados: industrializados.length,
+    comPrecoNoSite: industrializados.filter((p) => p.mostrarPreco).length,
+    comFoto: produtos.filter((p) => Boolean(p.fotoUrl)).length,
+    categorias: categorias.length,
+    categoriasNoSite: categorias.filter((c) => c.visivel).length,
+  };
+
+  // A equipe: quem pode entrar e o que andou mudando
+  const equipe = {
+    ativos: usuarios.filter((u) => u.ativo).length,
+    gestores: usuarios.filter((u) => u.ativo && u.papel === PAPEL_ADMIN).length,
+    colaboradores: usuarios.filter((u) => u.ativo && u.papel !== PAPEL_ADMIN).length,
+    ultimasAcoes: ultimasAcoes.map((a) => ({
+      id: a.id,
+      usuario: a.usuario,
+      acao: a.acao,
+      detalhe: a.detalhe,
+      criadoEm: a.criadoEm.toISOString(),
+    })),
   };
 
   // Faturamento dos 6 meses da janela, inclusive os zerados: um mês
@@ -182,6 +207,8 @@ export async function obterMetricas() {
     retiradas,
     entregas,
     alertas,
+    catalogo,
+    equipe,
     totalProdutos: produtos.length,
     ultimos: ultimos.map((c) => ({
       id: c.id,

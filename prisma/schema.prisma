@@ -1,10 +1,10 @@
 // ============================================================
 // Schema do banco de dados — Manipulação Viver Bem
 //
-// Banco: SQLite (arquivo local, definido em DATABASE_URL no .env)
-// Para migrar para Postgres no futuro, basta trocar o "provider"
-// abaixo para "postgresql" e apontar DATABASE_URL para o servidor.
-// Depois rode: npx prisma migrate dev
+// Banco: SQLite (arquivo local, definido em DATABASE_URL no .env).
+// Produção em MySQL ou Postgres: NÃO edite este arquivo à mão, rode
+// "npm run db:mysql" (ou db:postgres), que troca o provider e marca os
+// campos de texto longo com @db.Text; depois: npx prisma db push.
 // ============================================================
 
 generator client {
@@ -25,6 +25,11 @@ model Categoria {
   // ordem: posição de exibição no totem (preparado para o
   // drag-and-drop da Fase 2 — por enquanto ordena por este número)
   ordem    Int       @default(0)
+  // visivel=false: a categoria sai do site inteiro (menu, home e catálogo,
+  // com os produtos dela), mas o cadastro fica ("remover do site", 07/10/2026)
+  visivel  Boolean   @default(true)
+  // vitrineHome=false: a área segue no site, mas sem a faixa própria na home
+  vitrineHome Boolean @default(true)
   produtos Produto[]
 }
 
@@ -55,8 +60,15 @@ model Produto {
   // Produto cadastrado pelo operador espera o gestor publicar.
   // O site mostra só o que está ativo E aprovado.
   aprovado      Boolean  @default(true)
-  // Caminho da foto (ex.: "/uploads/abc123.jpg"), servida da pasta public/
+  // Caminho da foto de capa (ex.: "/uploads/abc123.jpg"), servida da pasta
+  // public/. É sempre a primeira da galeria (FotoProduto), guardada aqui
+  // também para as listas não precisarem carregar a galeria inteira.
   fotoUrl       String?
+  // Até 5 fotos por produto (painel, 07/10/2026); a de ordem 0 é a capa
+  fotos         FotoProduto[]
+  // Mostra o preço no site. Só vale para INDUSTRIALIZADO: manipulado não
+  // pode ser exposto com preço (RDC 67/2007), e a rota recusa ligar.
+  mostrarPreco  Boolean  @default(false)
   // ativo=false: produto some do totem na hora, mas o cadastro fica salvo
   ativo         Boolean  @default(true)
   // novidade/destaque: jogam o produto para as vitrines principais do totem
@@ -80,9 +92,29 @@ model Produto {
   atualizadoEm  DateTime @updatedAt
 }
 
+// Foto da galeria de um produto (até 5 por produto, reordenáveis).
+// Apagar o produto apaga as fotos junto.
+model FotoProduto {
+  id        Int     @id @default(autoincrement())
+  url       String
+  ordem     Int     @default(0)
+  produtoId Int
+  produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+}
+
+// Ajustes do site feitos pelo painel, em pares chave/valor (o valor é
+// JSON). Hoje: "secoesHome" (quais seções da home aparecem) e a arte da
+// dobra ("heroDesktop", "heroCelular"). Ler/gravar por src/lib/configuracao.ts.
+model Configuracao {
+  chave String @id
+  valor String
+  atualizadoEm DateTime @updatedAt
+}
+
 // Usuário do painel administrativo.
-// papel = "ADMIN" (acesso total) ou "OPERADOR" (só cadastra/edita
-// produtos e preços — não apaga, não mexe em categorias/depoimentos/log)
+// papel = "ADMIN" (gestor: acesso total) ou "OPERADOR" (colaborador: cuida
+// do catálogo, fotos, preços no site, categorias e seções do site; não
+// apaga, não publica, não vê números, clientes, log nem acessos)
 model Usuario {
   id        Int      @id @default(autoincrement())
   nome      String

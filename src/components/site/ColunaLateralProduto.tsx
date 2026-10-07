@@ -10,15 +10,8 @@ import Link from "next/link";
 import { ProdutoDTO } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
-import { useVistosRecentemente } from "./VistosRecentemente";
-
-function SetaDireita() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+import { useVistosRecentemente } from "@/lib/useVistosRecentemente";
+import { SetaDireita } from "./icones";
 
 function ItemCompacto({ produto }: { produto: ProdutoDTO }) {
   const href = `/produto/${produto.slug}`;
@@ -76,7 +69,7 @@ function Bloco({
           className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-tinta underline-offset-4 hover:underline"
         >
           {verMais.texto}
-          <SetaDireita />
+          <SetaDireita tamanho={14} />
         </Link>
       )}
     </section>

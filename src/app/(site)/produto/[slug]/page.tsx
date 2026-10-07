@@ -17,8 +17,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
-import { listarItens, ehIndustrializado, UNIDADES } from "@/lib/tipos";
-import { FotoProduto } from "@/components/site/FotoProduto";
+import { listarItens, ehIndustrializado, precoVisivel, UNIDADES } from "@/lib/tipos";
+import { formatarPreco } from "@/lib/preco";
+import { GaleriaProduto } from "@/components/site/GaleriaProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
@@ -156,6 +157,8 @@ export default async function PaginaProduto({ params }: Props) {
   if (!produto) notFound();
 
   const industrializado = ehIndustrializado(produto);
+  // Só industrializado com a chave "Preço no site" ligada no painel
+  const preco = precoVisivel(produto);
   const categoria = categorias.find((c) => c.id === produto.categoriaId) ?? null;
   const hrefCategoria = categoria ? `/produtos/${categoria.slug}` : "/produtos";
 
@@ -193,24 +196,8 @@ export default async function PaginaProduto({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_16rem] gap-8 lg:gap-10 items-start">
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
-            <div className="relative overflow-hidden rounded-[2rem] border border-fio bg-gradient-to-b from-gelo to-white flex items-end justify-center min-h-[20rem] md:min-h-[30rem] p-6 md:p-9">
-              {/* A luz dourada da bancada */}
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-[15%] bottom-6 h-20 bg-[radial-gradient(50%_60%_at_50%_70%,rgba(192,160,96,0.42),transparent_70%)]"
-              />
-              <FotoProduto
-                fotoUrl={produto.fotoUrl}
-                nome={produto.nome}
-                className="relative max-w-full max-h-[24rem] md:max-h-[28.5rem] !object-contain drop-shadow-[0_28px_26px_rgba(16,42,74,0.25)]"
-                prioritaria
-              />
-              {industrializado && produto.novidade && (
-                <span className="absolute top-4 left-4 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">
-                  Novidade
-                </span>
-              )}
-            </div>
+            {/* A galeria: até 5 fotos, a primeira com prioridade */}
+            <GaleriaProduto fotos={produto.fotos} nome={produto.nome} novidade={industrializado && produto.novidade} />
 
             <Selos className="hidden lg:grid mt-4" />
           </div>
@@ -241,6 +228,11 @@ export default async function PaginaProduto({ params }: Props) {
             <p className="tinta mt-3 text-[1.5rem] md:text-[1.75rem] leading-tight">
               {industrializado ? "Pronta entrega nas lojas" : "Preparado a partir da sua receita"}
             </p>
+            {preco !== null && (
+              <p className="mt-4 text-[1.9rem] md:text-[2.2rem] font-semibold tracking-[-0.03em] text-navy tabular-nums leading-none">
+                {formatarPreco(preco)}
+              </p>
+            )}
             <p className="texto-apoio mt-5 max-w-[34rem]">{produto.descricao}</p>
 
             <AcoesProduto produto={produto} />

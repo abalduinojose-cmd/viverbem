@@ -1,11 +1,11 @@
 // PATCH  /api/admin/produtos/:id — atualiza um produto.
-//        Edição parcial (botões da listagem): só os campos enviados, entre
-//        ativo, novidade, destaque, aprovado e precoCentavos. Edição
-//        completa (formulário): o produto inteiro.
+//        Edição parcial (chaves da listagem): só os campos enviados, entre
+//        ativo, novidade, destaque, aprovado, mostrarPreco e precoCentavos.
+//        Edição completa (formulário): o produto inteiro, com a galeria.
 //        Permissão: qualquer usuário logado; "aprovado" (publicar o que o
-//        operador cadastrou) é SOMENTE do admin.
-// DELETE /api/admin/produtos/:id — apaga o produto de vez.
-//        Permissão: SOMENTE ADMIN (operador não apaga).
+//        colaborador cadastrou) é SOMENTE do gestor.
+// DELETE /api/admin/produtos/:id — apaga o produto de vez (e as fotos).
+//        Permissão: SOMENTE gestor (colaborador não apaga).
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { exigirAdminApi, exigirSessaoApi } from "@/lib/sessao";
@@ -16,7 +16,7 @@ import { PAPEL_ADMIN, VENDA_INDUSTRIALIZADO } from "@/lib/tipos";
 
 type Contexto = { params: Promise<{ id: string }> };
 
-const CAMPOS_PARCIAIS = ["ativo", "novidade", "destaque", "aprovado", "precoCentavos"];
+const CAMPOS_PARCIAIS = ["ativo", "novidade", "destaque", "aprovado", "mostrarPreco", "precoCentavos"];
 
 export async function PATCH(req: Request, contexto: Contexto) {
   const sessao = await exigirSessaoApi();
@@ -26,7 +26,10 @@ export async function PATCH(req: Request, contexto: Contexto) {
 
   const { id } = await contexto.params;
   const corpo = await req.json().catch(() => ({}));
-  const anterior = await db.produto.findUnique({ where: { id: Number(id) } });
+  const anterior = await db.produto.findUnique({
+    where: { id: Number(id) },
+    include: { fotos: { select: { id: true } } },
+  });
   if (!anterior) {
     return NextResponse.json({ erro: "Produto não encontrado." }, { status: 404 });
   }
@@ -55,6 +58,15 @@ export async function PATCH(req: Request, contexto: Contexto) {
           );
         }
         dados[c] = corpo[c] === true;
+      } else if (c === "mostrarPreco") {
+        // Preço exposto só para industrializado com registro (RDC 67/2007)
+        if (!industrializado && corpo.mostrarPreco === true) {
+          return NextResponse.json(
+            { erro: "Manipulado não pode ter preço no site (RDC 67/2007)." },
+            { status: 400 }
+          );
+        }
+        dados.mostrarPreco = corpo.mostrarPreco === true;
       } else if (c === "precoCentavos") {
         const preco = Number(corpo.precoCentavos);
         if (!Number.isInteger(preco) || preco < 0 || (industrializado && preco === 0)) {
@@ -75,7 +87,15 @@ export async function PATCH(req: Request, contexto: Contexto) {
             ? produto.aprovado
               ? "publicado"
               : "voltou para aprovação"
-            : `${c}=${dados[c] ? "sim" : "não"}`
+            : c === "mostrarPreco"
+              ? produto.mostrarPreco
+                ? "preço ligado no site"
+                : "preço desligado no site"
+              : c === "ativo"
+                ? produto.ativo
+                  ? "de volta ao site"
+                  : "escondido do site"
+                : `${c}=${dados[c] ? "sim" : "não"}`
       )
       .join(", ");
     await registrarLog(sessao.nome ?? "?", "alterou produto", `"${produto.nome}": ${mudancas}`);
@@ -88,19 +108,33 @@ export async function PATCH(req: Request, contexto: Contexto) {
     return NextResponse.json({ erro: resultado.erro }, { status: 400 });
   }
 
-  // "aprovado" não vem do formulário: editar não publica nem despublica
+  // "aprovado" não vem do formulário: editar não publica nem despublica.
+  // A galeria é regravada inteira, na ordem que veio.
   const produto = await db.produto.update({
     where: { id: Number(id) },
-    data: resultado.dados,
+    data: {
+      ...resultado.dados,
+      fotos: {
+        deleteMany: {},
+        create: resultado.fotos.map((url, ordem) => ({ url, ordem })),
+      },
+    },
   });
 
-  // Log com destaque para o que é mais sensível: preço e tipo de venda
+  // Log com destaque para o que é mais sensível: preço, tipo de venda e fotos
   const detalhes: string[] = [];
   if (anterior.precoCentavos !== produto.precoCentavos) {
     detalhes.push(`preço ${formatarPreco(anterior.precoCentavos)} -> ${formatarPreco(produto.precoCentavos)}`);
   }
   if (anterior.venda !== produto.venda) {
     detalhes.push(`tipo de venda ${anterior.venda.toLowerCase()} -> ${produto.venda.toLowerCase()}`);
+  }
+  if (anterior.mostrarPreco !== produto.mostrarPreco) {
+    detalhes.push(produto.mostrarPreco ? "preço ligado no site" : "preço desligado no site");
+  }
+  const fotosAntes = anterior.fotos.length || (anterior.fotoUrl ? 1 : 0);
+  if (fotosAntes !== resultado.fotos.length || corpo.fotosMudaram === true) {
+    detalhes.push(`${resultado.fotos.length} foto(s)`);
   }
   await registrarLog(
     sessao.nome ?? "?",
@@ -115,7 +149,7 @@ export async function DELETE(_req: Request, contexto: Contexto) {
   const sessao = await exigirAdminApi();
   if (!sessao) {
     return NextResponse.json(
-      { erro: "Apenas administradores podem apagar produtos." },
+      { erro: "Apenas o gestor pode apagar produtos." },
       { status: 403 }
     );
   }

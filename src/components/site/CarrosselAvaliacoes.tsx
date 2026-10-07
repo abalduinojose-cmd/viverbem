@@ -17,6 +17,7 @@ import {
 } from "@/lib/tipos";
 import { useArrasteHorizontal } from "@/lib/useArrasteHorizontal";
 import { Estrelas } from "./Estrelas";
+import { SetaDireita } from "./icones";
 import { asset } from "@/lib/asset";
 
 // Logotipo "G" do Google
@@ -89,16 +90,36 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
 
   return (
     <section aria-labelledby="titulo-avaliacoes" className="secao">
-      <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+      <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div className="max-w-2xl">
           <p className="rotulo-pilula">quem já é cliente</p>
           <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
             O que dizem <span className="italic">sobre a gente</span>
           </h2>
         </div>
-        <a href={PERFIL_GOOGLE_URL} target="_blank" rel="noopener noreferrer" className="botao botao-secundario self-start md:self-auto">
-          <IconeGoogle tamanho={18} />
-          Ver no Google
+        {/* O selo do Google no lugar do botão (07/10/2026, "modernize"): a
+            nota com as estrelas em ouro, o total e a seta, levando ao perfil */}
+        <a
+          href={PERFIL_GOOGLE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group self-start md:self-auto inline-flex items-center gap-3.5 rounded-full bg-white border border-fio p-2 pr-2 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:border-ouro/40 hover:-translate-y-0.5"
+        >
+          <span className="w-11 h-11 shrink-0 rounded-full bg-gelo flex items-center justify-center">
+            <IconeGoogle tamanho={20} />
+          </span>
+          <span className="leading-tight pr-1">
+            <span className="flex items-center gap-2">
+              <span className="text-[1.15rem] font-semibold text-navy tabular-nums">{NOTA}</span>
+              <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={13} />
+            </span>
+            <span className="block text-xs text-cinza mt-0.5 whitespace-nowrap">
+              {AVALIACOES_GOOGLE_TOTAL} avaliações · Ver no Google
+            </span>
+          </span>
+          <span className="w-10 h-10 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+            <SetaDireita tamanho={15} />
+          </span>
         </a>
       </div>
 

@@ -26,6 +26,7 @@ import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 import { IconeLoja } from "./IconesVantagens";
 import { IconeMoto } from "./IconeMoto";
+import { IconeWhatsApp } from "./icones";
 
 // Prancheta com o visto: o farmacêutico confere
 function IconeConfere() {
@@ -49,14 +50,6 @@ function IconeFrasco() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M9 3h6M10 3v6.5L4.6 19a1.5 1.5 0 0 0 1.3 2.2h12.2a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M7.2 16h9.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconeWhatsApp() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="text-[#25D366]">
-      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
     </svg>
   );
 }
@@ -204,7 +197,7 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
             rel="noopener noreferrer"
             className="botao border border-white/20 text-white transition-colors hover:bg-white/10 !gap-2.5"
           >
-            <IconeWhatsApp />
+            <IconeWhatsApp tamanho={18} className="text-[#25D366]" />
             Tirar uma dúvida antes
           </a>
         </div>

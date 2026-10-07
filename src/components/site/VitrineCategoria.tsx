@@ -7,7 +7,7 @@
 // espaço do quadrado azul", "diminua mais", "coloque as categorias com os
 // produtos maiores e arrastando para o lado"; 07/10: "pode diminuir, quero
 // os produtos em mais destaque"): o banner deixou de ser uma coluna da
-// grade e virou o primeiro cartão da faixa, com 11/12rem de largura, só a
+// grade e virou o ÚLTIMO cartão da faixa, com 11/12rem de largura, só a
 // pílula, o título e o botão, e a mesma altura dos cartões de produto
 // (15/18rem).
 // No celular ele também entra na faixa, em vez de ocupar a tela inteira.
@@ -27,6 +27,7 @@ import { asset } from "@/lib/asset";
 import { ProdutoDTO } from "@/lib/tipos";
 import { FaixaProdutos } from "./FaixaProdutos";
 import { BotaoVerMais } from "./BotaoVerMais";
+import { SetaDireita } from "./icones";
 
 export type BannerVitrine = {
   /** Título do banner; a parte entre *asteriscos* sai em itálico ouro */
@@ -37,14 +38,6 @@ export type BannerVitrine = {
   /** Letra gigante como marca d'água (a inicial da área) */
   inicial?: string;
 };
-
-function SetaDireita() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 // Título em duas vozes: a sans branca e, entre *asteriscos*, o itálico
 // serifado em ouro (mesma regra dos títulos de seção)
@@ -120,26 +113,18 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
         </>
       ) : (
         <>
-          <span aria-hidden="true" className="malha-banner" />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -right-14 -top-14 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.32),transparent_62%)] transition-opacity duration-500 group-hover:opacity-70"
+            className="pointer-events-none absolute -right-14 -top-14 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.32),transparent_62%)]"
           />
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -left-12 -bottom-16 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(63,146,224,0.35),transparent_62%)]"
           />
-          <span aria-hidden="true" className="pointer-events-none absolute right-6 bottom-20 w-40 h-40 rounded-full border border-white/[0.07]" />
           {banner.inicial && <InicialMarca letra={banner.inicial} />}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
         </>
       )}
-
-      {/* Brilho que acende no hover */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(255,255,255,0.14),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-      />
 
       <span className="relative z-[1] flex-1 flex flex-col text-white">
         <span className="titulo-banner text-[1.3rem] md:text-[1.45rem] font-semibold leading-[1.06] tracking-[-0.03em] text-balance">
@@ -150,8 +135,8 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
           <span className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-white/70">Ver produtos</span>
           <span className="flex items-center gap-3">
             <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-ouro/15 via-ouro/55 to-ouro-claro" />
-            <span className="w-10 h-10 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center ring-4 ring-white/[0.08] shadow-[0_12px_24px_-10px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:translate-x-1">
-              <SetaDireita />
+            <span className="w-10 h-10 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center shadow-[0_12px_24px_-10px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:translate-x-1">
+              <SetaDireita tamanho={15} />
             </span>
           </span>
         </span>
@@ -186,13 +171,14 @@ export function VitrineCategoria({
         <BotaoVerMais href={href} className="shrink-0 ml-auto sm:ml-0" />
       </div>
 
-      {/* A faixa: o banner como primeiro cartão e os produtos grandes */}
+      {/* A faixa: os produtos primeiro e o banner da área como último cartão
+          (07/10/2026, "para os produtos ficarem em evidência") */}
       <div className="revelar mt-5 md:mt-6">
         <FaixaProdutos
           produtos={produtos}
           comCategoria={false}
           className="cascata"
-          antes={banner ? <BannerCartao banner={banner} href={href} /> : undefined}
+          depois={banner ? <BannerCartao banner={banner} href={href} /> : undefined}
         />
       </div>
     </section>

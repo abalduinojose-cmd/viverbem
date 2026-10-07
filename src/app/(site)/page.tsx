@@ -9,6 +9,10 @@
 // produtos que têm foto, sem preço e com carrinho, ciente do risco.
 // Novidades e combos continuam fora.
 //
+// Desde 07/10/2026 cada seção tem a sua chave no painel (Home e arte da
+// dobra), e a faixa de cada área tem a chave "Vitrine na home" em
+// Categorias. A dobra e as vantagens ficam sempre.
+//
 // As fotos das áreas (public/fotos/categorias/<slug>.jpg) e dos banners
 // (public/fotos/banners/<nome>.jpg) são opcionais: sem o arquivo, a
 // categoria mostra o pote de um produto dela e o banner fica no degradê,
@@ -16,8 +20,10 @@
 import fs from "fs";
 import path from "path";
 import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
+import { obterSecoesHome } from "@/lib/configuracao";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { Abertura } from "@/components/site/Abertura";
+import { obterArteHero } from "@/lib/hero";
 import { Beneficios } from "@/components/site/Beneficios";
 import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
@@ -85,15 +91,17 @@ function TituloComItalico({ nome }: { nome: string }) {
 }
 
 export default async function Home() {
-  const [{ categorias, produtos }, avaliacoes] = await Promise.all([
+  const [{ categorias, produtos }, avaliacoes, arte, secoes] = await Promise.all([
     obterCatalogo(),
     obterAvaliacoes(),
+    obterArteHero(),
+    obterSecoesHome(),
   ]);
 
   const comFoto = produtos.filter((p) => temFoto(p.fotoUrl));
 
-  // Industrializados com registro, numa vitrine própria (sem preço, como
-  // todo o site desde 05/10/2026). Os marcados como destaque vêm primeiro.
+  // Industrializados com registro, numa vitrine própria (sem preço, salvo
+  // os que o painel liberou). Os marcados como destaque vêm primeiro.
   const prontaEntrega = produtos
     .filter(ehIndustrializado)
     .sort((a, b) => Number(b.destaque) - Number(a.destaque));
@@ -113,9 +121,11 @@ export default async function Home() {
     else if (produto?.fotoUrl) imagensCategorias[c.id] = { tipo: "produto", src: produto.fotoUrl };
   }
 
-  // Vitrines por área: só as que têm fotos reais suficientes
+  // Vitrines por área: só as que têm fotos reais suficientes e a chave
+  // "Vitrine na home" ligada no painel
   const vitrines: { categoria: CategoriaDTO; produtos: ProdutoDTO[]; banner: BannerVitrine }[] = [];
   for (const c of categoriasComItens) {
+    if (!c.vitrineHome) continue;
     const lista = comFoto.filter((p) => p.categoriaId === c.id);
     if (lista.length < MINIMO_PARA_VITRINE) continue;
     const texto = BANNERS_POR_SLUG[c.slug] ?? { titulo: c.nome };
@@ -137,70 +147,86 @@ export default async function Home() {
     inicial: "M",
   };
 
+  // A primeira folha só existe se alguma das suas seções estiver ligada
+  const mostraFolhaProdutos =
+    secoes.categorias ||
+    secoes.maisProcurados ||
+    (secoes.vitrinesAreas && vitrines.length > 0) ||
+    (secoes.prontaEntrega && prontaEntrega.length > 0);
+
   return (
     <main className="flex-1">
-      {/* 1 ─ Banner de abertura e 2 ─ vantagens */}
-      <Abertura />
+      {/* 1 ─ Banner de abertura e 2 ─ vantagens (sempre) */}
+      <Abertura arte={arte} />
       <Beneficios />
 
       <div className="folhas">
         {/* 3 ─ Categorias em círculos + 4 ─ vitrines de produtos */}
-        <Folha>
-          <CategoriasRedondas categorias={categoriasComItens} imagens={imagensCategorias} />
+        {mostraFolhaProdutos && (
+          <Folha>
+            {secoes.categorias && <CategoriasRedondas categorias={categoriasComItens} imagens={imagensCategorias} />}
 
-          <VitrineCategoria
-            id="titulo-mais-procurados"
-            titulo={
-              <>
-                Mais <span className="italic">procurados</span>
-              </>
-            }
-            href="/produtos"
-            produtos={comFoto}
-            banner={bannerMaisProcurados}
-          />
+            {secoes.maisProcurados && (
+              <VitrineCategoria
+                id="titulo-mais-procurados"
+                titulo={
+                  <>
+                    Mais <span className="italic">procurados</span>
+                  </>
+                }
+                href="/produtos"
+                produtos={comFoto}
+                banner={bannerMaisProcurados}
+              />
+            )}
 
-          {vitrines.map((v) => (
-            <VitrineCategoria
-              key={v.categoria.id}
-              id={`titulo-vitrine-${v.categoria.slug}`}
-              titulo={<TituloComItalico nome={v.categoria.nome} />}
-              href={`/produtos/${v.categoria.slug}`}
-              produtos={v.produtos}
-              banner={v.banner}
-            />
-          ))}
+            {secoes.vitrinesAreas &&
+              vitrines.map((v) => (
+                <VitrineCategoria
+                  key={v.categoria.id}
+                  id={`titulo-vitrine-${v.categoria.slug}`}
+                  titulo={<TituloComItalico nome={v.categoria.nome} />}
+                  href={`/produtos/${v.categoria.slug}`}
+                  produtos={v.produtos}
+                  banner={v.banner}
+                />
+              ))}
 
-          {/* Pronta entrega: só aparece quando houver industrializado */}
-          {prontaEntrega.length > 0 && (
-            <VitrineCategoria
-              id="titulo-pronta-entrega"
-              titulo={
-                <>
-                  Pronta <span className="italic">entrega</span>
-                </>
-              }
-              href="/produtos"
-              produtos={prontaEntrega}
-            />
-          )}
-          <div className="secao-fecho" aria-hidden="true" />
-        </Folha>
+            {/* Pronta entrega: só aparece quando houver industrializado */}
+            {secoes.prontaEntrega && prontaEntrega.length > 0 && (
+              <VitrineCategoria
+                id="titulo-pronta-entrega"
+                titulo={
+                  <>
+                    Pronta <span className="italic">entrega</span>
+                  </>
+                }
+                href="/produtos"
+                produtos={prontaEntrega}
+              />
+            )}
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
 
         {/* 5 ─ Como funciona: a trilha única do pedido, em 4 passos */}
-        <Folha tema="gelo">
-          <ComoFunciona />
-          <div className="secao-fecho" aria-hidden="true" />
-        </Folha>
+        {secoes.comoFunciona && (
+          <Folha tema="gelo">
+            <ComoFunciona />
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
 
         {/* 6 ─ Por dentro da Viver Bem (reels) */}
-        <Folha>
-          <ReelsInstagram />
-          <div className="secao-fecho" aria-hidden="true" />
-        </Folha>
+        {secoes.reels && (
+          <Folha>
+            <ReelsInstagram />
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
 
         {/* 7 ─ Avaliações do Google */}
-        {avaliacoes.length > 0 && (
+        {secoes.avaliacoes && avaliacoes.length > 0 && (
           <Folha tema="gelo">
             <CarrosselAvaliacoes avaliacoes={avaliacoes} />
             <div className="secao-fecho" aria-hidden="true" />

@@ -42,21 +42,21 @@ async function main() {
     console.log("Usuário admin criado: admin@viverbem.com.br / viverbem123");
   }
 
-  // ---------- Usuário operador de exemplo (Fase 2: acesso restrito) ----------
+  // ---------- Usuário colaborador de exemplo (papel OPERADOR: só o catálogo e o site) ----------
   const operadorExiste = await db.usuario.findUnique({
     where: { email: "operador@viverbem.com.br" },
   });
   if (!operadorExiste) {
     await db.usuario.create({
       data: {
-        nome: "Operador da Loja",
+        nome: "Colaborador da Loja",
         email: "operador@viverbem.com.br",
         // Senha inicial: operador123 (troque depois!)
         senhaHash: bcrypt.hashSync("operador123", 10),
         papel: "OPERADOR",
       },
     });
-    console.log("Usuário operador criado: operador@viverbem.com.br / operador123");
+    console.log("Usuário colaborador criado: operador@viverbem.com.br / operador123");
   }
 
   // ---------- Avaliacoes reais do Google ----------
