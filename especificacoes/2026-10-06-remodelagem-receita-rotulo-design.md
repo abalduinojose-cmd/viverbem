@@ -1,6 +1,25 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 46 (08/10/2026): fotos nos círculos de categoria, cartão dos 20 anos refeito, rótulo das seções em pílula leve. Não publicado.**
+> **ADENDO 47 (08/10/2026): página de produtos com "Mais procurados" primeiro, cartão dos 20 anos com painel flutuante. PUBLICADO no 10º push (c755664).**
+> Pedido: "modernize mais o link component (20 anos); agora na página de
+> produtos, vamos modernizar mais ela, e coloque a linha de mais procurados
+> primeiro; atualize o github". Página de produtos (`CatalogoClient`): a
+> primeira faixa é "Mais procurados" (os produtos com foto, destaques na
+> frente), depois "Pronta entrega" e as áreas; cada faixa abre com
+> `CabecalhoFaixa` (título, o total numa pílula azul a 7%, o apoio e o "ver
+> tudo", agora também no celular); os chips de área mostram a contagem (as
+> páginas passam `contagens`, de `src/lib/contagens.ts`, contadas no
+> servidor sobre o catálogo inteiro); a abertura ganhou a linha dos números
+> com pontos de ouro; o bilhete da receita perdeu o círculo de ouro; e a
+> página fecha com o convite "Não achou a sua fórmula? Manipulamos conforme a
+> receita." em azul-noite. Cartão dos 20 anos (celular), quarta versão: a
+> foto dos sócios ocupa o cartão (5:4) e um painel branco flutua sobre a base
+> com o "20" em ouro, "anos construindo cuidado" e o botão redondo
+> azul-noite. A pílula do rótulo ganhou `width: fit-content` (dentro de
+> cartões em coluna ela esticava na largura toda). O demo:build deu EPERM
+> logo depois de parar o servidor; a segunda tentativa, 8 s depois, passou.
+
+> **ADENDO 46 (08/10/2026): fotos nos círculos de categoria, cartão dos 20 anos refeito, rótulo das seções em pílula leve. PUBLICADO no 10º push (c755664).**
 > Círculos: Cabelos & Unhas e Homeopatia & Florais (sem produto com foto)
 > ganharam, PROVISÓRIOS a pedido ("vai mudar depois"), o frasco do ZincBlock
 > e o conta-gotas do Firm Defense (FOTO_REPRESENTATIVA na home). Banner da
