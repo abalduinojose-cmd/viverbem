@@ -4,6 +4,7 @@
 // quem lê e grava a escolha é src/lib/configuracao.ts.
 //
 // A dobra e as vantagens não entram: sem elas a página não se sustenta.
+// A ordem aqui é a ordem da página.
 
 export const SECOES_HOME = [
   {
@@ -32,6 +33,11 @@ export const SECOES_HOME = [
     texto: "Os quatro passos do pedido pela receita.",
   },
   {
+    chave: "catalogo",
+    titulo: "Explore o catálogo",
+    texto: "Uma grade com um produto de cada área, entre o Como funciona e os vídeos.",
+  },
+  {
     chave: "reels",
     titulo: "Por dentro da Viver Bem",
     texto: "Os vídeos do Instagram.",
@@ -40,6 +46,16 @@ export const SECOES_HOME = [
     chave: "avaliacoes",
     titulo: "O que dizem sobre a gente",
     texto: "As avaliações do Google.",
+  },
+  {
+    chave: "bannerMulher",
+    titulo: "Banner Saúde da Mulher",
+    texto: "Depois das avaliações: a animação com os potes da linha feminina, levando para a categoria Saúde da Mulher.",
+  },
+  {
+    chave: "bannerHistoria",
+    titulo: "Banner da história (só no celular)",
+    texto: "Depois das avaliações: a fachada com \"20 anos construindo cuidado\", levando para A Viver Bem.",
   },
 ] as const;
 

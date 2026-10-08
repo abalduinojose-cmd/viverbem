@@ -5,6 +5,8 @@
 // inicial em ouro.
 // Sem o respiro de seção em cima: fica colada nas vantagens (pedido do
 // usuário em 06/10/2026, "tire a parte em branco").
+// 08/10/2026 ("diminua o tamanho em 10%"): o título sai a 90% do tamanho
+// de título de seção e a grade dos círculos ocupa 90% da largura.
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
@@ -23,12 +25,12 @@ export function CategoriasRedondas({
   return (
     <section aria-labelledby="titulo-categorias" className="pt-0.5 md:pt-1 max-w-7xl mx-auto px-5 md:px-8">
       <div className="revelar text-center">
-        <h2 id="titulo-categorias" className="titulo-secao">
+        <h2 id="titulo-categorias" className="titulo-secao text-[calc(var(--tam-titulo)*0.9)]">
           Nossas <span className="italic">categorias</span>
         </h2>
       </div>
 
-      <ul className="escalonado vao-titulo grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-7 md:gap-6">
+      <ul className="escalonado vao-titulo mx-auto w-[90%] grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-7 md:gap-6">
         {categorias.map((c) => {
           const img = imagens[c.id];
           return (

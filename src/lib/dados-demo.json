@@ -1085,7 +1085,8 @@
       "prontaEntrega": true,
       "comoFunciona": true,
       "reels": true,
-      "avaliacoes": true
+      "avaliacoes": true,
+      "bannerMulher": false
     },
     "heroDesktop": null,
     "heroCelular": null,

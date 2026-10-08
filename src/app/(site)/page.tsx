@@ -1,8 +1,9 @@
 // HOME no modelo de loja (referência biovittare.com.br, pedida pelo
 // usuário em 06/10/2026), com o conteúdo da Viver Bem:
 //   banner > vantagens > categorias em círculos > vitrines de produtos
-//   (mais procurados e cada área com fotos, com um banner ao lado) >
-//   como funciona > reels > avaliações > (rodapé com "fale com a gente")
+//   (mais procurados e cada área com fotos, com um banner na faixa) >
+//   como funciona > catálogo em grade > reels > avaliações > banner da
+//   história (só no celular) > (rodapé com "fale com a gente")
 //
 // Em 23/09 a vitrine promocional tinha saído pela RDC 67/2007 (item 5.14).
 // Em 05/10/2026 o cliente pediu de volta o "mais procurados", com os
@@ -13,10 +14,12 @@
 // dobra), e a faixa de cada área tem a chave "Vitrine na home" em
 // Categorias. A dobra e as vantagens ficam sempre.
 //
+// 08/10/2026: a grade "Explore o catálogo" entre o Como funciona e os
+// reels, e o banner da história depois das avaliações, só no celular.
+//
 // As fotos das áreas (public/fotos/categorias/<slug>.jpg) e dos banners
 // (public/fotos/banners/<nome>.jpg) são opcionais: sem o arquivo, a
-// categoria mostra o pote de um produto dela e o banner fica no degradê,
-// com a inicial da área como marca d'água.
+// categoria mostra o pote de um produto dela e o banner fica no degradê.
 import fs from "fs";
 import path from "path";
 import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
@@ -29,8 +32,11 @@ import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { CategoriasRedondas, ImagemCategoria } from "@/components/site/CategoriasRedondas";
 import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
+import { CatalogoHome } from "@/components/site/CatalogoHome";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
+import { BannerHistoria } from "@/components/site/BannerHistoria";
+import { BannerSaudeMulher } from "@/components/site/BannerSaudeMulher";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +45,9 @@ const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerC
 
 // Quantas fotos reais uma área precisa ter para ganhar vitrine própria
 const MINIMO_PARA_VITRINE = 3;
+
+// Quantos produtos a grade "Explore o catálogo" mostra (2 fileiras no computador)
+const LIMITE_CATALOGO_HOME = 8;
 
 /** Caminho público da imagem, se o arquivo existir em public/ */
 function imagemSeExistir(caminho: string): string | null {
@@ -90,6 +99,33 @@ function TituloComItalico({ nome }: { nome: string }) {
   return <>{nome}</>;
 }
 
+/** Os produtos da grade do catálogo: um de cada área por vez (os com foto
+ *  primeiro, depois os destaques), até o limite, para a grade mostrar
+ *  todas as áreas e não repetir só o que já está nas faixas. */
+function escolherParaCatalogo(categorias: CategoriaDTO[], produtos: ProdutoDTO[], limite: number): ProdutoDTO[] {
+  const porArea = categorias.map((c) =>
+    produtos
+      .filter((p) => p.categoriaId === c.id)
+      .sort(
+        (a, b) =>
+          Number(temFoto(b.fotoUrl)) - Number(temFoto(a.fotoUrl)) || Number(b.destaque) - Number(a.destaque)
+      )
+  );
+  const escolhidos: ProdutoDTO[] = [];
+  for (let rodada = 0; escolhidos.length < limite; rodada++) {
+    let pegou = false;
+    for (const lista of porArea) {
+      const p = lista[rodada];
+      if (p && escolhidos.length < limite) {
+        escolhidos.push(p);
+        pegou = true;
+      }
+    }
+    if (!pegou) break;
+  }
+  return escolhidos;
+}
+
 export default async function Home() {
   const [{ categorias, produtos }, avaliacoes, artes, secoes] = await Promise.all([
     obterCatalogo(),
@@ -135,7 +171,6 @@ export default async function Home() {
       banner: {
         ...texto,
         imagem: imagemSeExistir(`/fotos/banners/${c.slug}.jpg`),
-        inicial: c.nome.charAt(0),
       },
     });
   }
@@ -144,8 +179,9 @@ export default async function Home() {
     titulo: "Cada fórmula sai *com o seu nome no rótulo.*",
     texto: "Preparada depois do pedido, conforme a receita.",
     imagem: imagemSeExistir("/fotos/banners/mais-procurados.jpg"),
-    inicial: "M",
   };
+
+  const produtosCatalogo = escolherParaCatalogo(categoriasComItens, produtos, LIMITE_CATALOGO_HOME);
 
   // A primeira folha só existe se alguma das suas seções estiver ligada
   const mostraFolhaProdutos =
@@ -180,6 +216,7 @@ export default async function Home() {
               />
             )}
 
+            {/* Nas áreas o banner abre a faixa, um pouco menor (08/10/2026) */}
             {secoes.vitrinesAreas &&
               vitrines.map((v) => (
                 <VitrineCategoria
@@ -189,6 +226,7 @@ export default async function Home() {
                   href={`/produtos/${v.categoria.slug}`}
                   produtos={v.produtos}
                   banner={v.banner}
+                  bannerPrimeiro
                 />
               ))}
 
@@ -217,7 +255,19 @@ export default async function Home() {
           </Folha>
         )}
 
-        {/* 6 ─ Por dentro da Viver Bem (reels) */}
+        {/* 6 ─ Explore o catálogo: um produto de cada área, em grade */}
+        {secoes.catalogo && produtosCatalogo.length > 0 && (
+          <Folha>
+            <CatalogoHome
+              produtos={produtosCatalogo}
+              totalProdutos={produtos.length}
+              totalAreas={categoriasComItens.length}
+            />
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
+
+        {/* 7 ─ Por dentro da Viver Bem (reels) */}
         {secoes.reels && (
           <Folha>
             <ReelsInstagram />
@@ -225,10 +275,26 @@ export default async function Home() {
           </Folha>
         )}
 
-        {/* 7 ─ Avaliações do Google */}
+        {/* 8 ─ Avaliações do Google */}
         {secoes.avaliacoes && avaliacoes.length > 0 && (
           <Folha tema="gelo">
             <CarrosselAvaliacoes avaliacoes={avaliacoes} />
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
+
+        {/* 9 ─ Banner da Saúde da Mulher: a animação da dobra com os potes da linha */}
+        {secoes.bannerMulher && (
+          <Folha>
+            <BannerSaudeMulher />
+            <div className="secao-fecho" aria-hidden="true" />
+          </Folha>
+        )}
+
+        {/* 10 ─ Banner da história, só no celular (o "Fale com a gente" vem no rodapé) */}
+        {secoes.bannerHistoria && (
+          <Folha className="md:hidden">
+            <BannerHistoria />
             <div className="secao-fecho" aria-hidden="true" />
           </Folha>
         )}

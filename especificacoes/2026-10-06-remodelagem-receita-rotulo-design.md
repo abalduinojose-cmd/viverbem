@@ -1,5 +1,207 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 43 (08/10/2026): banner animado da Saúde da Mulher, com coreografia própria ("fases"). Não publicado.**
+> Pedido: "uma animação no mesmo estilo, com os medicamentos em anexo
+> (Pó finalizador FPB 20, ZincBlock FPS, Composto Emagrecedor, Bastão
+> clareador), voltada para a saúde da mulher"; depois "as transições estão
+> iguais à primeira, mude o formato mas mantenha a identidade" e "não
+> gostei do efeito nos produtos, melhore os movimentos". Novo
+> `BannerSaudeMulher` (cartão escuro como o da história, celular e desktop,
+> link para /produtos/saude-da-mulher, chave `bannerMulher` no painel),
+> depois das avaliações e antes do banner da história. O motor virou
+> genérico: `heroAnimado/roteiros.ts` (texto, potes, cor da luz, formato
+> "dobra" ou "cartao", coreografia "orbita" ou "fases"), `CenaAnimada`
+> (o `HeroAnimado` virou atalho dela) e `fases.ts` (a coreografia nova,
+> sobre o mesmo palco exposto por cena.ts). Fases: "Saúde em cada fase da
+> mulher", rótulo "BELEZA *e* AUTOESTIMA" em cápsula que se abre do ponto,
+> "Saúde" vira letra a letra, "em cada fase da" entra palavra por palavra
+> ganhando foco, "mulher" acende do centro; uma lua de ouro cresce de nova
+> a cheia; os potes flutuam ao longe em volta dela, fora de foco, e vêm um
+> por vez para a frente (girando de leve, luz rosada atrás, brilho no
+> rótulo) com o letreiro de lado acompanhando; no fecho pousam juntos no
+> horizonte e na saída sobem e somem enquanto a lua mingua. Luz rosada no
+> lugar da azul (cor dos potes), mesmo azul-noite e ouro. As fotos só
+> descem quando o banner chega perto da tela. Aquecimento passou a copiar
+> cada quadro para uma tela de GPU (força a compilação dos desenhos antes
+> do primeiro laço). Risco avisado: o Composto Emagrecedor foi tirado do
+> site em setembro ("o nome era a promessa") e aparece em destaque aqui.
+
+> **ADENDO 42 (08/10/2026): "Como funciona" arrasta para o lado no celular. Não publicado.**
+> Pedido: "quero mais moderno e coloque eles arrastando para o lado na
+> versão mobile". No celular a lista dos passos virou uma faixa horizontal
+> com rolagem nativa e snap (`snap-x snap-mandatory`, `scroll-pl-5`, sangra
+> até as bordas com `-mx-5 px-5`), cartões de `min(18.5rem, 82vw)` para o
+> seguinte aparecer na borda, e o ícone e o número dividindo a primeira
+> linha do cartão (do tablet em diante seguem empilhados, como no print).
+> Embaixo da faixa, uma barra de ouro de 112px anda com a rolagem da
+> própria faixa: `scroll-timeline-name: --passos` na faixa,
+> `timeline-scope` no pai (`.passos-escopo`) para a barra, que fica fora da
+> faixa, ler a linha do tempo, e `animation-timeline: --passos` na barra
+> (`.passos-barra`, de 25% a 100%); roda com "reduzir movimento" porque é
+> a pessoa que arrasta; sem suporte fica parada no primeiro quarto. Do
+> tablet em diante nada mudou (2x2 e 4 colunas com o traço). Os cartões
+> têm a mesma altura (alturas próprias deixavam um vazio entre o cartão e a
+> barra); os chips das lojas ficam menores no celular, para caberem numa
+> linha e o 04 não esticar tanto. Capturas em
+> `scratchpad/etapa57`. A segunda imagem do pedido (o banner da história)
+> veio sem instrução; nada foi mexido nela.
+
+> **ADENDO 42 (08/10/2026): tipografia da animação remodelada, rótulo do topo novo e animação sem trancos. Não publicado.**
+> Pedidos: "a tipografia pode melhorar, como um especialista em motion,
+> mantendo a essência"; depois "o MANIPULAÇÃO E HOMEOPATIA pode melhorar,
+> fontes mais modernas e movimentos suaves" e "o vídeo está travando de
+> leve". Tipografia: três vozes (Bricolage Grotesque 800 só na linha
+> grande, com o peso florescendo de 300 a 800 na entrada; "em saúde" em
+> Instrument Sans 400 menor; "personalizada" em Instrument Serif itálico
+> ouro, a maior, escrita com borda macia e luz na ponta), bloco empilhado
+> pela tinta medida, rastro de movimento, mola no pouso e saída em
+> espelho. As fontes do site saíram do layout para `src/lib/fontes-site.ts`
+> (mesma instância no canvas). Rótulo: cápsula de vidro que se desenha a
+> partir de um ponto de ouro que respira, "MANIPULAÇÃO *e* HOMEOPATIA" em
+> Bricolage 600 subindo de dentro dela, um fio de ouro dá uma volta na
+> borda (como o botão "Enviar receita"). Trancos: peso da fonte em degraus
+> de 50 e aquecido antes de tocar, sem shadowBlur, sem tela de apoio por
+> quadro (a luz nos potes é uma máscara recortada em faixas), luzes e
+> sombras como imagens prontas, linhas paradas do título como imagens,
+> início num respiro do navegador (requestIdleCallback), canvas só refeito
+> quando o tamanho muda, densidade 1,5 no desktop. Medido nesta máquina
+> (Vega 8): 2 a 4 ms de GPU por quadro, nenhum acima de 13 ms mesmo com
+> sincronização forçada a cada quadro.
+
+> **ADENDO 41 (08/10/2026): "Como funciona" v5, igual ao print de referência, na nossa identidade. Não publicado.**
+> Pedido com um print (cartões sobre creme, ícones em círculos de ouro,
+> números itálicos, traços ligando os cartões, folhagem no canto) e a
+> instrução "igual o print, mas com a identidade visual que já estamos
+> usando". Cabeçalho: rótulo com o fio, título em duas vozes e o apoio
+> EMBAIXO do título (antes ficava ao lado). Passos: o cartão único dividido
+> por fios (v4) voltou a ser QUATRO cartões brancos separados
+> (`rounded-[1.5rem]`, fio, sombra leve, sobem 0,5px no hover), cada um
+> com o ícone num círculo de ouro de 56px (ícone em navy, como os outros
+> círculos de ouro do site), o número grande em `numero-tinta`, o título,
+> o texto e o detalhe; o passo 04 segue com os chips das 3 lojas. No
+> computador um traço de ouro de 16px liga os cartões na altura do ícone
+> (`.traco-liga`, cresce com a rolagem via `trilha-cresce-x`; 2x2 no
+> tablet e empilhado no celular, sem traço). Ficou de fora, de propósito:
+> o fundo creme e a folhagem do print (a seção segue na folha gelo, sem
+> ornamento botânico) e a serifa nos títulos dos cartões (Instrument Sans
+> 600, como nos outros cartões). O convite em azul-noite e o aviso legal
+> não mudaram. Lint da seção limpo; o tsc acusa erros só em
+> `heroAnimado/cena.ts`, que o outro chat estava editando na hora
+> (`FontesDaCena` sem `titulo/pesoTitulo/trackingTitulo`), e o console
+> mostra "createLinearGradient non-finite" vindo da mesma animação.
+> Capturas em `scratchpad/etapa56` (1440, 1024 e 390).
+
+> **ADENDO 40 (08/10/2026): botões da dobra "modernos e atuais, condizentes com a animação da hero". Não publicado.**
+> Pedido com um print do celular. Os três níveis ficaram, mas com movimento
+> e material: "Enviar receita" (`.botao-vivo`) é branco com o ícone em ouro
+> escuro, um brilho de ouro embaixo e um fio de ouro que percorre a borda
+> devagar (pseudo-elemento com `conic-gradient` girando por `@property
+> --angulo-fio`, máscara que deixa só os 2px da borda; um giro a cada 7 s,
+> o mesmo compasso da animação da dobra, DURACAO de heroAnimado/cena.ts;
+> roda também com "reduzir movimento", porque é um detalhe contido e a
+> máquina do usuário está em reduce); "Ver produtos" (`.botao-vidro`) é vidro (branco
+> a 10%, borda a 22%, blur de 10px, fio de luz em cima); "Como funciona" é
+> texto com a seta que acena para baixo (`.acenar-baixo`, 3px, 2,4s; 3,6s
+> em reduce), chamando para rolar. O hover do principal sobe 1px e abre o
+> brilho. Lint limpo. Capturas em `scratchpad/etapa55`.
+
+> **ADENDO 41 (08/10/2026): a animação também no desktop, frase "Especialistas em saúde personalizada" e fontes próprias da animação. Não publicado.**
+> A bancada estática saiu: o banner (todas as larguras) é o canvas, com
+> altura fixa (celular `min((100vw-1.5rem)*2, 46rem)`, md 30rem, lg 34rem,
+> xl 36rem), h1 "Especialistas em saúde personalizada" e texto de apoio em
+> `sr-only`, botões por cima na base (à esquerda no desktop, md:px-12). A
+> cena tem dois enquadramentos escolhidos pelo mesmo corte do CSS (md):
+> retrato 360x720 e paisagem 560 de altura com título à esquerda e potes à
+> direita (escala dos potes pela altura livre e pela largura). Fontes em
+> `heroAnimado/fontes.ts` (só na animação, sem preload): A Fraunces 600 +
+> Fraunces itálico (padrão), B Plus Jakarta Sans 800 + Playfair itálico, C
+> Manrope 800 + DM Serif Display itálico; em dev `?heroFonte=jakarta`
+> compara. O tamanho do título se ajusta à coluna medindo as letras.
+
+> **ADENDO 39 (08/10/2026): dobra do celular vira animação de 7 s em canvas ("como se fosse After Effects"). Não publicado.**
+> Pedido: tipografia cinética, transições suaves entre formas, potes em 3D,
+> movimento de câmera, 7 s, no tamanho do banner azul do celular e com o
+> mesmo fundo. `src/components/site/heroAnimado/cena.ts` é a composição
+> (função pura do tempo, laço sem emenda: o último quadro é o primeiro) e
+> `HeroAnimado.tsx` toca, pausa fora da tela/aba escondida/tablet+ e roda
+> também com "reduzir movimento" (pedido). Roteiro: ponto de ouro vira fio,
+> "Sua fórmula" sobe de trás dele com a câmera recuando; o título voa para o
+> topo, "começa" fecha o espaçamento, o fio vira cápsula (metade em ouro)
+> que gira e tomba virando o anel no chão; os 4 potes chegam do fundo com
+> desfoque de movimento e giram em carrossel 3D (profundidade de campo,
+> reflexo, sombra, luz correndo no rótulo); "pela receita" se escreve em
+> ouro; um letreiro rola os 4 passos do pedido e termina em "Petrópolis,
+> desde 2006"; no fecho Caramelo + Gummy vêm para a frente e os outros
+> somem no fundo; tudo se recolhe ao ponto. Banner do celular com altura
+> `min((100vw-1.5rem)*2, 46rem)`, h1 e texto em `sr-only`, botões por cima
+> na base. Do `md` para cima nada mudou. Em dev, `?heroT=3.2` congela um
+> quadro. Custo medido: ~1 ms por quadro.
+
+> **ADENDO 38 (08/10/2026): home com a grade do catálogo, banner da história no celular, vantagens em cartão único, categorias 10% menores, banner das faixas refeito e na frente nas áreas. Não publicado.**
+> Pedido com dois prints do celular. **Explore o catálogo** (novo,
+> `CatalogoHome`): entre o "Como funciona" e os reels, uma grade (2 colunas
+> no celular, 3 no tablet, 4 no computador) com 8 produtos escolhidos um de
+> cada área por vez (os com foto primeiro, depois os destaques), o apoio
+> com os totais reais ("N fórmulas e produtos em M áreas") e o botão
+> "Ver o catálogo completo" em contorno; chave `catalogo` no painel.
+> **Banner da história** (novo, `BannerHistoria`, só no celular, `md:hidden`):
+> depois das avaliações e antes do "Fale com a gente" (que vem no rodapé),
+> um retângulo 16:10 com a foto da fachada (a mesma da página A Viver Bem),
+> véu azul-noite, "desde 1999 em Petrópolis", "20 anos construindo cuidado."
+> e "Conheça a nossa história", levando para /sobre; chave `bannerHistoria`.
+> As duas chaves novas entram ligadas (`normalizarSecoes`). **Vantagens**
+> (`Beneficios`): no celular os quatro cartões com o ícone no círculo viraram
+> UM cartão com a grade 2x2 dividida por fios, ícone em ouro escuro ao lado
+> do texto alinhado à esquerda (título 0,8rem para "Retirada sem taxa"
+> caber); no computador seguem as pílulas. **Nossas categorias**: título a
+> 90% do tamanho de seção e a grade dos círculos a 90% da largura.
+> **Banner das faixas** (`BannerCartao`): a inicial em marca d'água
+> (`InicialMarca`), o fio e a seta no círculo de ouro saíram; agora é a peça
+> em azul-noite com a malha, as luzes, um fio curto de ouro, título e texto
+> centralizados e o botão "Ver produtos" em contorno (vira branco no hover,
+> `whitespace-nowrap` para não quebrar no cartão estreito). O campo
+> `inicial` saiu do tipo `BannerVitrine`. Nas faixas das áreas (Dermatologia,
+> Vitaminas) o banner ABRE a faixa, compacto (10/11rem, `bannerPrimeiro`);
+> no "Mais procurados" segue fechando (11/12rem). Lint e tsc limpos.
+> Capturas em `scratchpad/etapa54` (home 1440 inteira e 390 em três
+> viewports altos).
+
+> **ADENDO 37 (07/10/2026): página A Viver Bem com as fotos, "Como pedir" em cartão, botões da dobra sem círculos, coluna lateral do produto. Não publicado.**
+> Pedido com seis anexos (prints 77 a 79 e três posts do Instagram da
+> farmácia). **A Viver Bem**: as fotos dos posts foram recortadas (só o
+> miolo, sem a moldura e a legenda do post; `public/fotos/sobre/`,
+> `geracoes.webp` 638x611, `vinte-anos.webp` 692x490, `futuro.webp`
+> 599x598) e entraram com a frase de cada post. A abertura trocou o
+> laboratório em ladrilho pela foto da equipe na loja, sem moldura, com a
+> legenda em itálico serifado e fio de ouro (`.legenda-foto`); a linha do
+> tempo virou UM cartão dividido por fios (4 colunas no computador, 2x2 no
+> tablet, empilhado no celular), com o ano em `numero-tinta` e a linha de
+> ouro crescendo na borda de cima (`.trilha-topo`), no lugar dos quatro
+> cartões com pílulas e linha horizontal; o fecho "20 anos" ganhou a foto
+> da fachada à esquerda (4:3) e o número passou a 5,5/7rem; e um bloco
+> novo fecha a história com a citação "E seguimos olhando para o futuro com
+> o mesmo propósito do primeiro dia." (`.citacao`), a terceira foto e o
+> link para as lojas. Textos da farmácia mantidos. **Página do produto**:
+> "Como pedir" deixou de ser a trilha com círculos de ouro e linha
+> (`.trilha-clara`) e virou um cartão claro com os três passos numerados
+> em ouro itálico e fios entre eles, igual no celular e no computador, com
+> "Tenho receita: enviar a foto" dentro do cartão. **Coluna lateral**
+> ("Mais procurados" e "Você viu recentemente"): a coluna presa passou de
+> 16 para 18rem; cada item é uma linha inteira clicável (foto num ladrilho
+> de gelo com a luz dourada, nome em até 2 linhas, área) com o "adicionar"
+> em contorno que vira ouro no hover (`BotaoAdicionar suave`), no lugar do
+> botão de ouro cheio repetido; "Ver todos os produtos" fecha o bloco.
+> **Botões da dobra**: três níveis sem círculos internos: "Enviar receita"
+> branco com o ícone em ouro escuro, "Ver produtos" só em contorno
+> (borda branca a 35%) e "Como funciona" só texto com a seta; o mesmo
+> "Enviar receita" sem círculo foi aplicado no convite do "Como funciona"
+> e no fecho da página A Viver Bem. **CSS**: saíram as regras mortas da
+> trilha vertical (`.trilha-linha/.trilha-progresso/.trilha-ponto`,
+> `.trilha-clara`), do `.passo-numero`, do `.marco-ano` e da
+> `.trilha-h-*`. Lint e tsc limpos. Capturas em `scratchpad/etapa53`
+> (no celular a página inteira passa de 16384px físicos e a captura
+> enrola; capturar em dois viewports altos).
+
 > **ADENDO 36 (07/10/2026): capas dos reels, seção dos reels, "quem já é cliente", carrinho flutuante, lojas e "Como funciona". Não publicado.**
 > Pedido com oito prints. Capas: escolhidas quadro a quadro com o ffmpeg
 > (folhas de contato a cada 4s e a cada 0,5s nos trechos candidatos):

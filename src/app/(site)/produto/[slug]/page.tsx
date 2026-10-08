@@ -11,8 +11,9 @@
 // pedido): a foto sobre o ladrilho com a luz dourada e os selos de
 // logística embaixo; à direita a pílula da área em ouro, o nome grande, a
 // frase em itálico serifado (a segunda voz do site), a descrição, o cartão
-// de compra (AcoesProduto) e "Como pedir" como uma trilha clara de três
-// passos, com a linha em ouro que cresce ao rolar.
+// de compra (AcoesProduto) e "Como pedir" num cartão claro com os três
+// passos numerados em ouro, divididos por fios (07/10/2026: a trilha com
+// círculos e linha saiu, no celular e no computador).
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -193,7 +194,7 @@ export default async function PaginaProduto({ params }: Props) {
 
       {/* Produto */}
       <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-14 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_16rem] gap-8 lg:gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_18rem] gap-8 lg:gap-10 items-start">
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
             {/* A galeria: até 5 fotos, a primeira com prioridade */}
@@ -246,23 +247,25 @@ export default async function PaginaProduto({ params }: Props) {
               </div>
             )}
 
-            {/* Como o pedido anda: a trilha clara, em três passos */}
-            <div className="mt-9">
-              <p className="rotulo">Como pedir</p>
-              <ol className="trilha-clara relative mt-5 pl-12 flex flex-col gap-5">
-                <span aria-hidden="true" className="trilha-linha" />
-                <span aria-hidden="true" className="trilha-progresso" />
+            {/* Como o pedido anda: três passos numerados em ouro, num cartão
+                claro com fios (07/10/2026, "melhore o print": a trilha com os
+                círculos e a linha saiu, no celular e no computador) */}
+            <div className="mt-9 rounded-[1.75rem] border border-fio bg-white p-5 md:p-6">
+              <p className="rotulo-pilula !text-[0.64rem]">Como pedir</p>
+              <ol className="mt-3 lista-fichas">
                 {PASSOS_PEDIDO.map((p, i) => (
-                  <li key={p.titulo} className="relative">
-                    <span aria-hidden="true" className="trilha-ponto">
+                  <li key={p.titulo} className="flex items-start gap-4 py-3.5">
+                    <span aria-hidden="true" className="numero-tinta shrink-0 w-9 text-[1.5rem] leading-none pt-0.5">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="pt-1 font-semibold text-navy leading-snug">{p.titulo}</p>
-                    <p className="text-cinza text-[0.95rem] leading-relaxed">{p.texto}</p>
+                    <span className="min-w-0">
+                      <span className="block font-semibold text-navy leading-snug">{p.titulo}</span>
+                      <span className="mt-0.5 block text-cinza text-[0.95rem] leading-relaxed">{p.texto}</span>
+                    </span>
                   </li>
                 ))}
               </ol>
-              <BotaoEnviarReceita produtoVisto={produto.nome} className="botao-link mt-6" comIcone={false}>
+              <BotaoEnviarReceita produtoVisto={produto.nome} className="botao-link mt-4" comIcone={false}>
                 Tenho receita: enviar a foto
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

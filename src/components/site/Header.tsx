@@ -194,7 +194,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl shadow-[0_1px_0_var(--color-fio)]">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-[0_1px_0_var(--color-fio)]">
       {/* ---------- 1. Faixa do topo (computador) ---------- */}
       {/* Em azul-noite, como a dobra: o selo ao vivo "Aberto agora" e as
           vantagens com ícone em ouro, separadas por um fio; os links

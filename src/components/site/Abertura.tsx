@@ -1,35 +1,26 @@
 // Abertura da home no modelo de loja (referência biovittare.com.br,
 // 06/10/2026): um banner largo e arredondado, em azul-noite com a luz
-// azul e dourada da marca, com o título em duas vozes à esquerda e a
-// bancada de potes reais à direita (as fotos têm fundo transparente).
-// (Um vídeo dos produtos no lugar dos potes, no computador, foi testado
+// azul e dourada da marca. Desde 08/10/2026 o conteúdo do banner é a
+// animação de 7 s (heroAnimado/), no celular e no desktop; a bancada de
+// potes estática saiu. (Um vídeo dos produtos no computador foi testado
 // em 06/10/2026 e reprovado pelo usuário: "volte o que era antes".)
 //
 // Dois modos (07/10/2026, "prepare a estrutura"): quando a farmácia manda
 // a própria ARTE (src/lib/hero.ts lê public/uploads/hero/), a dobra vira a
 // arte inteira com só os três botões por cima, centralizados; sem arte,
-// fica a composição padrão abaixo. Os botões são os mesmos nos dois
-// modos (BotoesDaDobra).
+// fica a animação. Os botões são os mesmos nos dois modos (BotoesDaDobra).
 //
 // Nenhum pote leva preço nem indicação: é imagem institucional (RDC
-// 67/2007, risco avisado e aceito pelo cliente). Os dois potes atuais são
-// industrializados com registro (creatina), então não há promessa de
-// manipulado na dobra.
+// 67/2007, risco avisado e aceito pelo cliente). Os dois potes que ficam
+// na frente no fecho da animação são industrializados com registro
+// (creatina).
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { UNIDADES } from "@/lib/tipos";
 import type { ArteHero } from "@/lib/hero";
 import { CarrosselArte } from "./CarrosselArte";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
-
-// Os potes, do fundo para a frente. Provisórios (07/10/2026, "coloque os
-// produtos em anexo na dobra"), até a arte da farmácia chegar: o Caramelo
-// de Creatina e a Creatina Gummy, fotos com fundo transparente. O da
-// frente é a maior imagem da dobra, por isso carrega com prioridade (LCP).
-const POTES = [
-  { src: "/uploads/caramelo-creatina.png", classe: "left-[6%] h-[12.5rem] md:-left-[2%] md:h-[14rem] lg:left-[4%] lg:h-[20rem] z-[3]" },
-  { src: "/uploads/creatina-gummy.png", classe: "left-[46%] h-[13.5rem] md:left-[34%] md:h-[15rem] lg:left-[44%] lg:h-[21.5rem] z-[4]", prioridade: true },
-];
+import { HeroAnimado } from "./heroAnimado/HeroAnimado";
 
 // Grade de quatro quadrados, do botão "Ver produtos" (o mesmo desenho da
 // pílula "Todos" do cabeçalho)
@@ -52,11 +43,14 @@ function SetaBaixo() {
   );
 }
 
-/** Os três botões da dobra, uma hierarquia: a receita (principal) em
- *  branco com o ícone num círculo de ouro; "Ver produtos" (secundário) em
- *  vidro com o ícone; "Como funciona" (terciário) em vidro mais leve com a
- *  seta num círculo. No celular a receita ocupa a linha e os outros dois
- *  dividem a seguinte; de 1280px em diante os três cabem numa linha. */
+/** Os três botões da dobra, em três níveis bem distintos (07/10/2026,
+ *  "modernize os botões, mais clean": os círculos internos saíram;
+ *  08/10/2026, "moderno e atual, condizente com a animação da hero"):
+ *  a receita (principal) em branco com o ícone em ouro escuro e o fio de
+ *  ouro que percorre a borda (.botao-vivo), "Ver produtos" (secundário) em
+ *  vidro (.botao-vidro) e "Como funciona" (terciário) só texto com a seta
+ *  que acena para baixo. No celular a receita ocupa a linha e os outros
+ *  dois dividem a seguinte; de 1280px em diante os três cabem numa linha. */
 function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
   return (
     <div
@@ -66,9 +60,9 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
     >
       <BotaoEnviarReceita
         comIcone={false}
-        className="botao bg-white text-navy hover:bg-gelo shadow-[0_18px_40px_-18px_rgba(0,0,0,0.6)] !pl-2 !pr-6 !gap-3"
+        className="botao botao-vivo !gap-2.5"
       >
-        <span className="w-10 h-10 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
+        <span className="text-ouro-escuro">
           <IconeReceita tamanho={20} />
         </span>
         Enviar receita
@@ -76,19 +70,17 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
       <div className={`grid grid-cols-2 gap-3 sm:flex ${centralizados ? "" : "xl:contents"}`}>
         <Link
           href="/produtos"
-          className="botao bg-white/10 border border-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/15 !pl-1.5 !pr-3 sm:!pl-2 sm:!pr-4 !gap-2 sm:!gap-2.5 !text-[0.875rem] sm:!text-[1.05rem]"
+          className="botao botao-vidro !gap-2.5 !px-4 sm:!px-6 !text-[0.95rem] sm:!text-[1.05rem]"
         >
-          <span className="shrink-0 flex w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/15 items-center justify-center">
-            <IconeGrade />
-          </span>
+          <IconeGrade />
           Ver produtos
         </Link>
         <Link
           href="#como-funciona"
-          className="group botao bg-white/[0.06] border border-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/12 !pl-4 sm:!pl-5 !pr-1.5 sm:!pr-2 !gap-2.5 !text-[0.875rem] sm:!text-[1.05rem]"
+          className="botao text-white/85 transition-colors hover:text-white !gap-2 !px-3 sm:!px-4 !text-[0.95rem] sm:!text-[1.05rem]"
         >
           Como funciona
-          <span className="shrink-0 inline-flex w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 ring-1 ring-inset ring-white/20 items-center justify-center transition-transform duration-300 group-hover:translate-y-0.5">
+          <span className="acenar-baixo">
             <SetaBaixo />
           </span>
         </Link>
@@ -139,56 +131,26 @@ export function Abertura({ artes = [] }: { artes?: ArteHero[] }) {
     );
   }
 
-  // ---------- Modo padrão: texto em duas vozes e a bancada de potes ----------
+  // ---------- Modo padrão: a animação da dobra ----------
+  // Desde 08/10/2026 (pedido do usuário) o banner é a animação de 7 s
+  // (HeroAnimado), no celular e no desktop: a frase, os potes e os passos
+  // estão dentro dela. O h1 e o texto de apoio seguem no HTML só para
+  // leitores de tela e o Google, e os botões ficam por cima, na base (à
+  // esquerda no desktop, alinhados com o título da animação).
   return (
     <section aria-labelledby="titulo-abertura" className="max-w-[90rem] mx-auto px-3 md:px-5 pt-3 md:pt-4">
-      <div className="banner-noite em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white">
-        <div className="grid grid-cols-1 md:grid-cols-[6.4fr_5.6fr] md:items-center gap-2 md:gap-8 px-5 pt-7 pb-0 md:px-12 md:py-9 md:min-h-[26rem]">
-          {/* ---------- Texto ---------- */}
-          <div className="cascata relative z-[1]">
-            <p className="rotulo-pilula">Manipulação e homeopatia · Petrópolis, desde 2006</p>
-
-            <h1 id="titulo-abertura" className="titulo-display vao-rotulo !text-white">
-              Sua fórmula começa
-              <span className="italic">pela receita</span>
-            </h1>
-
-            <p className="texto-apoio mt-4 md:mt-5 max-w-[30rem]">
-              Envie a foto da prescrição. O farmacêutico confere, passa o valor pelo WhatsApp
-              e você retira numa das {UNIDADES.length} lojas ou recebe em casa.
-            </p>
-
-            <div className="mt-6">
-              <BotoesDaDobra />
-            </div>
-          </div>
-
-          {/* ---------- A bancada ---------- */}
-          {/* A bancada desce um pouco mais devagar que a página (paralaxe, scroll-driven) */}
-          <div
-            className="cascata paralaxe relative -mx-5 h-[14rem] md:mx-0 md:-mr-6 md:h-[23rem]"
-            style={{ "--paralaxe": "3rem" } as React.CSSProperties}
-            aria-hidden="true"
-          >
-            {/* Uma luz azul atrás dos potes e a luz dourada do tampo */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[45%] w-[22rem] h-[22rem] md:w-[30rem] md:h-[30rem] rounded-full bg-[radial-gradient(circle,rgba(63,146,224,0.32),transparent_62%)]" />
-            <div className="absolute inset-x-[5%] bottom-0 h-24 md:h-36 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(192,160,96,0.45),transparent_70%)]" />
-
-            {POTES.map((p) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={p.src}
-                src={asset(p.src)}
-                alt=""
-                width={500}
-                height={500}
-                loading={p.prioridade ? "eager" : "lazy"}
-                decoding="async"
-                {...(p.prioridade ? { fetchPriority: "high" as const } : {})}
-                className={`absolute bottom-3 md:bottom-7 w-auto drop-shadow-[0_10px_12px_rgba(3,12,30,0.5)] ${p.classe}`}
-              />
-            ))}
-          </div>
+      <div className="banner-noite em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white h-[min(calc((100vw-1.5rem)*2),46rem)] md:h-[30rem] lg:h-[34rem] xl:h-[36rem]">
+        <HeroAnimado />
+        <div className="absolute inset-x-0 bottom-0 z-[1] px-5 pb-6 md:px-12 md:pb-10">
+          <h1 id="titulo-abertura" className="sr-only">
+            Especialistas em saúde personalizada
+          </h1>
+          <p className="sr-only">
+            Manipulação e homeopatia em Petrópolis desde 2006. Envie a foto da prescrição: o
+            farmacêutico confere, passa o valor pelo WhatsApp e você retira numa das{" "}
+            {UNIDADES.length} lojas ou recebe em casa.
+          </p>
+          <BotoesDaDobra />
         </div>
       </div>
     </section>

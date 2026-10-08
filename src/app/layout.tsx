@@ -1,27 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-
-// Duas vozes e nada mais (sistema "Receita e rótulo", 06/10/2026).
-// Instrument Sans: texto, títulos em peso 400 e rótulos em caixa alta.
-// Trocou a Fraunces + Inter em 05/10/2026, a pedido ("uma fonte mais
-// moderna"). A Bricolage Grotesque, que entrou nos títulos por um dia,
-// saiu: o contraste vem do tamanho e da voz serifada, não de uma
-// terceira fonte.
-const instrumentSans = Instrument_Sans({
-  variable: "--font-instrument-sans",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-});
-
-// Instrument Serif itálico: a "tinta azul da receita", nas palavras em
-// destaque dos títulos, nos números e nas frases dos clientes
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-});
+// Duas vozes e nada mais (sistema "Receita e rótulo", 06/10/2026). As
+// instâncias vivem em src/lib/fontes-site.ts, compartilhadas com a
+// animação da dobra (que desenha as mesmas fontes no canvas).
+import { instrumentSans, instrumentSerif } from "@/lib/fontes-site";
 
 // Endereço público do site (troque pela URL do domínio próprio no deploy,
 // via variável NEXT_PUBLIC_SITE_URL — usada nos links de compartilhamento)

@@ -4,6 +4,7 @@
 import { CarrinhoGlobal } from "@/components/site/CarrinhoGlobal";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { RolagemSuave } from "@/components/site/RolagemSuave";
 import { obterCategorias } from "@/lib/catalogo";
 
 export default async function LayoutSite({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,8 @@ export default async function LayoutSite({ children }: { children: React.ReactNo
         {children}
       </div>
       <Footer />
+      {/* A roda do mouse desliza em vez de saltar (Windows sem animações) */}
+      <RolagemSuave />
     </CarrinhoGlobal>
   );
 }

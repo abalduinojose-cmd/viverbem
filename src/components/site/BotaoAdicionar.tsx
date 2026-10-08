@@ -15,11 +15,15 @@ import { IconeCarrinho, IconeFeito, SetaDireita } from "./icones";
 export function BotaoAdicionar({
   produto,
   compacto = false,
+  suave = false,
   className = "",
 }: {
   produto: ProdutoDTO;
   /** Só o ícone, para as faixas estreitas (vistos recentemente) */
   compacto?: boolean;
+  /** Compacto em contorno, que vira ouro no hover (listas laterais, onde o
+   *  ouro cheio repetido pesava; 07/10/2026) */
+  suave?: boolean;
   className?: string;
 }) {
   const { adicionar } = useCarrinho();
@@ -48,12 +52,19 @@ export function BotaoAdicionar({
   const feito = adicionado ? "botao-carrinho-feito" : "";
 
   if (compacto) {
+    const classeSuave = adicionado
+      ? "bg-green-700 border-green-700 text-white"
+      : "bg-white border-fio text-navy hover:bg-ouro-claro hover:border-ouro-claro";
     return (
       <button
         type="button"
         onClick={aoAdicionar}
         aria-label={`Adicionar ${produto.nome} ao carrinho`}
-        className={`botao-carrinho !min-h-11 w-11 !px-0 ${feito} ${className}`}
+        className={
+          suave
+            ? `inline-flex items-center justify-center w-11 h-11 rounded-full border transition-colors active:scale-95 ${classeSuave} ${className}`
+            : `botao-carrinho !min-h-11 w-11 !px-0 ${feito} ${className}`
+        }
       >
         {adicionado ? <IconeFeito /> : <IconeCarrinho tamanho={17} />}
       </button>

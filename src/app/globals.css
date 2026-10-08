@@ -58,13 +58,10 @@
   /* Um raio para as caixas (ladrilhos, gaveta, vídeos) */
   --radius-caixa: 1.75rem;
 
-  --shadow-card: 0 1px 2px rgba(16, 42, 74, 0.04), 0 4px 16px rgba(16, 42, 74, 0.06);
-  --shadow-card-hover: 0 2px 4px rgba(16, 42, 74, 0.05), 0 12px 32px rgba(16, 42, 74, 0.12);
 }
 
 :root {
   /* Escala tipográfica, de 390px (celular) a 1440px (computador) */
-  --tam-display: clamp(2.75rem, 1.75rem + 3.4vw, 5rem); /* 44 -> 80px (dobra mais curta, 06/10) */
   --tam-titulo: clamp(2.4rem, 1.85rem + 2.1vw, 3.75rem); /* 38 -> 60px */
   --tam-apoio: clamp(1.0625rem, 0.99rem + 0.29vw, 1.25rem); /* 17 -> 20px */
   /* Segundo nível: vitrines, áreas do catálogo e blocos das páginas internas
@@ -123,7 +120,7 @@ body {
 
   /* A palavra em itálico dos títulos ("pela receita", "sobre a gente") é
      a voz humana, serifada e em ouro. Fora de título, a classe .tinta. */
-  :is(h1, h2, h3, h4, .font-display, .titulo-secao, .titulo-display, .titulo-banner) .italic,
+  :is(h1, h2, h3, h4, .titulo-secao, .titulo-banner) .italic,
   .tinta {
     font-family: var(--font-destaque);
     font-style: italic;
@@ -171,10 +168,33 @@ body {
   .em-noite .rotulo-pilula {
     color: var(--color-ouro-claro);
   }
+  /* Legenda de foto: itálico serifado com o fio de ouro na frente
+     (fotos da página A Viver Bem, 07/10/2026) */
+  .legenda-foto {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+  .legenda-foto::before {
+    content: "";
+    flex: none;
+    width: 1.5rem;
+    height: 1px;
+    margin-top: 0.75rem;
+    background: var(--ouro-degrade);
+  }
+  .em-noite .legenda-foto {
+    color: rgba(255, 255, 255, 0.85);
+  }
   /* Depois do rótulo, o título ganha um traço curto de ouro embaixo
      (07/10/2026, "quero mais moderno"); centralizado nas seções centradas */
-  .rotulo-pilula + .titulo-secao::after,
-  .rotulo-pilula + .titulo-display::after {
+  .rotulo-pilula + .titulo-secao::after {
     content: "";
     display: block;
     width: 3rem;
@@ -213,22 +233,6 @@ body {
   }
   .em-noite .titulo-bloco {
     color: #fff;
-  }
-
-  /* Título da abertura */
-  .titulo-display {
-    font-family: var(--font-sans);
-    font-size: var(--tam-display);
-    font-weight: 600;
-    line-height: 0.98;
-    letter-spacing: -0.045em;
-    color: var(--color-navy);
-  }
-  .titulo-display .italic {
-    display: block;
-    font-size: 1.12em;
-    margin-top: 0.04em;
-    padding-bottom: 0.08em;
   }
 
   .texto-apoio {
@@ -308,6 +312,65 @@ body {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.65);
   }
+  /* Botões da dobra (08/10/2026, "moderno e atual, condizente com a
+     animação da hero"). O principal é branco com um fio de ouro que
+     percorre a borda devagar (um giro a cada 7 s, o mesmo compasso da
+     animação da dobra, DURACAO em heroAnimado/cena.ts; é um detalhe
+     contido, por isso roda também com "reduzir movimento") e um brilho de
+     ouro embaixo; o secundário é vidro; a seta do terciário acena para
+     baixo, chamando para rolar. */
+  .botao-vivo {
+    position: relative;
+    isolation: isolate;
+    background: #fff;
+    color: var(--color-navy);
+    box-shadow: 0 18px 40px -18px rgba(192, 160, 96, 0.6);
+  }
+  .botao-vivo::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 2px;
+    background: conic-gradient(
+      from var(--angulo-fio),
+      transparent 0 58%,
+      rgba(220, 195, 138, 0.35) 70%,
+      #dcc38a 80%,
+      #b3904f 87%,
+      rgba(179, 144, 79, 0.3) 94%,
+      transparent 100%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: fio-gira 7s linear infinite;
+  }
+  .botao-vivo:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 44px -18px rgba(192, 160, 96, 0.75);
+  }
+  .botao-vivo:active {
+    transform: scale(0.98);
+  }
+  .botao-vidro {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+  .botao-vidro:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+  .acenar-baixo {
+    animation: acenar-baixo 2.4s ease-in-out infinite;
+  }
+
   /* 3. Link com seta, fio de ouro */
   .botao-link {
     display: inline-flex;
@@ -406,17 +469,6 @@ body {
     background: linear-gradient(160deg, #ffffff 0%, #eef3f9 100%);
     border: 1px solid var(--color-fio);
     box-shadow: inset 0 1px 0 #fff, 0 20px 40px -30px rgba(16, 42, 74, 0.35);
-  }
-  .ladrilho-luz::after {
-    content: "";
-    position: absolute;
-    right: -3rem;
-    top: -3rem;
-    width: 10rem;
-    height: 10rem;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(192, 160, 96, 0.22), transparent 70%);
-    pointer-events: none;
   }
   /* Listas com fio */
   .lista-fichas > * + * {
@@ -587,12 +639,6 @@ body {
     opacity: 0.25;
   }
 }
-/* Os potes sobem mais devagar que a página (paralaxe) */
-@keyframes paralaxe {
-  to {
-    transform: translateY(var(--paralaxe, -3rem));
-  }
-}
 @supports (animation-timeline: view()) {
   .revelar {
     animation: revelar-rolagem linear both;
@@ -615,18 +661,12 @@ body {
     animation-timeline: view();
     animation-range: exit 55% exit 100%;
   }
-  .paralaxe {
-    animation: paralaxe linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 100vh;
-  }
 }
 /* Na impressão não há rolagem: tudo visível */
 @media print {
   .revelar,
   .escalonado > *,
   .folha,
-  .paralaxe,
   .cascata > * {
     animation: none !important;
   }
@@ -657,10 +697,6 @@ body {
   pointer-events: none;
 }
 
-/* Sombras das caixas que ainda não foram redesenhadas (gaveta, catálogo) */
-.sombra-card {
-  box-shadow: var(--shadow-card);
-}
 @media (prefers-reduced-motion: reduce) {
   /* A cascata da carga continua, mais curta e mais baixa: é um fade
      único, não um movimento contínuo. O que anda com a rolagem fica,
@@ -682,76 +718,6 @@ body {
       transform: translateY(0);
     }
   }
-}
-
-/* ---------- Trilha do pedido ("Como funciona") ---------- */
-/* Os passos numa linha vertical, como o acompanhamento de um pedido. A
-   linha em ouro cresce com a rolagem da própria pessoa (scroll-driven),
-   por isso roda também com "reduzir movimento". */
-.trilha-linha,
-.trilha-progresso {
-  position: absolute;
-  left: calc(1.375rem - 1px);
-  top: 1.5rem;
-  bottom: 1.5rem;
-  width: 2px;
-  border-radius: 1px;
-}
-.trilha-linha {
-  background: rgba(255, 255, 255, 0.14);
-}
-.trilha-progresso {
-  background: linear-gradient(180deg, #dcc38a 0%, #b3904f 100%);
-  transform-origin: 50% 0%;
-}
-.trilha-ponto {
-  position: absolute;
-  left: -3.5rem; /* dentro do recuo (pl-14) da lista, centrado na linha */
-  top: 0;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-destaque);
-  font-style: italic;
-  font-size: 1.15rem;
-  line-height: 1;
-  color: var(--color-navy);
-  background: var(--ouro-degrade);
-  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.6);
-}
-@keyframes trilha-cresce {
-  from { transform: scaleY(0); }
-  to { transform: scaleY(1); }
-}
-@supports (animation-timeline: view()) {
-  .trilha-progresso {
-    animation: trilha-cresce linear both;
-    animation-timeline: view();
-    animation-range: entry 40% exit 60%;
-  }
-}
-
-
-/* Trilha clara (página do produto, "Como pedir"): linha em fio e pontos
-   menores, para uma lista com recuo de 3rem (pl-12) */
-.trilha-clara .trilha-linha {
-  background: var(--color-fio);
-}
-.trilha-clara .trilha-linha,
-.trilha-clara .trilha-progresso {
-  left: calc(1.125rem - 1px);
-  top: 1.125rem;
-  bottom: 1.125rem;
-}
-.trilha-clara .trilha-ponto {
-  left: -3rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  font-size: 1rem;
-  box-shadow: 0 8px 18px -10px rgba(143, 113, 55, 0.6);
 }
 
 /* ---------- Acessibilidade e toque (auditoria de 06/10/2026) ---------- */
@@ -833,95 +799,49 @@ summary::-webkit-details-marker {
   mask-image: radial-gradient(70% 65% at 75% 25%, #000, transparent 75%);
 }
 
-/* Marca d'água e outros detalhes que descem mais devagar enquanto o
-   elemento atravessa a tela (scroll-driven; roda com "reduzir movimento") */
-@supports (animation-timeline: view()) {
-  .paralaxe-vista {
-    animation: paralaxe linear both;
-    animation-timeline: view();
-    animation-range: entry 0% exit 100%;
-  }
-}
 
-/* ---------- Passos do "Como funciona", lado a lado ---------- */
-/* O número num círculo de ouro que sai pela borda de cima do cartão
-   (o item tem pt-7, o cartão começa 1,75rem abaixo) */
-.passo-numero {
-  position: absolute;
-  top: 0;
-  left: 1.25rem;
-  z-index: 2;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-destaque);
-  font-style: italic;
-  font-size: 1.15rem;
-  line-height: 1;
-  color: var(--color-navy);
-  background: var(--ouro-degrade);
-  box-shadow: 0 10px 24px -12px rgba(143, 113, 55, 0.7);
-}
-/* O ano da linha do tempo (página A Viver Bem): a mesma pílula de ouro do
-   número do passo, mas larga o bastante para "2006" */
-.marco-ano {
-  position: absolute;
-  top: 0;
-  left: 1.25rem;
-  z-index: 2;
-  height: 2.75rem;
-  padding: 0 1rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-destaque);
-  font-style: italic;
-  font-size: 1.2rem;
-  line-height: 1;
-  color: var(--color-navy);
-  background: var(--ouro-degrade);
-  box-shadow: 0 10px 24px -12px rgba(143, 113, 55, 0.7);
-}
-/* A linha que liga os quatro números (só no computador); a parte em ouro
-   cresce enquanto a fila de passos sobe pela tela */
-.trilha-h-linha,
-.trilha-h-progresso {
-  position: absolute;
-  z-index: 1;
-  top: calc(1.375rem - 1px);
-  left: 2.625rem;
-  right: 2.625rem;
-  height: 2px;
-  border-radius: 1px;
-}
-.trilha-h-linha {
-  background: var(--color-fio);
-}
-.trilha-h-progresso {
-  background: linear-gradient(90deg, #dcc38a 0%, #b3904f 100%);
+/* O traço de ouro que liga os cartões do "Como funciona" (computador);
+   cresce quando a fileira entra na tela (scroll-driven, roda também com
+   "reduzir movimento"); sem suporte, fica inteiro */
+.traco-liga {
+  background: linear-gradient(90deg, rgba(179, 144, 79, 0.35), #b3904f, rgba(179, 144, 79, 0.35));
   transform-origin: 0% 50%;
-  transform: scaleX(0);
-}
-/* A mesma linha, na borda de cima de um cartão ("Como funciona", v4) */
-.trilha-topo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #dcc38a 0%, #b3904f 100%);
-  transform-origin: 0% 50%;
-  transform: scaleX(0);
 }
 @supports (animation-timeline: view()) {
-  .trilha-topo {
+  .traco-liga {
     animation: trilha-cresce-x linear both;
     animation-timeline: view();
-    animation-range: entry 10% cover 45%;
+    animation-range: entry 15% cover 40%;
+  }
+}
+/* "Como funciona" no celular: os passos arrastam para o lado e a barra de
+   ouro embaixo anda com a rolagem da própria faixa (scroll-timeline
+   nomeada; o escopo no pai deixa a barra, que fica fora da faixa, ler a
+   linha do tempo). Roda também com "reduzir movimento": é a pessoa que
+   arrasta. Sem suporte, a barra mostra o primeiro quarto, parada. */
+.passos-escopo {
+  timeline-scope: --passos;
+}
+.passos-faixa {
+  scroll-timeline-name: --passos;
+  scroll-timeline-axis: x;
+}
+.passos-barra {
+  transform-origin: 0% 50%;
+  transform: scaleX(0.25);
+}
+@supports (animation-timeline: scroll()) {
+  .passos-barra {
+    animation: passos-anda linear both;
+    animation-timeline: --passos;
+  }
+}
+@keyframes passos-anda {
+  from {
+    transform: scaleX(0.25);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 @keyframes trilha-cresce-x {
@@ -932,10 +852,418 @@ summary::-webkit-details-marker {
     transform: scaleX(1);
   }
 }
-@supports (animation-timeline: view()) {
-  .trilha-h-progresso {
-    animation: trilha-cresce-x linear both;
-    animation-timeline: view();
-    animation-range: cover 0% cover 55%;
+
+/* ---------- Botões da dobra: o fio que gira e a seta que acena ---------- */
+@property --angulo-fio {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes fio-gira {
+  to {
+    --angulo-fio: 360deg;
+  }
+}
+@keyframes acenar-baixo {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acenar-baixo {
+    animation-duration: 3.6s;
+  }
+}
+
+/* ========== Página A Viver Bem: a história em capítulos (08/10/2026) ==========
+   Pedido: "clean e moderna, com efeitos de scroll, design profissional feito
+   em JavaScript". O movimento ligado à rolagem é do motor em
+   src/components/site/historia/motor.ts; aqui ficam o desenho e o que acontece
+   uma vez na carga (o título que sobe, a foto que se abre, os números que
+   rolam). Tudo roda com "reduzir movimento", mais curto. */
+
+/* Respiro de capítulo: mais ar que a .secao das outras páginas */
+.capitulo {
+  padding-block: clamp(4.5rem, 2.5rem + 6vw, 8.5rem);
+}
+/* A folha seguinte cobre 2,25rem da base desta: o respiro de baixo compensa */
+.capitulo-sob-folha {
+  padding-bottom: calc(clamp(4.5rem, 2.5rem + 6vw, 8.5rem) + 2.25rem);
+}
+
+/* Abertura: o título sobe palavra por palavra de dentro de uma máscara */
+.historia-titulo {
+  font-family: var(--font-sans);
+  font-size: clamp(2.9rem, 1.6rem + 4.6vw, 6.25rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  color: var(--color-navy);
+  text-wrap: balance;
+}
+.historia-titulo .linha {
+  display: block;
+}
+.historia-titulo .voz {
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: -0.02em;
+}
+/* O degradê precisa estar na própria palavra (ela se move sozinha) */
+.historia-titulo .voz .palavra {
+  background-image: var(--ouro-degrade);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.08em;
+}
+.mascara {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* folga para o itálico e as descendentes não serem cortados pela máscara */
+  padding: 0 0.12em 0.16em;
+  margin: 0 -0.12em -0.16em;
+}
+.palavra {
+  display: inline-block;
+  animation: palavra-sobe 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 85ms + 150ms);
+}
+@keyframes palavra-sobe {
+  from {
+    transform: translate3d(0, 112%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* O que entra depois do título, um pouco atrasado */
+.entra {
+  animation: entra 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A moldura da foto da abertura se abre de baixo para cima, na carga */
+.revela-moldura {
+  animation: revela-moldura 1.35s cubic-bezier(0.65, 0, 0.35, 1) 0.3s both;
+}
+@keyframes revela-moldura {
+  from {
+    clip-path: inset(100% 0 0 0 round var(--raio-foto, 1.75rem));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--raio-foto, 1.75rem));
+  }
+}
+
+/* Capítulo 01: o manifesto, que acende palavra por palavra (TextoRevelado) */
+.manifesto {
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 3.15rem);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  color: var(--color-navy);
+  text-wrap: pretty;
+}
+.manifesto .tinta {
+  font-size: 1.12em;
+}
+/* Capítulo 04: a citação, na segunda voz */
+.citacao-historia {
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 1.3rem + 3.2vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-navy);
+  text-wrap: balance;
+}
+.citacao-historia .tinta {
+  font-size: 1em;
+}
+
+/* Números que rolam como um contador mecânico (NumeroRolante): cada
+   algarismo é uma fita de 0 a 9 desenhada aqui, e a janela mostra um só */
+.rolo {
+  display: inline-flex;
+  align-items: flex-end;
+  line-height: 1;
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+.rolo-digitos {
+  display: inline-flex;
+}
+.rolo-janela {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  /* folga para o itálico, sem ocupar lugar */
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+}
+/* O algarismo final, invisível, dá a largura da janela */
+.rolo-janela::before {
+  content: attr(data-d);
+  display: block;
+  visibility: hidden;
+}
+.rolo-faixa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-variant-numeric: lining-nums proportional-nums;
+  transform: translate3d(0, calc(var(--d, 0) * -1em), 0);
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 110ms);
+  /* o degradê se repete a cada algarismo, para todos terem o mesmo ouro */
+  background-size: 100% 1em;
+  background-repeat: repeat-y;
+}
+.rolo-faixa::before {
+  content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9";
+  display: block;
+  white-space: pre;
+}
+.rolo-parado .rolo-faixa {
+  transition: none;
+}
+
+/* O "20" da folha escura */
+.numero-gigante {
+  font-size: clamp(8rem, 3rem + 17vw, 19rem);
+  line-height: 0.82;
+}
+
+/* O capítulo da linha do tempo: o respiro de baixo é menor quando a galeria
+   está presa (o palco já ocupa a altura da tela) */
+.capitulo-tempo {
+  padding-bottom: clamp(4.5rem, 2.5rem + 6vw, 8.5rem);
+}
+.capitulo-tempo:has(.linha-tempo[data-modo="horizontal"]) {
+  padding-bottom: 2.75rem;
+}
+
+/* ---------- Linha do tempo (LinhaDoTempo) ---------- */
+.linha-tempo {
+  --lt-recuo: 2.75rem;
+}
+@media (min-width: 768px) {
+  .linha-tempo {
+    --lt-recuo: 4rem;
+  }
+}
+/* Vertical (celular, tablet, telas baixas, e sem JavaScript) */
+.lt-lista {
+  position: relative;
+  padding-left: var(--lt-recuo);
+}
+.lt-trilho,
+.lt-trilho-ouro {
+  position: absolute;
+  top: 1.7rem;
+  bottom: 1.5rem;
+  left: calc(0.75rem - 0.5px);
+  width: 1px;
+}
+.lt-trilho {
+  background: var(--color-fio);
+}
+.lt-trilho-ouro {
+  background: linear-gradient(180deg, #dcc38a 0%, #b3904f 100%);
+  transform-origin: 50% 0%;
+}
+.lt-marcos {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.75rem, 2rem + 2vw, 4rem);
+}
+.lt-marco {
+  position: relative;
+}
+.lt-ponto {
+  position: absolute;
+  top: 1.35rem;
+  left: calc(0.375rem - var(--lt-recuo));
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: var(--ouro-degrade);
+  box-shadow: 0 0 0 4px rgba(192, 160, 96, 0.16);
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.lt-ano {
+  display: block;
+  font-size: clamp(3rem, 2.3rem + 2.6vw, 4.75rem);
+}
+.lt-titulo {
+  margin-top: 0.75rem;
+  font-size: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  color: var(--color-navy);
+}
+.lt-paragrafo {
+  margin-top: 0.6rem;
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-grafite);
+}
+.lt-foto {
+  margin-top: 1.5rem;
+  width: min(100%, 18rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: var(--color-gelo);
+}
+.lt-regua {
+  display: none;
+}
+/* Com o motor ligado: o marco acende quando a linha de ouro chega nele */
+.linha-tempo[data-js] .lt-marco {
+  transition: opacity 0.5s ease;
+}
+.linha-tempo[data-js][data-modo="vertical"] .lt-marco:not([data-aceso]) {
+  opacity: 0.32;
+}
+.linha-tempo[data-js] .lt-marco:not([data-aceso]) .lt-ponto {
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--color-fio), 0 0 0 4px rgba(192, 160, 96, 0);
+}
+.linha-tempo[data-js][data-modo="vertical"] .lt-trilho-ouro {
+  transform: scaleY(0);
+}
+
+/* Horizontal (computador): a seção presa e os marcos andando para o lado */
+.linha-tempo[data-modo="horizontal"] .lt-palco {
+  position: sticky;
+  top: var(--altura-cabecalho);
+  height: calc(100svh - var(--altura-cabecalho));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.linha-tempo[data-modo="horizontal"] .lt-lista {
+  width: max-content;
+  padding-left: 0;
+  will-change: transform;
+}
+.linha-tempo[data-modo="horizontal"] .lt-trilho,
+.linha-tempo[data-modo="horizontal"] .lt-trilho-ouro {
+  display: none;
+}
+.linha-tempo[data-modo="horizontal"] .lt-marcos {
+  flex-direction: row;
+  align-items: stretch;
+  gap: clamp(3rem, 1.5rem + 3.5vw, 6rem);
+}
+.linha-tempo[data-modo="horizontal"] .lt-marco {
+  width: 21rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-fio);
+  transition: none;
+}
+.linha-tempo[data-modo="horizontal"] .lt-marco[data-com-foto] {
+  width: 40rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 13rem;
+  gap: 2.25rem;
+}
+.linha-tempo[data-modo="horizontal"] .lt-ponto {
+  top: -0.375rem;
+  left: 0;
+}
+.linha-tempo[data-modo="horizontal"] .lt-foto {
+  margin-top: 0;
+  width: 100%;
+  height: min(17rem, calc(100svh - var(--altura-cabecalho) - 10rem));
+  aspect-ratio: auto;
+}
+.linha-tempo[data-modo="horizontal"] .lt-regua {
+  display: block;
+  position: relative;
+  margin-top: clamp(1.5rem, 3.5vh, 3rem);
+  padding-top: 1.1rem;
+}
+.lt-regua-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-fio);
+}
+.lt-regua-ouro {
+  position: absolute;
+  inset: 0;
+  background: var(--ouro-degrade);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+.lt-regua-anos {
+  position: relative;
+  height: 1.25rem;
+}
+.lt-regua-anos > li {
+  position: absolute;
+  top: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--color-cinza);
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+.lt-regua-anos > li[data-ativo] {
+  color: var(--color-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palavra {
+    animation-duration: 0.55s;
+  }
+  .entra {
+    animation-duration: 0.45s;
+  }
+  .revela-moldura {
+    animation-duration: 0.8s;
+  }
+  .rolo-faixa {
+    transition-duration: 1s;
+  }
+}
+@media print {
+  .palavra,
+  .entra,
+  .revela-moldura {
+    animation: none !important;
   }
 }
