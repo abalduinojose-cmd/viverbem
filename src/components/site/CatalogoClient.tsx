@@ -12,6 +12,15 @@
 // categoria é uma FAIXA que arrasta para o lado, como na home (pedido do
 // usuário em 06/10/2026); a busca e a página de uma categoria seguem em
 // grade, porque aí a lista é o conteúdo inteiro.
+//
+// 08/10/2026 ("vamos modernizar mais a página de produtos, e coloque a
+// linha de mais procurados primeiro"): a primeira faixa é "Mais procurados"
+// (os produtos com foto, os destaques na frente), antes da pronta entrega e
+// das áreas; cada faixa abre com o título, o total numa pílula e o "ver
+// tudo" (também no celular); os chips de área mostram quantos produtos têm;
+// a abertura ganha a linha dos números; o bilhete da receita perdeu o
+// círculo de ouro; e a página fecha com o convite para quem não achou a
+// fórmula.
 
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -55,6 +64,41 @@ function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategor
   );
 }
 
+// Foto de verdade é a que não é um dos desenhos neutros (.svg)
+const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerCase().endsWith(".svg"));
+
+/** O cabeçalho de cada faixa: título, o total numa pílula, o apoio e o "ver tudo" */
+function CabecalhoFaixa({
+  titulo,
+  total,
+  apoio,
+  href,
+}: {
+  titulo: React.ReactNode;
+  total: number;
+  apoio?: string;
+  href?: string;
+}) {
+  return (
+    <div className="flex items-end justify-between gap-4 mb-5">
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <h2 className="titulo-bloco">{titulo}</h2>
+          <span className="shrink-0 inline-flex items-center h-6 px-2.5 rounded-full bg-tinta/[0.07] text-[0.72rem] font-semibold text-tinta tabular-nums">
+            {total} {total === 1 ? "produto" : "produtos"}
+          </span>
+        </div>
+        {apoio && <p className="text-cinza text-sm md:text-base mt-1.5">{apoio}</p>}
+      </div>
+      {href && (
+        <span className="shrink-0">
+          <BotaoVerMais href={href}>ver tudo</BotaoVerMais>
+        </span>
+      )}
+    </div>
+  );
+}
+
 /** Nome da área com só o "&" em itálico ouro ("Dermatologia & Estética") */
 function TituloArea({ nome }: { nome: string }) {
   const e = nome.indexOf(" & ");
@@ -73,12 +117,15 @@ export function CatalogoClient({
   produtos,
   categoriaAtiva = null,
   buscaInicial = "",
+  contagens,
 }: {
   categorias: CategoriaDTO[];
   /** Na página de categoria, já vem só a categoria */
   produtos: ProdutoDTO[];
   categoriaAtiva?: CategoriaDTO | null;
   buscaInicial?: string;
+  /** Quantos produtos o site tem, no total e por área (para os chips) */
+  contagens?: { total: number; porCategoria: Record<number, number> };
 }) {
   const buscaDoEndereco = useSyncExternalStore(semAssinatura, lerBuscaDoEndereco, () => "");
   // null = a pessoa ainda não digitou: vale a busca que veio no endereço
@@ -101,6 +148,11 @@ export function CatalogoClient({
   }, [termos, produtos]);
 
   const industrializados = useMemo(() => produtos.filter(ehIndustrializado), [produtos]);
+  // Os mais procurados: os que têm foto, com os destaques na frente
+  const maisProcurados = useMemo(
+    () => produtos.filter((p) => temFoto(p.fotoUrl)).sort((a, b) => Number(b.destaque) - Number(a.destaque)),
+    [produtos]
+  );
 
   // Só as categorias que têm algo para mostrar
   const categoriasComItens = useMemo(
@@ -144,6 +196,28 @@ export function CatalogoClient({
                 )}
               </h1>
               <p className="texto-apoio mt-4">{apoio}</p>
+              {/* Os números, leves, com um ponto de ouro */}
+              <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cinza">
+                <li className="inline-flex items-center gap-2">
+                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
+                  <span>
+                    <b className="font-semibold text-navy tabular-nums">{produtos.length}</b>{" "}
+                    {categoriaAtiva ? "nesta área" : "produtos"}
+                  </span>
+                </li>
+                {!categoriaAtiva && (
+                  <li className="inline-flex items-center gap-2">
+                    <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
+                    <span>
+                      <b className="font-semibold text-navy tabular-nums">{categoriasComItens.length}</b> áreas
+                    </span>
+                  </li>
+                )}
+                <li className="inline-flex items-center gap-2">
+                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
+                  receita conferida pelo farmacêutico
+                </li>
+              </ul>
             </div>
 
             {/* O convite da página: a receita como um bilhete em azul-noite,
@@ -159,12 +233,9 @@ export function CatalogoClient({
                   aria-hidden="true"
                   className="pointer-events-none absolute -right-10 -top-14 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.3),transparent_62%)]"
                 />
-                <span className="relative shrink-0 w-12 h-12 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
-                  <IconeReceita tamanho={22} />
-                </span>
                 <span className="relative flex-1 min-w-0">
-                  <span className="rotulo block !text-[0.62rem]">receita</span>
-                  <span className="titulo-banner block mt-1 text-[1.05rem] sm:text-[1.15rem] font-semibold leading-tight tracking-[-0.02em]">
+                  <span className="rotulo-pilula !text-[0.6rem]">receita</span>
+                  <span className="titulo-banner block mt-2.5 text-[1.05rem] sm:text-[1.15rem] font-semibold leading-tight tracking-[-0.02em]">
                     Tem a receita? <span className="italic">Envie a foto</span>
                   </span>
                   <span className="block mt-1 text-[0.82rem] text-white/70 leading-snug">
@@ -224,6 +295,7 @@ export function CatalogoClient({
         >
           <Link href="/produtos" className={`chip ${!categoriaAtiva ? "chip-ativo" : ""}`} aria-current={!categoriaAtiva ? "page" : undefined}>
             Todas
+            {contagens && <span className="ml-2 text-[0.75rem] tabular-nums opacity-60">{contagens.total}</span>}
           </Link>
           {categorias.map((c) => (
             <Link
@@ -233,6 +305,9 @@ export function CatalogoClient({
               aria-current={categoriaAtiva?.id === c.id ? "page" : undefined}
             >
               {c.nome}
+              {contagens?.porCategoria[c.id] ? (
+                <span className="ml-2 text-[0.75rem] tabular-nums opacity-60">{contagens.porCategoria[c.id]}</span>
+              ) : null}
             </Link>
           ))}
         </nav>
@@ -275,42 +350,82 @@ export function CatalogoClient({
             <Grade lista={produtos} comCategoria={false} />
           </>
         ) : (
-          <div className="flex flex-col gap-12 md:gap-14">
+          <div className="flex flex-col gap-11 md:gap-14">
+            {/* Mais procurados: a primeira faixa */}
+            {maisProcurados.length > 0 && (
+              <section aria-label="Mais procurados">
+                <CabecalhoFaixa
+                  titulo={
+                    <>
+                      Mais <span className="italic">procurados</span>
+                    </>
+                  }
+                  total={maisProcurados.length}
+                  apoio="Os que mais saem nas três lojas."
+                />
+                <FaixaProdutos produtos={maisProcurados} className="cascata" />
+              </section>
+            )}
+
             {/* Industrializados com registro */}
             {industrializados.length > 0 && (
-              <section>
-                <div className="mb-5">
-                  <p className="rotulo">com registro na Anvisa</p>
-                  <h2 className="titulo-bloco mt-2">
-                    Pronta <span className="italic">entrega</span>
-                  </h2>
-                </div>
+              <section aria-label="Pronta entrega">
+                <CabecalhoFaixa
+                  titulo={
+                    <>
+                      Pronta <span className="italic">entrega</span>
+                    </>
+                  }
+                  total={industrializados.length}
+                  apoio="Industrializados com registro na Anvisa."
+                />
                 <FaixaProdutos produtos={industrializados} className="cascata" />
               </section>
             )}
 
-            {categoriasComItens.map((c) => (
-              <section key={c.id}>
-                <div className="flex items-end justify-between gap-4 mb-5">
-                  <div className="min-w-0">
-                    <h2 className="titulo-bloco">
-                      <TituloArea nome={c.nome} />
-                    </h2>
-                    <p className="text-cinza text-sm md:text-base mt-1.5">{infoCategoria(c.slug).descricao}</p>
-                  </div>
-                  <span className="shrink-0 hidden sm:inline-flex">
-                    <BotaoVerMais href={`/produtos/${c.slug}`}>Ver categoria</BotaoVerMais>
-                  </span>
-                </div>
-                {/* A seção já leva o nome da categoria: não repetir no cartão.
-                    Faixa que arrasta para o lado, como na home */}
-                <FaixaProdutos
-                  produtos={produtos.filter((p) => p.categoriaId === c.id)}
-                  comCategoria={false}
-                  className="cascata"
-                />
-              </section>
-            ))}
+            {categoriasComItens.map((c) => {
+              const daArea = produtos.filter((p) => p.categoriaId === c.id);
+              return (
+                <section key={c.id} aria-label={c.nome}>
+                  <CabecalhoFaixa
+                    titulo={<TituloArea nome={c.nome} />}
+                    total={daArea.length}
+                    apoio={infoCategoria(c.slug).descricao}
+                    href={`/produtos/${c.slug}`}
+                  />
+                  {/* A seção já leva o nome da categoria: não repetir no cartão.
+                      Faixa que arrasta para o lado, como na home */}
+                  <FaixaProdutos produtos={daArea} comCategoria={false} className="cascata" />
+                </section>
+              );
+            })}
+          </div>
+        )}
+
+        {/* O convite final: quem não achou a fórmula manda a receita */}
+        {!(buscando && resultadoBusca.length === 0) && (
+          <div className="mt-14 md:mt-16 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-6 md:p-8 lg:px-10 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)]">
+            <span aria-hidden="true" className="malha-banner" />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.28),transparent_62%)]"
+            />
+            <div className="relative flex-1 min-w-0">
+              <p className="rotulo-pilula">não achou a sua fórmula?</p>
+              <p className="titulo-banner mt-3 text-[1.45rem] md:text-[1.8rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
+                Manipulamos <span className="italic">conforme a receita.</span>
+              </p>
+              <p className="mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[52ch]">
+                Nem toda fórmula está no catálogo. Envie a foto da prescrição e o farmacêutico
+                confere.
+              </p>
+            </div>
+            <BotaoEnviarReceita comIcone={false} className="relative botao bg-white text-navy hover:bg-gelo !gap-2.5 self-start lg:self-auto shadow-[0_18px_40px_-18px_rgba(0,0,0,0.55)]">
+              <span className="text-ouro-escuro">
+                <IconeReceita tamanho={20} />
+              </span>
+              Enviar receita
+            </BotaoEnviarReceita>
           </div>
         )}
       </div>

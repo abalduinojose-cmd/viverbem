@@ -1,5 +1,22 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 46 (08/10/2026): fotos nos círculos de categoria, cartão dos 20 anos refeito, rótulo das seções em pílula leve. Não publicado.**
+> Círculos: Cabelos & Unhas e Homeopatia & Florais (sem produto com foto)
+> ganharam, PROVISÓRIOS a pedido ("vai mudar depois"), o frasco do ZincBlock
+> e o conta-gotas do Firm Defense (FOTO_REPRESENTATIVA na home). Banner da
+> história (celular), terceira versão ("muito ruim, melhore a foto"): a
+> fachada escurecida pelo véu saiu; o cartão tem em cima a foto dos sócios
+> dentro da loja, limpa (`public/fotos/sobre/equipe-loja.webp`, recorte 16:10
+> de futuro.webp ampliado para 1200 px com lanczos3, nitidez, brilho e
+> contraste leves) com a etiqueta branca "desde 1999", e embaixo a faixa
+> azul-noite com o "20" em ouro itálico, "anos construindo cuidado" e o botão
+> redondo com a seta. Rótulo das seções (`.rotulo-pilula`, o site inteiro:
+> "fale com a gente", "quem já é cliente", "acompanhe a gente", "o catálogo",
+> "como funciona" e os capítulos da página A Viver Bem): o fio de ouro na
+> frente virou uma pílula bem leve (azul a 6%, contorno a 10%) com um ponto
+> de ouro e espaçamento de letras menor; na folha escura, vidro a 8% com o
+> texto em ouro. Capturas em `scratchpad/etapa60`.
+
 > **ADENDO 45 (08/10/2026): banner da Saúde da Mulher publicado, potes mais lentos, site mais leve e compacto, aviso de erro do Next. PUBLICADO no 9º push (efee319).**
 > Pedidos, em duas mensagens: "encurte o segundo vídeo da saúde da mulher, e
 > não tá aparecendo no github", "site 100% fluindo", "limpe tudo que não for

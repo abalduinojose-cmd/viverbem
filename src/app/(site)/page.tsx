@@ -56,13 +56,19 @@ function imagemSeExistir(caminho: string): string | null {
 
 // Fotos que já temos, para os círculos das áreas sem foto própria, só
 // onde o frasco combina com o nome da área (pedido do usuário em
-// 06/10/2026). Cabelos & Unhas e Homeopatia & Florais ficam com a inicial
-// até chegar foto. A foto da área em public/fotos/categorias/<slug>.jpg,
+// 06/10/2026). A foto da área em public/fotos/categorias/<slug>.jpg,
 // quando existir, tem prioridade sobre tudo isto.
+// Cabelos & Unhas e Homeopatia & Florais ainda não têm produto com foto: a
+// pedido (08/10/2026, "coloque fotos de produtos também, pra ficar
+// apresentável, mas isso vai mudar depois") entram, PROVISÓRIOS, o frasco
+// de loção do ZincBlock e o conta-gotas do Firm Defense, até chegar a foto
+// da área (o rótulo deles mal se lê no círculo).
 const FOTO_REPRESENTATIVA: Record<string, string> = {
   "vitaminas-suplementos": "/uploads/omega3.png",
   "saude-da-mulher": "/uploads/citorepair.png",
   "saude-do-homem": "/uploads/vitaflex.png",
+  "cabelos-unhas": "/uploads/zincblock-fps.png",
+  "homeopatia-florais": "/uploads/firm-defense-serum.png",
 };
 
 // Texto do banner de cada área: descreve o que se prepara, nunca um efeito.

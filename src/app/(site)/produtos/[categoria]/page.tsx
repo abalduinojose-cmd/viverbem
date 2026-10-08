@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
 import { infoCategoria } from "@/lib/categorias";
 import { CatalogoClient } from "@/components/site/CatalogoClient";
+import { contarPorArea } from "@/lib/contagens";
 
 export const dynamic = "force-dynamic";
 
@@ -34,12 +35,14 @@ export default async function PaginaCategoria({ params }: Props) {
   const { categorias, produtos } = await obterCatalogo();
   const atual = categorias.find((c) => c.slug === categoria);
   if (!atual) notFound();
+  const contagens = contarPorArea(produtos);
 
   return (
     <CatalogoClient
       categorias={categorias}
       produtos={produtos.filter((p) => p.categoriaId === atual.id)}
       categoriaAtiva={atual}
+      contagens={contagens}
     />
   );
 }

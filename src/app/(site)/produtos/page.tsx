@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
 import { CatalogoClient } from "@/components/site/CatalogoClient";
+import { contarPorArea } from "@/lib/contagens";
 
 // Sempre dados frescos do banco (o que muda no painel aparece na hora)
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export default async function PaginaCatalogo({
   const parametros = EH_DEMO ? {} : await searchParams;
   const bruto = "busca" in parametros ? parametros.busca : undefined;
   const busca = (Array.isArray(bruto) ? bruto[0] : bruto) ?? "";
+  const contagens = contarPorArea(produtos);
 
   return (
     // A key remonta o catálogo quando chega uma busca nova pelo cabeçalho
@@ -34,6 +36,7 @@ export default async function PaginaCatalogo({
       categorias={categorias}
       produtos={produtos}
       buscaInicial={busca.slice(0, 60)}
+      contagens={contagens}
     />
   );
 }
