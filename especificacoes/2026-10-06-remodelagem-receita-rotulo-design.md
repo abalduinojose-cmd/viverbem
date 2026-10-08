@@ -1,5 +1,63 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 44 (08/10/2026): página A Viver Bem em capítulos com motor de rolagem em JavaScript, rolagem suave no site, travamentos medidos, limpeza. PUBLICADO no 8º push (2f46ad6), junto com os adendos 37 a 43 das duas sessões.**
+> Pedidos: "modernizar a página sobre, clean e moderna, com efeitos de scroll,
+> design profissional feito em JavaScript, refinar com a skill
+> ui-ux-pro-max"; depois "melhore os movimentos de scroll, tire todos os
+> travamentos, limpe tudo que não precisa e atualize o github". A skill
+> recomendou o padrão de narrativa por capítulos (indicador de progresso,
+> no máximo uma ou duas seções presas, paralaxe só em fotos); a paleta e as
+> fontes que ela sugeriu foram ignoradas (a identidade é fixa).
+> **Motor** (`src/components/site/historia/motor.ts`): um laço só de
+> requestAnimationFrame; cada cena mede o progresso pela caixa na tela e
+> escreve transform/opacity direto no DOM; leituras antes das escritas;
+> suavização independente da taxa de quadros; cenas fora da tela paradas
+> (IntersectionObserver); roda no Safari do iPhone e no Firefox, onde o CSS
+> de rolagem ainda não roda; com "reduzir movimento" a suavização encurta.
+> **Página** (`sobre/page.tsx`): barra de leitura em ouro no alto
+> (ProgressoLeitura, até o fim do capítulo 04); abertura com o título que
+> sobe palavra por palavra de dentro de máscaras, os números 1999/20/3
+> rolando como contador mecânico (NumeroRolante, fitas 0 a 9 desenhadas no
+> CSS, largura real de cada algarismo) e a foto da equipe que se abre na
+> carga com paralaxe (FotoParalaxe); 01 o parágrafo da fundação grande, que
+> acende palavra por palavra enquanto se lê (TextoRevelado, "próxima,
+> humana e personalizada" em ouro itálico); 02 a linha do tempo
+> (LinhaDoTempo): no computador, se couber abaixo do cabeçalho, a seção
+> prende (sticky, rolagem nativa) e os marcos andam para o lado, o marco na
+> linha de leitura acende, a régua dos anos enche e marca o ano ativo (a
+> linha de leitura anda de 28% até o centro do último marco, para cada ano
+> ter um ponto próprio na régua; parada, 2012 e 2017 se amontoavam); no
+> celular, o trilho de ouro desce e acende cada ano; o 2006 leva a foto do
+> laboratório; 03 a folha escura (CapituloVinteAnos) com o "20" que cresce
+> e o miolo que recua quando a folha branca do 04 sobe; 04 a citação que
+> acende como o manifesto, com a foto. Textos da farmácia sem mudança.
+> **Rolagem suave** (`RolagemSuave.tsx`, no layout do site): com as
+> animações do Windows desligadas o Chrome também desliga a rolagem
+> animada da roda, e cada clique saltava ~100px (efeitos aos saltos, o
+> "travamento"). Cada clique soma ao alvo e a página desliza com o
+> scrollTo suave do navegador (compositor); se o navegador não animar, o
+> primeiro clique percebe e passa a deslizar por conta própria (modo
+> lembrado na sessão). Toque, trackpad, teclado, âncoras, caixas que rolam
+> por dentro e a gaveta aberta ficam nativos. O motor ouve o passo
+> ("rolagemsuave") e atualiza no mesmo quadro. **Travamentos medidos**
+> (scratchpad `medir-rolagem.cjs` e `rastrear.cjs`, Chrome sem tela, CPU 2x,
+> roda real): home de 11,4% para 3,5% de quadros lentos e A Viver Bem com
+> 0,5% e zero tarefas longas; o vidro do cabeçalho passou de blur-xl para
+> blur-md (bg-white/90). A primeira versão da rolagem suave rodava sempre
+> no JavaScript e o trace mostrou um quadro de 1,8 s: por isso o caminho do
+> navegador vem primeiro. Sobra uma tarefa longa de ~265 ms na home, a
+> preparação do canvas da animação (CenaAnimada, preparar.comecar), avisada
+> à sessão da animação. **Limpeza**: sem uso, saíram .citacao,
+> .titulo-display, .ladrilho-luz, .sombra-card, .paralaxe e .paralaxe-vista
+> (com o keyframe), .trilha-topo e os tokens --tam-display e --shadow-card
+> (2,6 KB a menos); nenhum componente órfão. **Publicação**: as duas
+> sessões estavam na mesma pasta; a outra confirmou arquivos estáveis e
+> avisou que o banner Saúde da Mulher mostra o pote do Composto
+> Emagrecedor (tirado do site em setembro). A prévia foi gerada com a chave
+> bannerMulher desligada só durante o build (o banco local voltou ao valor
+> original); o banner continua ligado no site local. Antes do push: tsc e
+> lint limpos e 12 cargas de página sem erro (6 páginas, 1440 e 390).
+
 > **ADENDO 43 (08/10/2026): banner animado da Saúde da Mulher, com coreografia própria ("fases"). Não publicado.**
 > Pedido: "uma animação no mesmo estilo, com os medicamentos em anexo
 > (Pó finalizador FPB 20, ZincBlock FPS, Composto Emagrecedor, Bastão
