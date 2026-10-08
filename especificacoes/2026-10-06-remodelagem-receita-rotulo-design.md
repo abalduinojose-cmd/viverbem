@@ -1,5 +1,46 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 45 (08/10/2026): banner da Saúde da Mulher publicado, potes mais lentos, site mais leve e compacto, aviso de erro do Next. PUBLICADO no 9º push (efee319).**
+> Pedidos, em duas mensagens: "encurte o segundo vídeo da saúde da mulher, e
+> não tá aparecendo no github", "site 100% fluindo", "limpe tudo que não for
+> usar", "espaços entre as seções mais compactos", "exclua o botão vermelho";
+> depois "a cena animada não aparece na prévia", "os medicamentos e nomes
+> estão aparecendo muito rápido, deixe mais lento como um especialista em
+> motion", "modernize a seção selecionada" (banner da história) e "o botão
+> enviar receita". **Ritmo da animação da mulher**: o roteiro ganhou
+> `ritmo` (pares [segundo real, segundo da coreografia]) e o HeroAnimado
+> passa o tempo real por uma curva cúbica monotônica (Fritsch e Carlson,
+> pontas com a mesma inclinação para o laço emendar). A primeira versão
+> encurtou o ciclo para 5,2 s e ficou rápida demais; a final dá a cada pote
+> 0,75 s chegando e 0,85 s quase parado na frente, com o nome legível no
+> letreiro (antes eram 0,2 s), e o ciclo tem 11 s. A coreografia (fases.ts)
+> não mudou. **Prévia**: o banner foi publicado ligado (o pote do Composto
+> Emagrecedor segue nele, decisão do usuário). **Botão vermelho**: era o
+> aviso de "Issues" do Next em desenvolvimento; com `devIndicators: false` o
+> Next ainda mostra erros de compilação e de execução. Causas: a importação
+> quebrada no meio da refatoração da outra sessão (já resolvida) e
+> `createLinearGradient` com medida infinita no degradê de ouro (cena.ts:
+> `ouro` agora saneia as medidas e `desenharForma` pula o quadro sem pontos
+> válidos). **Fluidez**: a outra sessão dividiu a preparação da cena em
+> pedaços (sem a tarefa longa de ~300 ms); aqui, durante a rolagem a
+> animação desenha um quadro sim, outro não, e só anima com 15% do banner à
+> vista. Medido (Chrome sem tela, roda real): computador CPU 2x, home 1,6% de
+> quadros lentos e A Viver Bem 0,2%, nenhuma tarefa longa; celular CPU 4x,
+> home de 10% para cerca de 5% (o resto é o desenho do canvas). **Espaços**:
+> `--espaco-secao` de 56-88px para 44-68px, `--vao-titulo` e os capítulos da
+> página A Viver Bem cerca de 20% menores, e os respiros fixos do rodapé, do
+> "Fale com a gente" e das páginas internas; a home ficou 301 px mais curta
+> no computador e 226 px no celular. **Banner da história** (celular): a foto
+> inteira, o "20" grande em ouro itálico com "anos construindo cuidado", a
+> etiqueta "desde 1999 · Petrópolis" e um botão redondo branco com a seta,
+> sem desfoque. **Cartão "Enviar receita"** (Fale com a gente): saiu o
+> círculo de ouro com o ícone; o rótulo com o fio abre o cartão e o convite
+> é uma pílula branca com o ícone em ouro escuro e a seta que anda.
+> **Limpeza**: saíram do repositório img/ (11 imagens do Gemini da primeira
+> versão, ~1,3 MB) e o logo antigo da raiz; public/ e os componentes já
+> estavam sem sobras. A prévia confirmou as duas animações prontas no
+> celular e no computador, sem erro e sem 404.
+
 > **ADENDO 44 (08/10/2026): página A Viver Bem em capítulos com motor de rolagem em JavaScript, rolagem suave no site, travamentos medidos, limpeza. PUBLICADO no 8º push (2f46ad6), junto com os adendos 37 a 43 das duas sessões.**
 > Pedidos: "modernizar a página sobre, clean e moderna, com efeitos de scroll,
 > design profissional feito em JavaScript, refinar com a skill
