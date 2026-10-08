@@ -32,11 +32,11 @@ import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { CategoriasRedondas, ImagemCategoria } from "@/components/site/CategoriasRedondas";
 import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
-import { CatalogoHome } from "@/components/site/CatalogoHome";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { BannerHistoria } from "@/components/site/BannerHistoria";
-import { BannerSaudeMulher } from "@/components/site/BannerSaudeMulher";
+import { SecaoSaudeMulher } from "@/components/site/BannerSaudeMulher";
+import { ROTEIROS } from "@/components/site/heroAnimado/roteiros";
 
 export const dynamic = "force-dynamic";
 
@@ -45,9 +45,6 @@ const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerC
 
 // Quantas fotos reais uma área precisa ter para ganhar vitrine própria
 const MINIMO_PARA_VITRINE = 3;
-
-// Quantos produtos a grade "Explore o catálogo" mostra (2 fileiras no computador)
-const LIMITE_CATALOGO_HOME = 8;
 
 /** Caminho público da imagem, se o arquivo existir em public/ */
 function imagemSeExistir(caminho: string): string | null {
@@ -105,33 +102,6 @@ function TituloComItalico({ nome }: { nome: string }) {
   return <>{nome}</>;
 }
 
-/** Os produtos da grade do catálogo: um de cada área por vez (os com foto
- *  primeiro, depois os destaques), até o limite, para a grade mostrar
- *  todas as áreas e não repetir só o que já está nas faixas. */
-function escolherParaCatalogo(categorias: CategoriaDTO[], produtos: ProdutoDTO[], limite: number): ProdutoDTO[] {
-  const porArea = categorias.map((c) =>
-    produtos
-      .filter((p) => p.categoriaId === c.id)
-      .sort(
-        (a, b) =>
-          Number(temFoto(b.fotoUrl)) - Number(temFoto(a.fotoUrl)) || Number(b.destaque) - Number(a.destaque)
-      )
-  );
-  const escolhidos: ProdutoDTO[] = [];
-  for (let rodada = 0; escolhidos.length < limite; rodada++) {
-    let pegou = false;
-    for (const lista of porArea) {
-      const p = lista[rodada];
-      if (p && escolhidos.length < limite) {
-        escolhidos.push(p);
-        pegou = true;
-      }
-    }
-    if (!pegou) break;
-  }
-  return escolhidos;
-}
-
 export default async function Home() {
   const [{ categorias, produtos }, avaliacoes, artes, secoes] = await Promise.all([
     obterCatalogo(),
@@ -187,7 +157,13 @@ export default async function Home() {
     imagem: imagemSeExistir("/fotos/banners/mais-procurados.jpg"),
   };
 
-  const produtosCatalogo = escolherParaCatalogo(categoriasComItens, produtos, LIMITE_CATALOGO_HOME);
+  // A linha da Saúde da Mulher: os potes da animação que estão no catálogo
+  // e os produtos da categoria, os com foto na frente
+  const potesDaMulher = new Set<string>(ROTEIROS.mulher.potes.map((p) => p.src));
+  const idMulher = categorias.find((c) => c.slug === "saude-da-mulher")?.id;
+  const linhaMulher = produtos
+    .filter((p) => (p.fotoUrl && potesDaMulher.has(p.fotoUrl)) || p.categoriaId === idMulher)
+    .sort((a, b) => Number(temFoto(b.fotoUrl)) - Number(temFoto(a.fotoUrl)));
 
   // A primeira folha só existe se alguma das suas seções estiver ligada
   const mostraFolhaProdutos =
@@ -232,7 +208,6 @@ export default async function Home() {
                   href={`/produtos/${v.categoria.slug}`}
                   produtos={v.produtos}
                   banner={v.banner}
-                  bannerPrimeiro
                 />
               ))}
 
@@ -261,14 +236,11 @@ export default async function Home() {
           </Folha>
         )}
 
-        {/* 6 ─ Explore o catálogo: um produto de cada área, em grade */}
-        {secoes.catalogo && produtosCatalogo.length > 0 && (
+        {/* 6 ─ Saúde da Mulher: a animação da linha e os produtos (08/10/2026,
+            no lugar da grade "Explore o catálogo") */}
+        {secoes.bannerMulher && (
           <Folha>
-            <CatalogoHome
-              produtos={produtosCatalogo}
-              totalProdutos={produtos.length}
-              totalAreas={categoriasComItens.length}
-            />
+            <SecaoSaudeMulher produtos={linhaMulher} />
             <div className="secao-fecho" aria-hidden="true" />
           </Folha>
         )}
@@ -285,14 +257,6 @@ export default async function Home() {
         {secoes.avaliacoes && avaliacoes.length > 0 && (
           <Folha tema="gelo">
             <CarrosselAvaliacoes avaliacoes={avaliacoes} />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
-
-        {/* 9 ─ Banner da Saúde da Mulher: a animação da dobra com os potes da linha */}
-        {secoes.bannerMulher && (
-          <Folha>
-            <BannerSaudeMulher />
             <div className="secao-fecho" aria-hidden="true" />
           </Folha>
         )}

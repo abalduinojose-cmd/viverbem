@@ -12,11 +12,15 @@
 // chegar" (antes eram só chips) e o horário da semana com o dia de hoje
 // marcado. O telefone fixo segue fora (pedido do usuário); ele fica na
 // página das lojas.
+//
+// 08/10/2026 ("modernize a seção fale com a gente"): os ícones em círculo
+// no alto dos cartões viraram o rótulo em pílula do site; o WhatsApp ganhou
+// o botão verde dele, no lugar da seta no círculo de ouro; a semana do
+// horário ficou mais leve (só hoje em ouro, os outros dias sem contorno).
 import Link from "next/link";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
-import { IconeLoja } from "./IconesVantagens";
-import { IconeWhatsApp, SetaDireita, IconeRelogio } from "./icones";
+import { IconeWhatsApp, SetaDireita } from "./icones";
 import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
 
 // A mensagem que já vai pronta no WhatsApp: a pessoa só aperta enviar
@@ -40,15 +44,6 @@ function IconeRota() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3 4.5 20.5l7.5-3.6 7.5 3.6L12 3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-// Seta num círculo de ouro, que anda ao passar o mouse
-function SetaOuro() {
-  return (
-    <span className="shrink-0 w-10 h-10 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
-      <SetaDireita />
-    </span>
   );
 }
 
@@ -202,12 +197,7 @@ export function FaleComAGente() {
             rel="noopener noreferrer"
             className={`${classeCartao} sm:col-span-2 lg:col-span-5 p-6 md:p-7`}
           >
-            <span className="flex items-center justify-between gap-4">
-              <span className="w-12 h-12 rounded-full flex items-center justify-center bg-[#25D366]/12 text-[#1DA851]">
-                <IconeWhatsApp />
-              </span>
-              <span className="rotulo">WhatsApp</span>
-            </span>
+            <span className="rotulo-pilula">whatsapp</span>
             <span className="mt-5 block text-[1.5rem] md:text-[1.7rem] font-semibold text-navy tracking-[-0.03em] tabular-nums leading-none">
               {WHATSAPP_LOJA}
             </span>
@@ -219,9 +209,14 @@ export function FaleComAGente() {
               {MENSAGEM_WHATSAPP}
             </span>
             <span className="mt-2 block text-xs text-cinza">A mensagem já vai pronta. É só enviar.</span>
-            <span className="mt-auto pt-6 flex items-center justify-between gap-3">
-              <span className="text-sm font-semibold text-navy">Chamar no WhatsApp</span>
-              <SetaOuro />
+            <span className="mt-auto pt-6 block">
+              <span className="inline-flex items-center gap-2.5 h-12 px-5 rounded-full bg-[#1DA851] text-white text-[0.95rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors group-hover:bg-[#178a43]">
+                <IconeWhatsApp tamanho={18} />
+                Chamar no WhatsApp
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  <SetaDireita tamanho={15} />
+                </span>
+              </span>
             </span>
           </a>
 
@@ -230,12 +225,7 @@ export function FaleComAGente() {
               vira ouro no hover. Sem o telefone fixo aqui (pedido): ele fica
               na página das lojas. */}
           <div className="sm:col-span-2 lg:col-span-9 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
-            <div className="flex items-center justify-between gap-3">
-              <span className="w-11 h-11 rounded-full flex items-center justify-center bg-ouro/10 text-ouro-escuro">
-                <IconeLoja tamanho={20} />
-              </span>
-              <span className="rotulo !text-cinza text-[0.68rem]">{UNIDADES.length} lojas em Petrópolis</span>
-            </div>
+            <span className="rotulo-pilula">{UNIDADES.length} lojas em Petrópolis</span>
             <ul className="mt-3 lista-fichas">
               {UNIDADES.map((u, i) => (
                 <li key={u.bairro}>
@@ -256,7 +246,7 @@ export function FaleComAGente() {
                     </span>
                     <span className="shrink-0 flex items-center gap-3">
                       <span className="hidden sm:inline text-sm font-semibold text-navy">Como chegar</span>
-                      <span className="w-10 h-10 rounded-full bg-gelo text-navy flex items-center justify-center transition duration-300 group-hover:bg-[image:var(--ouro-degrade)] group-hover:translate-x-1">
+                      <span className="w-10 h-10 rounded-full border border-fio text-navy flex items-center justify-center transition duration-300 group-hover:border-transparent group-hover:bg-[image:var(--ouro-degrade)] group-hover:translate-x-1">
                         <IconeRota />
                       </span>
                     </span>
@@ -274,17 +264,13 @@ export function FaleComAGente() {
               semana em sete círculos (hoje em ouro) e as linhas */}
           <div className="sm:col-span-2 lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
             <span className="flex items-center justify-between gap-3">
-              <span className="w-11 h-11 rounded-full flex items-center justify-center bg-gelo text-tinta">
-                <IconeRelogio />
-              </span>
+              <span className="rotulo-pilula">horário</span>
               {estado ? (
                 <span role="status" className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em]">
                   <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
                   <span className={estado.aberto ? "text-green-700" : "text-cinza"}>{estado.aberto ? "Aberto" : "Fechado"}</span>
                 </span>
-              ) : (
-                <span className="rotulo !text-cinza text-[0.68rem]">horário</span>
-              )}
+              ) : null}
             </span>
             <span className="mt-4 block text-[1.7rem] font-semibold text-navy tracking-[-0.03em] leading-none tabular-nums">
               {linhaHoje ? linhaHoje.horas : HORARIOS[0].horas}
@@ -309,8 +295,8 @@ export function FaleComAGente() {
                       hoje
                         ? "bg-[image:var(--ouro-degrade)] text-navy shadow-[0_10px_20px_-12px_rgba(143,113,55,0.8)]"
                         : fechado
-                          ? "bg-gelo/60 text-cinza/50"
-                          : "bg-white ring-1 ring-fio text-navy"
+                          ? "text-cinza/40"
+                          : "text-navy"
                     }`}
                   >
                     <span aria-hidden="true">{d.curto}</span>

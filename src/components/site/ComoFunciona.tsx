@@ -115,18 +115,18 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
           {PASSOS.map((p, i) => (
             <li key={p.titulo} className="relative shrink-0 w-[min(18.5rem,82vw)] snap-start md:w-auto md:shrink">
               {/* O traço que liga este cartão ao anterior (só no computador, na altura do ícone) */}
-              {i > 0 && <span aria-hidden="true" className="traco-liga hidden lg:block absolute top-14 -left-5 w-4 h-px" />}
-              <div className="flex h-full flex-col rounded-[1.5rem] border border-fio bg-white p-5 md:p-7 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40">
-                {/* O ícone num círculo de ouro e o número: lado a lado no celular, empilhados do tablet em diante */}
-                <div className="flex items-center justify-between gap-4 md:flex-col md:items-start md:gap-5">
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center shadow-[0_12px_24px_-12px_rgba(143,113,55,0.7)]">
-                    {p.icone}
-                  </span>
-                  <span aria-hidden="true" className="numero-tinta text-[2.4rem] md:text-[2.9rem]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3 className="mt-4 md:mt-2 text-[1.2rem] md:text-[1.25rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
+              {i > 0 && <span aria-hidden="true" className="traco-liga hidden lg:block absolute top-[2.875rem] -left-5 w-4 h-px" />}
+              {/* 08/10/2026 ("modernize"): o círculo de ouro cheio saiu; o ícone
+                  fica num quadrado suave e o número grande vira marca d'água
+                  no canto do cartão */}
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-fio bg-white p-5 md:p-6 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40">
+                <span aria-hidden="true" className="numero-tinta pointer-events-none absolute right-4 top-2 text-[5rem] md:text-[5.5rem] leading-none opacity-25">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="relative w-11 h-11 rounded-2xl bg-ouro/10 text-ouro-escuro ring-1 ring-inset ring-ouro/20 flex items-center justify-center">
+                  {p.icone}
+                </span>
+                <h3 className="relative mt-5 text-[1.2rem] md:text-[1.25rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
                   <span className="sr-only">Passo {i + 1}: </span>
                   {p.titulo}
                 </h3>
@@ -172,12 +172,9 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
           className="pointer-events-none absolute -right-20 -top-24 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.3),transparent_62%)]"
         />
         <div className="relative flex items-start gap-4 md:gap-5 flex-1 min-w-0">
-          <span className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
-            <IconeReceita tamanho={24} />
-          </span>
           <div className="min-w-0">
-            <p className="rotulo">receita em mãos?</p>
-            <p className="titulo-banner mt-1.5 text-[1.45rem] md:text-[1.8rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
+            <p className="rotulo-pilula">receita em mãos?</p>
+            <p className="titulo-banner mt-3 text-[1.45rem] md:text-[1.8rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
               Envie a foto agora <span className="italic">e o farmacêutico confere.</span>
             </p>
             <p className="hidden sm:block mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[46ch]">

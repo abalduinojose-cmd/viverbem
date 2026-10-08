@@ -10,9 +10,10 @@
 // grade e virou um cartão da faixa, com a mesma altura dos cartões de
 // produto. No celular ele também entra na faixa.
 //
-// Posição (08/10/2026): no "Mais procurados" o banner fecha a faixa
-// (11/12rem); nas faixas das áreas ele ABRE a faixa, um pouco menor
-// (10/11rem), pedido "coloque ele primeiro e um pouco menor".
+// Posição (08/10/2026): o banner fecha a faixa, depois dos produtos, em
+// todas as vitrines. Ele chegou a abrir as faixas das áreas, um pouco
+// menor ("coloque ele primeiro"), e voltou para o fim no mesmo dia ("mude
+// para o final, assim como no Mais procurados").
 //
 // O banner (08/10/2026, "tire o M por trás, coloque o escrito mais
 // centralizado e modernize"): a peça em azul-noite com a malha fina, as
@@ -59,15 +60,12 @@ function TituloDuasVozes({ texto }: { texto: string }) {
   );
 }
 
-// O banner da área, como um cartão da faixa. "compacto" é a versão um
-// pouco menor que abre as faixas das áreas.
-function BannerCartao({ banner, href, compacto = false }: { banner: BannerVitrine; href: string; compacto?: boolean }) {
+// O banner da área, o último cartão da faixa
+function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string }) {
   return (
     <Link
       href={href}
-      className={`group banner-noite em-noite relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 text-center transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)] ${
-        compacto ? "w-40 md:w-44 p-4" : "w-44 md:w-48 p-5"
-      }`}
+      className={`group banner-noite em-noite relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 text-center transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)] w-44 md:w-48 p-5`}
     >
       {banner.imagem ? (
         <>
@@ -101,18 +99,14 @@ function BannerCartao({ banner, href, compacto = false }: { banner: BannerVitrin
       <span className="relative z-[1] flex flex-col items-center gap-3 text-white">
         <span aria-hidden="true" className="h-px w-8 bg-[image:var(--ouro-degrade)]" />
         <span
-          className={`titulo-banner font-semibold leading-[1.08] tracking-[-0.03em] text-balance ${
-            compacto ? "text-[1.15rem] md:text-[1.25rem]" : "text-[1.3rem] md:text-[1.4rem]"
-          }`}
+          className="titulo-banner font-semibold leading-[1.08] tracking-[-0.03em] text-balance text-[1.3rem] md:text-[1.4rem]"
         >
           <TituloDuasVozes texto={banner.titulo} />
         </span>
         {banner.texto && <span className="text-[0.8rem] leading-snug text-white/70 text-balance">{banner.texto}</span>}
         {/* O botão cabe numa linha mesmo no cartão estreito do celular (128px de miolo) */}
         <span
-          className={`mt-2 inline-flex items-center gap-1.5 h-10 rounded-full border border-white/35 font-medium text-white whitespace-nowrap transition-colors group-hover:bg-white group-hover:border-white group-hover:text-navy ${
-            compacto ? "px-3 text-[0.78rem]" : "px-3.5 text-[0.82rem]"
-          }`}
+          className={`mt-2 inline-flex items-center gap-1.5 h-10 rounded-full border border-white/35 font-medium text-white whitespace-nowrap transition-colors group-hover:bg-white group-hover:border-white group-hover:text-navy px-3.5 text-[0.82rem]`}
         >
           Ver produtos
           <SetaDireita tamanho={14} />
@@ -128,15 +122,12 @@ export function VitrineCategoria({
   href,
   produtos,
   banner,
-  bannerPrimeiro = false,
 }: {
   id: string;
   titulo: React.ReactNode;
   href: string;
   produtos: ProdutoDTO[];
   banner?: BannerVitrine;
-  /** O banner abre a faixa, um pouco menor (faixas das áreas); senão fecha */
-  bannerPrimeiro?: boolean;
 }) {
   if (produtos.length === 0) return null;
 
@@ -151,14 +142,13 @@ export function VitrineCategoria({
         <BotaoVerMais href={href} className="shrink-0 ml-auto sm:ml-0" />
       </div>
 
-      {/* A faixa: o banner abre (áreas) ou fecha (mais procurados) a fila de produtos */}
+      {/* A faixa: os produtos e, no fim, o banner da área */}
       <div className="revelar mt-5 md:mt-6">
         <FaixaProdutos
           produtos={produtos}
           comCategoria={false}
           className="cascata"
-          antes={banner && bannerPrimeiro ? <BannerCartao banner={banner} href={href} compacto /> : undefined}
-          depois={banner && !bannerPrimeiro ? <BannerCartao banner={banner} href={href} /> : undefined}
+          depois={banner ? <BannerCartao banner={banner} href={href} /> : undefined}
         />
       </div>
     </section>

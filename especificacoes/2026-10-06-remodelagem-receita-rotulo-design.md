@@ -1,5 +1,28 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 48 (08/10/2026): seção Saúde da Mulher no lugar do "Explore o catálogo", banner das faixas no fim, Como funciona e Fale com a gente mais limpos.**
+> Pedidos: "mude isso para o final da seção, assim como no Mais procurados";
+> "modernize o Como funciona"; "o catálogo / Explore o catálogo... isso não
+> tá bom, pode ser uma seção saúde da mulher e modernize a seção também";
+> "modernize a seção fale com a gente". Faixas das áreas
+> (`VitrineCategoria`): o banner volta a fechar a faixa, no tamanho normal
+> (saíram `bannerPrimeiro` e `compacto`). Home: a grade "Explore o catálogo"
+> e o `CatalogoHome` saíram; no lugar, entre o Como funciona e os vídeos,
+> entra a seção Saúde da Mulher (`SecaoSaudeMulher`, no arquivo
+> `BannerSaudeMulher.tsx`): rótulo em pílula, "Cuidado em cada fase", o apoio
+> só com tipos de produto, "ver a linha", a animação "mulher" no cartão
+> azul-noite e a faixa com os produtos da linha (os potes da animação que
+> estão no catálogo e a categoria, os com foto na frente). O banner solto
+> depois das avaliações deixou de existir; a chave `bannerMulher` liga e
+> desliga a seção nova e a chave `catalogo` saiu de `secoes.ts`. Como
+> funciona: sem o círculo de ouro cheio; o ícone fica num quadrado suave
+> (ouro a 10%) e o número vira marca d'água no canto do cartão; o convite
+> azul-noite ganhou o rótulo em pílula. Fale com a gente: os ícones em
+> círculo viraram rótulos em pílula ("whatsapp", "3 lojas em Petrópolis",
+> "horário"), o WhatsApp tem o botão verde dele, o "Como chegar" é um círculo
+> só de contorno e os dias da semana perderam o contorno (hoje em ouro).
+> Capturas em `scratchpad/r49`; fumaça das 6 páginas sem erro.
+
 > **ADENDO 47 (08/10/2026): página de produtos com "Mais procurados" primeiro, cartão dos 20 anos com painel flutuante. PUBLICADO no 10º push (c755664).**
 > Pedido: "modernize mais o link component (20 anos); agora na página de
 > produtos, vamos modernizar mais ela, e coloque a linha de mais procurados
