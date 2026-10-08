@@ -193,7 +193,7 @@ export default async function PaginaProduto({ params }: Props) {
       </div>
 
       {/* Produto */}
-      <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-14 md:pb-20">
+      <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-10 md:pb-14">
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_18rem] gap-8 lg:gap-10 items-start">
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
@@ -305,7 +305,7 @@ export default async function PaginaProduto({ params }: Props) {
 
       {/* Da mesma área */}
       {relacionados.length > 0 && (
-        <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-16 border-t border-fio">
+        <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-12 border-t border-fio">
           <div className="flex items-end justify-between gap-4 mt-10 mb-6">
             <div>
               <p className="rotulo">da mesma área</p>

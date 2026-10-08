@@ -127,7 +127,7 @@ export default async function PaginaSobre() {
       <ProgressoLeitura ateId="futuro" />
 
       {/* ---------- Abertura ---------- */}
-      <section id="historia" aria-labelledby="titulo-historia" className={`halo-marca px-5 md:px-8 pt-10 md:pt-16 pb-14 md:pb-20 ${ANCORA}`}>
+      <section id="historia" aria-labelledby="titulo-historia" className={`halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-10 md:pb-14 ${ANCORA}`}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
             <p className="rotulo-pilula entra">a viver bem · desde 1999</p>
@@ -268,7 +268,7 @@ export default async function PaginaSobre() {
 
       {/* ---------- Avaliações ---------- */}
       {avaliacoes.length > 0 && (
-        <div id="avaliacoes" className={`pb-20 ${ANCORA}`}>
+        <div id="avaliacoes" className={`pb-14 ${ANCORA}`}>
           <CarrosselAvaliacoes avaliacoes={avaliacoes} />
         </div>
       )}

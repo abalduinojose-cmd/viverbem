@@ -21,7 +21,7 @@ export default function PaginaLojas() {
   return (
     <main className="flex-1">
       {/* Abertura */}
-      <section className="halo-marca px-5 md:px-8 pt-12 md:pt-16 pb-8">
+      <section className="halo-marca px-5 md:px-8 pt-10 md:pt-12 pb-6">
         <div className="max-w-5xl mx-auto">
           <p className="rotulo">onde nos encontrar</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 vao-rotulo">
@@ -89,7 +89,7 @@ export default function PaginaLojas() {
       </section>
 
       {/* Horário e atalho */}
-      <section className="px-5 md:px-8 max-w-5xl mx-auto pt-12 md:pt-16 pb-20 md:pb-24">
+      <section className="px-5 md:px-8 max-w-5xl mx-auto pt-10 md:pt-12 pb-14 md:pb-18">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-start">
           <div>
             <p className="rotulo">horário de atendimento</p>

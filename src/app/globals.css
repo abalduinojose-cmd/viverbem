@@ -72,8 +72,9 @@
   /* Respiro em três passos fixos */
   /* Compactado em 06/10/2026 a pedido ("tire um pouco dos espaçamentos"):
      era 4,5-7rem e 2-3rem */
-  --espaco-secao: clamp(3.5rem, 2.5rem + 2.8vw, 5.5rem);
-  --vao-titulo: clamp(1.5rem, 1.2rem + 0.9vw, 2.25rem);
+  /* 08/10/2026, "site um pouco mais compacto": 56 -> 44px no celular, 88 -> 68px no computador */
+  --espaco-secao: clamp(2.75rem, 2rem + 2.2vw, 4.25rem);
+  --vao-titulo: clamp(1.25rem, 1rem + 0.75vw, 1.85rem);
   --vao-rotulo: 1rem;
 
   /* O ouro metálico, para texto grande e números */
@@ -888,11 +889,11 @@ summary::-webkit-details-marker {
 
 /* Respiro de capítulo: mais ar que a .secao das outras páginas */
 .capitulo {
-  padding-block: clamp(4.5rem, 2.5rem + 6vw, 8.5rem);
+  padding-block: clamp(3.5rem, 2rem + 4.4vw, 6.25rem);
 }
 /* A folha seguinte cobre 2,25rem da base desta: o respiro de baixo compensa */
 .capitulo-sob-folha {
-  padding-bottom: calc(clamp(4.5rem, 2.5rem + 6vw, 8.5rem) + 2.25rem);
+  padding-bottom: calc(clamp(3.5rem, 2rem + 4.4vw, 6.25rem) + 2.25rem);
 }
 
 /* Abertura: o título sobe palavra por palavra de dentro de uma máscara */
@@ -1061,7 +1062,7 @@ summary::-webkit-details-marker {
 /* O capítulo da linha do tempo: o respiro de baixo é menor quando a galeria
    está presa (o palco já ocupa a altura da tela) */
 .capitulo-tempo {
-  padding-bottom: clamp(4.5rem, 2.5rem + 6vw, 8.5rem);
+  padding-bottom: clamp(3.5rem, 2rem + 4.4vw, 6.25rem);
 }
 .capitulo-tempo:has(.linha-tempo[data-modo="horizontal"]) {
   padding-bottom: 2.75rem;

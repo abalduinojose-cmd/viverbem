@@ -139,7 +139,7 @@ export function FaleComAGente() {
 
   return (
     <section aria-labelledby="fale-com-a-gente" className="relative bg-white border-t border-fio">
-      <div className="max-w-7xl mx-auto px-5 md:px-8 secao pb-16 md:pb-24">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 secao pb-12 md:pb-16">
         {/* ---------- Cabeçalho: título em duas vozes e o selo ao vivo ---------- */}
         <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-5 lg:items-end">
           <div className="lg:col-span-8">
@@ -170,12 +170,13 @@ export function FaleComAGente() {
               className="pointer-events-none absolute -right-16 -top-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.3),transparent_62%)]"
             />
             <FolhaReceita />
-            <span className="relative w-14 h-14 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
-              <IconeReceita tamanho={26} />
-            </span>
-            <span className="relative mt-auto pt-8 block max-w-[26rem]">
-              <span className="rotulo block">receita</span>
-              <span className="titulo-banner block mt-2 text-[1.6rem] md:text-[2rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
+            {/* 08/10/2026, "modernize o botão enviar receita, mais moderno e
+                clean": saiu o círculo de ouro com o ícone (repetia o mesmo
+                ícone do botão); o rótulo com o fio de ouro abre o cartão e o
+                convite é uma pílula branca simples, com a seta que anda */}
+            <span className="relative rotulo-pilula">receita</span>
+            <span className="relative mt-auto pt-10 block max-w-[26rem]">
+              <span className="titulo-banner block text-[1.7rem] md:text-[2.1rem] font-semibold leading-[1.04] tracking-[-0.035em] text-balance">
                 Enviar a foto <span className="italic">da receita</span>
               </span>
               <span className="block mt-3 text-white/70 text-[0.95rem] leading-snug">
@@ -183,9 +184,12 @@ export function FaleComAGente() {
                 farmacêutico confere e passa o valor.
               </span>
             </span>
-            <span className="relative mt-6 self-start inline-flex items-center gap-2.5 h-12 pl-5 pr-1.5 rounded-full bg-white text-navy text-[0.95rem] font-semibold transition-colors group-hover:bg-gelo">
+            <span className="relative mt-7 self-start inline-flex items-center gap-2.5 h-12 px-6 rounded-full bg-white text-navy text-[0.95rem] font-semibold shadow-[0_16px_32px_-18px_rgba(192,160,96,0.7)] transition-colors group-hover:bg-gelo">
+              <span className="text-ouro-escuro">
+                <IconeReceita tamanho={18} />
+              </span>
               Começar
-              <span className="w-9 h-9 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+              <span className="transition-transform duration-300 group-hover:translate-x-1">
                 <SetaDireita tamanho={15} />
               </span>
             </span>

@@ -70,7 +70,7 @@ export function Footer() {
         className="pointer-events-none absolute -right-32 -top-40 -z-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.18),transparent_62%)]"
       />
       {/* ---------- Rodapé centralizado ---------- */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-16 md:pt-20 pb-10 md:pb-12 flex flex-col items-center text-center">
+      <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-9 md:pb-10 flex flex-col items-center text-center">
         {/* Luz azul bem baixa atrás da marca: profundidade sem chamar atenção */}
         <div
           aria-hidden="true"

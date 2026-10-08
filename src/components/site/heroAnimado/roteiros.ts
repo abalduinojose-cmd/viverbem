@@ -37,6 +37,11 @@ export type Roteiro = {
    *  primeira é sempre o ouro) */
   luz: [number, number, number];
   poeira: [number, number, number];
+  /** Encurta o ciclo sem refazer a coreografia: o tempo real corre por cima
+   *  da linha do tempo original de 7 s em trechos de velocidades diferentes.
+   *  Cada par é [segundo real, segundo da coreografia]; começa em [0, 0] e
+   *  termina em [duração real, 7]. Sem ritmo, o ciclo dura os 7 s. */
+  ritmo?: [number, number][];
 };
 
 export const ROTEIROS = {
@@ -87,6 +92,32 @@ export const ROTEIROS = {
     // mesmo azul-noite e o mesmo ouro do site
     luz: [232, 150, 168],
     poeira: [240, 186, 198],
+    // O ritmo da apresentação (08/10/2026). Primeiro o ciclo foi encurtado
+    // para 5,2 s ("encurte o segundo vídeo"); na mesma hora veio "os
+    // medicamentos e nomes estão aparecendo muito rápido, deixe mais lento,
+    // como um especialista em motion". Na coreografia original cada pote
+    // ficava só 0,2 s parado na frente, e o nome dele no letreiro mal dava
+    // para ler. Agora cada pote leva 0,75 s chegando (enquanto o anterior
+    // volta e o letreiro corre) e 0,85 s quase parado na frente, flutuando
+    // devagar, com o nome legível: 1,6 s por pote. A abertura segue no
+    // tempo original, o pouso ganha um respiro e o ciclo fica com 11 s. A
+    // velocidade muda em rampas suaves (curva monotônica em HeroAnimado.tsx),
+    // nunca em degraus.
+    ritmo: [
+      [0, 0],
+      [2.35, 2.35],
+      [3.1, 2.88],
+      [3.95, 3.07],
+      [4.7, 3.6],
+      [5.55, 3.79],
+      [6.3, 4.32],
+      [7.15, 4.51],
+      [7.9, 5.04],
+      [8.65, 5.2],
+      [9.65, 6.05],
+      [10.15, 6.2],
+      [11, 7],
+    ],
   },
 } satisfies Record<string, Roteiro>;
 

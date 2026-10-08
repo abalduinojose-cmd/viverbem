@@ -17,7 +17,7 @@ export default function PaginaContato() {
   return (
     <main className="flex-1">
       {/* Abertura */}
-      <section className="halo-marca px-5 md:px-8 pt-12 md:pt-16 pb-6">
+      <section className="halo-marca px-5 md:px-8 pt-10 md:pt-12 pb-5">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:items-end">
           <div className="lg:col-span-7">
             <p className="rotulo">fale com a gente</p>
@@ -52,7 +52,7 @@ export default function PaginaContato() {
       </section>
 
       {/* As unidades, em lista com fio */}
-      <section className="px-5 md:px-8 max-w-6xl mx-auto pt-12 md:pt-16 pb-20 md:pb-24">
+      <section className="px-5 md:px-8 max-w-6xl mx-auto pt-10 md:pt-12 pb-14 md:pb-18">
         <p className="rotulo">onde nos encontrar</p>
         <h2 className="titulo-bloco mt-2">
           {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>

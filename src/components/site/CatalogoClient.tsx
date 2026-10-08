@@ -239,7 +239,7 @@ export function CatalogoClient({
       </div>
 
       {/* ---------- Conteúdo ---------- */}
-      <div className="flex-1 px-5 md:px-8 py-10 pb-24 max-w-7xl mx-auto w-full">
+      <div className="flex-1 px-5 md:px-8 py-8 pb-16 max-w-7xl mx-auto w-full">
         {buscando ? (
           <>
             <h2 className="text-2xl font-semibold text-navy mb-6 tracking-[-0.03em]">

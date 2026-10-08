@@ -256,7 +256,9 @@ function novaTela(l: number, a: number) {
  *  reflexo no chão. Tudo uma vez só, no carregamento. */
 function prepararPote(img: HTMLImageElement, altura: number): Sprites {
   const base = novaTela(img.naturalWidth, img.naturalHeight);
-  const bctx = base.getContext("2d")!;
+  // Tela de CPU: os pixels são lidos logo abaixo, e ler de uma tela de GPU
+  // obriga a GPU a devolver a imagem inteira
+  const bctx = base.getContext("2d", { willReadFrequently: true })!;
   bctx.drawImage(img, 0, 0);
   const { data, width, height } = bctx.getImageData(0, 0, base.width, base.height);
   let x0 = width, y0 = height, x1 = 0, y1 = 0;
@@ -590,6 +592,14 @@ const PARADAS_OURO: [number, [number, number, number]][] = [
 /** O degradê de ouro entre x0 e x1, com um brilho que corre (posição 0 a
  *  1; fora de -0,2 a 1,2 não aparece) */
 export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, brilho: number) {
+  // Medida inválida (um ponto projetado atrás da câmera dá infinito) fazia o
+  // createLinearGradient lançar erro: o quadro caía e o Next acendia o aviso
+  // vermelho de "Issues" no desenvolvimento (08/10/2026)
+  if (!Number.isFinite(x0) || !Number.isFinite(x1)) {
+    x0 = 0;
+    x1 = 1;
+  }
+  if (x1 === x0) x1 = x0 + 1;
   const g = ctx.createLinearGradient(x0, 0, x1, 0);
   for (const [p, c] of PARADAS_OURO) g.addColorStop(p, `rgb(${c[0]}, ${c[1]}, ${c[2]})`);
   if (brilho > -0.2 && brilho < 1.2) {
@@ -645,17 +655,30 @@ export type Cena = {
   desenhar: (t: number) => void;
   /** Ajusta o canvas ao tamanho do banner (em px CSS). */
   medirTela: (largura: number, altura: number) => void;
+  /** Paga de antemão, aos pedaços, o que custa na primeira vez (fontes,
+   *  compilação dos desenhos na GPU). Chamar depois de medirTela. */
+  aquecer: (pausa: () => Promise<void>) => Promise<void>;
 };
 
-export function criarCena(
+/** Monta a cena aos pedaços: entre um pedaço e outro, `pausa` devolve a
+ *  vez ao navegador (um quadro), para a preparação não travar a rolagem.
+ *  (Num pedaço só ela chegava a 260-340 ms com a CPU 2x mais lenta, achado
+ *  num trace do Chrome em 08/10/2026.) */
+export async function criarCena(
   canvas: HTMLCanvasElement,
   imagens: HTMLImageElement[],
   fontes: FontesDaCena,
   roteiro: Roteiro,
-  coreografar?: (palco: Palco) => Coreografia,
-): Cena {
+  coreografar: ((palco: Palco) => Coreografia) | undefined,
+  pausa: () => Promise<void>,
+): Promise<Cena> {
   const ctx = canvas.getContext("2d")!;
-  const potes = imagens.map((img, i) => prepararPote(img, roteiro.potes[i].altura));
+  // Um pote por pedaço: recortar, desfocar, refletir e mascarar cada foto
+  const potes: Sprites[] = [];
+  for (let i = 0; i < imagens.length; i++) {
+    potes.push(prepararPote(imagens[i], roteiro.potes[i].altura));
+    await pausa();
+  }
   const particulas = gerarParticulas();
   const [pr, pg, pb] = roteiro.poeira;
   const bolinhas = [bolinha("rgba(214,186,125,A)"), bolinha(`rgba(${pr},${pg},${pb},A)`), bolinha("rgba(255,255,255,A)")];
@@ -698,7 +721,6 @@ export function criarCena(
     ctx.imageSmoothingQuality = "high";
     textos = prepararTextos(ctx, enq, fontes, roteiro);
     prepararSpritesDeTexto();
-    aquecer();
     // Redimensionar limpa o canvas: redesenha já o último quadro, para o
     // banner nunca piscar vazio até o próximo quadro da animação
     desenhar(ultimoT);
@@ -791,25 +813,38 @@ export function criarCena(
 
   /** Paga de antemão o que custa na primeira vez: cada peso que o bloom
    *  usa (cada peso de fonte variável é uma instância nova), as fontes do
-   *  rótulo e dos passos e os glifos nos tamanhos da cena. Desenha alguns
-   *  quadros e limpa, tudo na mesma tarefa: nada chega a aparecer, e o
-   *  primeiro laço roda liso em vez de engasgar quadro a quadro */
-  function aquecer() {
+   *  rótulo e dos passos, os glifos nos tamanhos da cena e a compilação de
+   *  cada tipo de desenho na GPU. Vai aos pedaços (dois pesos ou dois
+   *  quadros por vez) e, no fim de cada pedaço, redesenha o quadro que
+   *  estava na tela: nada do aquecimento chega a aparecer. Se o banner mudar
+   *  de tamanho no meio, o aquecimento velho para e o novo recomeça. */
+  let geracaoAquecimento = 0;
+  async function aquecer(pausa: () => Promise<void>) {
+    const geracao = ++geracaoAquecimento;
+    const guardado = ultimoT;
     const l = textos.l1;
     const de = Math.min(fontes.pesoDisplayLeve, l.peso);
     const ate = Math.max(fontes.pesoDisplayLeve, l.peso);
+    let n = 0;
     for (let p = de; p <= ate; p += PASSO_PESO) {
       provador.font = fonteDe(l, p);
       provador.fillText(l.texto, 0, 0);
+      if (++n % 2 === 0) {
+        await pausa();
+        if (geracao !== geracaoAquecimento) return;
+      }
     }
-    const guardado = ultimoT;
+    n = 0;
     for (let t = 0.25; t < DURACAO; t += 0.25) {
       desenhar(t);
       selo.drawImage(canvas, 0, 0, 1, 1);
+      if (++n % 2 === 0) {
+        desenhar(guardado);
+        await pausa();
+        if (geracao !== geracaoAquecimento) return;
+      }
     }
-    ultimoT = guardado;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    desenhar(guardado);
   }
 
   const P = (x: number, y: number, z: number, cam: Camera) => projetar(enq, x, y, z, cam);
@@ -911,6 +946,8 @@ export function criarCena(
     ctx.closePath();
     let minX = Infinity, maxX = -Infinity;
     for (const p of pts) { if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x; }
+    // Sem pontos válidos neste quadro, não há forma para desenhar
+    if (!Number.isFinite(minX) || !Number.isFinite(maxX)) return;
     const dourado = ouro(ctx, minX - 4, maxX + 4, mix(-0.3, 1.3, trecho(t, 0.3, 1.2)));
     ctx.save();
     // O brilho em volta é um traço largo e transparente por baixo do traço
@@ -1489,5 +1526,5 @@ export function criarCena(
     if (formaNaFrente) desenharForma(t, cam);
   }
 
-  return { desenhar, medirTela };
+  return { desenhar, medirTela, aquecer };
 }
