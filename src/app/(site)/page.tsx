@@ -72,15 +72,15 @@ const FOTO_REPRESENTATIVA: Record<string, string> = {
 // A parte entre *asteriscos* sai em itálico ouro (a segunda voz).
 const BANNERS_POR_SLUG: Record<string, Omit<BannerVitrine, "imagem">> = {
   "dermatologia-estetica": {
-    titulo: "Cuidado com a pele, *do jeito que foi prescrito.*",
+    titulo: "Cuidados com a pele, *conforme a prescrição.*",
     texto: "Cremes, séruns e loções preparados a partir da receita.",
   },
   "vitaminas-suplementos": {
-    titulo: "Vitaminas e suplementos *na sua dose.*",
+    titulo: "Vitaminas e suplementos *na dose prescrita.*",
     texto: "Cápsulas, pós e gomas conforme a receita.",
   },
   "cabelos-unhas": {
-    titulo: "Cabelos e unhas, *com fórmula própria.*",
+    titulo: "Cabelos e unhas, *com fórmula individual.*",
     texto: "Loções, shampoos e cápsulas conforme a receita.",
   },
   "saude-da-mulher": { titulo: "Saúde da mulher, *em fórmula individual.*" },

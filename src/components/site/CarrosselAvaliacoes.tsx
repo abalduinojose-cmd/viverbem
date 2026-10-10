@@ -94,7 +94,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
         <div className="max-w-2xl">
           <p className="rotulo-pilula">quem já é cliente</p>
           <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
-            O que dizem <span className="italic">sobre a gente</span>
+            O que dizem <span className="italic">os nossos clientes</span>
           </h2>
         </div>
         {/* Quem avaliou (07/10/2026, "modernize"): os rostos empilhados, o

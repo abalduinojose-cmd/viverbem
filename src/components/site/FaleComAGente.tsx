@@ -17,8 +17,15 @@
 // no alto dos cartões viraram o rótulo em pílula do site; o WhatsApp ganhou
 // o botão verde dele, no lugar da seta no círculo de ouro; a semana do
 // horário ficou mais leve (só hoje em ouro, os outros dias sem contorno).
+//
+// 10/10/2026 ("melhore essa seção, modernize ela", com o print do cartão
+// do WhatsApp): o cartão do WhatsApp mostra a conversa como ela é, com a
+// mensagem pronta num balão verde de "enviada" e o estado ao vivo (online
+// agora / responde no horário) ao lado do rótulo; as lojas trocaram o
+// número em ouro por um pino num quadrado gelo; os textos ficaram curtos e
+// diretos ("escrita leve, que converse com todos os públicos").
 import Link from "next/link";
-import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
+import { CartaoReceita } from "./CartaoReceita";
 import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
 import { IconeWhatsApp, SetaDireita } from "./icones";
 import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
@@ -35,8 +42,18 @@ const DIAS_SEMANA = [
   { curto: "S", nome: "Sábado" },
 ];
 
-const MENSAGEM_WHATSAPP = "Olá, Viver Bem! Vim pelo site e queria tirar uma dúvida.";
+const MENSAGEM_WHATSAPP = "Olá! Vim pelo site e gostaria de tirar uma dúvida.";
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM_WHATSAPP)}`;
+
+// Pino do mapa (as lojas)
+function IconePino() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <circle cx="12" cy="11" r="2.3" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
 
 // Seta de navegação (como chegar)
 function IconeRota() {
@@ -44,22 +61,6 @@ function IconeRota() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3 4.5 20.5l7.5-3.6 7.5 3.6L12 3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-// A folha de receita em vidro, ilustração do cartão da receita (só decoração)
-function FolhaReceita() {
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none hidden md:flex absolute right-8 lg:right-12 -bottom-10 w-40 h-52 rotate-6 flex-col gap-3 rounded-2xl bg-white/10 ring-1 ring-inset ring-white/15 backdrop-blur-sm p-5 transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-3"
-    >
-      <span className="h-2.5 w-12 rounded-full bg-[image:var(--ouro-degrade)]" />
-      <span className="mt-2 h-1.5 w-full rounded-full bg-white/30" />
-      <span className="h-1.5 w-[85%] rounded-full bg-white/30" />
-      <span className="h-1.5 w-[70%] rounded-full bg-white/30" />
-      <span className="mt-2 h-1.5 w-[55%] rounded-full bg-white/20" />
-    </span>
   );
 }
 
@@ -140,11 +141,11 @@ export function FaleComAGente() {
           <div className="lg:col-span-8">
             <p className="rotulo-pilula">fale com a gente</p>
             <h2 id="fale-com-a-gente" className="titulo-secao vao-rotulo">
-              WhatsApp, receita <span className="italic">ou na loja</span>
+              Pelo WhatsApp, pela receita <span className="italic">ou na loja</span>
             </h2>
             <p className="texto-apoio mt-4 max-w-xl">
-              Tire uma dúvida, envie a sua receita ou combine a retirada. A gente responde
-              pelo WhatsApp no horário de atendimento.
+              Tire dúvidas, envie a receita ou combine a retirada. Respondemos pelo WhatsApp
+              no horário de atendimento.
             </p>
           </div>
           <div className="lg:col-span-4 flex lg:justify-end lg:pb-1.5">
@@ -154,41 +155,9 @@ export function FaleComAGente() {
 
         {/* ---------- A grade: receita, WhatsApp, as 3 lojas e o horário ---------- */}
         <div className="escalonado mt-8 md:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-5">
-          {/* A receita: a ação principal, em azul-noite */}
-          <BotaoEnviarReceita
-            comIcone={false}
-            className="group relative sm:col-span-2 lg:col-span-7 w-full min-h-[18rem] flex flex-col text-left rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-6 md:p-8 overflow-hidden shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)] transition duration-300 hover:-translate-y-1 active:scale-[0.99]"
-          >
-            <span aria-hidden="true" className="malha-banner" />
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.3),transparent_62%)]"
-            />
-            <FolhaReceita />
-            {/* 08/10/2026, "modernize o botão enviar receita, mais moderno e
-                clean": saiu o círculo de ouro com o ícone (repetia o mesmo
-                ícone do botão); o rótulo com o fio de ouro abre o cartão e o
-                convite é uma pílula branca simples, com a seta que anda */}
-            <span className="relative rotulo-pilula">receita</span>
-            <span className="relative mt-auto pt-10 block max-w-[26rem]">
-              <span className="titulo-banner block text-[1.7rem] md:text-[2.1rem] font-semibold leading-[1.04] tracking-[-0.035em] text-balance">
-                Enviar a foto <span className="italic">da receita</span>
-              </span>
-              <span className="block mt-3 text-white/70 text-[0.95rem] leading-snug">
-                Abre o seu pedido com um código. A foto vai pela conversa do WhatsApp; o
-                farmacêutico confere e passa o valor.
-              </span>
-            </span>
-            <span className="relative mt-7 self-start inline-flex items-center gap-2.5 h-12 px-6 rounded-full bg-white text-navy text-[0.95rem] font-semibold shadow-[0_16px_32px_-18px_rgba(192,160,96,0.7)] transition-colors group-hover:bg-gelo">
-              <span className="text-ouro-escuro">
-                <IconeReceita tamanho={18} />
-              </span>
-              Começar
-              <span className="transition-transform duration-300 group-hover:translate-x-1">
-                <SetaDireita tamanho={15} />
-              </span>
-            </span>
-          </BotaoEnviarReceita>
+          {/* A receita: a ação principal, em azul-noite, animada (10/10/2026,
+              ver CartaoReceita) */}
+          <CartaoReceita />
 
           {/* WhatsApp: o número grande e a mensagem que já vai pronta */}
           <a
@@ -197,18 +166,34 @@ export function FaleComAGente() {
             rel="noopener noreferrer"
             className={`${classeCartao} sm:col-span-2 lg:col-span-5 p-6 md:p-7`}
           >
-            <span className="rotulo-pilula">whatsapp</span>
-            <span className="mt-5 block text-[1.5rem] md:text-[1.7rem] font-semibold text-navy tracking-[-0.03em] tabular-nums leading-none">
+            <span className="flex items-center justify-between gap-3">
+              <span className="rotulo-pilula">whatsapp</span>
+              {estado && (
+                <span className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold">
+                  <span aria-hidden="true" className={`size-1.5 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
+                  <span className={estado.aberto ? "text-green-700" : "text-cinza"}>
+                    {estado.aberto ? "Online agora" : "Responde no horário"}
+                  </span>
+                </span>
+              )}
+            </span>
+            <span className="mt-5 block text-[1.6rem] md:text-[1.8rem] font-semibold text-navy tracking-[-0.03em] tabular-nums leading-none">
               {WHATSAPP_LOJA}
             </span>
-            <span className="mt-2 block text-sm text-cinza leading-snug">
-              Dúvidas, pedidos e retirada, no horário de atendimento
+            <span className="mt-2 block text-sm text-cinza leading-snug">Dúvidas, pedidos e retirada.</span>
+            {/* A conversa como ela é: a mensagem pronta num balão de "enviada" */}
+            <span className="mt-5 block rounded-2xl bg-gelo/70 p-3">
+              <span className="flex items-center gap-2 text-[0.7rem] font-medium text-cinza">
+                <span className="flex size-5 items-center justify-center rounded-full bg-white text-[#25D366] ring-1 ring-fio">
+                  <IconeWhatsApp tamanho={11} />
+                </span>
+                Viver Bem · mensagem pronta
+              </span>
+              <span className="mt-2 ml-auto block w-fit max-w-[28ch] rounded-2xl rounded-br-md bg-[#dcf8c6] px-3.5 py-2.5 text-[0.9rem] text-grafite leading-snug shadow-sm">
+                {MENSAGEM_WHATSAPP}
+              </span>
             </span>
-            {/* O balão com a mensagem pronta */}
-            <span className="mt-5 self-start max-w-[30ch] rounded-2xl rounded-bl-md bg-gelo px-4 py-3 text-[0.92rem] text-grafite leading-snug">
-              {MENSAGEM_WHATSAPP}
-            </span>
-            <span className="mt-2 block text-xs text-cinza">A mensagem já vai pronta. É só enviar.</span>
+            <span className="mt-2 block text-xs text-cinza">Basta enviar.</span>
             <span className="mt-auto pt-6 block">
               <span className="inline-flex items-center gap-2.5 h-12 px-5 rounded-full bg-[#1DA851] text-white text-[0.95rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors group-hover:bg-[#178a43]">
                 <IconeWhatsApp tamanho={18} />
@@ -227,7 +212,7 @@ export function FaleComAGente() {
           <div className="sm:col-span-2 lg:col-span-9 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
             <span className="rotulo-pilula">{UNIDADES.length} lojas em Petrópolis</span>
             <ul className="mt-3 lista-fichas">
-              {UNIDADES.map((u, i) => (
+              {UNIDADES.map((u) => (
                 <li key={u.bairro}>
                   <a
                     href={linkMapaUnidade(u.bairro, u.endereco)}
@@ -235,8 +220,8 @@ export function FaleComAGente() {
                     rel="noopener noreferrer"
                     className="group flex items-center gap-4 py-4"
                   >
-                    <span aria-hidden="true" className="numero-tinta shrink-0 w-9 text-[1.35rem] md:text-[1.5rem]">
-                      {String(i + 1).padStart(2, "0")}
+                    <span aria-hidden="true" className="shrink-0 flex size-11 items-center justify-center rounded-2xl bg-gelo text-tinta transition-colors group-hover:bg-tinta group-hover:text-white">
+                      <IconePino />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-[1.05rem] md:text-[1.15rem] font-semibold text-navy tracking-[-0.02em] leading-tight transition-colors group-hover:text-tinta">
@@ -255,7 +240,7 @@ export function FaleComAGente() {
               ))}
             </ul>
             <p className="mt-auto pt-4 text-xs text-cinza leading-relaxed">
-              Retirada sem taxa em qualquer unidade. Entrega de moto por toda Petrópolis.
+              Retirada grátis em qualquer loja. Entrega de moto em toda Petrópolis.
             </p>
           </div>
 

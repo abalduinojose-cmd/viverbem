@@ -37,8 +37,9 @@ export type Roteiro = {
    *  primeira é sempre o ouro) */
   luz: [number, number, number];
   poeira: [number, number, number];
-  /** Encurta o ciclo sem refazer a coreografia: o tempo real corre por cima
-   *  da linha do tempo original de 7 s em trechos de velocidades diferentes.
+  /** Muda a velocidade de trechos sem refazer a coreografia (encurta ou
+   *  alonga o ciclo): o tempo real corre por cima da linha do tempo
+   *  original de 7 s em trechos de velocidades diferentes.
    *  Cada par é [segundo real, segundo da coreografia]; começa em [0, 0] e
    *  termina em [duração real, 7]. Sem ritmo, o ciclo dura os 7 s. */
   ritmo?: [number, number][];
@@ -65,6 +66,25 @@ export const ROTEIROS = {
     ],
     luz: [80, 160, 235],
     poeira: [138, 184, 234],
+    // 10/10/2026: "tá muito rápido o envie a foto da receita, o
+    // farmacêutico confere e os outros escritos, deixe mais leve e
+    // devagar". Cada passo ficava 0,62 s na tela. A abertura (o título se
+    // formando) segue no tempo original; do carrossel em diante a cena
+    // corre a 0,28 da velocidade, por igual, e cada passo fica ~2,2 s
+    // (0,9 s parado e inteiro). O carrossel e o fecho ficam lentos junto,
+    // e a saída volta quase à velocidade normal. Ciclo de 15,6 s.
+    ritmo: [
+      [0, 0],
+      [2, 2],
+      [2.7, 2.7],
+      [3.3, 3.05],
+      [6.07, 3.825],
+      [8.84, 4.6],
+      [11.6, 5.375],
+      [14.37, 6.15],
+      [14.87, 6.4],
+      [15.6, 7],
+    ],
   },
   mulher: {
     formato: "cartao",

@@ -1,5 +1,44 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 54 (10/10/2026): escrita mais leve e formal, revisão de erros e 12º push da prévia (com o trabalho da outra sessão: animação da receita e letreiro da hero).**
+> Pedidos: "a escrita de alguns pontos, tá muito na cara que foi uma IA que
+> escreveu; deixe mais leve, que converse com todos os públicos, sem
+> apelar, leve e formal"; "tire os erros do site para ele rodar sem travar";
+> "atualize o link prévio do GitHub"; "quero os links dos dois painéis adm
+> no link prévio também e me fale o login e senha". Escrita: saíram as
+> frases de efeito e o "a gente" dos títulos e apoios; ficou direto e
+> formal-leve. Como funciona: "Do envio da receita *à entrega*", passos
+> ("Envie a foto pelo WhatsApp ou traga a receita na loja", "Ele confere a
+> receita e informa o valor e o prazo", "Você confirma só se estiver de
+> acordo", "Sem custo em uma das 3 lojas...", "A taxa e o prazo da entrega
+> são combinados pelo WhatsApp") e o convite "Envie a foto *da sua
+> receita.*" (era "Mande a foto. A gente cuida do resto."). Rodapé: "Há 20
+> anos em Petrópolis, com manipulação, homeopatia e um atendimento próximo,
+> de quem conhece cada cliente." Avaliações: "O que dizem *os nossos
+> clientes*". Banners das áreas: "Cuidados com a pele, *conforme a
+> prescrição*", "Vitaminas e suplementos *na dose prescrita*", "Cabelos e
+> unhas, *com fórmula individual*". Catálogo: "Os mais pedidos nas três
+> lojas", "Tente outra palavra ou envie a sua receita: o farmacêutico
+> confere para você". A Viver Bem: de volta ao "próxima, humana e
+> personalizada" do texto da farmácia; "Da Posse *para toda Petrópolis*";
+> marcos e apoios sem "jeito de atender". Lojas e Contato: "sem custo",
+> "Entregamos de moto ou separamos na loja", "Estamos *perto de você*",
+> "Fale conosco". Carrinho: "Envie a foto pelo WhatsApp, na própria
+> conversa", "Nome completo", "são combinados". Fale com a gente: "Pelo
+> WhatsApp, pela receita *ou na loja*", "Respondemos pelo WhatsApp",
+> mensagem pronta "Olá! Vim pelo site e gostaria de tirar uma dúvida.",
+> "Basta enviar." (a hero, `roteiros.ts`, estava com a outra sessão e não
+> foi tocada). Erros: logs do servidor e console limpos na home, produtos,
+> lojas, A Viver Bem e no carrinho; o build de produção da prévia passa
+> sem erro; os únicos arquivos pesados são os 4 reels (1,7 a 7,6 MB), que
+> já só baixam ao tocar. Painéis: a prévia do GitHub Pages é estática, sem
+> servidor, banco nem login, então `/admin` NÃO existe nela (o demo:build
+> tira `src/app/admin` do export); para ter os painéis num link é preciso
+> hospedar o app inteiro (Vercel + banco em nuvem). Credenciais: estão no
+> `prisma/seed.js` (admin@viverbem.com.br e operador@viverbem.com.br, com as
+> senhas iniciais em comentário); o repositório é público, então trocar
+> antes de qualquer publicação real.
+
 > **ADENDO 53 (10/10/2026): reels com som no clique, página de produtos clean (cartões sem caixa, barra única de busca e áreas) e a linha dos números fora da abertura. Não publicado.**
 > Pedidos: "os vídeos do Instagram estão sem áudio, acerte isso"; "exclua a
 > parte do print" (a linha "32 produtos · 6 áreas · receita conferida pelo
@@ -81,6 +120,51 @@
 > voltaram ao que eram; ficaram só o ouro #C9A56B (claro #D9BD8A, escuro
 > #9C7B46, o degradê e as paradas de ouro da hero) e o botão do carrinho
 > no ouro da marca com hover no ouro escuro. Não trocar o azul de novo.
+
+> **ADENDO 50 (10/10/2026): cartão "Enviar a foto da receita" do Fale com a gente animado. Não publicado.**
+> Pedido: "fontes cinéticas e movimentos leves, algo bem profissional em
+> javascript para um site de alta conversão". Novo `CartaoReceita.tsx`
+> (substitui o bloco e a FolhaReceita estática do FaleComAGente): HTML e SVG
+> animados pela Web Animations API, sem canvas, para o texto continuar
+> texto. Entrada única ao aparecer (35% à vista): rótulo, título palavra por
+> palavra saindo de máscaras (as de ouro com desfoque e um brilho que corre
+> uma vez), apoio com foco, botão com mola curta. Laço de 7,2 s só na
+> ilustração: a receita se escreve (cabeçalho, linhas, assinatura), a mira
+> da câmera fecha em volta, clarão da foto, selo de ouro de conferida e
+> "Enviada" com o WhatsApp; a folha flutua. O botão ganha um brilho e um
+> passo da seta a cada 5,2 s. Laço pausa fora da tela e com a aba escondida.
+> Sem JS tudo aparece parado e completo. Celular: folha pequena no alto à
+> direita; 1024 a 1279 px: folha menor e texto mais estreito.
+> Segunda versão no mesmo dia ("tá muito simples, quero algo mais After
+> Effects"): a folha virou `receita/CenaReceita.tsx`, uma cena 3D em DOM
+> (preserve-3d, câmera orbitando, poeira de luz em profundidades, raios
+> girando) num laço de 9,6 s: a receita entra girando e se escreve (℞,
+> linhas, assinatura), o celular chega girando em Y, a mira foca, obturador
+> e clarão, a tela desliza para o WhatsApp (foto em balão verde, vistos
+> azuis, "digitando...", "Receita conferida" com selo e faíscas de ouro,
+> "Já te mando o valor."), luz no vidro, e tudo some no fundo. Título letra
+> a letra em 3D (rotateX com mola e desfoque), traço de ouro desenhado sob
+> "receita", apoio revelado da esquerda, botão com anel que se abre, brilho
+> e ímã no ponteiro. Celular: cena em cima, larga (o cartão fica mais alto).
+> Medido com CPU 2x: 60 fps com a cena tocando.
+> Terceira versão ("ficou bom! mas pode melhorar, como o melhor editor de
+> After Effects do mundo"): a cena virou um plano de 10 s com linguagem de
+> câmera. Celular com espessura (fundo, aro e frente em três profundidades)
+> e reflexo que corre no vidro; desfoque de movimento calculado pela
+> velocidade de cada peça (receita e celular entram borrados e assentam);
+> a câmera avança na hora da foto, treme no clique do obturador (0,3 s) e
+> termina numa pose de frente antes de recuar; clarão com lens flare
+> anamórfico (risco horizontal, núcleo e fantasmas na diagonal); a foto
+> sai do visor e VOA até o balão do WhatsApp (corte por continuidade), a
+> conversa abre num círculo que nasce do obturador; foco que muda de plano
+> (a receita desfoca enquanto o farmacêutico responde e volta no fim);
+> "Receita conferida" e "Já te mando o valor." digitados letra a letra;
+> onda de ouro, brilho e faíscas no visto. Palavras de fundo em contorno de
+> ouro, "FOTO" e depois "CONFERIDA", com tracking que fecha, na faixa livre
+> do alto, fora do giro da câmera (dentro dele acabavam atrás do celular),
+> só com um pouco de paralaxe. Ouro da paleta nova (#C9A56B / #E0C48F),
+> navy e tinta de sempre. Medido com CPU 2x num ciclo inteiro: mediana
+> 16,7 ms e p95 16,8 ms (quadros perdidos isolados, nenhum trecho preso).
 
 > **ADENDO 49 (10/10/2026): "Adicionar" com texto e ícone em branco, textos em português simples, linha de confiança no lugar do aviso, rodapé levemente modernizado e carrinho mais moderno. Não publicado.**
 > Pedidos: "coloque os ícones e escritos em branco, vamos ver se vai ficar

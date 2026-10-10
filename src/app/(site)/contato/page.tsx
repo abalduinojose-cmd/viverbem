@@ -22,11 +22,11 @@ export default function PaginaContato() {
           <div className="lg:col-span-7">
             <p className="rotulo">fale com a gente</p>
             <h1 className="titulo-secao vao-rotulo">
-              Estamos <span className="italic">pertinho de você</span>
+              Estamos <span className="italic">perto de você</span>
             </h1>
             <p className="texto-apoio mt-4 max-w-xl">
-              Fale com a gente pelo WhatsApp no horário das lojas, ou venha nos visitar numa
-              das {UNIDADES.length} unidades em Petrópolis.
+              Fale conosco pelo WhatsApp no horário das lojas, ou visite uma das{" "}
+              {UNIDADES.length} unidades em Petrópolis.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
               <a

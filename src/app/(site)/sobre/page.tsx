@@ -58,7 +58,7 @@ const MARCOS = [
     ano: "2006",
     titulo: "Nasce a Manipulação Viver Bem",
     texto:
-      "Em outubro, na loja da Posse, em Petrópolis. Desde o primeiro dia a ideia é simples: cuidar de cada pessoa de perto, com a fórmula feita para ela.",
+      "Em outubro, na loja da Posse, em Petrópolis. Desde o primeiro dia, o propósito é cuidar de cada pessoa de perto, com a fórmula certa para ela.",
   },
   {
     ano: "2012",
@@ -68,7 +68,7 @@ const MARCOS = [
   {
     ano: "2017",
     titulo: "Centro de Petrópolis",
-    texto: "Chegamos ao Centro, com mais tecnologia no laboratório e o mesmo jeito de atender.",
+    texto: "Chegamos ao Centro, com mais tecnologia no laboratório e o mesmo acolhimento de sempre.",
   },
   {
     ano: "Hoje",
@@ -191,7 +191,7 @@ export default async function PaginaSobre() {
               texto:
                 "Em 2006, nasceu a Manipulação Viver Bem no bairro da Posse, em Petrópolis. Desde o primeiro dia, o propósito é o mesmo: cuidar de cada pessoa de forma",
             },
-            { texto: "próxima, humana e sob medida.", destaque: true },
+            { texto: "próxima, humana e personalizada.", destaque: true },
           ]}
         />
       </section>
@@ -202,12 +202,11 @@ export default async function PaginaSobre() {
           <div className="lg:col-span-7">
             <p className="rotulo-pilula">02 · a evolução</p>
             <h2 id="titulo-linha-do-tempo" className="titulo-secao vao-rotulo">
-              Do balcão <span className="italic">ao cuidado sob medida</span>
+              Da Posse <span className="italic">para toda Petrópolis</span>
             </h2>
           </div>
           <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5">
-            Queríamos ir além do balcão. O cuidado com cada pessoa deu frutos, e a Viver Bem
-            cresceu pela região.
+            O cuidado com cada cliente deu frutos, e a Viver Bem cresceu pela região.
           </p>
         </div>
         <div className="mt-[clamp(2.5rem,1.5rem+3vw,4.5rem)]">
@@ -248,8 +247,8 @@ export default async function PaginaSobre() {
               ]}
             />
             <p className="texto-apoio mt-7 max-w-lg">
-              Três lojas em Petrópolis, a mesma equipe de farmacêuticos e o mesmo jeito de
-              atender: pela receita, com a fórmula feita para você.
+              Três lojas em Petrópolis, a mesma equipe de farmacêuticos e o mesmo atendimento:
+              pela receita, com a fórmula preparada para cada pessoa.
             </p>
             {/* O que não mudou, em três pílulas com o ponto de ouro (10/10/2026) */}
             <ul className="mt-6 flex flex-wrap gap-2">

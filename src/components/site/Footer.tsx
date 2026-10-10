@@ -103,8 +103,8 @@ export function Footer() {
         />
 
         <p className="ouro-texto mt-6 max-w-[40ch] text-[1.25rem] md:text-[1.45rem] leading-relaxed italic [font-family:var(--font-destaque)]">
-          Há {ANOS_TRADICAO} anos em Petrópolis, com manipulação, homeopatia e atendimento
-          de gente que conhece você pelo nome.
+          Há {ANOS_TRADICAO} anos em Petrópolis, com manipulação, homeopatia e um
+          atendimento próximo, de quem conhece cada cliente.
         </p>
 
         {/* Contatos em ícones, círculos que sobem e acendem em azul */}

@@ -68,8 +68,8 @@ export default function PaginaLojas() {
             </h1>
           </div>
           <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5 lg:text-right">
-            Retire grátis na loja que preferir, ou receba em casa, de moto. O horário é o mesmo
-            nas três.
+            Retire sem custo na loja que preferir ou receba em casa, de moto. O horário de
+            atendimento é o mesmo nas três.
           </p>
         </div>
       </section>
@@ -151,8 +151,8 @@ export default function PaginaLojas() {
               O mesmo nas <span className="italic">{UNIDADES.length} lojas</span>
             </h2>
             <p className="text-cinza leading-relaxed mt-4 max-w-md">
-              Prefere pedir de casa? Mande a foto da receita pelo site e finalize no WhatsApp, no{" "}
-              {WHATSAPP_LOJA}. A gente entrega de moto ou separa na loja que você escolher.
+              Prefere pedir de casa? Envie a foto da receita pelo site e finalize no WhatsApp, no{" "}
+              {WHATSAPP_LOJA}. Entregamos de moto ou separamos na loja que você escolher.
             </p>
             <BotaoEnviarReceita className="botao botao-principal mt-7" />
           </div>

@@ -91,6 +91,6 @@ export function fontesParaCarregar(f: FontesDaCena): string[] {
     `italic ${f.pesoDestaque} 48px ${f.destaque}`,
     `${f.pesoRotulo} 12px ${f.rotulo}`,
     `${f.pesoApoio} 16px ${f.apoio}`,
-    `500 16px ${f.apoio}`,
+    `400 16px ${f.apoio}`,
   ];
 }

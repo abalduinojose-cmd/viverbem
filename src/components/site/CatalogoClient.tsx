@@ -57,7 +57,7 @@ function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategor
       <div className="py-16 text-center">
         <p className="text-xl font-semibold text-navy">Nada encontrado</p>
         <p className="text-cinza mt-1">
-          Tente outra palavra, ou envie a sua receita que a gente confere para você.
+          Tente outra palavra ou envie a sua receita: o farmacêutico confere para você.
         </p>
       </div>
     );
@@ -352,7 +352,7 @@ export function CatalogoClient({
                     </>
                   }
                   total={maisProcurados.length}
-                  apoio="Os que mais saem nas três lojas."
+                  apoio="Os mais pedidos nas três lojas."
                 />
                 <FaixaProdutos produtos={maisProcurados} className="cascata" variante="limpa" />
               </section>
@@ -407,7 +407,7 @@ export function CatalogoClient({
                 Manipulamos <span className="italic">conforme a receita.</span>
               </p>
               <p className="mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[52ch]">
-                Nem toda fórmula está no site. Mande a foto da receita e o farmacêutico
+                Nem toda fórmula está no site. Envie a foto da receita e o farmacêutico
                 confere.
               </p>
             </div>

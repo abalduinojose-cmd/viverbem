@@ -24,7 +24,9 @@
 //              se escreve em ouro, com uma borda macia e uma luz na ponta
 //   3,0 a 5,6  os potes giram em carrossel 3D (profundidade de campo,
 //              reflexo e luz que corre pelo rótulo), a câmera balança e o
-//              letreiro rola os 4 passos do pedido
+//              letreiro mostra os 4 passos do pedido, um de cada vez, com
+//              traços que contam os passos (desde 10/10/2026 este trecho
+//              corre devagar, pelo ritmo do roteiro)
 //   5,3 a 6,4  fecho: os dois potes da dobra vêm para a frente, os outros
 //              dois somem no fundo, um brilho passa pelos rótulos
 //   6,25 a 7,0 em espelho: as letras grandes caem atrás da própria base
@@ -45,6 +47,11 @@ export const DURACAO = 7;
 
 export const FOCAL = 700;
 export const ORBITA_CENTRO = 90; // profundidade do centro do carrossel
+// O letreiro dos passos: quando começa, quanto dura cada passo e o atraso
+// entre uma letra e a seguinte (tempo da coreografia)
+const PASSOS_INICIO = 3.05;
+const PASSOS_VEZ = 0.62;
+const PASSOS_ESCALONA = 0.004;
 const N_PONTOS = 96;
 const RAD = Math.PI / 180;
 export const TAU = Math.PI * 2;
@@ -569,7 +576,7 @@ function prepararTextos(ctx: CanvasRenderingContext2D, e: Enquadramento, f: Font
     rotulo,
     passos: r.passos.map(([n, t]) => ({
       numero: medirLinha(ctx, n, f.destaque, "italic ", f.pesoDestaque, Math.round(tp * 1.3), 0),
-      texto: medirLinha(ctx, t, f.apoio, "", 500, tp, 0),
+      texto: medirLinha(ctx, t, f.apoio, "", 400, tp, 0.01),
     })),
     base1,
     base2,
@@ -1415,65 +1422,88 @@ export async function criarCena(
     ctx.restore();
   }
 
-  // ---- os passos do pedido, rolando como um letreiro (cada linha pousa com mola e sai com rastro)
+  // ---- os passos do pedido (10/10/2026, "tá muito rápido, modernize e
+  // deixe mais leve e devagar"): cada linha sobe de uma fresta letra a
+  // letra, com o espaçamento assentando, fica parada para ser lida e sai
+  // subindo e se apagando, sem mola nem rastro. Embaixo, quatro traços
+  // contam os passos, como nos stories: o da vez se enche de ouro. A calma
+  // vem do ritmo do roteiro (este trecho corre a ~1/4 da velocidade); aqui
+  // os tempos são da coreografia de 7 s
   function desenharPassos(t: number, cam: Camera) {
     const tp = enq.tamanhoPasso;
     const sai = entraCubica(trecho(t, 6.25, 6.5));
+    const n = textos.passos.length;
     ctx.save();
     noPlano(cam, enq.textoX, textos.basePassos, 1);
+    // A fresta: a borda de baixo fica logo abaixo das descendentes
     ctx.beginPath();
-    ctx.rect(-10, -tp * 1.5, textos.larguraPassos + 40, tp * 2);
+    ctx.rect(-10, -tp * 1.7, textos.larguraPassos + 40, tp * 2.05);
     ctx.clip();
-    const curso = tp * 1.4;
-    const linha = (passo: Textos["passos"][number], dy: number, alfa: number) => {
-      ctx.globalAlpha = alfa;
-      let x: number;
-      if (passo.numero.texto) {
-        ctx.font = fonteDe(passo.numero);
-        ctx.fillStyle = ouro(ctx, 0, passo.numero.largura, -1);
-        ctx.fillText(passo.numero.texto, 0, dy);
-        x = passo.numero.largura + tp * 0.6;
-      } else {
-        ctx.fillStyle = "#c9a56b";
-        ctx.beginPath();
-        ctx.arc(tp * 0.25, dy - tp * 0.34, tp * 0.19, 0, TAU);
-        ctx.fill();
-        x = tp;
+    const subida = tp * 1.15;
+    /** Uma linha, letra a letra: g0 é o índice da primeira letra na linha
+     *  inteira (número + texto), para o escalonamento seguir de uma parte
+     *  para a outra */
+    const letras = (l: Linha, x0: number, g0: number, entra: number, saiDe: number, estilo: string | CanvasGradient) => {
+      ctx.font = fonteDe(l);
+      ctx.fillStyle = estilo;
+      for (let i = 0; i < l.texto.length; i++) {
+        const g = g0 + i;
+        const pe = saiQuinta(trecho(t, entra + g * PASSOS_ESCALONA, entra + g * PASSOS_ESCALONA + 0.17));
+        const q = entraCubica(trecho(t, saiDe + g * 0.0025, saiDe + g * 0.0025 + 0.1));
+        if (pe <= 0 || q >= 1) continue;
+        ctx.globalAlpha = Math.min(1, pe * 1.4) * (1 - q) * (1 - sai);
+        const dy = mix(subida, 0, pe) - tp * 0.75 * q - 8 * sai;
+        ctx.fillText(l.texto[i], x0 + l.xs[i] + tp * 0.035 * g * (1 - pe), dy);
       }
-      ctx.font = fonteDe(passo.texto);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
-      ctx.fillText(passo.texto.texto, x, dy);
     };
     textos.passos.forEach((passo, k) => {
-      const ini = 3.0 + k * 0.62;
-      const pe = trecho(t, ini, ini + 0.3);
-      const ultimo = k === textos.passos.length - 1;
-      const parte = ultimo ? 0 : entraCubica(trecho(t, ini + 0.5, ini + 0.72));
-      if (pe <= 0 || parte >= 1) return;
-      const dy = mix(curso, 0, mola(pe)) - curso * parte - 10 * (ultimo ? sai : 0);
-      const alfa = limitar(pe * 3) * (1 - parte) * (ultimo ? 1 - sai : 1);
-      // Rastro curto enquanto a linha se move
-      if ((pe > 0 && pe < 0.6) || (parte > 0 && parte < 1)) {
-        linha(passo, dy + 5, alfa * 0.08);
-        linha(passo, dy + 2.5, alfa * 0.16);
+      const ini = PASSOS_INICIO + k * PASSOS_VEZ;
+      const ultimo = k === n - 1;
+      // O último fica até a saída de tudo
+      const saiDe = ultimo ? 99 : ini + PASSOS_VEZ - 0.12;
+      if (t < ini || t > saiDe + 0.2) return;
+      let x: number;
+      let g0 = 0;
+      if (passo.numero.texto) {
+        letras(passo.numero, 0, 0, ini, saiDe, ouro(ctx, 0, passo.numero.largura, -1));
+        x = passo.numero.largura + tp * 0.6;
+        g0 = passo.numero.texto.length + 1;
+      } else {
+        const pe = saiCubica(trecho(t, ini, ini + 0.14));
+        ctx.globalAlpha = pe * (1 - sai);
+        ctx.fillStyle = "#c9a56b";
+        ctx.beginPath();
+        ctx.arc(tp * 0.25, -tp * 0.34 + mix(subida * 0.6, 0, pe), tp * 0.17, 0, TAU);
+        ctx.fill();
+        x = tp;
+        g0 = 1;
       }
-      linha(passo, dy, alfa);
+      letras(passo.texto, x, g0, ini, saiDe, "rgba(255, 255, 255, 0.9)");
     });
     ctx.restore();
-    // Um fio fino de ouro que cresce sob o letreiro enquanto os passos rolam
-    const fio = trecho(t, 3.0, 5.6) * (1 - sai);
-    if (fio > 0) {
-      const lf = textos.larguraPassos * 0.7;
-      ctx.save();
-      noPlano(cam, enq.textoX, textos.basePassos + tp * 0.9, 1);
-      ctx.globalAlpha = 0.5 * (1 - sai);
-      ctx.fillStyle = "rgba(255,255,255,0.18)";
-      ctx.fillRect(0, 0, lf, 1);
-      ctx.globalAlpha = 1 - sai;
-      ctx.fillStyle = ouro(ctx, 0, lf, -1);
-      ctx.fillRect(0, 0, lf * entraSaiSeno(fio), 1);
-      ctx.restore();
+
+    // Os traços que contam os passos (o ponto final não tem traço)
+    const contados = textos.passos.filter((p) => p.numero.texto).length;
+    const surge = saiCubica(trecho(t, PASSOS_INICIO - 0.05, PASSOS_INICIO + 0.15));
+    const alfa = surge * (1 - sai);
+    if (alfa <= 0 || contados === 0) return;
+    const lf = Math.min(textos.larguraPassos * 0.62, tp * 13);
+    const vao = tp * 0.4;
+    const lt = (lf - vao * (contados - 1)) / contados;
+    ctx.save();
+    noPlano(cam, enq.textoX, textos.basePassos + tp * 0.95, 1);
+    for (let k = 0; k < contados; k++) {
+      const x = k * (lt + vao);
+      ctx.globalAlpha = alfa;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.16)";
+      ctx.fillRect(x, 0, lt * surge, 1.5);
+      const ini = PASSOS_INICIO + k * PASSOS_VEZ;
+      const cheio = trecho(t, ini, ini + PASSOS_VEZ);
+      if (cheio <= 0) continue;
+      ctx.fillStyle = ouro(ctx, x, x + lt, -1);
+      ctx.fillRect(x, 0, lt * cheio, 1.5);
     }
+    ctx.restore();
   }
 
   // Uma coreografia de fora (o banner da Saúde da Mulher) usa o mesmo palco

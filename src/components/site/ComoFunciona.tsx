@@ -90,26 +90,26 @@ function IconeCadeado() {
 const PASSOS = [
   {
     titulo: "Envie a receita",
-    texto: "Mande a foto pelo WhatsApp ou traga na loja.",
+    texto: "Envie a foto pelo WhatsApp ou traga a receita na loja.",
     detalhe: "Pelo site, o pedido já vai com o seu código.",
     icone: <IconeReceita tamanho={22} />,
   },
   {
     titulo: "O farmacêutico confere",
-    texto: "Ele confere a receita e te passa o valor e o prazo.",
-    detalhe: "Você só confirma se quiser.",
+    texto: "Ele confere a receita e informa o valor e o prazo.",
+    detalhe: "Você confirma só se estiver de acordo.",
     icone: <IconeConfere />,
   },
   {
     titulo: "Preparo",
-    texto: "A sua fórmula é feita no laboratório, só depois do pedido. Nada fica pronto na prateleira.",
+    texto: "A fórmula é preparada no laboratório depois do pedido. Nada fica pronto na prateleira.",
     detalhe: "O rótulo sai com o seu nome, a fórmula e a validade.",
     icone: <IconeFrasco />,
   },
   {
     titulo: "Retire ou receba",
-    texto: `Grátis em uma das ${UNIDADES.length} lojas, ou em casa, de moto, em toda Petrópolis.`,
-    detalhe: "A taxa e o prazo da entrega a gente combina pelo WhatsApp.",
+    texto: `Sem custo em uma das ${UNIDADES.length} lojas, ou em casa, de moto, em toda Petrópolis.`,
+    detalhe: "A taxa e o prazo da entrega são combinados pelo WhatsApp.",
     icone: <IconeMoto tamanho={22} />,
     lojas: true,
   },
@@ -132,11 +132,11 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
       <div className="revelar max-w-3xl">
         <p className="rotulo-pilula">como funciona</p>
         <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
-          Da receita <span className="italic">até a sua mão</span>
+          Do envio da receita <span className="italic">à entrega</span>
         </h2>
         <p className="texto-apoio mt-5 max-w-[36rem]">
-          Quatro passos, da foto da receita até a sua mão. Cada fórmula é feita depois
-          do pedido, como está na receita.
+          Quatro passos, da foto da receita até a retirada ou a entrega. Cada fórmula é
+          preparada depois do pedido, conforme a receita.
         </p>
       </div>
 
@@ -207,7 +207,7 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
           <div className="min-w-0">
             <p className="rotulo-pilula">receita em mãos?</p>
             <p className="titulo-banner mt-3 text-[1.45rem] md:text-[1.8rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
-              Mande a foto. <span className="italic">A gente cuida do resto.</span>
+              Envie a foto <span className="italic">da sua receita.</span>
             </p>
             <p className="hidden sm:block mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[46ch]">
               A foto vai pelo WhatsApp. O farmacêutico confere e responde com o valor e o

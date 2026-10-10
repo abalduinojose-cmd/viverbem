@@ -508,7 +508,7 @@ export function CarrinhoDrawer() {
                           Tenho uma receita
                         </span>
                         <span className={`block text-sm leading-snug mt-0.5 ${receita ? "text-white/70" : "text-cinza"}`}>
-                          {receita ? "A foto vai na conversa do WhatsApp" : "Mande a foto pelo WhatsApp, direto na conversa"}
+                          {receita ? "A foto vai na conversa do WhatsApp" : "Envie a foto pelo WhatsApp, na própria conversa"}
                         </span>
                       </span>
                       {/* Chave visual do switch: ouro quando ligada */}
@@ -710,7 +710,7 @@ export function CarrinhoDrawer() {
                         onChange={(e) => setNome(e.target.value)}
                         autoFocus
                         autoComplete="name"
-                        placeholder="Como podemos te chamar?"
+                        placeholder="Nome completo"
                         className={classeCampo}
                       />
                     </label>
@@ -833,7 +833,7 @@ export function CarrinhoDrawer() {
                           className={`${classeCampo} resize-y`}
                         />
                         <span className="text-xs text-cinza leading-relaxed">
-                          A taxa e o prazo da entrega a gente combina pelo WhatsApp.
+                          A taxa e o prazo da entrega são combinados pelo WhatsApp.
                         </span>
                       </label>
                     )}
