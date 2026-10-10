@@ -87,11 +87,11 @@ function CabecalhoFaixa({
   href?: string;
 }) {
   return (
-    <div className="flex items-end justify-between gap-4 mb-5">
+    <div className="flex items-end justify-between gap-4 mb-6">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h2 className="titulo-bloco">{titulo}</h2>
-          <span className="shrink-0 inline-flex items-center h-6 px-2.5 rounded-full bg-tinta/[0.07] text-[0.72rem] font-semibold text-tinta tabular-nums">
+          <span className="shrink-0 inline-flex items-center h-6 px-2.5 rounded-full bg-white ring-1 ring-fio text-[0.72rem] font-semibold text-cinza tabular-nums">
             {total} {total === 1 ? "produto" : "produtos"}
           </span>
         </div>
@@ -176,21 +176,9 @@ export function CatalogoClient({
       {/* ---------- Abertura ---------- */}
       <div className="halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-8">
         <div className="max-w-7xl mx-auto">
-          <nav className="flex items-center gap-2 text-sm text-cinza min-h-10" aria-label="Você está em">
-            <Link href="/" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">Início</Link>
-            <span aria-hidden="true" className="text-ouro">/</span>
-            {categoriaAtiva ? (
-              <>
-                <Link href="/produtos" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">Categorias</Link>
-                <span aria-hidden="true" className="text-ouro">/</span>
-                <span className="text-navy">{categoriaAtiva.nome}</span>
-              </>
-            ) : (
-              <span className="text-navy">Categorias</span>
-            )}
-          </nav>
-
-          <div className="mt-3 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 lg:items-end">
+          {/* (A trilha "Início / Categorias" saiu em 10/10/2026, "modernize ainda
+              mais": a barra de áreas presa logo abaixo já diz onde a pessoa está) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 lg:items-end">
             <div className="lg:col-span-7 max-w-2xl">
               <p className="rotulo-pilula">{categoriaAtiva ? "categoria" : "categorias"}</p>
               <h1 className="titulo-secao vao-rotulo">
@@ -344,7 +332,9 @@ export function CatalogoClient({
           <div className="flex flex-col gap-12 md:gap-16">
             {/* Mais procurados: a primeira faixa */}
             {maisProcurados.length > 0 && (
-              <section aria-label="Mais procurados">
+              /* A primeira faixa numa banda de gelo, para dar ritmo à página
+                 (10/10/2026, "modernize ainda mais") */
+              <section aria-label="Mais procurados" className="rounded-[2rem] bg-gelo/50 px-5 pt-6 pb-5 md:px-7 md:pt-8 md:pb-7">
                 <CabecalhoFaixa
                   titulo={
                     <>

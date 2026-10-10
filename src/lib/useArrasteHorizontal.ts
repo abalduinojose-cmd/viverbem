@@ -13,8 +13,12 @@
 // não deixa um hook devolver ref para ser lida na renderização).
 import { useRef, useState } from "react";
 
-// A partir de quantos pixels consideramos que foi arrasto, e não clique
-const TOLERANCIA = 6;
+// A partir de quantos pixels consideramos que foi arrasto, e não clique.
+// 10/10/2026 ("não consigo abrir a página do produto quando clico"): era
+// 6 px, e um mouse ou touchpad que treme um pouco entre apertar e soltar
+// fazia o clique virar "arrasto" e ser engolido. Com 16 px o clique
+// normal passa, e o arrasto de verdade continua sendo reconhecido.
+const TOLERANCIA = 16;
 
 export function useArrasteHorizontal<T extends HTMLElement>(ref: React.RefObject<T | null>) {
   const inicio = useRef({ x: 0, scroll: 0, andou: 0 });

@@ -1,5 +1,33 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 56 (10/10/2026): clique nos produtos com mais folga no arrasto, Como funciona arrastando no celular, catálogo com a banda dos mais procurados, Lojas com a fachada sem pessoas e lista tipográfica, carrinho com linhas em gelo. Não publicado (só com o comando dele).**
+> Pedidos: "não consigo abrir a página dos produtos quando clico nos
+> produtos"; "o Como funciona tem que ser arrastando para o lado na versão
+> mobile"; "modernize a página dos produtos ainda mais"; "na página de
+> lojas quero a foto da fachada e não a foto da fachada com os
+> proprietários, deixe mais moderna, conceitual e clean"; "não atualize o
+> GitHub, só quando eu der o comando"; "o carrinho tem que ser mais
+> moderno". Clique: testado com o mouse na prévia e no localhost (catálogo,
+> home e painel): abre em todos; a causa provável, não reproduzível aqui, é
+> o arrasto das faixas (`useArrasteHorizontal`) engolir o clique quando o
+> mouse ou o touchpad se move mais de 6 px entre apertar e soltar; a
+> tolerância foi para 16 px. Perguntar ao usuário em que aparelho e página
+> falha, se continuar. Como funciona: a mesma lista, mas até o tablet os
+> passos voltam a ser cartões que arrastam para o lado com a barra de ouro
+> (`passos-faixa`/`passos-barra`); no computador segue a lista num cartão.
+> Catálogo: saiu a trilha "Início / Categorias"; a faixa "Mais procurados"
+> ganhou uma banda de gelo; a pílula do total ficou branca com fio; o
+> ladrilho do cartão com raio 1,75rem. Lojas v3: a página abre com UMA
+> imagem, `public/fotos/lojas/fachada.webp` (recorte com sharp dos 300 px
+> de cima da foto dos 20 anos, acima da porta, onde não há pessoas; 1400 px
+> de largura, 37 KB), larga e sem fio com a pílula "há 20 anos em
+> Petrópolis", e as três lojas numa lista tipográfica com fios (número em
+> ouro, bairro grande, endereço, telefone, "Como chegar" e WhatsApp); os
+> cartões com foto saíram (não há foto de cada fachada). Carrinho: as linhas
+> dos produtos em gelo sem fio, com o pote num ladrilho branco maior e o
+> controle de quantidade branco com fio; as sanfonas da etapa 2 em gelo; a
+> gaveta com raio 2rem.
+
 > **ADENDO 55 (10/10/2026): painel em modo DEMONSTRAÇÃO na prévia, Como funciona em lista com o convite preso, sombra do pote colada nele, página do produto sem a ênfase na receita, cartão do horário sem a régua. 13º push.**
 > Pedidos: "o painel adm vai ser só para a cliente visualizar, depois vamos
 > para a parte do servidor e banco de dados"; "os produtos estão com uma

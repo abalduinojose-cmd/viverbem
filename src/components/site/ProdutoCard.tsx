@@ -52,7 +52,7 @@ export function ProdutoCard({
       <div
         className={`relative aspect-square overflow-hidden flex items-center justify-center ${
           limpa
-            ? "rounded-[1.5rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
+            ? "rounded-[1.75rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
             : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
         }`}
       >
@@ -85,7 +85,7 @@ export function ProdutoCard({
           <Link
             href={href}
             className={`transition-colors hover:text-tinta focus-visible:outline-none after:absolute after:inset-0 ${
-              limpa ? "after:rounded-[1.5rem]" : "after:rounded-[1.75rem]"
+              limpa ? "after:rounded-[1.75rem]" : "after:rounded-[1.75rem]"
             }`}
           >
             {produto.nome}

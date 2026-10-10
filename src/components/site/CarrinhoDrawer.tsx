@@ -390,7 +390,7 @@ export function CarrinhoDrawer() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-pedido"
-            className="outline-none bg-white w-full h-[92dvh] md:h-full md:max-w-md flex flex-col animar-subir md:animar-surgir shadow-[0_-30px_80px_-20px_rgba(13,35,64,0.5)] md:shadow-[0_30px_80px_-20px_rgba(13,35,64,0.5)] rounded-t-[1.75rem] md:rounded-[1.75rem] overflow-hidden"
+            className="outline-none bg-white w-full h-[92dvh] md:h-full md:max-w-md flex flex-col animar-subir md:animar-surgir shadow-[0_-30px_80px_-20px_rgba(13,35,64,0.5)] md:shadow-[0_30px_80px_-20px_rgba(13,35,64,0.5)] rounded-t-[2rem] md:rounded-[2rem] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <span aria-hidden="true" className="md:hidden mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-fio" />
@@ -586,10 +586,11 @@ export function CarrinhoDrawer() {
                   {itens.map((item, i) => (
                     <div
                       key={`${item.produtoId}-${item.dosagem ?? ""}`}
-                      className="animar-surgir bg-white border border-fio rounded-2xl p-3 flex gap-3"
+                      className="animar-surgir rounded-[1.25rem] bg-gelo/50 p-3 flex gap-3.5"
                       style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                     >
-                      <div className="shrink-0 w-16 h-16 rounded-xl bg-gelo/70 flex items-center justify-center p-1.5">
+                      {/* O pote num ladrilho branco sobre a linha em gelo (10/10/2026, "carrinho mais moderno") */}
+                      <div className="shrink-0 w-[4.5rem] h-[4.5rem] rounded-2xl bg-white shadow-sm flex items-center justify-center p-2">
                         <FotoProduto
                           fotoUrl={item.fotoUrl ?? null}
                           nome={item.nome}
@@ -625,12 +626,12 @@ export function CarrinhoDrawer() {
                           ) : (
                             <span />
                           )}
-                          <div className="flex items-center bg-gelo/70 rounded-full p-0.5 gap-0.5">
+                          <div className="flex items-center bg-white ring-1 ring-fio rounded-full p-0.5 gap-0.5">
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, -1)}
                               aria-label="Diminuir"
-                              className="w-8 h-8 rounded-full bg-white text-navy shadow-sm text-base flex items-center justify-center active:scale-90 transition"
+                              className="w-8 h-8 rounded-full bg-gelo text-navy text-base flex items-center justify-center active:scale-90 transition hover:bg-fio"
                             >
                               −
                             </button>
@@ -840,7 +841,7 @@ export function CarrinhoDrawer() {
                   </div>
 
                   {/* Observação: fechada por padrão, para não alongar a tela */}
-                  <details className="group rounded-2xl border border-fio bg-white">
+                  <details className="group rounded-2xl bg-gelo/50">
                     <summary className="flex items-center justify-between gap-3 min-h-12 px-4 cursor-pointer list-none marker:content-[''] text-sm font-semibold text-navy">
                       <span>
                         Observação <span className="text-cinza font-normal">(opcional)</span>
@@ -860,7 +861,7 @@ export function CarrinhoDrawer() {
                   </details>
 
                   {/* Resumo do pedido, fechado por padrão */}
-                  <details className="group rounded-2xl border border-fio bg-white">
+                  <details className="group rounded-2xl bg-gelo/50">
                     <summary className="flex items-center justify-between gap-3 min-h-12 px-4 cursor-pointer list-none marker:content-[''] text-sm font-semibold text-navy">
                       <span>
                         Resumo do pedido <span className="text-cinza font-normal">· {resumoCurto}</span>

@@ -1,18 +1,18 @@
-// LOJAS: as 3 unidades da Viver Bem em Petrópolis, cada uma num cartão
-// com a foto, o endereço, "Como chegar" e o WhatsApp; embaixo, o horário
-// com o estado ao vivo. Sistema "Branco, azul e ouro" (06/10/2026).
+// LOJAS: as 3 unidades da Viver Bem em Petrópolis.
 //
-// 10/10/2026 ("modernize a página e coloque as fotos das 3 unidades, deixe
-// bem clean e moderno"): a lista com fio virou três cartões com a foto da
-// loja em cima (4:3, com a pílula do número e "retirada grátis"), o bairro
-// grande, o endereço, o telefone fixo (só o Centro tem) e as duas ações.
-// As fotos ficam SÓ nesta página (pedido). PROVISÓRIAS até o cliente
-// mandar a foto real de cada unidade: por enquanto são as fotos da equipe
-// e da fachada usadas na página A Viver Bem (public/fotos/sobre/). Para
-// trocar, é só gravar os arquivos novos e ajustar FOTOS abaixo.
+// Terceira versão (10/10/2026, pedido: "quero a foto da fachada, e não a
+// foto da fachada com os proprietários; deixe a página mais moderna,
+// conceitual e clean"): a página abre com UMA imagem, a fachada da loja,
+// larga e sem fio (public/fotos/lojas/fachada.webp, recortada da foto dos
+// 20 anos acima da porta, onde não há pessoas), e as três lojas vêm numa
+// lista tipográfica com fios: o número em ouro, o bairro grande, o
+// endereço, o telefone fixo (só o Centro tem) e as duas ações. Nada de
+// cartão com foto por loja (a farmácia não tem foto de cada fachada; se
+// mandar, é só trocar a imagem). Embaixo, o horário com o estado ao vivo.
+// Sistema "Branco, azul e ouro" (06/10/2026).
 import type { Metadata } from "next";
 import { asset } from "@/lib/asset";
-import { UNIDADES, linkMapaUnidade, WHATSAPP_LOJA, WHATSAPP_NUMERO } from "@/lib/tipos";
+import { ANOS_TRADICAO, UNIDADES, linkMapaUnidade, WHATSAPP_LOJA, WHATSAPP_NUMERO } from "@/lib/tipos";
 import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
 import { IconeWhatsApp } from "@/components/site/icones";
@@ -20,30 +20,7 @@ import { IconeWhatsApp } from "@/components/site/icones";
 export const metadata: Metadata = {
   title: "Lojas · Manipulação Viver Bem",
   description:
-    "As 3 lojas da Viver Bem em Petrópolis: Centro, Corrêas e Posse. Fotos, endereços, horário e como chegar.",
-};
-
-// A foto de cada loja, pelo bairro (PROVISÓRIAS, ver o comentário no alto)
-const FOTOS: Record<string, { src: string; alt: string; largura: number; altura: number; posicao?: string }> = {
-  Centro: {
-    src: "/fotos/sobre/equipe-loja.webp",
-    alt: "Equipe da Viver Bem dentro da loja",
-    largura: 1200,
-    altura: 749,
-    posicao: "50% 35%",
-  },
-  Corrêas: {
-    src: "/fotos/sobre/geracoes.webp",
-    alt: "Equipe da Viver Bem na entrada da loja, entre as prateleiras",
-    largura: 638,
-    altura: 611,
-  },
-  Posse: {
-    src: "/fotos/sobre/vinte-anos.webp",
-    alt: "Fachada da loja da Viver Bem, com a equipe na porta",
-    largura: 692,
-    altura: 490,
-  },
+    "As 3 lojas da Viver Bem em Petrópolis: Centro, Corrêas e Posse. Endereços, horário e como chegar.",
 };
 
 function IconePino() {
@@ -58,88 +35,86 @@ function IconePino() {
 export default function PaginaLojas() {
   return (
     <main className="flex-1">
-      {/* ---------- Abertura ---------- */}
-      <section className="halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-6 md:pb-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">
-          <div className="lg:col-span-7">
-            <p className="rotulo-pilula">onde nos encontrar</p>
-            <h1 className="titulo-secao vao-rotulo">
-              {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>
-            </h1>
+      {/* ---------- Abertura: o título e a fachada ---------- */}
+      <section className="halo-marca px-5 md:px-8 pt-8 md:pt-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">
+            <div className="lg:col-span-7">
+              <p className="rotulo-pilula">onde nos encontrar</p>
+              <h1 className="titulo-secao vao-rotulo">
+                {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>
+              </h1>
+            </div>
+            <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5 lg:text-right">
+              Retire sem custo na loja que preferir ou receba em casa, de moto. O horário de
+              atendimento é o mesmo nas três.
+            </p>
           </div>
-          <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5 lg:text-right">
-            Retire sem custo na loja que preferir ou receba em casa, de moto. O horário de
-            atendimento é o mesmo nas três.
-          </p>
+
+          {/* A fachada, larga e sem fio: a única imagem da página */}
+          <figure className="revelar relative mt-8 md:mt-10 overflow-hidden rounded-[2rem] bg-gelo aspect-[16/9] sm:aspect-[2.1/1] md:aspect-[2.4/1]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset("/fotos/lojas/fachada.webp")}
+              alt="Fachada da Manipulação Viver Bem: manipulação, cosméticos, homeopatia e florais"
+              width={1400}
+              height={607}
+              fetchPriority="high"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover object-[50%_40%]"
+            />
+            <figcaption className="absolute left-4 top-4 inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/92 text-navy text-[0.66rem] font-semibold uppercase tracking-[0.12em]">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
+              há {ANOS_TRADICAO} anos em Petrópolis
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      {/* ---------- As lojas, em cartões com a foto ---------- */}
-      <section aria-label="As lojas" className="px-5 md:px-8">
-        <ul className="escalonado max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-          {UNIDADES.map((u, i) => {
-            const foto = FOTOS[u.bairro];
-            return (
-              <li
-                key={u.bairro}
-                className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-fio bg-white shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] transition duration-300 hover:-translate-y-1 hover:border-ouro/40"
-              >
-                {/* A foto, com o número e "retirada grátis" numa pílula branca */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-gelo">
-                  {foto && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={asset(foto.src)}
-                      alt={foto.alt}
-                      width={foto.largura}
-                      height={foto.altura}
-                      loading={i === 0 ? undefined : "lazy"}
-                      decoding="async"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      style={foto.posicao ? { objectPosition: foto.posicao } : undefined}
-                    />
-                  )}
-                  <span className="absolute left-3 top-3 inline-flex items-center gap-2 h-7 pl-2.5 pr-3 rounded-full bg-white/92 text-navy text-[0.66rem] font-semibold uppercase tracking-[0.12em]">
-                    <span aria-hidden="true" className="numero-tinta text-[0.85rem] leading-none">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    retirada grátis
-                  </span>
-                </div>
+      {/* ---------- As lojas, em lista com fio ---------- */}
+      <section aria-label="As lojas" className="px-5 md:px-8 pt-10 md:pt-14">
+        <ol className="escalonado max-w-6xl mx-auto border-y border-fio divide-y divide-fio">
+          {UNIDADES.map((u, i) => (
+            <li
+              key={u.bairro}
+              className="grid grid-cols-[3rem_1fr] md:grid-cols-[5rem_1fr_auto] items-center gap-x-4 md:gap-x-8 gap-y-4 py-7 md:py-9"
+            >
+              <span aria-hidden="true" className="numero-tinta text-[2rem] md:text-[2.6rem] leading-none">
+                {String(i + 1).padStart(2, "0")}
+              </span>
 
-                <div className="flex flex-1 flex-col p-5 md:p-6">
-                  <h2 className="text-[1.45rem] md:text-[1.6rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
-                    {u.bairro}
-                  </h2>
-                  <p className="mt-1.5 text-cinza leading-relaxed">{u.endereco}</p>
-                  {u.telefone && <p className="mt-1 text-sm text-cinza tabular-nums">Telefone {u.telefone}</p>}
+              <div className="min-w-0">
+                <h2 className="text-[1.6rem] md:text-[2rem] font-semibold tracking-[-0.035em] text-navy leading-tight">
+                  {u.bairro}
+                </h2>
+                <p className="mt-1.5 text-cinza leading-relaxed">{u.endereco}</p>
+                {u.telefone && <p className="mt-1 text-sm text-cinza tabular-nums">Telefone {u.telefone}</p>}
+              </div>
 
-                  {/* As ações: o mapa é a principal; o WhatsApp é o mesmo das três */}
-                  <div className="mt-auto pt-5 flex items-center gap-2.5">
-                    <a
-                      href={linkMapaUnidade(u.bairro, u.endereco)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="botao botao-principal botao-compacto !min-h-11 flex-1 !gap-2"
-                    >
-                      <IconePino />
-                      Como chegar
-                    </a>
-                    <a
-                      href={`https://wa.me/${WHATSAPP_NUMERO}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Falar no WhatsApp sobre a loja ${u.bairro}`}
-                      className="botao botao-secundario !min-h-11 w-11 !px-0"
-                    >
-                      <IconeWhatsApp tamanho={19} className="text-[#25D366]" />
-                    </a>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+              {/* As ações: o mapa é a principal; o WhatsApp é o mesmo das três */}
+              <div className="col-start-2 md:col-start-3 flex items-center gap-2.5">
+                <a
+                  href={linkMapaUnidade(u.bairro, u.endereco)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="botao botao-principal botao-compacto !min-h-11 !gap-2"
+                >
+                  <IconePino />
+                  Como chegar
+                </a>
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMERO}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Falar no WhatsApp sobre a loja ${u.bairro}`}
+                  className="botao botao-secundario !min-h-11 w-11 !px-0"
+                >
+                  <IconeWhatsApp tamanho={19} className="text-[#25D366]" />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* ---------- Horário e o pedido pela receita ---------- */}

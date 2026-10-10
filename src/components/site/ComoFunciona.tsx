@@ -130,54 +130,63 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
       </div>
 
       <div className="vao-titulo grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
-        {/* ---------- Os quatro passos, numa lista só ---------- */}
-        <ol className="escalonado lg:col-span-7 rounded-[2rem] border border-fio bg-white px-5 md:px-7 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)]">
-          {PASSOS.map((p, i) => (
-            <li
-              key={p.titulo}
-              className="group grid grid-cols-[3.25rem_1fr] md:grid-cols-[4.5rem_1fr] gap-x-3 md:gap-x-5 py-6 md:py-7 border-b border-fio last:border-b-0"
-            >
-              <span aria-hidden="true" className="numero-tinta -mt-1 text-[2.4rem] md:text-[3rem] leading-none">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <div className="flex items-center gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gelo text-tinta transition-colors duration-300 group-hover:bg-tinta group-hover:text-white">
-                    {p.icone}
-                  </span>
-                  <h3 className="text-[1.15rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
-                    <span className="sr-only">Passo {i + 1}: </span>
-                    {p.titulo}
-                  </h3>
-                </div>
-                <p className="mt-3 max-w-[52ch] text-[0.95rem] md:text-base leading-relaxed text-grafite">{p.texto}</p>
-                <p className="mt-1 text-sm leading-relaxed text-cinza">{p.detalhe}</p>
+        {/* ---------- Os quatro passos: no celular e no tablet, cartões que
+            arrastam para o lado com a barra de ouro embaixo (pedido de
+            10/10/2026, "tem que ser arrastando para o lado no mobile"); no
+            computador, uma lista só num cartão branco ---------- */}
+        <div className="passos-escopo lg:col-span-7">
+          <ol className="passos-faixa escalonado flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:block lg:overflow-visible lg:mx-0 lg:px-7 lg:pb-0 lg:rounded-[2rem] lg:border lg:border-fio lg:bg-white lg:shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)]">
+            {PASSOS.map((p, i) => (
+              <li
+                key={p.titulo}
+                className="group flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col gap-4 rounded-[1.5rem] border border-fio bg-white p-5 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:grid lg:w-auto lg:shrink lg:grid-cols-[4.5rem_1fr] lg:gap-x-5 lg:gap-y-0 lg:rounded-none lg:border-0 lg:border-b lg:border-fio lg:bg-transparent lg:p-0 lg:py-7 lg:shadow-none lg:last:border-b-0"
+              >
+                <span aria-hidden="true" className="numero-tinta -mt-1 text-[2.4rem] leading-none lg:text-[3rem]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gelo text-tinta transition-colors duration-300 group-hover:bg-tinta group-hover:text-white">
+                      {p.icone}
+                    </span>
+                    <h3 className="text-[1.15rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
+                      <span className="sr-only">Passo {i + 1}: </span>
+                      {p.titulo}
+                    </h3>
+                  </div>
+                  <p className="mt-3 max-w-[52ch] text-[0.95rem] md:text-base leading-relaxed text-grafite">{p.texto}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-cinza">{p.detalhe}</p>
 
-                {/* Passo 04: as lojas, em chips com o mapa */}
-                {p.lojas && (
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {UNIDADES.map((u) => (
-                      <li key={u.bairro}>
-                        <a
-                          href={linkMapaUnidade(u.bairro, u.endereco)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="chip !min-h-9 !px-3 text-[0.8rem] md:!min-h-10 md:!px-3.5 md:text-sm"
-                          title={u.endereco}
-                        >
-                          <span className="mr-1.5 -ml-0.5 text-ouro">
-                            <IconeLoja tamanho={14} />
-                          </span>
-                          {u.bairro}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </li>
-          ))}
-        </ol>
+                  {/* Passo 04: as lojas, em chips com o mapa */}
+                  {p.lojas && (
+                    <ul className="mt-auto flex flex-wrap gap-2 pt-4">
+                      {UNIDADES.map((u) => (
+                        <li key={u.bairro}>
+                          <a
+                            href={linkMapaUnidade(u.bairro, u.endereco)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="chip !min-h-9 !px-3 text-[0.8rem] md:!min-h-10 md:!px-3.5 md:text-sm"
+                            title={u.endereco}
+                          >
+                            <span className="mr-1.5 -ml-0.5 text-ouro">
+                              <IconeLoja tamanho={14} />
+                            </span>
+                            {u.bairro}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+          {/* A barra de ouro que anda com a faixa (só até o tablet) */}
+          <div aria-hidden="true" className="lg:hidden mt-4 mx-auto h-[3px] w-28 rounded-full bg-fio overflow-hidden">
+            <span className="passos-barra block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />
+          </div>
+        </div>
 
         {/* ---------- O convite da receita, preso ao lado no computador ---------- */}
         <div className="revelar relative overflow-hidden rounded-[2rem] banner-noite em-noite p-6 md:p-8 text-white ring-1 ring-inset ring-white/10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)] lg:col-span-5 lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
