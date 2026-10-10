@@ -442,11 +442,16 @@ body {
     color: #fff;
   }
 
-  /* 4. Carrinho: o "Adicionar" das fichas de produto, pílula em OURO com
-     o texto em navy (pedido do usuário em 06/10/2026; verde por um
-     instante quando o produto entrou). Em 07/10/2026 ("deixe esses botões
-     mais clean") o ouro ficou chapado, sem o brilho metálico nem a sombra;
-     o degradê segue só nos acentos pequenos (círculos de ícone, fios). */
+  /* 4. Carrinho: o "Adicionar" das fichas de produto, pílula em OURO
+     (pedido do usuário em 06/10/2026; verde por um instante quando o
+     produto entrou). Em 07/10/2026 ("deixe esses botões mais clean") o ouro
+     ficou chapado, sem o brilho metálico nem a sombra; o degradê segue só
+     nos acentos pequenos (círculos de ícone, fios). Em 10/10/2026 ("coloque
+     os ícones e escritos em branco, vamos ver se vai ficar bom, quero
+     deixar o site mais clean") o texto e o ícone passaram de navy para
+     BRANCO. Atenção: branco sobre o ouro claro rende contraste 2,4:1; se
+     ficar, vale escurecer o fundo para o ouro (#b3904f, 2,9:1) ou o ouro
+     escuro (4,3:1). */
   .botao-carrinho {
     display: inline-flex;
     align-items: center;
@@ -456,7 +461,7 @@ body {
     padding: 0 1.1rem;
     border-radius: 9999px;
     background: var(--color-ouro-claro);
-    color: var(--color-navy);
+    color: #fff;
     font-weight: 600;
     font-size: 0.92rem;
     letter-spacing: -0.01em;

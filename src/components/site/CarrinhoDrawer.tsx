@@ -15,8 +15,19 @@
 // linha de resumo, no rodapé; "Limpar" discreto ao lado do título da lista;
 // na etapa 2 os dados em dois blocos, e Observação e Resumo em sanfonas
 // fechadas, para a tela caber no celular sem rolar muito.
+//
+// 10/10/2026 ("deixe o carrinho mais moderno", com prints; "português
+// simples, voltado para alta conversão"): as duas barras de progresso
+// viraram etapas com nome (1 Pedido, 2 Dados, o visto de ouro na feita);
+// o cartão da receita em repouso ficou em gelo, sem fio, e ligado mostra
+// os três passos numa linha com setas, sem caixas; o estado vazio perdeu
+// o tracejado e o "Ver produtos" virou a ação em navy; as opções de
+// entrega ganham um selo de marcado; o botão final é o verde do WhatsApp
+// (o mesmo do "Fale com a gente"); e a dica embaixo diz o que falta
+// preencher, em vez de repetir a lista inteira. Lógica, campos e a
+// mensagem do WhatsApp não mudaram.
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
@@ -25,12 +36,24 @@ import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeMoto } from "./IconeMoto";
 import { FotoProduto } from "./FotoProduto";
 import { IconeReceita } from "./BotaoEnviarReceita";
-import { IconeCarrinho, IconeWhatsApp } from "./icones";
+import { Chevron, IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
 
 type Etapa = "pedido" | "dados";
 
+// As duas etapas, com nome, no cabeçalho da gaveta
+const ETAPAS: { id: Etapa; rotulo: string }[] = [
+  { id: "pedido", rotulo: "Pedido" },
+  { id: "dados", rotulo: "Dados" },
+];
+
 // O que acontece depois de marcar a receita, em três passos curtos
 const PASSOS_RECEITA = ["Seus dados", "Mensagem pronta", "Foto na conversa"];
+
+// "a, b e c", para a dica do que falta preencher
+function listar(partes: string[]) {
+  if (partes.length <= 1) return partes.join("");
+  return `${partes.slice(0, -1).join(", ")} e ${partes[partes.length - 1]}`;
+}
 
 function IconeSeta({ direcao = "direita", tamanho = 20 }: { direcao?: "direita" | "esquerda"; tamanho?: number }) {
   return (
@@ -196,6 +219,19 @@ export function CarrinhoDrawer() {
   const podeEnviar =
     temAlgo && nome.trim().length > 0 && digitosWhats.length >= 10 && entregaResolvida;
 
+  // O que ainda falta na etapa 2, para a dica embaixo do botão
+  const faltando = [
+    nome.trim().length === 0 ? "o nome" : null,
+    digitosWhats.length < 10 ? "o WhatsApp" : null,
+    entrega.length === 0
+      ? "como receber"
+      : ehRetirada && unidade.length === 0
+        ? "a loja"
+        : !ehRetirada && endereco.trim().length === 0
+          ? "o endereço"
+          : null,
+  ].filter((p): p is string => p !== null);
+
   // Uma linha só para dizer o que vai no pedido
   const resumoCurto = [
     receita ? "Receita" : null,
@@ -324,14 +360,13 @@ export function CarrinhoDrawer() {
           >
             <span aria-hidden="true" className="md:hidden mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-fio" />
 
-            {/* ---------- Cabeçalho: passo, título e os dois traços de progresso ---------- */}
+            {/* ---------- Cabeçalho: título e as duas etapas com nome ---------- */}
             <div className="shrink-0 px-5 pt-3 md:pt-5 pb-4 border-b border-fio">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="rotulo !text-cinza">
-                    {enviado ? "pedido enviado" : `passo ${etapa === "pedido" ? "1" : "2"} de 2`}
-                  </p>
+                  {enviado && <p className="rotulo !text-cinza">pedido enviado</p>}
                   <h2 id="titulo-pedido" className="mt-1 text-[1.45rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
+                    {!enviado && <span className="sr-only">Passo {etapa === "pedido" ? "1" : "2"} de 2: </span>}
                     {titulo}
                   </h2>
                 </div>
@@ -347,15 +382,44 @@ export function CarrinhoDrawer() {
                 </div>
               </div>
 
+              {/* As etapas: a atual em navy, a feita com o visto em ouro, a
+                  próxima em contorno; o fio entre elas acende em ouro */}
               {!enviado && (
-                <div className="mt-4 flex gap-1.5" aria-hidden="true">
-                  <span className="h-1 flex-1 rounded-full bg-[image:var(--ouro-degrade)]" />
-                  <span
-                    className={`h-1 flex-1 rounded-full transition-colors ${
-                      etapa === "dados" ? "bg-[image:var(--ouro-degrade)]" : "bg-fio"
-                    }`}
-                  />
-                </div>
+                <ol className="mt-4 flex items-center gap-2.5" aria-label="Etapas do pedido">
+                  {ETAPAS.map((e, i) => {
+                    const atual = etapa === e.id;
+                    const feita = i === 0 && etapa === "dados";
+                    return (
+                      <Fragment key={e.id}>
+                        {i > 0 && (
+                          <li
+                            aria-hidden="true"
+                            className={`h-px flex-1 rounded-full transition-colors ${feita ? "bg-[image:var(--ouro-degrade)]" : "bg-fio"}`}
+                          />
+                        )}
+                        <li
+                          aria-current={atual ? "step" : undefined}
+                          className={`flex items-center gap-2 text-[0.78rem] font-semibold transition-colors ${
+                            atual || feita ? "text-navy" : "text-cinza"
+                          }`}
+                        >
+                          <span
+                            className={`flex size-6 items-center justify-center rounded-full text-[0.68rem] tabular-nums transition-colors ${
+                              atual
+                                ? "bg-navy text-white"
+                                : feita
+                                  ? "bg-[image:var(--ouro-degrade)] text-navy"
+                                  : "border border-fio text-cinza"
+                            }`}
+                          >
+                            {feita ? <IconeFeito tamanho={12} /> : i + 1}
+                          </span>
+                          {e.rotulo}
+                        </li>
+                      </Fragment>
+                    );
+                  })}
+                </ol>
               )}
             </div>
 
@@ -389,27 +453,27 @@ export function CarrinhoDrawer() {
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`relative overflow-hidden text-left rounded-2xl p-4 flex flex-col gap-4 transition ${
+                    className={`relative overflow-hidden text-left rounded-[1.5rem] p-4 flex flex-col gap-4 transition ${
                       receita
                         ? "banner-noite em-noite text-white shadow-[0_20px_40px_-24px_rgba(13,35,64,0.6)]"
-                        : "bg-white border border-fio hover:border-tinta/40"
+                        : "bg-gelo/60 hover:bg-gelo"
                     }`}
                   >
                     {receita && <span aria-hidden="true" className="malha-banner" />}
                     <span className="relative flex items-center gap-3.5 w-full">
                       <span
-                        className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
-                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-gelo text-tinta"
+                        className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-colors ${
+                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-white text-tinta shadow-sm"
                         }`}
                       >
                         <IconeReceita tamanho={22} />
                       </span>
                       <span className="flex-1 min-w-0">
                         <span className={`block font-semibold ${receita ? "text-white" : "text-navy"}`}>
-                          Vou enviar uma receita
+                          Tenho uma receita
                         </span>
                         <span className={`block text-sm leading-snug mt-0.5 ${receita ? "text-white/70" : "text-cinza"}`}>
-                          {receita ? "A foto vai pela conversa do WhatsApp" : "Tire uma foto da prescrição e envie pelo WhatsApp"}
+                          {receita ? "A foto vai na conversa do WhatsApp" : "Mande a foto pelo WhatsApp, direto na conversa"}
                         </span>
                       </span>
                       {/* Chave visual do switch: ouro quando ligada */}
@@ -426,16 +490,17 @@ export function CarrinhoDrawer() {
                         />
                       </span>
                     </span>
+                    {/* Os três passos seguintes numa linha, ligados por setas */}
                     {receita && (
-                      <span className="relative grid grid-cols-3 gap-2 w-full">
+                      <span className="relative flex items-center gap-1.5 w-full border-t border-white/10 pt-3.5">
                         {PASSOS_RECEITA.map((passo, i) => (
-                          <span
-                            key={passo}
-                            className="rounded-xl bg-white/10 ring-1 ring-inset ring-white/15 px-2.5 py-2 flex flex-col gap-1"
-                          >
-                            <span className="numero-tinta text-[0.95rem]">{`0${i + 1}`}</span>
-                            <span className="text-[0.72rem] leading-tight text-white/85">{passo}</span>
-                          </span>
+                          <Fragment key={passo}>
+                            {i > 0 && <Chevron tamanho={12} className="shrink-0 text-white/35" />}
+                            <span className="flex-1 min-w-0 flex flex-col gap-0.5">
+                              <span className="numero-tinta text-[0.9rem]">{`0${i + 1}`}</span>
+                              <span className="text-[0.72rem] leading-tight text-white/85">{passo}</span>
+                            </span>
+                          </Fragment>
                         ))}
                       </span>
                     )}
@@ -553,18 +618,18 @@ export function CarrinhoDrawer() {
 
                   {/* Nada escolhido ainda */}
                   {!temAlgo && (
-                    <div className="mt-2 rounded-2xl border border-dashed border-fio px-5 py-7 text-center">
-                      <span className="mx-auto w-12 h-12 rounded-full bg-gelo text-tinta flex items-center justify-center">
+                    <div className="mt-2 rounded-[1.5rem] bg-gelo/60 px-5 py-7 text-center">
+                      <span className="mx-auto w-12 h-12 rounded-2xl bg-white text-tinta shadow-sm flex items-center justify-center">
                         <IconeCarrinho tamanho={22} />
                       </span>
                       <p className="mt-3 font-semibold text-navy">Seu pedido está vazio</p>
                       <p className="mt-1 text-sm text-cinza leading-relaxed">
-                        Marque a receita acima ou escolha produtos no catálogo.
+                        Marque a receita acima ou escolha um produto.
                       </p>
                       <Link
                         href="/produtos"
                         onClick={fechar}
-                        className="mt-4 inline-flex items-center gap-2 h-10 px-4 rounded-full border border-fio text-navy text-sm font-medium hover:border-navy/40 transition-colors"
+                        className="mt-4 inline-flex items-center gap-2 h-10 px-4 rounded-full bg-navy text-white text-sm font-semibold hover:bg-tinta transition-colors"
                       >
                         Ver produtos
                         <IconeSeta tamanho={15} />
@@ -591,7 +656,7 @@ export function CarrinhoDrawer() {
                   </button>
                   {!temAlgo && (
                     <p className="text-xs text-cinza text-center mt-3">
-                      Marque a receita ou adicione um produto para continuar.
+                      Marque a receita ou adicione um produto.
                     </p>
                   )}
                 </div>
@@ -637,7 +702,7 @@ export function CarrinhoDrawer() {
                         {
                           modo: ENTREGA_RETIRADA,
                           titulo: "Retirar na loja",
-                          apoio: "sem taxa",
+                          apoio: "grátis",
                           icone: (
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                               <path
@@ -662,12 +727,21 @@ export function CarrinhoDrawer() {
                           type="button"
                           onClick={() => escolherEntrega(opcao.modo)}
                           aria-pressed={entrega === opcao.modo}
-                          className={`rounded-2xl px-3 py-4 border transition active:scale-95 flex flex-col items-center gap-1.5 text-center ${
+                          className={`relative rounded-2xl px-3 py-4 border transition active:scale-95 flex flex-col items-center gap-1.5 text-center ${
                             entrega === opcao.modo
                               ? "bg-navy text-white border-navy"
                               : "bg-white text-navy border-fio hover:border-tinta/40"
                           }`}
                         >
+                          {/* O selo de marcado, em ouro, no canto */}
+                          {entrega === opcao.modo && (
+                            <span
+                              aria-hidden="true"
+                              className="animar-surgir absolute top-2.5 right-2.5 flex size-5 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-navy"
+                            >
+                              <IconeFeito tamanho={11} />
+                            </span>
+                          )}
                           {opcao.icone}
                           <span className="text-sm font-medium leading-tight mt-0.5">{opcao.titulo}</span>
                           <span className={`text-[0.7rem] leading-none ${entrega === opcao.modo ? "text-white/65" : "text-cinza"}`}>
@@ -724,7 +798,7 @@ export function CarrinhoDrawer() {
                           className={`${classeCampo} resize-y`}
                         />
                         <span className="text-xs text-cinza leading-relaxed">
-                          A equipe confirma a taxa e o prazo da entrega pelo WhatsApp.
+                          A taxa e o prazo da entrega a gente combina pelo WhatsApp.
                         </span>
                       </label>
                     )}
@@ -786,23 +860,25 @@ export function CarrinhoDrawer() {
                 </div>
 
                 <div className="shrink-0 border-t border-fio bg-white px-5 pt-4 pb-5 md:pb-6">
+                  {/* O verde do WhatsApp (o mesmo do "Fale com a gente"): a
+                      pessoa já sabe para onde o pedido vai */}
                   <button
                     type="button"
                     onClick={enviarPedido}
                     disabled={!podeEnviar}
-                    className="botao botao-principal w-full disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="botao w-full bg-[#1DA851] text-white shadow-[0_18px_40px_-16px_rgba(29,168,81,0.65)] hover:bg-[#178a43] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     <IconeWhatsApp />
                     Enviar pedido no WhatsApp
                   </button>
                   <p className="text-xs text-cinza text-center mt-3 leading-relaxed" aria-live="polite">
                     {!podeEnviar ? (
-                      "Preencha o nome, o WhatsApp e como quer receber para enviar."
+                      `Falta preencher ${listar(faltando)}.`
                     ) : (
                       <>
-                        {`${receita ? "Anexe a foto da receita logo depois da mensagem. " : ""}Pedido `}
+                        {`${receita ? "Depois da mensagem, anexe a foto da receita. " : ""}Pedido `}
                         <span className="whitespace-nowrap">{codigo}</span>
-                        {" · seus dados ficam só com a Viver Bem, conforme a LGPD."}
+                        {" · seus dados ficam só com a Viver Bem (LGPD)."}
                       </>
                     )}
                   </p>

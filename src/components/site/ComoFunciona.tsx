@@ -25,6 +25,13 @@
 // "Receba em casa ou retire na loja" virou o passo 04, com as 3 lojas em
 // chips). O processo é contado uma vez.
 //
+// 10/10/2026 ("deixe mais curta, português simples e mais fácil de
+// entender, voltado para sites de alta conversão; modernize o aviso"): os
+// textos dos passos e do convite ficaram curtos e diretos ("Mande a foto.
+// A gente cuida do resto."), e o aviso legal em parágrafo virou uma linha
+// de confiança em três pontos com ícone (receita válida, dados com a
+// equipe, o WhatsApp da loja).
+//
 // Texto de processo, não de resultado: manipulado não pode ter promessa
 // de efeito (RDC 67/2007 e RDC 96/2008). Antes de mexer no texto, confirme
 // com o farmacêutico responsável.
@@ -60,33 +67,58 @@ function IconeFrasco() {
   );
 }
 
+// Escudo com o visto: só com receita válida
+function IconeEscudo() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3 5 5.8v5.4c0 4.4 3 8.3 7 9.8 4-1.5 7-5.4 7-9.8V5.8L12 3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="m9.3 12 1.9 1.9 3.6-3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Cadeado: a receita e os dados ficam com a equipe
+function IconeCadeado() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="10.5" width="14" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const PASSOS = [
   {
     titulo: "Envie a receita",
-    texto: "Mande a foto da prescrição pelo WhatsApp, ou traga na loja.",
-    detalhe: "Pelo site, o pedido já chega com o seu código.",
+    texto: "Mande a foto pelo WhatsApp ou traga na loja.",
+    detalhe: "Pelo site, o pedido já vai com o seu código.",
     icone: <IconeReceita tamanho={22} />,
   },
   {
     titulo: "O farmacêutico confere",
-    texto: "Ele avalia a receita e passa o valor e o prazo de preparo.",
-    detalhe: "Você só confirma se estiver de acordo.",
+    texto: "Ele confere a receita e te passa o valor e o prazo.",
+    detalhe: "Você só confirma se quiser.",
     icone: <IconeConfere />,
   },
   {
     titulo: "Preparo",
-    texto:
-      "A fórmula é preparada no laboratório, a partir da receita, depois do pedido. Nada fica pronto na prateleira.",
-    detalhe: "O rótulo sai com o seu nome, a composição e a validade.",
+    texto: "A sua fórmula é feita no laboratório, só depois do pedido. Nada fica pronto na prateleira.",
+    detalhe: "O rótulo sai com o seu nome, a fórmula e a validade.",
     icone: <IconeFrasco />,
   },
   {
     titulo: "Retire ou receba",
-    texto: `Sem taxa, numa das ${UNIDADES.length} lojas, ou em casa, de moto, por toda Petrópolis.`,
-    detalhe: "A taxa e o prazo da entrega são combinados pelo WhatsApp antes de sair.",
+    texto: `Grátis em uma das ${UNIDADES.length} lojas, ou em casa, de moto, em toda Petrópolis.`,
+    detalhe: "A taxa e o prazo da entrega a gente combina pelo WhatsApp.",
     icone: <IconeMoto tamanho={22} />,
     lojas: true,
   },
+];
+
+// A linha de confiança embaixo do convite: o aviso legal em três pontos curtos
+const CONFIANCA = [
+  { icone: <IconeEscudo />, texto: "Manipulamos só com receita válida, de profissional habilitado" },
+  { icone: <IconeCadeado />, texto: "Sua receita e seus dados ficam só com a nossa equipe" },
 ];
 
 export function ComoFunciona({ className = "secao" }: { className?: string }) {
@@ -103,8 +135,8 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
           Da receita <span className="italic">até a sua mão</span>
         </h2>
         <p className="texto-apoio mt-5 max-w-[36rem]">
-          Quatro passos, do envio da prescrição à retirada ou entrega. Cada fórmula é
-          preparada depois do pedido, conforme a receita.
+          Quatro passos, da foto da receita até a sua mão. Cada fórmula é feita depois
+          do pedido, como está na receita.
         </p>
       </div>
 
@@ -175,11 +207,11 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
           <div className="min-w-0">
             <p className="rotulo-pilula">receita em mãos?</p>
             <p className="titulo-banner mt-3 text-[1.45rem] md:text-[1.8rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
-              Envie a foto agora <span className="italic">e o farmacêutico confere.</span>
+              Mande a foto. <span className="italic">A gente cuida do resto.</span>
             </p>
             <p className="hidden sm:block mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[46ch]">
-              O pedido abre com o seu código e a foto vai pela conversa do WhatsApp. O valor
-              e o prazo chegam por lá.
+              A foto vai pelo WhatsApp. O farmacêutico confere e responde com o valor e o
+              prazo.
             </p>
           </div>
         </div>
@@ -200,17 +232,32 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
             className="botao border border-white/35 text-white transition-colors hover:bg-white/10 hover:border-white/60 !gap-2.5"
           >
             <IconeWhatsApp tamanho={18} className="text-[#25D366]" />
-            Tirar uma dúvida antes
+            Tirar uma dúvida
           </a>
         </div>
       </div>
 
-      {/* Aviso legal, discreto mas presente */}
-      <p className="revelar mt-4 text-xs leading-relaxed text-cinza max-w-3xl">
-        {WHATSAPP_LOJA} · Medicamentos manipulados são preparados somente mediante prescrição
-        de profissional habilitado, dentro da validade. A sua receita e os seus dados ficam
-        apenas com a nossa equipe.
-      </p>
+      {/* A linha de confiança: o aviso legal em três pontos curtos, com ícone
+          (10/10/2026, "modernize"); o número da loja abre o WhatsApp */}
+      <ul className="revelar mt-4 flex flex-col gap-y-2 text-xs leading-snug text-cinza sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
+        {CONFIANCA.map((c) => (
+          <li key={c.texto} className="flex items-center gap-2">
+            <span className="shrink-0 text-ouro">{c.icone}</span>
+            {c.texto}
+          </li>
+        ))}
+        <li className="flex items-center gap-2">
+          <IconeWhatsApp tamanho={14} className="shrink-0 text-[#25D366]" />
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMERO}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold tabular-nums text-navy transition-colors hover:text-tinta"
+          >
+            {WHATSAPP_LOJA}
+          </a>
+        </li>
+      </ul>
     </section>
   );
 }

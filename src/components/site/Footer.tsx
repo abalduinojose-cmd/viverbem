@@ -9,6 +9,13 @@
 // (a assinatura em marca d'água saiu em 07/10/2026; o rodapé em grade, testado
 // no mesmo dia, foi reprovado: "aperfeiçoe o que já estava").
 // um carimbo. É o único bloco escuro do site (sistema "Receita e rótulo").
+//
+// 10/10/2026 ("mantenha a estrutura do rodapé, só modernize ele
+// levemente"): mesma ordem e mesmos blocos; os ícones viraram círculos com
+// um fio branco fino (o fio de ouro saiu), a navegação ficou com o
+// espaçamento de letras menor (o mesmo das pílulas de rótulo), o aviso
+// legal encurtou em português simples, e a linha final usa pontos de ouro
+// como separador (os mesmos da linha dos números da página de produtos).
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { FaleComAGente } from "./FaleComAGente";
@@ -55,6 +62,11 @@ const CONTATOS = [
   { id: "lojas", rotulo: "Nossas lojas", href: "/lojas", externo: false, icone: IconeMapa },
 ];
 
+// Ponto de ouro: o separador da linha final
+function Ponto() {
+  return <span aria-hidden="true" className="mx-2.5 inline-block size-1 rounded-full bg-ouro-claro/80 align-middle" />;
+}
+
 export function Footer() {
   const ano = new Date().getFullYear();
 
@@ -95,17 +107,17 @@ export function Footer() {
           de gente que conhece você pelo nome.
         </p>
 
-        {/* Contatos em ícones, que sobem e acendem em azul */}
-        <ul className="mt-9 flex items-center gap-2.5">
+        {/* Contatos em ícones, círculos que sobem e acendem em azul */}
+        <ul className="mt-9 flex items-center gap-3">
           {CONTATOS.map((c) => {
             const Icone = c.icone;
             const classe =
-              "group relative inline-flex size-12 items-center justify-center rounded-2xl border border-ouro/35 bg-white/[0.04] text-white/80 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(16,42,74,0.95)]";
+              "group relative inline-flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-white/85 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(16,42,74,0.95)]";
             const miolo = (
               <>
                 <span
                   aria-hidden="true"
-                  className="absolute inset-0 rounded-2xl bg-tinta opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  className="absolute inset-0 rounded-full bg-tinta opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                 />
                 <Icone />
               </>
@@ -137,7 +149,7 @@ export function Footer() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors duration-300 hover:bg-white/[0.06] hover:text-ouro-claro"
+                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-white/65 transition-colors duration-300 hover:bg-white/[0.07] hover:text-white"
                 >
                   {l.rotulo}
                 </Link>
@@ -147,19 +159,24 @@ export function Footer() {
         </nav>
 
         {/* Aviso legal, curto e centralizado */}
-        <p className="mt-8 max-w-2xl text-xs leading-relaxed text-white/60">
-          Medicamentos manipulados são preparados somente mediante prescrição de profissional
-          habilitado. Os dados informados no pedido (nome e WhatsApp) são usados apenas pela
-          Viver Bem para atendimento e ofertas, conforme a LGPD.
+        <p className="mt-8 max-w-xl text-xs leading-relaxed text-white/55">
+          Manipulados só com receita de profissional habilitado. O nome e o WhatsApp do
+          pedido ficam com a Viver Bem, só para o atendimento, conforme a LGPD.
         </p>
 
-        {/* Linha final */}
+        {/* Linha final, com pontos de ouro no lugar dos separadores */}
         <div className="mt-10 w-full border-t border-white/10 pt-7">
-          <div className="flex flex-col items-center gap-2 text-[0.78rem] text-white/60 sm:flex-row sm:justify-between">
+          <div className="flex flex-col items-center gap-2 text-[0.78rem] text-white/55 sm:flex-row sm:justify-between">
             <p>
-              © {ano} Manipulação Viver Bem · CNPJ {CNPJ_FARMACIA}
+              © {ano} Manipulação Viver Bem
+              <Ponto />
+              <span className="tabular-nums">CNPJ {CNPJ_FARMACIA}</span>
             </p>
-            <p className="max-sm:order-first">Petrópolis · Centro, Corrêas e Posse</p>
+            <p className="max-sm:order-first">
+              Petrópolis
+              <Ponto />
+              Centro, Corrêas e Posse
+            </p>
           </div>
         </div>
       </div>

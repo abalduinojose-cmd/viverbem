@@ -4,8 +4,8 @@
 // para escolher manda para a página dele, onde a escolha acontece.
 //
 // É o botão do carrinho do sistema (.botao-carrinho, globals.css): pílula
-// em ouro com o texto em navy (pedido do usuário), verde por um instante
-// quando o produto entrou.
+// em ouro com o texto e o ícone em branco (10/10/2026; antes navy), verde
+// por um instante quando o produto entrou.
 import { useState } from "react";
 import Link from "next/link";
 import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
@@ -54,7 +54,7 @@ export function BotaoAdicionar({
   if (compacto) {
     const classeSuave = adicionado
       ? "bg-green-700 border-green-700 text-white"
-      : "bg-white border-fio text-navy hover:bg-ouro-claro hover:border-ouro-claro";
+      : "bg-white border-fio text-navy hover:bg-ouro-claro hover:border-ouro-claro hover:text-white";
     return (
       <button
         type="button"

@@ -1,5 +1,38 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 49 (10/10/2026): "Adicionar" com texto e ícone em branco, textos em português simples, linha de confiança no lugar do aviso, rodapé levemente modernizado e carrinho mais moderno. Não publicado.**
+> Pedidos: "coloque os ícones e escritos em branco, vamos ver se vai ficar
+> bom, quero deixar o site mais clean"; "melhore a frase no receita em mãos
+> 'Envie a foto agora e o farmacêutico confere', deixe mais curta, português
+> simples e mais fácil de entender, voltado para sites de alta conversão";
+> "modernize [o aviso legal com o telefone] embaixo do envie a receita";
+> "mantenha a estrutura do rodapé, só modernize ele levemente"; "deixe o
+> carrinho mais moderno" (4 prints). Feito: `.botao-carrinho` (Adicionar,
+> Escolher dosagem, Adicionar ao carrinho) com texto e ícone em BRANCO sobre
+> o ouro claro (contraste 2,4:1; se ficar, escurecer o fundo para o ouro ou o
+> ouro escuro); o compacto "suave" também vai a branco no hover. Como
+> funciona: os quatro passos e o apoio reescritos curtos ("Mande a foto pelo
+> WhatsApp ou traga na loja", "Grátis em uma das 3 lojas..."); o convite
+> virou "Mande a foto. *A gente cuida do resto.*" com apoio "A foto vai pelo
+> WhatsApp. O farmacêutico confere e responde com o valor e o prazo." e o
+> botão "Tirar uma dúvida"; o parágrafo legal virou a LINHA DE CONFIANÇA em
+> três pontos com ícone (escudo "Manipulamos só com receita válida, de
+> profissional habilitado", cadeado "Sua receita e seus dados ficam só com a
+> nossa equipe", WhatsApp com o número em link). Rodapé: mesma estrutura;
+> ícones em círculo com fio branco a 15% (o fio de ouro saiu), navegação com
+> tracking 0.12em e hover branco, aviso em duas frases simples, linha final
+> com pontos de ouro como separador. Carrinho (`CarrinhoDrawer`): as duas
+> barras viraram etapas com nome (1 Pedido, 2 Dados; a feita com visto em
+> ouro, o fio entre elas acende); "passo X de 2" só em sr-only; cartão da
+> receita em repouso em gelo sem fio, ícone em quadrado branco, "Tenho uma
+> receita" / "Mande a foto pelo WhatsApp, direto na conversa"; ligado, os
+> três passos numa linha com setas, sem caixas; estado vazio em gelo sem
+> tracejado e "Ver produtos" em navy; "Retirar na loja · grátis"; selo de
+> marcado em ouro no canto da opção escolhida; botão final no verde do
+> WhatsApp (#1DA851, o mesmo do Fale com a gente); a dica embaixo diz o que
+> falta ("Falta preencher o nome, o WhatsApp e como receber."). Lógica,
+> campos e mensagem do WhatsApp intactos.
+
 > **ADENDO 48 (08/10/2026): seção Saúde da Mulher no lugar do "Explore o catálogo", banner das faixas no fim, Como funciona e Fale com a gente mais limpos.**
 > Pedidos: "mude isso para o final da seção, assim como no Mais procurados";
 > "modernize o Como funciona"; "o catálogo / Explore o catálogo... isso não
