@@ -151,7 +151,7 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
               {/* 08/10/2026 ("modernize"): o círculo de ouro cheio saiu; o ícone
                   fica num quadrado suave e o número grande vira marca d'água
                   no canto do cartão */}
-              <div className="relative flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-fio bg-white p-5 md:p-6 shadow-[0_24px_50px_-40px_rgba(54,52,107,0.45)] transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-fio bg-white p-5 md:p-6 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40">
                 <span aria-hidden="true" className="numero-tinta pointer-events-none absolute right-4 top-2 text-[5rem] md:text-[5.5rem] leading-none opacity-25">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -197,7 +197,7 @@ export function ComoFunciona({ className = "secao" }: { className?: string }) {
       </div>
 
       {/* ---------- O convite: receita em mãos ---------- */}
-      <div className="revelar mt-6 md:mt-8 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-5 sm:p-6 md:p-8 lg:px-10 lg:py-9 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(54,52,107,0.6)]">
+      <div className="revelar mt-6 md:mt-8 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-5 sm:p-6 md:p-8 lg:px-10 lg:py-9 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)]">
         <span aria-hidden="true" className="malha-banner" />
         <span
           aria-hidden="true"

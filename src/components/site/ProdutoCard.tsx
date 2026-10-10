@@ -31,7 +31,7 @@ export function ProdutoCard({
   const preco = precoVisivel(produto);
 
   return (
-    <article className="group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(54,52,107,0.45)] focus-within:border-ouro/60">
+    <article className="group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60">
       <div className="relative aspect-square overflow-hidden rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-3">
         {/* A luz dourada da bancada, no pé do pote */}
         <span
@@ -41,7 +41,7 @@ export function ProdutoCard({
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}
-          className="relative max-h-full w-auto max-w-full !object-contain drop-shadow-[0_6px_8px_rgba(54,52,107,0.3)] transition-transform duration-500 group-hover:-translate-y-1.5"
+          className="relative max-h-full w-auto max-w-full !object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.3)] transition-transform duration-500 group-hover:-translate-y-1.5"
         />
         {industrializado && produto.novidade && (
           <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">

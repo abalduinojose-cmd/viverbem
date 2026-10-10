@@ -312,7 +312,7 @@ export function CarrinhoDrawer() {
           type="button"
           onClick={() => abrirPedido()}
           aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
-          className={`fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 flex items-center justify-center bg-navy text-white rounded-full w-14 h-14 md:w-auto md:h-12 md:pl-5 md:pr-2 md:gap-3 shadow-[0_16px_34px_-16px_rgba(54,52,107,0.65)] hover:bg-tinta active:scale-95 transition duration-300 ${
+          className={`fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 flex items-center justify-center bg-navy text-white rounded-full w-14 h-14 md:w-auto md:h-12 md:pl-5 md:pr-2 md:gap-3 shadow-[0_16px_34px_-16px_rgba(13,35,64,0.65)] hover:bg-tinta active:scale-95 transition duration-300 ${
             aberto ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
@@ -332,7 +332,7 @@ export function CarrinhoDrawer() {
           onClick={() => abrirPedido({ receita: true })}
           tabIndex={mostrarReceitaFlutuante ? 0 : -1}
           aria-hidden={!mostrarReceitaFlutuante}
-          className={`md:hidden bg-navy fixed bottom-5 right-5 z-40 text-white rounded-full h-12 pl-4 pr-5 flex items-center gap-2.5 shadow-[0_14px_30px_-16px_rgba(54,52,107,0.6)] active:scale-95 transition duration-300 ${
+          className={`md:hidden bg-navy fixed bottom-5 right-5 z-40 text-white rounded-full h-12 pl-4 pr-5 flex items-center gap-2.5 shadow-[0_14px_30px_-16px_rgba(13,35,64,0.6)] active:scale-95 transition duration-300 ${
             mostrarReceitaFlutuante ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
         >
@@ -355,7 +355,7 @@ export function CarrinhoDrawer() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-pedido"
-            className="outline-none bg-white w-full h-[92dvh] md:h-full md:max-w-md flex flex-col animar-subir md:animar-surgir shadow-[0_-30px_80px_-20px_rgba(54,52,107,0.5)] md:shadow-[0_30px_80px_-20px_rgba(54,52,107,0.5)] rounded-t-[1.75rem] md:rounded-[1.75rem] overflow-hidden"
+            className="outline-none bg-white w-full h-[92dvh] md:h-full md:max-w-md flex flex-col animar-subir md:animar-surgir shadow-[0_-30px_80px_-20px_rgba(13,35,64,0.5)] md:shadow-[0_30px_80px_-20px_rgba(13,35,64,0.5)] rounded-t-[1.75rem] md:rounded-[1.75rem] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <span aria-hidden="true" className="md:hidden mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-fio" />
@@ -455,7 +455,7 @@ export function CarrinhoDrawer() {
                     onClick={() => setReceita(!receita)}
                     className={`relative overflow-hidden text-left rounded-[1.5rem] p-4 flex flex-col gap-4 transition ${
                       receita
-                        ? "banner-noite em-noite text-white shadow-[0_20px_40px_-24px_rgba(54,52,107,0.6)]"
+                        ? "banner-noite em-noite text-white shadow-[0_20px_40px_-24px_rgba(13,35,64,0.6)]"
                         : "bg-gelo/60 hover:bg-gelo"
                     }`}
                   >

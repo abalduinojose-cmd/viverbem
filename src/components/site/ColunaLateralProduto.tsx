@@ -31,7 +31,7 @@ function ItemCompacto({ produto }: { produto: ProdutoDTO }) {
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}
-          className="relative max-w-full max-h-full !object-contain drop-shadow-[0_5px_7px_rgba(54,52,107,0.26)] transition-transform duration-500 group-hover:-translate-y-0.5"
+          className="relative max-w-full max-h-full !object-contain drop-shadow-[0_5px_7px_rgba(16,42,74,0.26)] transition-transform duration-500 group-hover:-translate-y-0.5"
         />
       </span>
       <div className="min-w-0 flex-1">
@@ -62,7 +62,7 @@ function Bloco({
 }) {
   if (itens.length === 0) return null;
   return (
-    <section aria-label={titulo} className="rounded-[1.75rem] border border-fio bg-white p-4 md:p-5 shadow-[0_18px_40px_-32px_rgba(54,52,107,0.35)]">
+    <section aria-label={titulo} className="rounded-[1.75rem] border border-fio bg-white p-4 md:p-5 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
       <p className="rotulo-pilula !text-[0.64rem]">{rotulo}</p>
       <h2 className="mt-2 text-[1.15rem] font-semibold tracking-[-0.025em] text-navy">{titulo}</h2>
       <ul className="mt-2 lista-fichas">

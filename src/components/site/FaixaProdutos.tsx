@@ -94,7 +94,7 @@ export function FaixaProdutos({
   const classeItem =
     largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-60 md:w-72 shrink-0 snap-start";
   const classeSeta =
-    "hidden md:flex absolute top-1/2 -translate-y-1/2 z-[2] w-11 h-11 rounded-full bg-white/95 text-navy ring-1 ring-fio shadow-[0_14px_30px_-14px_rgba(54,52,107,0.5)] items-center justify-center transition hover:bg-navy hover:text-white active:scale-95";
+    "hidden md:flex absolute top-1/2 -translate-y-1/2 z-[2] w-11 h-11 rounded-full bg-white/95 text-navy ring-1 ring-fio shadow-[0_14px_30px_-14px_rgba(13,35,64,0.5)] items-center justify-center transition hover:bg-navy hover:text-white active:scale-95";
 
   return (
     <div className="relative">

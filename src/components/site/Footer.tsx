@@ -112,7 +112,7 @@ export function Footer() {
           {CONTATOS.map((c) => {
             const Icone = c.icone;
             const classe =
-              "group relative inline-flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-white/85 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(54,52,107,0.95)]";
+              "group relative inline-flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-white/85 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(16,42,74,0.95)]";
             const miolo = (
               <>
                 <span

@@ -226,7 +226,7 @@ export function CatalogoClient({
             <div className="lg:col-span-5 lg:justify-self-end w-full lg:max-w-md">
               <BotaoEnviarReceita
                 comIcone={false}
-                className="group banner-noite em-noite relative w-full overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-4 sm:p-5 flex items-center gap-4 text-left text-white shadow-[0_24px_50px_-30px_rgba(54,52,107,0.6)] transition duration-300 hover:-translate-y-0.5"
+                className="group banner-noite em-noite relative w-full overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-4 sm:p-5 flex items-center gap-4 text-left text-white shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)] transition duration-300 hover:-translate-y-0.5"
               >
                 <span aria-hidden="true" className="malha-banner" />
                 <span
@@ -404,7 +404,7 @@ export function CatalogoClient({
 
         {/* O convite final: quem não achou a fórmula manda a receita */}
         {!(buscando && resultadoBusca.length === 0) && (
-          <div className="mt-14 md:mt-16 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-6 md:p-8 lg:px-10 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(54,52,107,0.6)]">
+          <div className="mt-14 md:mt-16 relative overflow-hidden rounded-[2rem] banner-noite em-noite text-white ring-1 ring-inset ring-white/10 p-6 md:p-8 lg:px-10 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)]">
             <span aria-hidden="true" className="malha-banner" />
             <span
               aria-hidden="true"

@@ -1,6 +1,6 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 51 (10/10/2026): paleta nova definida pelo usuário: branco, céu #50A0EB (o azul fraco da hero), índigo #36346B e ouro #C9A56B. Não publicado.**
+> **ADENDO 51 (10/10/2026): paleta pedida pelo usuário (branco, céu #50A0EB, índigo #36346B, ouro #C9A56B); o ÍNDIGO foi DESFEITO na mesma hora ("não gostei, volte para o tom de azul que estava antes"); ficou só o ouro #C9A56B. Não publicado.**
 > Pedido: "as cores do projeto são o branco, azul fraco que está na
 > animação da hero e o #36346B e o #C9A56B, distribua essas cores no
 > projeto, o site deve ter essas cores predominantes; a ideia é um site
@@ -21,6 +21,12 @@
 > sessão (`CartaoReceita`, `FaleComAGente`, `receita/`). Histórico: a
 > paleta do Instagram (roxo-marinho + dourado + creme + areia) tinha sido
 > reprovada em 07/10; desta vez a base continua branca, com o céu da hero.
+> DESFEITO em seguida (o commit c1a68a6 com o índigo foi revertido no
+> commit seguinte): o usuário viu e pediu o azul de volta. Azul #1C69B5,
+> azul-noite #0D2340, gelo, fio, grafite, cinza e os brilhos dos banners
+> voltaram ao que eram; ficaram só o ouro #C9A56B (claro #D9BD8A, escuro
+> #9C7B46, o degradê e as paradas de ouro da hero) e o botão do carrinho
+> no ouro da marca com hover no ouro escuro. Não trocar o azul de novo.
 
 > **ADENDO 49 (10/10/2026): "Adicionar" com texto e ícone em branco, textos em português simples, linha de confiança no lugar do aviso, rodapé levemente modernizado e carrinho mais moderno. Não publicado.**
 > Pedidos: "coloque os ícones e escritos em branco, vamos ver se vai ficar

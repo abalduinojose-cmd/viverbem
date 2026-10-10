@@ -33,7 +33,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   }
 
   return (
-    <div className="mt-7 rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6 shadow-[0_24px_40px_-32px_rgba(54,52,107,0.35)]">
+    <div className="mt-7 rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6 shadow-[0_24px_40px_-32px_rgba(16,42,74,0.35)]">
       {/* Dosagens */}
       {dosagens.length > 0 && (
         <div>

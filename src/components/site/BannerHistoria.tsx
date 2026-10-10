@@ -21,7 +21,7 @@ export function BannerHistoria() {
     <section aria-label="A nossa história" className="md:hidden max-w-7xl mx-auto px-5 pt-3">
       <Link
         href="/sobre"
-        className="group relative block overflow-hidden rounded-[1.75rem] aspect-[5/4] bg-navy ring-1 ring-fio shadow-[0_30px_60px_-36px_rgba(54,52,107,0.55)] transition-transform duration-300 active:scale-[0.99]"
+        className="group relative block overflow-hidden rounded-[1.75rem] aspect-[5/4] bg-navy ring-1 ring-fio shadow-[0_30px_60px_-36px_rgba(13,35,64,0.55)] transition-transform duration-300 active:scale-[0.99]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -40,7 +40,7 @@ export function BannerHistoria() {
         </span>
 
         {/* O painel que flutua sobre a base da foto */}
-        <span className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[1.25rem] bg-white/95 px-4 py-3 shadow-[0_18px_40px_-18px_rgba(54,52,107,0.65)]">
+        <span className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[1.25rem] bg-white/95 px-4 py-3 shadow-[0_18px_40px_-18px_rgba(13,35,64,0.65)]">
           <span className="flex items-end gap-2.5">
             <span className="numero-tinta text-[3.1rem] leading-[0.82]">{ANOS_TRADICAO}</span>
             <span className="pb-0.5 leading-[1.1]">

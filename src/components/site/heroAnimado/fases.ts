@@ -284,7 +284,7 @@ export function criarFases(palco: Palco): Coreografia {
     // O contorno inteiro, fino: a lua nova já se vê como um aro
     ctx.globalAlpha = visivel * 0.32;
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgb(224, 196, 143)";
+    ctx.strokeStyle = "rgb(222, 196, 140)";
     ctx.beginPath();
     ctx.arc(0, 0, R, 0, TAU);
     ctx.stroke();
@@ -305,9 +305,9 @@ export function criarFases(palco: Palco): Coreografia {
     ctx.globalAlpha = 0.3 * abre;
     ctx.drawImage(palco.luzOuro, a.x, a.y - 18, b.x - a.x, 36);
     const g = ctx.createLinearGradient(a.x, 0, b.x, 0);
-    g.addColorStop(0, "rgba(217, 189, 138, 0)");
-    g.addColorStop(0.5, "rgba(232, 212, 166, 0.9)");
-    g.addColorStop(1, "rgba(217, 189, 138, 0)");
+    g.addColorStop(0, "rgba(214, 186, 125, 0)");
+    g.addColorStop(0.5, "rgba(230, 204, 146, 0.9)");
+    g.addColorStop(1, "rgba(214, 186, 125, 0)");
     ctx.globalAlpha = 1;
     ctx.fillStyle = g;
     ctx.fillRect(a.x, a.y - 0.6, b.x - a.x, 1.2);
@@ -380,7 +380,7 @@ export function criarFases(palco: Palco): Coreografia {
       ctx.globalAlpha = (0.4 + 0.2 * respira) * ponto;
       ctx.drawImage(palco.luzOuro, r.pontoX - halo, cy - halo, halo * 2, halo * 2);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = "#e0c48f";
+      ctx.fillStyle = "#e1c68f";
       ctx.beginPath();
       ctx.arc(r.pontoX, cy, r.raioPonto * ponto, 0, TAU);
       ctx.fill();

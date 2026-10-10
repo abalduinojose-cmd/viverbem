@@ -293,7 +293,7 @@ export function ReelsInstagram() {
               }}
               className={`group relative shrink-0 snap-center w-[min(15rem,70vw)] lg:w-[14rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-navy ring-1 transition duration-500 ${
                 ehAtivo
-                  ? "ring-ouro/60 shadow-[0_30px_60px_-30px_rgba(54,52,107,0.6)]"
+                  ? "ring-ouro/60 shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
                   : "ring-fio lg:scale-[0.94] lg:opacity-80 lg:hover:opacity-100"
               }`}
             >
@@ -337,7 +337,7 @@ export function ReelsInstagram() {
                   }`}
                 />
                 <span
-                  className={`relative w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-navy flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(54,52,107,0.55)] transition duration-300 ${
+                  className={`relative w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-navy flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
                     estaTocando
                       ? "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
                       : "opacity-100 group-hover:scale-105"

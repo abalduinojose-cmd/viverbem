@@ -116,7 +116,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
                 height={44}
                 loading="lazy"
                 decoding="async"
-                className="w-11 h-11 rounded-full object-cover ring-[3px] ring-white shadow-[0_6px_14px_-8px_rgba(54,52,107,0.5)]"
+                className="w-11 h-11 rounded-full object-cover ring-[3px] ring-white shadow-[0_6px_14px_-8px_rgba(16,42,74,0.5)]"
                 draggable={false}
               />
             ))}
@@ -209,7 +209,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
         {avaliacoes.map((a) => (
           <figure
             key={a.id}
-            className="snap-start shrink-0 w-[17rem] md:w-[19.5rem] rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/50 p-5 flex flex-col gap-3.5 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(54,52,107,0.45)]"
+            className="snap-start shrink-0 w-[17rem] md:w-[19.5rem] rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/50 p-5 flex flex-col gap-3.5 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)]"
           >
             <Aspas />
             <blockquote className="flex-1 text-[0.95rem] leading-relaxed text-grafite">{a.texto}</blockquote>

@@ -5,24 +5,22 @@
    Sistema "Branco, azul e ouro" (06/10/2026, ver especificacoes/). A paleta
    do Instagram (roxo-marinho, dourado, creme e areia) foi aplicada e desfeita
    no mesmo dia, 07/10/2026, a pedido ("volte as cores como estava antes").
+   Em 10/10/2026 o usuário definiu "branco, azul fraco da hero, #36346B e
+   #C9A56B": o índigo #36346B entrou no lugar dos dois azuis e foi desfeito
+   na mesma hora ("não gostei, volte para o tom de azul que estava antes");
+   ficou só o ouro #C9A56B (claro #D9BD8A, escuro #9C7B46). Os azuis abaixo
+   são os de sempre: não trocar de novo.
 
-   10/10/2026, paleta definida pelo usuário ("as cores do projeto são o
-   branco, o azul fraco que está na animação da hero, o #36346B e o
-   #C9A56B; site clean, de alta performance e alta conversão"):
-   - Fundo BRANCO em tudo; o gelo e o fio são tintas bem claras do céu.
-   - CÉU #50A0EB, o azul fraco da luz da hero (roteiros.ts): a luz atrás
-     dos potes, o brilho dos banners escuros e o halo da abertura. Só luz
-     e superfície, nunca texto.
-   - ÍNDIGO #36346B como a tinta única: títulos, botão principal, rótulos,
-     links, o fundo da abertura, dos banners e do rodapé (tinta, navy e
-     noite apontam para ele; a tinta escura #2A2856 é o hover).
-   - OURO #C9A56B como acento metálico: a palavra-chave dos títulos, os
-     números, o botão do carrinho, a luz quente sob os potes e fios finos.
-     Claro #D9BD8A sobre o escuro, escuro #9C7B46 em texto pequeno no claro.
+   - Fundo branco em tudo, com luz azul e dourada atrás dos potes.
+   - Azul da marca (#1C69B5) como estrutura e ação: botão principal,
+     rótulos, links. Azul-noite (#0D2340) nos títulos, numa única folha
+     escura (a vitrine) e no rodapé.
+   - Dourado da paleta da farmácia (#c9a56b e #d9bd8a) como acento
+     metálico: a palavra-chave dos títulos, os números, o nome no rótulo,
+     a luz quente sob os potes e fios finos. Nunca em texto pequeno.
    - Duas vozes: Instrument Sans (texto; títulos em peso 600) e
      Instrument Serif itálico (a voz humana, em ouro).
    - Vermelho só no logo.
-   (A versão anterior era azul #1C69B5 de ação e azul-noite #0D2340.)
 
    Movimento: tudo anda com a rolagem da própria pessoa (scroll-driven),
    por isso roda também com "reduzir movimento", pedido do usuário.
@@ -30,36 +28,33 @@
 @theme {
   /* Superfícies e tinta */
   --color-papel: #ffffff;
-  --color-gelo: #eaf4fd;
-  --color-fio: #e3e8f2;
-  --color-tinta: #36346b;
-  --color-tinta-escura: #2a2856;
-  --color-navy: #36346b;
-  --color-noite: #36346b;
-  /* O azul fraco da hero: luz e superfície, nunca texto */
-  --color-ceu: #50a0eb;
-  --color-ceu-claro: #8ab8ea;
-  --color-grafite: #26253a;
-  --color-cinza: #66657e;
+  --color-gelo: #eef3f9;
+  --color-fio: #e4e8ee;
+  --color-tinta: #1c69b5;
+  --color-tinta-escura: #14508c;
+  --color-navy: #0d2340;
+  --color-noite: #0d2340;
+  --color-grafite: #1f2328;
+  --color-cinza: #5b6169;
   --color-ouro: #c9a56b;
   --color-ouro-claro: #d9bd8a;
   --color-ouro-escuro: #9c7b46;
   --color-carimbo: #e02129;
   --color-carimbo-escuro: #b81b22;
   /* Fundo do painel administrativo: um gelo ainda mais claro */
-  --color-nevoa: #f5f9fe;
+  --color-nevoa: #f5f8fc;
 
   /* Nomes antigos, mantidos para o que ainda não foi redesenhado */
-  --color-royal: #36346b;
-  --color-royal-escuro: #2a2856;
-  --color-royal-medio: #50a0eb;
-  --color-royal-claro: #eaf4fd;
-  --color-royal-nevoa: #f5f9fe;
+  --color-royal: #1c69b5;
+  --color-royal-escuro: #14508c;
+  --color-royal-medio: #2f7cc4;
+  --color-royal-claro: #eef3f9;
+  --color-royal-nevoa: #f5f8fc;
   --color-escarlate: #e02129;
   --color-escarlate-escuro: #b81b22;
-  --color-grafite-medio: #66657e;
-  --color-grafite-claro: #8e8da3;
-  --color-linha: #e3e8f2;
+  --color-grafite-medio: #5b6169;
+  --color-grafite-claro: #8b929b;
+  --color-linha: #e4e8ee;
 
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
   --font-display: var(--font-instrument-sans), system-ui, sans-serif;
@@ -173,8 +168,8 @@ body {
     width: fit-content;
     max-width: 100%;
     border-radius: 9999px;
-    background: rgba(54, 52, 107, 0.06);
-    box-shadow: inset 0 0 0 1px rgba(54, 52, 107, 0.1);
+    background: rgba(28, 105, 181, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(28, 105, 181, 0.1);
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -316,7 +311,7 @@ body {
   .botao-principal {
     background: var(--color-tinta);
     color: #fff;
-    box-shadow: 0 18px 40px -16px rgba(54, 52, 107, 0.65);
+    box-shadow: 0 18px 40px -16px rgba(28, 105, 181, 0.65);
   }
   .botao-principal:hover {
     background: var(--color-tinta-escura);
@@ -325,12 +320,12 @@ body {
   .botao-secundario {
     background: transparent;
     color: var(--color-tinta);
-    border: 1.5px solid rgba(54, 52, 107, 0.4);
+    border: 1.5px solid rgba(28, 105, 181, 0.4);
     font-weight: 500;
   }
   .botao-secundario:hover {
     background: var(--color-gelo);
-    border-color: rgba(54, 52, 107, 0.7);
+    border-color: rgba(28, 105, 181, 0.7);
   }
   .em-noite .botao-secundario {
     color: #fff;
@@ -442,7 +437,7 @@ body {
     transition: border-color 0.25s, color 0.25s, background-color 0.25s;
   }
   .chip:hover {
-    border-color: rgba(54, 52, 107, 0.45);
+    border-color: rgba(28, 105, 181, 0.45);
     color: var(--color-tinta);
   }
   .chip-ativo,
@@ -459,9 +454,9 @@ body {
      nos acentos pequenos (círculos de ícone, fios). Em 10/10/2026 ("coloque
      os ícones e escritos em branco, vamos ver se vai ficar bom, quero
      deixar o site mais clean") o texto e o ícone passaram de navy para
-     BRANCO. Com a paleta de 10/10/2026 o fundo é o ouro da marca
-     (#c9a56b) e o hover o ouro escuro. Atenção: branco sobre #c9a56b rende
-     contraste 2,3:1; se ficar, vale ir para o ouro escuro (4,3:1). */
+     BRANCO. Com o ouro de 10/10/2026 o fundo é o ouro da marca (#c9a56b)
+     e o hover o ouro escuro. Atenção: branco sobre #c9a56b rende contraste
+     2,3:1; se ficar, vale ir para o ouro escuro (4,3:1). */
   .botao-carrinho {
     display: inline-flex;
     align-items: center;
@@ -499,9 +494,9 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-caixa);
-    background: linear-gradient(160deg, #ffffff 0%, #eaf4fd 100%);
+    background: linear-gradient(160deg, #ffffff 0%, #eef3f9 100%);
     border: 1px solid var(--color-fio);
-    box-shadow: inset 0 1px 0 #fff, 0 20px 40px -30px rgba(54, 52, 107, 0.35);
+    box-shadow: inset 0 1px 0 #fff, 0 20px 40px -30px rgba(16, 42, 74, 0.35);
   }
   /* Listas com fio */
   .lista-fichas > * + * {
@@ -542,7 +537,7 @@ body {
     position: relative;
     border-radius: 2.25rem 2.25rem 0 0;
     background: var(--color-papel);
-    box-shadow: 0 -30px 60px -40px rgba(54, 52, 107, 0.35);
+    box-shadow: 0 -30px 60px -40px rgba(13, 35, 64, 0.35);
     margin-top: -2.25rem;
     padding-top: 1.5rem;
     transform-origin: 50% 0%;
@@ -559,18 +554,18 @@ body {
     color: #fff;
     background:
       radial-gradient(60% 50% at 85% 0%, rgba(201, 165, 107, 0.2), transparent 60%),
-      radial-gradient(50% 50% at 0% 100%, rgba(80, 160, 235, 0.28), transparent 60%),
-      linear-gradient(170deg, #112d52 0%, #36346b 55%, #0a1a30 100%);
+      radial-gradient(50% 50% at 0% 100%, rgba(47, 124, 196, 0.28), transparent 60%),
+      linear-gradient(170deg, #112d52 0%, #0d2340 55%, #0a1a30 100%);
   }
 
-  /* Banner em índigo com a luz da marca (o céu no alto, o ouro embaixo):
-     a abertura e os banners das vitrines (modelo de loja) */
+  /* Banner em azul-noite com a luz da marca: a abertura e os banners das
+     vitrines (modelo de loja) */
   .banner-noite {
     background:
-      radial-gradient(60% 70% at 82% 18%, rgba(80, 160, 235, 0.45), transparent 62%),
+      radial-gradient(60% 70% at 82% 18%, rgba(63, 146, 224, 0.5), transparent 62%),
       radial-gradient(45% 50% at 6% 100%, rgba(201, 165, 107, 0.3), transparent 60%),
-      radial-gradient(40% 40% at 50% 110%, rgba(80, 160, 235, 0.3), transparent 60%),
-      linear-gradient(165deg, #46437f 0%, #36346b 38%, #26244c 100%);
+      radial-gradient(40% 40% at 50% 110%, rgba(28, 105, 181, 0.5), transparent 60%),
+      linear-gradient(165deg, #1b5ea6 0%, #124a86 38%, #0d2340 100%);
   }
 }
 
@@ -637,7 +632,7 @@ body {
   outline: none;
   background: #fff;
   border-color: var(--color-tinta);
-  box-shadow: 0 0 0 4px rgba(54, 52, 107, 0.1);
+  box-shadow: 0 0 0 4px rgba(28, 105, 181, 0.1);
 }
 .cascata > * {
   animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -724,9 +719,9 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(55% 60% at 80% 28%, rgba(80, 160, 235, 0.16), transparent 66%),
+    radial-gradient(55% 60% at 80% 28%, rgba(28, 105, 181, 0.13), transparent 66%),
     radial-gradient(42% 46% at 68% 96%, rgba(201, 165, 107, 0.26), transparent 62%),
-    radial-gradient(35% 40% at 6% 100%, rgba(80, 160, 235, 0.1), transparent 60%);
+    radial-gradient(35% 40% at 6% 100%, rgba(28, 105, 181, 0.08), transparent 60%);
   pointer-events: none;
 }
 
@@ -803,7 +798,7 @@ html {
   color: #fff;
   font-weight: 600;
   font-size: 0.95rem;
-  box-shadow: 0 18px 40px -16px rgba(54, 52, 107, 0.6);
+  box-shadow: 0 18px 40px -16px rgba(13, 35, 64, 0.6);
   transition: transform 0.2s;
 }
 .pular-conteudo:focus-visible {

@@ -24,7 +24,7 @@ const ITENS = [
 
 // Célula do cartão no celular (ícone ao lado, à esquerda); pílula no computador
 const classeItem =
-  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition md:h-14 md:gap-3 md:rounded-full md:border md:border-fio md:bg-white/90 md:py-0 md:pl-1.5 md:pr-5 md:shadow-[0_14px_30px_-24px_rgba(54,52,107,0.5)] md:backdrop-blur md:hover:border-ouro/40";
+  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition md:h-14 md:gap-3 md:rounded-full md:border md:border-fio md:bg-white/90 md:py-0 md:pl-1.5 md:pr-5 md:shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] md:backdrop-blur md:hover:border-ouro/40";
 
 /** Os fios entre as células no celular: à esquerda das ímpares e em cima
  *  da segunda fileira. No computador cada pílula tem a própria borda. */
