@@ -77,7 +77,7 @@ const BANNERS_POR_SLUG: Record<string, Omit<BannerVitrine, "imagem">> = {
   },
   "vitaminas-suplementos": {
     titulo: "Vitaminas e suplementos *na sua dose.*",
-    texto: "Cápsulas, pós e gomas conforme a prescrição.",
+    texto: "Cápsulas, pós e gomas conforme a receita.",
   },
   "cabelos-unhas": {
     titulo: "Cabelos e unhas, *com fórmula própria.*",

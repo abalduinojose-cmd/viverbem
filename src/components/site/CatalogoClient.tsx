@@ -416,7 +416,7 @@ export function CatalogoClient({
                 Manipulamos <span className="italic">conforme a receita.</span>
               </p>
               <p className="mt-2 text-white/70 text-[0.95rem] leading-snug max-w-[52ch]">
-                Nem toda fórmula está no catálogo. Envie a foto da prescrição e o farmacêutico
+                Nem toda fórmula está no site. Mande a foto da receita e o farmacêutico
                 confere.
               </p>
             </div>

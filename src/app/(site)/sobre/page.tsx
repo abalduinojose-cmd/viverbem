@@ -1,11 +1,14 @@
 // A VIVER BEM: a história da farmácia contada em capítulos, com efeitos
 // de rolagem.
 //
-// Texto da própria farmácia (passado pelo usuário em 07/10/2026): 1999 a
-// Drogaria Viver Bem na Posse, outubro de 2006 a farmácia de manipulação,
-// 2012 Corrêas, 2017 Centro, 20 anos construindo cuidado. As três fotos
-// vieram dos posts do Instagram da farmácia (public/fotos/sobre/), cada
-// uma com a frase do próprio post.
+// Texto da própria farmácia (passado pelo usuário em 07/10/2026), contado
+// a partir de outubro de 2006, quando nasceu a farmácia de manipulação na
+// Posse: 2012 Corrêas, 2017 Centro, hoje 20 anos construindo cuidado. A
+// drogaria de 1999 saiu da história a pedido (10/10/2026: "tire que começou
+// em 1999, a farmácia de manipulação começou em 2006"), e os textos ficaram
+// mais curtos e diretos ("escrita leve, que converse com todos os
+// públicos"). As três fotos vieram dos posts do Instagram da farmácia
+// (public/fotos/sobre/), cada uma com a frase do próprio post.
 //
 // Terceira versão (08/10/2026, pedido: "clean e moderna, com efeitos de
 // scroll para dar mais valor, design profissional feito em JavaScript",
@@ -45,38 +48,38 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "A Viver Bem · Manipulação Viver Bem",
-  description: `Desde 1999 em Petrópolis, ${ANOS_TRADICAO} anos de manipulação e homeopatia. Conheça a nossa história, como funciona o pedido pela receita e as ${UNIDADES.length} lojas.`,
+  description: `Desde 2006 em Petrópolis, ${ANOS_TRADICAO} anos de manipulação e homeopatia. Conheça a nossa história, como funciona o pedido pela receita e as ${UNIDADES.length} lojas.`,
 };
 
-// Os marcos, na ordem.
+// Os marcos, na ordem. O último é o presente ("Hoje"), para a linha do
+// tempo fechar nos 20 anos e não num ano velho.
 const MARCOS = [
   {
-    ano: "1999",
-    titulo: "Nasce a Drogaria Viver Bem",
-    texto:
-      "No bairro da Posse, em Petrópolis. Desde o primeiro dia, o nosso propósito sempre foi simples e poderoso: cuidar das pessoas de forma próxima, humana e personalizada.",
-  },
-  {
     ano: "2006",
-    titulo: "O cuidado sob medida",
+    titulo: "Nasce a Manipulação Viver Bem",
     texto:
-      "Em outubro, um passo transformador: nasce a nossa farmácia de manipulação, na loja matriz da Posse, o ponto de partida de tudo. Tratamentos individualizados, desenvolvidos para a necessidade única de cada paciente, com fórmulas manipuladas com rigor científico.",
+      "Em outubro, na loja da Posse, em Petrópolis. Desde o primeiro dia a ideia é simples: cuidar de cada pessoa de perto, com a fórmula feita para ela.",
   },
   {
     ano: "2012",
     titulo: "Corrêas",
-    texto: "Inauguração da filial em Corrêas, levando saúde personalizada para ainda mais famílias.",
+    texto: "A segunda loja abre em Corrêas e leva a manipulação para mais famílias da região.",
   },
   {
     ano: "2017",
     titulo: "Centro de Petrópolis",
+    texto: "Chegamos ao Centro, com mais tecnologia no laboratório e o mesmo jeito de atender.",
+  },
+  {
+    ano: "Hoje",
+    titulo: `${ANOS_TRADICAO} anos de cuidado sob medida`,
     texto:
-      "Chegada ao Centro, ampliando a nossa missão com tecnologia, excelência em qualidade e o mesmo acolhimento de sempre.",
+      "Três lojas, a mesma equipe de farmacêuticos e o pedido pela receita também pelo site, com entrega em toda Petrópolis.",
   },
 ];
 
 const NUMEROS = [
-  { valor: "1999", rotulo: "o começo, na Posse" },
+  { valor: "2006", rotulo: "o começo, na Posse" },
   { valor: String(ANOS_TRADICAO), rotulo: "anos de manipulação" },
   { valor: String(UNIDADES.length), rotulo: "lojas em Petrópolis" },
 ];
@@ -130,7 +133,7 @@ export default async function PaginaSobre() {
       <section id="historia" aria-labelledby="titulo-historia" className={`halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-10 md:pb-14 ${ANCORA}`}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
-            <p className="rotulo-pilula entra">a viver bem · desde 1999</p>
+            <p className="rotulo-pilula entra">a viver bem · desde 2006</p>
             <h1 id="titulo-historia" className="historia-titulo mt-5 md:mt-6">
               <span className="linha">
                 <PalavrasQueSobem texto="Tudo começou" />
@@ -186,9 +189,9 @@ export default async function PaginaSobre() {
           partes={[
             {
               texto:
-                "Em 1999, nasceu a Drogaria Viver Bem no bairro da Posse, em Petrópolis. Desde o primeiro dia, o nosso propósito sempre foi simples e poderoso: cuidar das pessoas de forma",
+                "Em 2006, nasceu a Manipulação Viver Bem no bairro da Posse, em Petrópolis. Desde o primeiro dia, o propósito é o mesmo: cuidar de cada pessoa de forma",
             },
-            { texto: "próxima, humana e personalizada.", destaque: true },
+            { texto: "próxima, humana e sob medida.", destaque: true },
           ]}
         />
       </section>
@@ -203,8 +206,8 @@ export default async function PaginaSobre() {
             </h2>
           </div>
           <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5">
-            Queríamos ir além do atendimento tradicional. O compromisso com o bem-estar gerou
-            frutos e nos permitiu expandir a nossa presença pela região.
+            Queríamos ir além do balcão. O cuidado com cada pessoa deu frutos, e a Viver Bem
+            cresceu pela região.
           </p>
         </div>
         <div className="mt-[clamp(2.5rem,1.5rem+3vw,4.5rem)]">
@@ -246,8 +249,17 @@ export default async function PaginaSobre() {
             />
             <p className="texto-apoio mt-7 max-w-lg">
               Três lojas em Petrópolis, a mesma equipe de farmacêuticos e o mesmo jeito de
-              atender: pela receita, com a fórmula feita para cada pessoa.
+              atender: pela receita, com a fórmula feita para você.
             </p>
+            {/* O que não mudou, em três pílulas com o ponto de ouro (10/10/2026) */}
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {["Receita conferida pelo farmacêutico", "Fórmula com o seu nome no rótulo", "Retirada grátis ou entrega de moto"].map((t) => (
+                <li key={t} className="chip !min-h-10 !px-3.5 text-sm">
+                  <span aria-hidden="true" className="mr-2 size-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
+                  {t}
+                </li>
+              ))}
+            </ul>
             <Link href="/lojas" className="botao-link mt-7">
               Conheça as {UNIDADES.length} lojas
               <SetaDireita />

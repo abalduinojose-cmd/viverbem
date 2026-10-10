@@ -112,7 +112,8 @@ export function listarDosagens(dosagens: string | null | undefined): string[] {
 // Contato oficial da loja
 export const WHATSAPP_LOJA = "(24) 98873-3934"; // exibição
 export const WHATSAPP_NUMERO = "5524988733934"; // formato do link wa.me
-// A manipulação nasceu em outubro de 2006 (a drogaria, em 1999)
+// A manipulação nasceu em outubro de 2006; o site conta a história a partir
+// daí (a drogaria de 1999 saiu dos textos a pedido, 10/10/2026)
 export const ANOS_TRADICAO = 20;
 
 // As 3 lojas, conforme o perfil de cada uma no Google. Ficam aqui

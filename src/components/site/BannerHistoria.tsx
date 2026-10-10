@@ -8,7 +8,9 @@
 // nitidez) ocupa o cartão inteiro, limpa, e um painel branco flutua sobre a
 // base, como um cartão de aplicativo: o "20" em ouro itálico, "anos
 // construindo cuidado" e o botão redondo azul-noite com a seta. A etiqueta
-// "desde 1999" fica no alto, com uma sombra leve atrás para ler sobre a foto.
+// "desde 2006" fica no alto, com uma sombra leve atrás para ler sobre a foto
+// (era "desde 1999", a drogaria; a história passou a começar na manipulação,
+// 10/10/2026).
 // O convite em texto fica para leitores de tela. Sem desfoque de fundo, que
 // custa caro no celular.
 import Link from "next/link";
@@ -36,7 +38,7 @@ export function BannerHistoria() {
         <span aria-hidden="true" className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-navy/30 to-transparent" />
         <span className="absolute left-3 top-3 inline-flex items-center gap-2 h-7 px-3 rounded-full bg-white/90 text-navy text-[0.66rem] font-semibold uppercase tracking-[0.12em]">
           <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
-          desde 1999
+          desde 2006
         </span>
 
         {/* O painel que flutua sobre a base da foto */}

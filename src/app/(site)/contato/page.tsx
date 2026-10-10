@@ -25,8 +25,8 @@ export default function PaginaContato() {
               Estamos <span className="italic">pertinho de você</span>
             </h1>
             <p className="texto-apoio mt-4 max-w-xl">
-              Atendimento pelo WhatsApp no horário das lojas, e {UNIDADES.length} unidades em
-              Petrópolis para você visitar.
+              Fale com a gente pelo WhatsApp no horário das lojas, ou venha nos visitar numa
+              das {UNIDADES.length} unidades em Petrópolis.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
               <a
@@ -87,7 +87,7 @@ export default function PaginaContato() {
         </ul>
 
         <p className="text-cinza mt-8">
-          Horários, como chegar e mais detalhes de cada unidade na{" "}
+          Fotos, horário e como chegar em cada loja na{" "}
           <Link href="/lojas" className="text-tinta font-medium hover:underline">
             página das lojas
           </Link>

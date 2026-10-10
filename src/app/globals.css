@@ -650,10 +650,15 @@ body {
    por isso roda também com "reduzir movimento". Navegador sem suporte
    mostra tudo direto. .revelar num elemento; .escalonado nos filhos, um
    depois do outro. */
+/* 10/10/2026 ("melhore os movimentos de scroll do site"): o caminho ficou
+   mais curto (40px, antes 56) e a curva deixou de ser linear: o bloco entra
+   rápido e assenta devagar (ease-out), em vez de chegar "seco" no fim; a
+   revelação termina um pouco antes (entry 40%), para nada aparecer tarde
+   na base da tela. */
 @keyframes revelar-rolagem {
   from {
     opacity: 0;
-    transform: translateY(56px) scale(0.98);
+    transform: translateY(40px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -669,20 +674,20 @@ body {
 }
 @supports (animation-timeline: view()) {
   .revelar {
-    animation: revelar-rolagem linear both;
+    animation: revelar-rolagem cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 45%;
+    animation-range: entry 0% entry 40%;
   }
   .escalonado > * {
-    animation: revelar-rolagem linear both;
+    animation: revelar-rolagem cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 35%;
+    animation-range: entry 0% entry 32%;
   }
-  .escalonado > *:nth-child(2) { animation-range: entry 8% entry 43%; }
-  .escalonado > *:nth-child(3) { animation-range: entry 16% entry 51%; }
-  .escalonado > *:nth-child(4) { animation-range: entry 24% entry 59%; }
-  .escalonado > *:nth-child(5) { animation-range: entry 30% entry 65%; }
-  .escalonado > *:nth-child(n + 6) { animation-range: entry 34% entry 69%; }
+  .escalonado > *:nth-child(2) { animation-range: entry 7% entry 39%; }
+  .escalonado > *:nth-child(3) { animation-range: entry 14% entry 46%; }
+  .escalonado > *:nth-child(4) { animation-range: entry 21% entry 53%; }
+  .escalonado > *:nth-child(5) { animation-range: entry 27% entry 59%; }
+  .escalonado > *:nth-child(n + 6) { animation-range: entry 31% entry 63%; }
 
   .folha {
     animation: folha-recua linear both;

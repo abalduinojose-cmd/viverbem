@@ -1,5 +1,39 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 52 (10/10/2026): Fale com a gente modernizado, história a partir de 2006, Lojas em cartões com foto, botão flutuante branco sobre o escuro, rolagem com assentamento, textos mais leves. Não publicado.**
+> Pedidos: "melhore essa seção do fale com a gente, modernize ela"; "exclua
+> o segment view do site" (é o Segment Explorer das ferramentas de
+> desenvolvimento do Next, só aparece no `next dev` e já está escondido
+> por `devIndicators: false`; não existe no site publicado, nada a tirar);
+> "quero a página da Viver Bem com a história mais moderna, melhore os
+> movimentos de scroll do site e tire que começou em 1999, a farmácia de
+> manipulação começou em 2006" (ele escreveu 2026, que é o ano de hoje; 20
+> anos = 2006, confirmado em `ANOS_TRADICAO` e no texto original); "mexa
+> nos textos do site para deixar mais claro e objetivo, escrita leve que
+> converse com todos os públicos"; "em lojas, modernize a página e coloque
+> as fotos das 3 unidades, bem clean e moderno; essas fotos devem ficar
+> apenas na página das lojas"; "quando o botão do carrinho vai para o
+> rodapé, ele fica na cor do rodapé, ajuste". Feito: `FaleComAGente` com o
+> cartão do WhatsApp mostrando a conversa (balão verde de "enviada", estado
+> "Online agora"/"Responde no horário"), lojas com pino em quadrado gelo,
+> textos curtos. `sobre/page.tsx`: marcos 2006 (nasce a manipulação, na
+> Posse), 2012, 2017 e "Hoje" (20 anos); números 2006 / 20 / 3; rótulo
+> "desde 2006"; propósito, evolução, futuro e o capítulo dos 20 anos
+> reescritos curtos; três pílulas "o que não mudou" no capítulo 04;
+> `BannerHistoria` "desde 2006". `lojas/page.tsx` refeita: três cartões com
+> a foto (4:3, pílula com o número e "retirada grátis"), bairro, endereço,
+> telefone, "Como chegar" principal e WhatsApp; FOTOS PROVISÓRIAS
+> (equipe-loja, geracoes e vinte-anos de `public/fotos/sobre/`) até o
+> cliente mandar as reais, e só nesta página. `CarrinhoDrawer`: os dois
+> botões flutuantes medem, a cada rolagem, se o ponto onde ficam está sobre
+> um `.em-noite` (rodapé, abertura, banners) e viram brancos com a sacola em
+> navy. Rolagem: `.revelar`/`.escalonado` com caminho de 40px (era 56) e
+> curva ease-out em vez de linear, terminando em entry 40%; paralaxe das
+> fotos da história de 14 para 10. Textos leves também em Benefícios
+> ("Retirada grátis"), Reels, Saúde da Mulher, catálogo ("Nem toda fórmula
+> está no site"), Contato. `FaleComAGente.tsx` fica fora deste commit
+> (carrega o `CartaoReceita` em curso na outra sessão); vai no commit dela.
+
 > **ADENDO 51 (10/10/2026): paleta pedida pelo usuário (branco, céu #50A0EB, índigo #36346B, ouro #C9A56B); o ÍNDIGO foi DESFEITO na mesma hora ("não gostei, volte para o tom de azul que estava antes"); ficou só o ouro #C9A56B. Não publicado.**
 > Pedido: "as cores do projeto são o branco, azul fraco que está na
 > animação da hero e o #36346B e o #C9A56B, distribua essas cores no

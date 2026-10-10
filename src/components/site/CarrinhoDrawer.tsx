@@ -175,18 +175,53 @@ export function CarrinhoDrawer() {
     };
   }, [aberto]);
 
+  const pathname = usePathname();
+
   // O "Enviar receita" flutuante só aparece depois de rolar: na primeira
-  // tela a página já tem o mesmo botão, e os dois juntos se repetem
+  // tela a página já tem o mesmo botão, e os dois juntos se repetem.
+  // E os dois botões flutuantes viram BRANCOS quando param sobre um bloco
+  // escuro (rodapé, abertura, banners em azul-noite: tudo que tem
+  // .em-noite), senão o navy some no navy (10/10/2026, "quando o botão do
+  // carrinho vai para o rodapé, ele fica na cor do rodapé"). A medição é
+  // um ponto só, onde o botão fica, a cada rolagem (num quadro).
   const [rolou, setRolou] = useState(false);
+  const [sobreEscuro, setSobreEscuro] = useState(false);
   useEffect(() => {
-    const aoRolar = () => setRolou(window.scrollY > 400);
+    let pedido = 0;
+    const medir = () => {
+      pedido = 0;
+      setRolou(window.scrollY > 400);
+      const x = window.innerWidth - 48;
+      const y = window.innerHeight - 48;
+      let escuro = false;
+      for (const el of document.querySelectorAll<HTMLElement>(".em-noite")) {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+          escuro = true;
+          break;
+        }
+      }
+      setSobreEscuro(escuro);
+    };
+    const aoRolar = () => {
+      if (!pedido) pedido = requestAnimationFrame(medir);
+    };
+    medir();
     window.addEventListener("scroll", aoRolar, { passive: true });
-    return () => window.removeEventListener("scroll", aoRolar);
-  }, []);
+    window.addEventListener("resize", aoRolar);
+    return () => {
+      cancelAnimationFrame(pedido);
+      window.removeEventListener("scroll", aoRolar);
+      window.removeEventListener("resize", aoRolar);
+    };
+  }, [pathname]);
+  // Sobre o escuro: branco com a sacola em navy; no claro: navy com branco
+  const classeFlutuante = sobreEscuro
+    ? "bg-white text-navy ring-1 ring-fio shadow-[0_16px_34px_-16px_rgba(0,0,0,0.5)] hover:bg-gelo"
+    : "bg-navy text-white shadow-[0_16px_34px_-16px_rgba(13,35,64,0.65)] hover:bg-tinta";
 
   // ... e some enquanto um botão de receita da própria página está na tela
   // (data-receita-cta), para não cobri-lo. Reconsulta a cada navegação.
-  const pathname = usePathname();
   const [ctaVisivel, setCtaVisivel] = useState(false);
   useEffect(() => {
     const alvos = document.querySelectorAll("[data-receita-cta]");
@@ -312,7 +347,7 @@ export function CarrinhoDrawer() {
           type="button"
           onClick={() => abrirPedido()}
           aria-label={`Ver carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
-          className={`fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 flex items-center justify-center bg-navy text-white rounded-full w-14 h-14 md:w-auto md:h-12 md:pl-5 md:pr-2 md:gap-3 shadow-[0_16px_34px_-16px_rgba(13,35,64,0.65)] hover:bg-tinta active:scale-95 transition duration-300 ${
+          className={`fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 flex items-center justify-center rounded-full w-14 h-14 md:w-auto md:h-12 md:pl-5 md:pr-2 md:gap-3 active:scale-95 transition duration-300 ${classeFlutuante} ${
             aberto ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
@@ -332,7 +367,7 @@ export function CarrinhoDrawer() {
           onClick={() => abrirPedido({ receita: true })}
           tabIndex={mostrarReceitaFlutuante ? 0 : -1}
           aria-hidden={!mostrarReceitaFlutuante}
-          className={`md:hidden bg-navy fixed bottom-5 right-5 z-40 text-white rounded-full h-12 pl-4 pr-5 flex items-center gap-2.5 shadow-[0_14px_30px_-16px_rgba(13,35,64,0.6)] active:scale-95 transition duration-300 ${
+          className={`md:hidden fixed bottom-5 right-5 z-40 rounded-full h-12 pl-4 pr-5 flex items-center gap-2.5 active:scale-95 transition duration-300 ${classeFlutuante} ${
             mostrarReceitaFlutuante ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
         >

@@ -12,7 +12,7 @@ import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, PERFIL_GOOGLE_URL, UNI
 
 const ITENS = [
   { icone: <IconeMoto tamanho={20} />, titulo: "Delivery", texto: "por toda Petrópolis" },
-  { icone: <IconeLoja tamanho={18} />, titulo: "Retirada sem taxa", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeLoja tamanho={18} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
   { icone: <IconeReceita tamanho={18} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
   {
     icone: <IconeEstrela tamanho={17} />,

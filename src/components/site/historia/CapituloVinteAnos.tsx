@@ -98,11 +98,10 @@ export function CapituloVinteAnos({ anos, lojas }: { anos: number; lojas: number
               Uma trajetória guiada pela ciência, <span className="italic">pelo carinho e pela dedicação.</span>
             </h2>
             <p className="mt-5 text-white/75 text-[1rem] md:text-[1.06rem] leading-relaxed max-w-[60ch]">
-              Ao longo de {anos} anos de história, construímos uma trajetória sólida guiada pela
-              ciência, pelo carinho e pela dedicação exclusiva a cada vida que cruza o nosso
-              caminho. Mais do que preparar fórmulas, temos o privilégio de acompanhar gerações
-              inteiras de famílias. E, enquanto celebramos essa jornada, seguimos olhando para o
-              futuro com a mesma paixão e o mesmo propósito do nosso primeiro dia.
+              Em {anos} anos, construímos uma história guiada pela ciência, pelo carinho e pela
+              dedicação a cada pessoa que passa pela nossa porta. Mais do que preparar
+              fórmulas, acompanhamos gerações inteiras de famílias. E seguimos com o mesmo
+              propósito do primeiro dia.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <BotaoEnviarReceita comIcone={false} className="botao botao-vivo !gap-2.5">

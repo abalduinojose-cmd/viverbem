@@ -10,10 +10,11 @@ import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { registrarCena, atravessar, entre } from "./motor";
 
-// A foto é 16% maior que a moldura: a paralaxe anda até 7% para cada lado
-// sem nunca mostrar a borda
+// A foto é 16% maior que a moldura: a paralaxe anda até 5% para cada lado
+// sem nunca mostrar a borda (10/10/2026, "melhore os movimentos de
+// scroll": era 7%, ficou mais contida)
 const ESCALA = 1.16;
-const AMPLITUDE = 14;
+const AMPLITUDE = 10;
 
 export function FotoParalaxe({
   src,

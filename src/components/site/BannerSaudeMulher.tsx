@@ -36,8 +36,8 @@ export function SecaoSaudeMulher({ produtos }: { produtos: ProdutoDTO[] }) {
         </div>
         <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-4 lg:pb-1.5">
           <p className="texto-apoio max-w-md lg:text-right">
-            Proteção solar, pele e maquiagem, dermocosméticos e fórmulas com receita, sempre
-            com orientação farmacêutica.
+            Proteção solar, pele, maquiagem e fórmulas com receita. Sempre com a orientação
+            do farmacêutico.
           </p>
           <BotaoVerMais href={LINK_LINHA}>ver a linha</BotaoVerMais>
         </div>
