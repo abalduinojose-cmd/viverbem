@@ -1,5 +1,25 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 53 (10/10/2026): reels com som no clique, página de produtos clean (cartões sem caixa, barra única de busca e áreas) e a linha dos números fora da abertura. Não publicado.**
+> Pedidos: "os vídeos do Instagram estão sem áudio, acerte isso"; "exclua a
+> parte do print" (a linha "32 produtos · 6 áreas · receita conferida pelo
+> farmacêutico" da abertura do catálogo); "modernize todo o /produtos,
+> quero a página de produtos moderna e clean". Reels (`ReelsInstagram`): os
+> quatro mp4 têm faixa de áudio (hdlr soun / mp4a); o problema era o código,
+> que começava tudo mudo e só dava som pelo botãozinho. Agora o primeiro
+> clique em tocar (gesto da pessoa) abre COM som e liga o estado do botão;
+> a reprodução automática do computador, quando a seção entra na tela,
+> segue muda enquanto ninguém clicou (o navegador não toca som sem gesto),
+> e depois do clique respeita a escolha do botão. Catálogo
+> (`CatalogoClient`, `ProdutoCard`, `FaixaProdutos`): variante "limpa" do
+> cartão (sem caixa nem fio: ladrilho da foto em gelo que acende no hover,
+> nome e botão), usada nas faixas e nas grades do catálogo; as vitrines da
+> home seguem com a caixa; busca e chips numa barra só (h-11, chips
+> menores com a contagem), lado a lado no computador, só fio embaixo; a
+> grade das áreas com mais ar (gap-y 8/10); as faixas com 12/16 de vão; a
+> linha dos números saiu; apoio "Fórmulas feitas a partir da sua receita,
+> separadas por área."
+
 > **ADENDO 52 (10/10/2026): Fale com a gente modernizado, história a partir de 2006, Lojas em cartões com foto, botão flutuante branco sobre o escuro, rolagem com assentamento, textos mais leves. Não publicado.**
 > Pedidos: "melhore essa seção do fale com a gente, modernize ela"; "exclua
 > o segment view do site" (é o Segment Explorer das ferramentas de

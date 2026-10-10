@@ -21,6 +21,13 @@
 // a abertura ganha a linha dos números; o bilhete da receita perdeu o
 // círculo de ouro; e a página fecha com o convite para quem não achou a
 // fórmula.
+//
+// 10/10/2026 ("modernize todo o /produtos, quero a página moderna e clean";
+// "exclua a parte do print": a linha dos números): os cartões perderam a
+// caixa (variante "limpa" do ProdutoCard: só o ladrilho da foto, o nome e
+// o botão); a busca e os chips das áreas ficaram numa barra só, mais
+// baixa, lado a lado no computador; a linha "32 produtos · 6 áreas ·
+// receita conferida" saiu da abertura; mais ar entre as faixas.
 
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -56,9 +63,9 @@ function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategor
     );
   }
   return (
-    <div className="escalonado grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
+    <div className="escalonado grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10">
       {lista.map((p) => (
-        <ProdutoCard key={p.id} produto={p} mostrarCategoria={comCategoria} />
+        <ProdutoCard key={p.id} produto={p} mostrarCategoria={comCategoria} variante="limpa" />
       ))}
     </div>
   );
@@ -162,7 +169,7 @@ export function CatalogoClient({
 
   const apoio = categoriaAtiva
     ? infoCategoria(categoriaAtiva.slug).descricao
-    : "Fórmulas preparadas a partir da receita, separadas por área.";
+    : "Fórmulas feitas a partir da sua receita, separadas por área.";
 
   return (
     <main className="flex-1 flex flex-col min-h-screen">
@@ -196,28 +203,6 @@ export function CatalogoClient({
                 )}
               </h1>
               <p className="texto-apoio mt-4">{apoio}</p>
-              {/* Os números, leves, com um ponto de ouro */}
-              <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cinza">
-                <li className="inline-flex items-center gap-2">
-                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
-                  <span>
-                    <b className="font-semibold text-navy tabular-nums">{produtos.length}</b>{" "}
-                    {categoriaAtiva ? "nesta área" : "produtos"}
-                  </span>
-                </li>
-                {!categoriaAtiva && (
-                  <li className="inline-flex items-center gap-2">
-                    <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
-                    <span>
-                      <b className="font-semibold text-navy tabular-nums">{categoriasComItens.length}</b> áreas
-                    </span>
-                  </li>
-                )}
-                <li className="inline-flex items-center gap-2">
-                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
-                  receita conferida pelo farmacêutico
-                </li>
-              </ul>
             </div>
 
             {/* O convite da página: a receita como um bilhete em azul-noite,
@@ -251,14 +236,16 @@ export function CatalogoClient({
         </div>
       </div>
 
-      {/* ---------- Busca e categorias (grudam abaixo do cabeçalho) ---------- */}
-      <div className="sticky top-[var(--altura-cabecalho)] z-40 bg-white/90 backdrop-blur-md border-y border-fio">
-        <div className="px-5 md:px-8 pt-4 pb-3 max-w-7xl mx-auto w-full">
-          <div className="relative max-w-2xl">
+      {/* ---------- Busca e áreas, numa barra só que gruda abaixo do cabeçalho
+          (no computador lado a lado; no celular a busca em cima e os chips
+          embaixo, arrastando) ---------- */}
+      <div className="sticky top-[var(--altura-cabecalho)] z-40 bg-white/85 backdrop-blur-xl border-b border-fio">
+        <div className="px-5 md:px-8 py-3 max-w-7xl mx-auto w-full md:flex md:items-center md:gap-5">
+          <div className="relative w-full md:max-w-sm md:shrink-0">
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 text-cinza"
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
@@ -272,14 +259,14 @@ export function CatalogoClient({
               onChange={(e) => setBusca(e.target.value)}
               placeholder={categoriaAtiva ? `Buscar em ${categoriaAtiva.nome}...` : "Buscar por nome ou ativo..."}
               aria-label="Buscar"
-              className="w-full bg-gelo/70 border border-fio rounded-full pl-11 pr-11 py-3 text-base text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
+              className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-11 text-[0.95rem] text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
             />
             {buscando && (
               <button
                 type="button"
                 onClick={() => setBusca("")}
                 aria-label="Limpar busca"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-cinza hover:text-navy w-9 h-9 flex items-center justify-center"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-cinza hover:text-navy w-9 h-9 flex items-center justify-center"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -287,30 +274,34 @@ export function CatalogoClient({
               </button>
             )}
           </div>
-        </div>
 
-        <nav
-          aria-label="Áreas do catálogo"
-          className="flex gap-2.5 overflow-x-auto rolagem-sem-barra px-5 md:px-8 pb-3.5 max-w-7xl mx-auto w-full"
-        >
-          <Link href="/produtos" className={`chip ${!categoriaAtiva ? "chip-ativo" : ""}`} aria-current={!categoriaAtiva ? "page" : undefined}>
-            Todas
-            {contagens && <span className="ml-2 text-[0.75rem] tabular-nums opacity-60">{contagens.total}</span>}
-          </Link>
-          {categorias.map((c) => (
+          <nav
+            aria-label="Áreas do catálogo"
+            className="mt-3 md:mt-0 md:flex-1 md:min-w-0 flex gap-2 overflow-x-auto rolagem-sem-barra -mx-5 px-5 md:mx-0 md:px-0"
+          >
             <Link
-              key={c.id}
-              href={`/produtos/${c.slug}`}
-              className={`chip ${categoriaAtiva?.id === c.id ? "chip-ativo" : ""}`}
-              aria-current={categoriaAtiva?.id === c.id ? "page" : undefined}
+              href="/produtos"
+              className={`chip !min-h-10 !px-3.5 text-sm ${!categoriaAtiva ? "chip-ativo" : ""}`}
+              aria-current={!categoriaAtiva ? "page" : undefined}
             >
-              {c.nome}
-              {contagens?.porCategoria[c.id] ? (
-                <span className="ml-2 text-[0.75rem] tabular-nums opacity-60">{contagens.porCategoria[c.id]}</span>
-              ) : null}
+              Todas
+              {contagens && <span className="ml-1.5 text-[0.72rem] tabular-nums opacity-60">{contagens.total}</span>}
             </Link>
-          ))}
-        </nav>
+            {categorias.map((c) => (
+              <Link
+                key={c.id}
+                href={`/produtos/${c.slug}`}
+                className={`chip !min-h-10 !px-3.5 text-sm ${categoriaAtiva?.id === c.id ? "chip-ativo" : ""}`}
+                aria-current={categoriaAtiva?.id === c.id ? "page" : undefined}
+              >
+                {c.nome}
+                {contagens?.porCategoria[c.id] ? (
+                  <span className="ml-1.5 text-[0.72rem] tabular-nums opacity-60">{contagens.porCategoria[c.id]}</span>
+                ) : null}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
 
       {/* ---------- Conteúdo ---------- */}
@@ -350,7 +341,7 @@ export function CatalogoClient({
             <Grade lista={produtos} comCategoria={false} />
           </>
         ) : (
-          <div className="flex flex-col gap-11 md:gap-14">
+          <div className="flex flex-col gap-12 md:gap-16">
             {/* Mais procurados: a primeira faixa */}
             {maisProcurados.length > 0 && (
               <section aria-label="Mais procurados">
@@ -363,7 +354,7 @@ export function CatalogoClient({
                   total={maisProcurados.length}
                   apoio="Os que mais saem nas três lojas."
                 />
-                <FaixaProdutos produtos={maisProcurados} className="cascata" />
+                <FaixaProdutos produtos={maisProcurados} className="cascata" variante="limpa" />
               </section>
             )}
 
@@ -379,7 +370,7 @@ export function CatalogoClient({
                   total={industrializados.length}
                   apoio="Industrializados com registro na Anvisa."
                 />
-                <FaixaProdutos produtos={industrializados} className="cascata" />
+                <FaixaProdutos produtos={industrializados} className="cascata" variante="limpa" />
               </section>
             )}
 
@@ -395,7 +386,7 @@ export function CatalogoClient({
                   />
                   {/* A seção já leva o nome da categoria: não repetir no cartão.
                       Faixa que arrasta para o lado, como na home */}
-                  <FaixaProdutos produtos={daArea} comCategoria={false} className="cascata" />
+                  <FaixaProdutos produtos={daArea} comCategoria={false} className="cascata" variante="limpa" />
                 </section>
               );
             })}

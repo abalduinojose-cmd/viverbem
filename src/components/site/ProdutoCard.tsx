@@ -10,29 +10,52 @@
 //
 // Sem preço em nenhum produto (pedido do cliente em 05/10/2026): o pedido
 // vai pelo carrinho e o farmacêutico passa o valor pelo WhatsApp.
+//
+// Duas variantes (10/10/2026, "quero a página de produtos moderna e
+// clean"): "cartao" é a caixa branca com fio, usada nas vitrines da home;
+// "limpa" tira a caixa: só o ladrilho da foto em gelo (que acende no
+// hover), o nome e o botão embaixo, sem borda. O catálogo usa a limpa.
 import Link from "next/link";
 import { ProdutoDTO, ehIndustrializado, precoVisivel } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
 
+export type VarianteCartao = "cartao" | "limpa";
+
 export function ProdutoCard({
   produto,
   mostrarCategoria = true,
+  variante = "cartao",
 }: {
   produto: ProdutoDTO;
   /** Falso dentro de uma seção que já leva o nome da categoria: a
       linha se repetia igual em todos os cartões e não informava nada */
   mostrarCategoria?: boolean;
+  /** O desenho: caixa branca com fio, ou só o ladrilho da foto (catálogo) */
+  variante?: VarianteCartao;
 }) {
   const href = `/produto/${produto.slug}`;
   const industrializado = ehIndustrializado(produto);
   // Só industrializado com a chave "Preço no site" ligada no painel
   const preco = precoVisivel(produto);
+  const limpa = variante === "limpa";
 
   return (
-    <article className="group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60">
-      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-3">
+    <article
+      className={
+        limpa
+          ? "group relative flex h-full w-full flex-col"
+          : "group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60"
+      }
+    >
+      <div
+        className={`relative aspect-square overflow-hidden flex items-center justify-center ${
+          limpa
+            ? "rounded-[1.5rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
+            : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
+        }`}
+      >
         {/* A luz dourada da bancada, no pé do pote */}
         <span
           aria-hidden="true"
@@ -50,7 +73,7 @@ export function ProdutoCard({
         )}
       </div>
 
-      <div className="mt-3 flex flex-1 flex-col gap-1 px-1.5">
+      <div className={`flex flex-1 flex-col gap-1 ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
         {mostrarCategoria && produto.categoriaNome && (
           <p className="rotulo !text-cinza text-[0.62rem] truncate">{produto.categoriaNome}</p>
         )}
@@ -58,7 +81,9 @@ export function ProdutoCard({
           {/* O link se estende sobre o cartão inteiro */}
           <Link
             href={href}
-            className="transition-colors hover:text-tinta focus-visible:outline-none after:absolute after:inset-0 after:rounded-[1.75rem]"
+            className={`transition-colors hover:text-tinta focus-visible:outline-none after:absolute after:inset-0 ${
+              limpa ? "after:rounded-[1.5rem]" : "after:rounded-[1.75rem]"
+            }`}
           >
             {produto.nome}
           </Link>

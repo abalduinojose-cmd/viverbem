@@ -21,6 +21,14 @@
 // ícone do Instagram repetido e a caixa de vidro da legenda: só a capa, um
 // véu escuro embaixo, o título em branco e o botão de tocar.
 //
+// Som (10/10/2026, "os vídeos do Instagram estão sem áudio, acerte isso"):
+// antes tudo começava mudo e o som só vinha pelo botãozinho. Agora o
+// clique em "tocar" (um gesto da pessoa, que o navegador aceita com som)
+// já abre COM áudio; só a reprodução automática do computador, quando a
+// seção entra na tela, continua muda, porque o navegador não deixa tocar
+// som sem gesto. Depois do primeiro clique, o que a pessoa escolher no
+// botão de som vale para os próximos.
+//
 // Cada vídeo só é baixado quando toca (preload="none"), para a home não
 // pesar. Antes de colocar um reel novo aqui, o farmacêutico precisa ver (e
 // ouvir) o vídeo inteiro: manipulado não pode ser anunciado com promessa
@@ -132,6 +140,8 @@ export function ReelsInstagram() {
   const [ativo, setAtivo] = useState(0);
   const [tocando, setTocando] = useState(false);
   const [mudo, setMudo] = useState(true);
+  // A pessoa já clicou para tocar: dali em diante vale a escolha dela de som
+  const somLiberado = useRef(false);
 
   // Centraliza o cartão na faixa (celular); no computador não há rolagem
   function centralizar(i: number) {
@@ -149,14 +159,16 @@ export function ReelsInstagram() {
     setTocando(false);
   }, []);
 
+  // `silencio` força mudo (reprodução automática) ou com som (primeiro
+  // clique); sem ele vale o estado do botão de som
   const tocar = useCallback(
-    (i: number) => {
+    (i: number, silencio?: boolean) => {
       videos.current.forEach((v, k) => {
         if (v && k !== i && !v.paused) v.pause();
       });
       const video = videos.current[i];
       if (!video) return;
-      video.muted = mudo;
+      video.muted = silencio ?? mudo;
       ativoRef.current = i;
       setAtivo(i);
       centralizar(i);
@@ -175,6 +187,13 @@ export function ReelsInstagram() {
       return;
     }
     pausouPorConta.current = false;
+    // O primeiro clique abre com som; depois vale o botão de som
+    if (!somLiberado.current) {
+      somLiberado.current = true;
+      setMudo(false);
+      tocar(i, false);
+      return;
+    }
     tocar(i);
   }
 
@@ -202,8 +221,9 @@ export function ReelsInstagram() {
     setMudo(novo);
   }
 
-  // No computador (sem "reduzir movimento") o ativo começa mudo quando a
-  // seção aparece, e tudo para quando ela sai da tela
+  // No computador (sem "reduzir movimento") o ativo começa quando a seção
+  // aparece (mudo, até a pessoa clicar: o navegador não toca som sem
+  // gesto), e tudo para quando ela sai da tela
   useEffect(() => {
     const secao = secaoRef.current;
     if (!secao) return;
@@ -215,7 +235,9 @@ export function ReelsInstagram() {
         }
         const computador = window.matchMedia("(min-width: 1024px)").matches;
         const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (computador && !semMovimento && !pausouPorConta.current) tocar(ativoRef.current);
+        if (computador && !semMovimento && !pausouPorConta.current) {
+          tocar(ativoRef.current, somLiberado.current ? undefined : true);
+        }
       },
       { threshold: 0.5 }
     );
@@ -297,10 +319,13 @@ export function ReelsInstagram() {
                   : "ring-fio lg:scale-[0.94] lg:opacity-80 lg:hover:opacity-100"
               }`}
             >
+              {/* Sem `el.muted = true` aqui: esta função roda de novo a cada
+                  renderização e silenciava o vídeo logo depois do clique no
+                  som (era a causa do "sem áudio"). Quem decide o mudo é
+                  tocar(), antes de cada play. */}
               <video
                 ref={(el) => {
                   videos.current[i] = el;
-                  if (el) el.muted = true;
                 }}
                 src={asset(reel.arquivo)}
                 poster={asset(reel.capa)}

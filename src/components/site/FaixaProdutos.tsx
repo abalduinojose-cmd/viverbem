@@ -11,7 +11,7 @@
 import { Children, useEffect, useRef, useState } from "react";
 import { ProdutoDTO } from "@/lib/tipos";
 import { useArrasteHorizontal } from "@/lib/useArrasteHorizontal";
-import { ProdutoCard } from "./ProdutoCard";
+import { ProdutoCard, type VarianteCartao } from "./ProdutoCard";
 
 function Seta({ direcao }: { direcao: "esquerda" | "direita" }) {
   return (
@@ -35,9 +35,12 @@ export function FaixaProdutos({
   antes,
   depois,
   setas = true,
+  variante = "cartao",
   children,
 }: {
   produtos?: ProdutoDTO[];
+  /** O desenho dos cartões (o catálogo usa o "limpa", sem caixa) */
+  variante?: VarianteCartao;
   /** Falso quando o título da seção já diz a categoria */
   comCategoria?: boolean;
   /** "estreita" nas grades do catálogo, "padrao" nas vitrines da home
@@ -110,7 +113,7 @@ export function FaixaProdutos({
           ? Children.map(children, (filho) => <div className={classeItem}>{filho}</div>)
           : produtos?.map((p) => (
               <div key={p.id} className={classeItem}>
-                <ProdutoCard produto={p} mostrarCategoria={comCategoria} />
+                <ProdutoCard produto={p} mostrarCategoria={comCategoria} variante={variante} />
               </div>
             ))}
         {depois && <div className="shrink-0 snap-start flex">{depois}</div>}
