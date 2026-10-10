@@ -1,10 +1,15 @@
 // Gera a VITRINE ESTÁTICA do site para o GitHub Pages.
 //
 // O GitHub Pages só serve arquivos estáticos, então esta versão:
-//   - inclui só o site do cliente (home, categorias, produtos, sobre,
+//   - inclui o site do cliente (home, categorias, produtos, sobre,
 //     lojas, contato e o pedido que fecha no WhatsApp)
-//   - deixa de fora o painel admin e as rotas de API (precisam de servidor)
-//   - congela os produtos num JSON gerado a partir do banco atual
+//   - inclui o PAINEL em modo demonstração (10/10/2026, "só para a cliente
+//     visualizar"): login pelo navegador, dados do retrato, nada é gravado
+//     (ver src/lib/adminDemo.ts e src/components/admin/ModoDemo.tsx)
+//   - deixa de fora as rotas de API (precisam de servidor)
+//   - congela os produtos num JSON gerado a partir do banco atual; os
+//     pedidos do painel são FICTÍCIOS, gerados aqui (dado de cliente de
+//     verdade não vai para um site público)
 //
 // Uso:  npm run demo:build   -> gera a pasta docs/, que o Pages publica
 //       (repositório abalduinojose-cmd/viverbem, branch main, /docs;
@@ -25,7 +30,6 @@ const publicada = path.join(raiz, "docs");
 
 // Arquivos/pastas que saem do build estático (dependem de servidor)
 const EXCLUIR = [
-  path.join("src", "app", "admin"),
   path.join("src", "app", "api"),
   // redirecionamento não funciona em site estático
   path.join("src", "app", "catalogo"),
@@ -35,13 +39,85 @@ const EXCLUIR = [
 ];
 
 // Páginas cuja renderização dinâmica precisa ser desligada no estático
+const ADMIN = path.join("src", "app", "admin", "(protegido)");
 const PAGINAS_DINAMICAS = [
   path.join("src", "app", "(site)", "page.tsx"),
   path.join("src", "app", "(site)", "produtos", "page.tsx"),
   path.join("src", "app", "(site)", "produtos", "[categoria]", "page.tsx"),
   path.join("src", "app", "(site)", "sobre", "page.tsx"),
   path.join("src", "app", "(site)", "produto", "[slug]", "page.tsx"),
+  // o painel em modo demonstração
+  path.join(ADMIN, "painel", "page.tsx"),
+  path.join(ADMIN, "produtos", "page.tsx"),
+  path.join(ADMIN, "produtos", "novo", "page.tsx"),
+  path.join(ADMIN, "produtos", "[id]", "editar", "page.tsx"),
+  path.join(ADMIN, "categorias", "page.tsx"),
+  path.join(ADMIN, "clientes", "page.tsx"),
+  path.join(ADMIN, "usuarios", "page.tsx"),
+  path.join(ADMIN, "log", "page.tsx"),
+  path.join(ADMIN, "site", "page.tsx"),
 ];
+
+// ---------------------------------------------------------------- pedidos fictícios
+// Pedidos de demonstração para o painel da prévia: nomes inventados, o
+// WhatsApp mascarado e os itens tirados do catálogo real. Sempre os mesmos
+// (gerador com semente fixa), espalhados pelos últimos 48 dias para os
+// números do mês e os gráficos terem o que mostrar.
+const NOMES_DEMO = [
+  "Ana Paula", "Carlos Eduardo", "Fernanda", "João Pedro", "Mariana", "Ricardo", "Luciana",
+  "Paulo Henrique", "Beatriz", "Rafael", "Juliana", "Marcelo", "Camila", "André", "Patrícia",
+  "Gustavo", "Renata", "Felipe", "Simone", "Thiago", "Larissa", "Eduardo",
+];
+const SOBRENOMES_DEMO = ["S.", "M.", "R.", "A.", "C.", "L.", "P.", "F."];
+const LOJAS_DEMO = [
+  "Centro, Rua Dom Pedro Segundo, 31, Loja 37",
+  "Corrêas, Rua Dr. Agostinho Goulão, 22",
+  "Posse, Estrada União e Indústria, 33.383",
+];
+const BAIRROS_DEMO = ["Valparaíso", "Itaipava", "Bingen", "Quitandinha", "Mosela", "Nogueira", "Cascatinha"];
+
+function gerarPedidosFicticios(produtos) {
+  let semente = 20261010;
+  const rnd = () => {
+    semente = (semente * 1103515245 + 12345) % 2147483648;
+    return semente / 2147483648;
+  };
+  const sorteio = (lista) => lista[Math.floor(rnd() * lista.length)];
+  const comPreco = produtos.filter(
+    (p) => p.venda === "INDUSTRIALIZADO" && p.precoCentavos > 0 && p.ativo && p.aprovado
+  );
+  const agora = Date.now();
+  const pedidos = [];
+  for (let i = 0; i < NOMES_DEMO.length; i++) {
+    const diasAtras = Math.floor(rnd() * 48);
+    const data = new Date(agora - diasAtras * 86400000 - Math.floor(rnd() * 36000000));
+    const receita = rnd() < 0.55;
+    const itens = [];
+    if (comPreco.length > 0 && (!receita || rnd() < 0.4)) {
+      const quantos = 1 + Math.floor(rnd() * 2);
+      for (let k = 0; k < quantos; k++) {
+        const p = sorteio(comPreco);
+        itens.push({ nome: p.nome, dosagem: null, quantidade: 1 + Math.floor(rnd() * 2), precoCentavos: p.precoCentavos });
+      }
+    }
+    const total = itens.reduce((s, it) => s + it.quantidade * it.precoCentavos, 0);
+    const retirada = rnd() < 0.5;
+    pedidos.push({
+      id: i + 1,
+      nome: `${NOMES_DEMO[i]} ${sorteio(SOBRENOMES_DEMO)}`,
+      whatsapp: `(24) 9****-${String(1000 + Math.floor(rnd() * 9000))}`,
+      pagamento: "",
+      entrega: retirada ? "Retirada na loja" : "Entrega em casa",
+      local: retirada ? sorteio(LOJAS_DEMO) : `${sorteio(BAIRROS_DEMO)}, Petrópolis`,
+      receita,
+      codigo: `VB-${String(1200 + i * 7).padStart(4, "0")}`,
+      totalCentavos: total,
+      itens: JSON.stringify(itens),
+      criadoEm: data.toISOString(),
+    });
+  }
+  return pedidos.sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
+}
 // (a home também lê o banco em obterSecoesHome/obterArteHero: em DEMO as
 // duas funções caem no retrato, então a página fica estática)
 
@@ -57,15 +133,19 @@ async function gerarRetrato() {
   const { PrismaClient } = require("@prisma/client");
   const db = new PrismaClient();
   try {
-    const [categorias, produtos, avaliacoes, configuracoes] = await Promise.all([
-      db.categoria.findMany({ orderBy: { ordem: "asc" } }),
+    // (registrosLog, e não "log": o nome log é da função que imprime o progresso)
+    const [categorias, produtosTodos, avaliacoes, configuracoes, usuarios, registrosLog] = await Promise.all([
+      db.categoria.findMany({ orderBy: { ordem: "asc" }, include: { _count: { select: { produtos: true } } } }),
+      // O catálogo inteiro: o painel da prévia mostra também o que está
+      // escondido ou aguardando publicação; o site filtra logo abaixo
       db.produto.findMany({
-        where: { ativo: true, aprovado: true, NOT: { tipo: "COMBO" } },
         orderBy: [{ ordem: "asc" }, { nome: "asc" }],
         include: { categoria: { select: { nome: true } }, fotos: { orderBy: { ordem: "asc" } } },
       }),
       db.depoimento.findMany({ where: { ativo: true }, orderBy: { ordem: "asc" } }),
       db.configuracao.findMany(),
+      db.usuario.findMany({ orderBy: [{ ativo: "desc" }, { papel: "asc" }, { nome: "asc" }] }),
+      db.logAlteracao.findMany({ orderBy: { criadoEm: "desc" }, take: 60 }),
     ]);
 
     // Os ajustes do painel (seções da home, arte da dobra), lidos do JSON
@@ -78,40 +158,68 @@ async function gerarRetrato() {
       }
     }
 
+    const mapearCategoria = (c) => ({
+      id: c.id,
+      nome: c.nome,
+      slug: c.slug,
+      ordem: c.ordem,
+      visivel: c.visivel,
+      vitrineHome: c.vitrineHome,
+    });
+    const mapearProduto = (p) => ({
+      id: p.id,
+      nome: p.nome,
+      slug: p.slug,
+      descricao: p.descricao,
+      precoCentavos: p.precoCentavos,
+      tipo: p.tipo,
+      venda: p.venda,
+      aprovado: p.aprovado,
+      fotoUrl: p.fotos[0]?.url ?? p.fotoUrl,
+      fotos: p.fotos.length > 0 ? p.fotos.map((f) => f.url) : p.fotoUrl ? [p.fotoUrl] : [],
+      mostrarPreco: p.mostrarPreco,
+      ativo: p.ativo,
+      novidade: p.novidade,
+      destaque: p.destaque,
+      ordem: p.ordem,
+      categoriaId: p.categoriaId,
+      categoriaNome: p.categoria?.nome ?? null,
+      dosagens: p.dosagens,
+      composicao: p.composicao,
+      modoUso: p.modoUso,
+      indicacoes: p.indicacoes,
+      apresentacao: p.apresentacao,
+    });
+    const todos = produtosTodos.map(mapearProduto);
+    // O site só mostra o que está ativo, publicado pelo gestor e não é combo
+    const produtos = todos.filter((p) => p.ativo && p.aprovado && p.tipo !== "COMBO");
+
     const retrato = {
       catalogo: {
-        categorias: categorias.map((c) => ({
-          id: c.id,
-          nome: c.nome,
-          slug: c.slug,
-          ordem: c.ordem,
-          visivel: c.visivel,
-          vitrineHome: c.vitrineHome,
+        categorias: categorias.map(mapearCategoria),
+        produtos,
+      },
+      // O painel da prévia (ver src/lib/adminDemo.ts)
+      admin: {
+        produtos: todos,
+        categorias: categorias.map((c) => ({ ...mapearCategoria(c), totalProdutos: c._count.produtos })),
+        usuarios: usuarios.map((u) => ({
+          id: u.id,
+          nome: u.nome,
+          email: u.email,
+          papel: u.papel,
+          ativo: u.ativo,
+          ultimoAcesso: u.ultimoAcesso ? u.ultimoAcesso.toISOString() : null,
+          criadoEm: u.criadoEm.toISOString(),
         })),
-        produtos: produtos.map((p) => ({
-          id: p.id,
-          nome: p.nome,
-          slug: p.slug,
-          descricao: p.descricao,
-          precoCentavos: p.precoCentavos,
-          tipo: p.tipo,
-          venda: p.venda,
-          aprovado: p.aprovado,
-          fotoUrl: p.fotos[0]?.url ?? p.fotoUrl,
-          fotos: p.fotos.length > 0 ? p.fotos.map((f) => f.url) : p.fotoUrl ? [p.fotoUrl] : [],
-          mostrarPreco: p.mostrarPreco,
-          ativo: p.ativo,
-          novidade: p.novidade,
-          destaque: p.destaque,
-          ordem: p.ordem,
-          categoriaId: p.categoriaId,
-          categoriaNome: p.categoria?.nome ?? null,
-          dosagens: p.dosagens,
-          composicao: p.composicao,
-          modoUso: p.modoUso,
-          indicacoes: p.indicacoes,
-          apresentacao: p.apresentacao,
+        log: registrosLog.map((r) => ({
+          id: r.id,
+          usuario: r.usuario,
+          acao: r.acao,
+          detalhe: r.detalhe,
+          criadoEm: r.criadoEm.toISOString(),
         })),
+        pedidos: gerarPedidosFicticios(todos),
       },
       avaliacoes: avaliacoes
         .filter((a) => a.fotoUrl)

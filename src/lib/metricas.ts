@@ -8,6 +8,10 @@
 // Desde 07/10/2026 a visão geral também traz o retrato do catálogo
 // (manipulados x industrializados, fotos, preço no site) e a atividade da
 // equipe (acessos ativos e as últimas ações do log).
+//
+// 10/10/2026: a conta ficou separada da leitura (calcularMetricas), para a
+// vitrine estática (DEMO=1) fazer a mesma conta sobre o retrato em JSON,
+// com os pedidos fictícios gerados no build (ver lib/adminDemo.ts).
 import { db } from "./db";
 import { ENTREGA_RETIRADA, PAPEL_ADMIN, VENDA_INDUSTRIALIZADO } from "./tipos";
 
@@ -41,7 +45,63 @@ function variacao(atual: number, anterior: number): number | null {
 
 const MESES_CURTOS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
-export async function obterMetricas() {
+// O mínimo de cada tabela que a conta precisa (as linhas do banco têm mais)
+interface PedidoBase {
+  id: number;
+  nome: string;
+  whatsapp: string;
+  codigo: string;
+  totalCentavos: number;
+  entrega: string | null;
+  receita: boolean;
+  itens: string;
+  criadoEm: Date;
+}
+interface ProdutoBase {
+  id: number;
+  nome: string;
+  ativo: boolean;
+  aprovado: boolean;
+  venda: string | null;
+  precoCentavos: number;
+  mostrarPreco: boolean;
+  fotoUrl: string | null;
+  categoriaId: number | null;
+}
+interface CategoriaBase {
+  id: number;
+  nome: string;
+  visivel: boolean;
+  vitrineHome: boolean;
+}
+interface UsuarioBase {
+  id: number;
+  nome: string;
+  papel: string;
+  ativo: boolean;
+}
+interface AcaoBase {
+  id: number;
+  usuario: string;
+  acao: string;
+  detalhe: string;
+  criadoEm: Date;
+}
+
+export interface DadosMetricas {
+  doMes: PedidoBase[];
+  doMesPassado: PedidoBase[];
+  totalPedidos: number;
+  produtos: ProdutoBase[];
+  ultimos: PedidoBase[];
+  daJanela: { criadoEm: Date; totalCentavos: number }[];
+  categorias: CategoriaBase[];
+  usuarios: UsuarioBase[];
+  ultimasAcoes: AcaoBase[];
+}
+
+/** Lê do banco o que a conta precisa. */
+async function lerDoBanco(): Promise<DadosMetricas> {
   const comecoDesteMes = inicioDoMes();
   const comecoDoMesPassado = inicioDoMes(-1);
   // Janela dos gráficos: 6 meses cheios contando o atual
@@ -76,6 +136,39 @@ export async function obterMetricas() {
       db.usuario.findMany({ select: { id: true, nome: true, papel: true, ativo: true, ultimoAcesso: true } }),
       db.logAlteracao.findMany({ orderBy: { criadoEm: "desc" }, take: 6 }),
     ]);
+
+  return { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes };
+}
+
+/** A vitrine estática: a mesma conta sobre o retrato, com os pedidos fictícios. */
+async function lerDoRetrato(): Promise<DadosMetricas> {
+  const { lerAdminDemo } = await import("./adminDemo");
+  const a = await lerAdminDemo();
+  const pedidos: PedidoBase[] = a.pedidos
+    .map((p) => ({ ...p, criadoEm: new Date(p.criadoEm) }))
+    .sort((x, y) => y.criadoEm.getTime() - x.criadoEm.getTime());
+  const comecoDesteMes = inicioDoMes();
+  const comecoDoMesPassado = inicioDoMes(-1);
+  const comecoDaJanela = inicioDoMes(-5);
+  return {
+    doMes: pedidos.filter((p) => p.criadoEm >= comecoDesteMes),
+    doMesPassado: pedidos.filter((p) => p.criadoEm >= comecoDoMesPassado && p.criadoEm < comecoDesteMes),
+    totalPedidos: pedidos.length,
+    produtos: a.produtos,
+    ultimos: pedidos.slice(0, 5),
+    daJanela: pedidos.filter((p) => p.criadoEm >= comecoDaJanela),
+    categorias: a.categorias,
+    usuarios: a.usuarios,
+    ultimasAcoes: a.log.slice(0, 6).map((r) => ({ ...r, criadoEm: new Date(r.criadoEm) })),
+  };
+}
+
+export async function obterMetricas() {
+  return calcularMetricas(process.env.DEMO === "1" ? await lerDoRetrato() : await lerDoBanco());
+}
+
+export function calcularMetricas(d: DadosMetricas) {
+  const { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes } = d;
 
   // Faturamento = só o que tem preço no site (industrializados). Pedido
   // só de receita entra com total zero: o valor do manipulado é passado

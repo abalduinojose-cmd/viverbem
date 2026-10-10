@@ -15,6 +15,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { asset } from "@/lib/asset";
+import { useSessaoDemo } from "./ModoDemo";
 import {
   CategoriaDTO,
   MAX_FOTOS_PRODUTO,
@@ -77,7 +79,9 @@ export function FormProduto({
 }) {
   const router = useRouter();
   const editando = Boolean(produto);
-  const ehGestor = papel === PAPEL_ADMIN;
+  // Na prévia estática vale o papel de quem entrou no navegador
+  const demo = useSessaoDemo();
+  const ehGestor = (demo?.papel ?? papel) === PAPEL_ADMIN;
 
   const [venda, setVenda] = useState(produto?.venda ?? VENDA_MANIPULADO);
   const [nome, setNome] = useState(produto?.nome ?? "");
@@ -317,7 +321,7 @@ export function FormProduto({
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={f.preview} alt={`Foto ${i + 1}`} className="max-w-full max-h-full object-contain" />
+                  <img src={f.preview.startsWith("blob:") ? f.preview : asset(f.preview)} alt={`Foto ${i + 1}`} className="max-w-full max-h-full object-contain" />
                 </div>
                 {i === 0 && (
                   <span className="absolute top-1.5 left-1.5 h-5 px-2 rounded-full bg-[image:var(--ouro-degrade)] text-navy text-[0.6rem] font-semibold uppercase tracking-wider flex items-center">

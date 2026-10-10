@@ -12,6 +12,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSessaoDemo } from "./ModoDemo";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import {
   Alca,
@@ -37,7 +38,9 @@ export interface CategoriaComTotal {
 
 export function ListaCategorias({ categorias, papel }: { categorias: CategoriaComTotal[]; papel: string }) {
   const router = useRouter();
-  const ehGestor = papel === PAPEL_ADMIN;
+  // Na prévia estática vale o papel de quem entrou no navegador
+  const demo = useSessaoDemo();
+  const ehGestor = (demo?.papel ?? papel) === PAPEL_ADMIN;
   const [novoNome, setNovoNome] = useState("");
   const [editando, setEditando] = useState<number | null>(null);
   const [nomeEdicao, setNomeEdicao] = useState("");

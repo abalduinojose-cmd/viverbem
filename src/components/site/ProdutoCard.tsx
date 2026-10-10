@@ -56,15 +56,18 @@ export function ProdutoCard({
             : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
         }`}
       >
-        {/* A luz dourada da bancada, no pé do pote */}
+        {/* A luz dourada da bancada, logo abaixo do pote (10/10/2026, "a
+            sombra está muito longe do produto": antes ficava colada na base
+            do ladrilho; agora é um halo centrado sob o pote e a sombra do
+            próprio pote é quente, grudada nele) */}
         <span
           aria-hidden="true"
-          className="absolute inset-x-[12%] bottom-1 h-12 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.32),transparent_70%)]"
+          className="absolute left-1/2 top-[66%] h-[16%] w-[56%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(201,165,107,0.34),transparent_70%)]"
         />
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}
-          className="relative max-h-full w-auto max-w-full !object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.3)] transition-transform duration-500 group-hover:-translate-y-1.5"
+          className="relative max-h-full w-auto max-w-full !object-contain [filter:drop-shadow(0_10px_9px_rgba(201,165,107,0.38))_drop-shadow(0_2px_2px_rgba(16,42,74,0.14))] transition-transform duration-500 group-hover:-translate-y-1.5"
         />
         {industrializado && produto.novidade && (
           <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">

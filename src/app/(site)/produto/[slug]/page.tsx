@@ -14,6 +14,13 @@
 // de compra (AcoesProduto) e "Como pedir" num cartão claro com os três
 // passos numerados em ouro, divididos por fios (07/10/2026: a trilha com
 // círculos e linha saiu, no celular e no computador).
+//
+// 10/10/2026 ("deixe mais moderna e acerte os erros de enquadramento"; "os
+// produtos já estão prontos, não precisa enfatizar a receita"): a galeria
+// virou um ladrilho quadrado sem fio com o pote centrado (GaleriaProduto);
+// a frase da segunda voz é "Pronta entrega nas lojas" para todos; saíram o
+// selo "Receita conferida", o link "Tenho receita" e o parágrafo sobre a
+// receita no fim: isso fica na seção Como funciona. "Como pedir" em gelo.
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -25,7 +32,6 @@ import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
 import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
-import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
 import { IconeMoto } from "@/components/site/IconeMoto";
 import { IconeLoja } from "@/components/site/IconesVantagens";
 
@@ -117,14 +123,13 @@ function Sanfona({
 const PASSOS_PEDIDO = [
   { titulo: "Adicione ao carrinho", texto: "e envie o pedido pelo WhatsApp." },
   { titulo: "O farmacêutico confere", texto: "e passa o valor e o prazo." },
-  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem taxa, ou em casa, de moto.` },
+  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, de moto.` },
 ];
 
 // Selos de logística, embaixo da foto: só o que dá para comprovar
 const SELOS = [
   { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "por toda Petrópolis" },
-  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada sem taxa", texto: `em ${UNIDADES.length} lojas` },
-  { icone: <IconeReceita tamanho={15} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
+  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
 ];
 
 // Os selos, em linha de três. Quem chama diz onde aparecem (display):
@@ -132,7 +137,7 @@ const SELOS = [
 // cartão de compra no celular.
 function Selos({ className = "" }: { className?: string }) {
   return (
-    <ul className={`grid-cols-1 sm:grid-cols-3 gap-2 ${className}`}>
+    <ul className={`grid-cols-1 sm:grid-cols-2 gap-2 ${className}`}>
       {SELOS.map((s) => (
         <li
           key={s.titulo}
@@ -226,9 +231,7 @@ export default async function PaginaProduto({ params }: Props) {
               {produto.nome}
             </h1>
             {/* A segunda voz: a frase em itálico serifado, em ouro */}
-            <p className="tinta mt-3 text-[1.5rem] md:text-[1.75rem] leading-tight">
-              {industrializado ? "Pronta entrega nas lojas" : "Preparado a partir da sua receita"}
-            </p>
+            <p className="tinta mt-3 text-[1.5rem] md:text-[1.75rem] leading-tight">Pronta entrega nas lojas</p>
             {preco !== null && (
               <p className="mt-4 text-[1.9rem] md:text-[2.2rem] font-semibold tracking-[-0.03em] text-navy tabular-nums leading-none">
                 {formatarPreco(preco)}
@@ -250,7 +253,7 @@ export default async function PaginaProduto({ params }: Props) {
             {/* Como o pedido anda: três passos numerados em ouro, num cartão
                 claro com fios (07/10/2026, "melhore o print": a trilha com os
                 círculos e a linha saiu, no celular e no computador) */}
-            <div className="mt-9 rounded-[1.75rem] border border-fio bg-white p-5 md:p-6">
+            <div className="mt-9 rounded-[1.75rem] bg-gelo/50 p-5 md:p-6">
               <p className="rotulo-pilula !text-[0.64rem]">Como pedir</p>
               <ol className="mt-3 lista-fichas">
                 {PASSOS_PEDIDO.map((p, i) => (
@@ -265,22 +268,7 @@ export default async function PaginaProduto({ params }: Props) {
                   </li>
                 ))}
               </ol>
-              <BotaoEnviarReceita produtoVisto={produto.nome} className="botao-link mt-4" comIcone={false}>
-                Tenho receita: enviar a foto
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </BotaoEnviarReceita>
             </div>
-
-            <p className="text-cinza text-sm mt-6 leading-relaxed">
-              O farmacêutico confere o seu pedido e passa o valor pelo WhatsApp. Se a
-              fórmula precisar de receita, ele pede a foto da prescrição.{" "}
-              <Link href="/sobre#como-funciona" className="text-tinta font-medium hover:underline">
-                Entenda como funciona
-              </Link>
-              .
-            </p>
           </div>
 
           {/* Coluna lateral (computador largo): mais procurados e o que a pessoa já viu */}

@@ -88,40 +88,9 @@ function SeloAberto({ estado }: { estado: EstadoLoja }) {
   );
 }
 
-// A régua do dia (07/10/2026, "modernize o horário"): das 7h às 21h, o
-// horário de hoje em ouro e a hora de agora num ponto navy. Só decoração;
-// o texto ao lado diz o mesmo.
-const REGUA = { inicio: 7 * 60, fim: 21 * 60 };
-function ReguaDoDia({ estado }: { estado: EstadoLoja }) {
-  const faixa = estado ? GRADE[estado.dia] : null;
-  const pct = (m: number) => Math.min(100, Math.max(0, ((m - REGUA.inicio) / (REGUA.fim - REGUA.inicio)) * 100));
-  const abre = faixa && faixa.abre !== null ? pct(faixa.abre * 60) : null;
-  const fecha = faixa && faixa.fecha !== null ? pct(faixa.fecha * 60) : null;
-  const agora = estado ? pct(estado.minutos) : null;
-  return (
-    <div className="mt-5" aria-hidden="true">
-      <div className="relative h-2 rounded-full bg-gelo">
-        {abre !== null && fecha !== null && (
-          <span
-            className="absolute inset-y-0 rounded-full bg-[image:var(--ouro-degrade)]"
-            style={{ left: `${abre}%`, width: `${fecha - abre}%` }}
-          />
-        )}
-        {agora !== null && (
-          <span
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-navy ring-2 ring-white shadow-[0_4px_10px_rgba(13,35,64,0.35)]"
-            style={{ left: `${agora}%` }}
-          />
-        )}
-      </div>
-      <div className="mt-1.5 flex justify-between text-[0.7rem] text-cinza tabular-nums">
-        <span>7h</span>
-        <span>14h</span>
-        <span>21h</span>
-      </div>
-    </div>
-  );
-}
+// (A régua do dia, das 7h às 21h, saiu em 10/10/2026: "modernize o cartão
+// do horário". O estado ao vivo, a hora de hoje grande, a semana e as
+// linhas já dizem tudo; a régua só pesava.)
 
 // Cartão branco da grade (WhatsApp, lojas): mesma elevação e o mesmo hover
 const classeCartao =
@@ -264,10 +233,8 @@ export function FaleComAGente() {
               {estado ? `Hoje, ${GRADE[estado.dia].curto} · ${detalheHoje}` : HORARIOS[0].rotulo}
             </span>
 
-            <ReguaDoDia estado={estado} />
-
             {/* A semana: hoje em ouro, dias fechados apagados */}
-            <ul className="mt-5 grid grid-cols-7 gap-1" aria-label="Dias da semana">
+            <ul className="mt-6 grid grid-cols-7 gap-1" aria-label="Dias da semana">
               {DIAS_SEMANA.map((d, i) => {
                 const linha = HORARIOS.find((l) => l.dias.includes(i));
                 const fechado = !linha || linha.horas === "Fechado";
@@ -278,10 +245,10 @@ export function FaleComAGente() {
                     title={`${d.nome}: ${linha?.horas ?? "Fechado"}`}
                     className={`aspect-square rounded-full flex items-center justify-center text-[0.72rem] font-semibold ${
                       hoje
-                        ? "bg-[image:var(--ouro-degrade)] text-navy shadow-[0_10px_20px_-12px_rgba(143,113,55,0.8)]"
+                        ? "bg-[image:var(--ouro-degrade)] text-navy"
                         : fechado
                           ? "text-cinza/40"
-                          : "text-navy"
+                          : "bg-gelo/70 text-navy"
                     }`}
                   >
                     <span aria-hidden="true">{d.curto}</span>

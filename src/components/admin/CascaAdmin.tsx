@@ -10,10 +10,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { asset } from "@/lib/asset";
 import { PAPEL_ADMIN, nomePapel } from "@/lib/tipos";
 import { BotaoSair } from "./BotaoSair";
 import { Inicial } from "./PecasAdmin";
 import { ICONES } from "./iconesAdmin";
+import { useSessaoDemo } from "./ModoDemo";
 
 export interface ItemNav {
   href: string;
@@ -24,9 +26,9 @@ export interface ItemNav {
 }
 
 export function CascaAdmin({
-  itens,
-  nome,
-  papel,
+  itens: todosItens,
+  nome: nomeSessao,
+  papel: papelSessao,
   children,
 }: {
   itens: ItemNav[];
@@ -37,7 +39,13 @@ export function CascaAdmin({
 }) {
   const pathname = usePathname();
   const [gaveta, setGaveta] = useState(false);
+  // Na prévia estática quem manda é quem entrou no navegador (ModoDemo):
+  // as páginas foram geradas como gestor, e o colaborador perde o "Gestão"
+  const demo = useSessaoDemo();
+  const nome = demo?.nome ?? nomeSessao;
+  const papel = demo?.papel ?? papelSessao;
   const ehGestor = papel === PAPEL_ADMIN;
+  const itens = ehGestor ? todosItens : todosItens.filter((i) => i.grupo !== "Gestão");
 
   // Trocar de página fecha a gaveta. Feito durante a renderização, ao
   // notar que o endereço mudou (um efeito com setState renderizaria duas vezes).
@@ -69,7 +77,7 @@ export function CascaAdmin({
       <div className="px-5 pt-5 pb-4 border-b border-fio">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.png"
+          src={asset("/logo.png")}
           alt="Manipulação Viver Bem"
           width={220}
           height={97}
@@ -184,7 +192,7 @@ export function CascaAdmin({
           <p className="font-semibold text-navy truncate">{tituloAtual}</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
+            src={asset("/logo.png")}
             alt=""
             width={220}
             height={97}

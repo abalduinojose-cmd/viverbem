@@ -1,5 +1,50 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 55 (10/10/2026): painel em modo DEMONSTRAÇÃO na prévia, Como funciona em lista com o convite preso, sombra do pote colada nele, página do produto sem a ênfase na receita, cartão do horário sem a régua. 13º push.**
+> Pedidos: "o painel adm vai ser só para a cliente visualizar, depois vamos
+> para a parte do servidor e banco de dados"; "os produtos estão com uma
+> sombra dourada muito longe do produto"; "o Como funciona está muito
+> simples, é uma parte importante, tem que estar mais moderna e clean";
+> "modernize os botões"; "exclua o WhatsApp" (da linha de confiança);
+> "modernize o cartão do horário do Fale com a gente"; "na página do
+> produto deixe mais moderna e acerte os erros de enquadramento"; "os
+> produtos já estão prontos e não vamos colocar preço por enquanto, deixe a
+> receita para a seção dela"; "atualize tudo no GitHub".
+> PAINEL NA PRÉVIA (`lib/adminDemo.ts`, `components/admin/ModoDemo.tsx`,
+> `scripts/gerar-demo.js`): o build estático deixou de tirar `src/app/admin`;
+> com `DEMO=1` a sessão do servidor é fixa (gestor) e as páginas são
+> geradas a partir do retrato, que agora traz `admin` (catálogo INTEIRO,
+> categorias com total, usuários, 60 linhas do log e PEDIDOS FICTÍCIOS
+> gerados no build com nomes inventados e WhatsApp mascarado, porque dado
+> de cliente real não vai para site público; o banco local tinha 0
+> pedidos). No navegador, `GuardaDemo` lê quem entrou (localStorage, via
+> useSyncExternalStore), manda para `/admin/login` quem não entrou, segura
+> o colaborador fora das páginas do gestor, mostra a faixa "Prévia do
+> painel" e intercepta todo `fetch` em `/api/` com o aviso "nada é gravado"
+> (o logout limpa a sessão). A tela de login na prévia aceita os dois
+> e-mails do seed com qualquer senha e diz isso na tela. `CascaAdmin`,
+> `ListaProdutos`, `ListaCategorias` e `FormProduto` usam o papel de quem
+> entrou (`useSessaoDemo`); logo, fotos e "Ver o site" passam pelo
+> `asset()` (prefixo /viverbem). `metricas.ts` separou a conta
+> (`calcularMetricas`) da leitura, que no DEMO vem do retrato;
+> `editar/[id]` ganhou `generateStaticParams`; `/admin` e `depoimentos`
+> redirecionam pelo navegador. Fora do DEMO nada muda.
+> SITE: `ComoFunciona` v6: os quatro passos numa lista num cartão branco
+> (número grande em ouro, ícone em quadrado gelo que acende em azul, título,
+> texto, detalhe, chips das lojas no 04) e, ao lado, preso ao rolar no
+> computador, o convite da receita em azul-noite com `botao-vivo` +
+> `botao-vidro` (os da dobra) e a linha de confiança dentro, sem o telefone;
+> no celular a lista vem antes do convite (a faixa que arrastava saiu).
+> `ProdutoCard` e `GaleriaProduto`: o halo de ouro ficou centrado logo
+> abaixo do pote e a sombra do pote virou quente (drop-shadow dourado),
+> colada nele; a galeria é um ladrilho quadrado sem fio com o pote centrado
+> (antes ficava na base de um ladrilho alto). Página do produto: "Pronta
+> entrega nas lojas" para todos, selos só Delivery e Retirada grátis, saíram
+> "Tenho receita: enviar a foto" e o parágrafo final sobre a receita;
+> "Como pedir" em gelo. `FaleComAGente`: a régua do dia (7h/14h/21h) saiu do
+> cartão do horário e a semana ficou mais leve. Lint: `ModoDemo` sem
+> setState em efeito (regra react-hooks/set-state-in-effect).
+
 > **ADENDO 54 (10/10/2026): escrita mais leve e formal, revisão de erros e 12º push da prévia (com o trabalho da outra sessão: animação da receita e letreiro da hero).**
 > Pedidos: "a escrita de alguns pontos, tá muito na cara que foi uma IA que
 > escreveu; deixe mais leve, que converse com todos os públicos, sem
@@ -165,6 +210,20 @@
 > só com um pouco de paralaxe. Ouro da paleta nova (#C9A56B / #E0C48F),
 > navy e tinta de sempre. Medido com CPU 2x num ciclo inteiro: mediana
 > 16,7 ms e p95 16,8 ms (quadros perdidos isolados, nenhum trecho preso).
+> Letreiro dos passos da hero, no mesmo dia ("na animação da hero tá muito
+> rápido o envie a foto da receita, o farmacêutico confere e os outros
+> escritos, modernize e deixe mais leve e devagar"): cada passo ficava
+> 0,62 s na tela. O roteiro `dobra` ganhou `ritmo` (como o da Saúde da
+> Mulher): a abertura segue no tempo original e, do carrossel em diante, a
+> cena corre a 0,28 da velocidade, por igual; cada passo fica ~2,2 s e o
+> ciclo vai de 7 para 15,6 s (carrossel e fecho mais lentos junto, a saída
+> volta quase ao normal). O letreiro foi refeito em `desenharPassos`: texto
+> na Instrument Sans 400 (era 500), cada linha sobe letra a letra de uma
+> fresta com o espaçamento assentando, fica parada e sai subindo e se
+> apagando (sem a mola e o rastro de antes), e quatro traços finos contam
+> os passos, como nos stories, o da vez se enchendo de ouro (o fio único
+> saiu). Comparado com a versão anterior no mesmo headless, sem perda: 2 a
+> 5 ms por quadro no trecho dos passos.
 
 > **ADENDO 49 (10/10/2026): "Adicionar" com texto e ícone em branco, textos em português simples, linha de confiança no lugar do aviso, rodapé levemente modernizado e carrinho mais moderno. Não publicado.**
 > Pedidos: "coloque os ícones e escritos em branco, vamos ver se vai ficar

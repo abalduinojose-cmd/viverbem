@@ -15,6 +15,8 @@
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { asset } from "@/lib/asset";
+import { useSessaoDemo } from "./ModoDemo";
 import {
   ProdutoDTO,
   CategoriaDTO,
@@ -86,7 +88,9 @@ export function ListaProdutos({
   papel: string;
 }) {
   const router = useRouter();
-  const ehGestor = papel === PAPEL_ADMIN;
+  // Na prévia estática vale o papel de quem entrou no navegador
+  const demo = useSessaoDemo();
+  const ehGestor = (demo?.papel ?? papel) === PAPEL_ADMIN;
   const [busca, setBusca] = useState("");
   const [situacao, setSituacao] = useState<FiltroSituacao>("todos");
   // "" = todas as categorias; "sem" = produtos sem categoria
@@ -370,7 +374,7 @@ export function ListaProdutos({
                   <div className="w-14 h-14 shrink-0 rounded-xl bg-gelo/70 overflow-hidden flex items-center justify-center p-1.5">
                     {p.fotoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.fotoUrl} alt="" className="max-w-full max-h-full object-contain" />
+                      <img src={asset(p.fotoUrl)} alt="" className="max-w-full max-h-full object-contain" />
                     ) : (
                       <span className="text-[0.58rem] text-grafite-claro text-center leading-tight">sem foto</span>
                     )}

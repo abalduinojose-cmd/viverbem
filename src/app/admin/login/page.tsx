@@ -4,11 +4,16 @@
 //
 // Cinco senhas erradas bloqueiam por 30 minutos (a API responde 429 com
 // "bloqueadoAte"); a tela mostra o tempo que falta e desliga o botão.
+//
+// Na vitrine estática (NEXT_PUBLIC_DEMO=1, 10/10/2026) não há API: a tela
+// aceita os dois e-mails do seed com qualquer senha e guarda quem entrou no
+// navegador (ModoDemo). É só para a cliente ver e navegar pelo painel.
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { AvisoAdmin, classeCampoAdmin } from "@/components/admin/PecasAdmin";
+import { EH_DEMO_CLIENTE, USUARIOS_DEMO, entrarDemo } from "@/components/admin/ModoDemo";
 
 export default function PaginaLogin() {
   const router = useRouter();
@@ -35,6 +40,19 @@ export default function PaginaLogin() {
     e.preventDefault();
     if (bloqueado) return;
     setErro("");
+
+    // A prévia: sem servidor, entra pelo e-mail e segue
+    if (EH_DEMO_CLIENTE) {
+      const usuario = USUARIOS_DEMO.find((u) => u.email === email.trim().toLowerCase());
+      if (!usuario) {
+        setErro("Na prévia, entre com admin@viverbem.com.br (gestor) ou operador@viverbem.com.br (equipe).");
+        return;
+      }
+      entrarDemo(usuario);
+      router.push("/admin");
+      return;
+    }
+
     setCarregando(true);
     try {
       const resposta = await fetch("/api/auth/login", {
@@ -161,6 +179,12 @@ export default function PaginaLogin() {
               </div>
             </label>
 
+            {EH_DEMO_CLIENTE && !erro && (
+              <AvisoAdmin tom="info">
+                Prévia do painel: entre com <b>admin@viverbem.com.br</b> (gestor) ou{" "}
+                <b>operador@viverbem.com.br</b> (equipe), com qualquer senha. Nada é gravado.
+              </AvisoAdmin>
+            )}
             {bloqueado ? (
               <AvisoAdmin className="animar-surgir">
                 Acesso bloqueado por tentativas erradas. Tente de novo em {minutos} min, ou peça ao gestor

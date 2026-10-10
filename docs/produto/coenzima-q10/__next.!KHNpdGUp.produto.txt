@@ -2,4 +2,4 @@
 2:I[39756,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js"],"default"]
 3:I[37457,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js"],"default"]
 4:[]
-0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"wu-U3S6ShfnayJE1MBT2r"}
+0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"htYyo3YcbMqdpSw-PZF_g"}

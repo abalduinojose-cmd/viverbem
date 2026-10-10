@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[75270,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js","/viverbem/_next/static/chunks/1vz0vzi9tw8--.js","/viverbem/_next/static/chunks/39wn4avzmuhe5.js"],"ListaUsuarios"]
+3:I[97367,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"meuId":1,"usuarios":[{"id":1,"nome":"Administrador","email":"admin@viverbem.com.br","papel":"ADMIN","ativo":true,"ultimoAcesso":"2026-10-08T16:17:19.278Z","criadoEm":"2026-07-20T19:43:26.844Z","bloqueadoAte":null,"falhasLogin":0},{"id":2,"nome":"Operador da Loja","email":"operador@viverbem.com.br","papel":"OPERADOR","ativo":true,"ultimoAcesso":"2026-10-07T18:47:36.427Z","criadoEm":"2026-07-20T20:03:08.771Z","bloqueadoAte":null,"falhasLogin":0}]}],[["$","script","script-0",{"src":"/viverbem/_next/static/chunks/39wn4avzmuhe5.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"htYyo3YcbMqdpSw-PZF_g"}
+5:null

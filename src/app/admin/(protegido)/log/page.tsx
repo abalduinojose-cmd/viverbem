@@ -1,7 +1,9 @@
 // Log de alterações do painel: quem alterou o quê e quando.
 // SOMENTE gestor. Registros gerados automaticamente pelas rotas de API.
+// Na vitrine estática (DEMO=1) os registros vêm do retrato.
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { EH_DEMO, lerAdminDemo } from "@/lib/adminDemo";
 import { obterSessao } from "@/lib/sessao";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import { CabecalhoAdmin, Inicial, VazioAdmin } from "@/components/admin/PecasAdmin";
@@ -10,15 +12,17 @@ export const dynamic = "force-dynamic";
 
 export default async function PaginaLog() {
   const sessao = await obterSessao();
-  if (sessao.papel !== PAPEL_ADMIN) {
+  if (!EH_DEMO && sessao.papel !== PAPEL_ADMIN) {
     redirect("/admin/produtos");
   }
 
   // Mostra os 200 registros mais recentes
-  const registros = await db.logAlteracao.findMany({
-    orderBy: { criadoEm: "desc" },
-    take: 200,
-  });
+  const registros = EH_DEMO
+    ? (await lerAdminDemo()).log.map((r) => ({ ...r, criadoEm: new Date(r.criadoEm) }))
+    : await db.logAlteracao.findMany({
+        orderBy: { criadoEm: "desc" },
+        take: 200,
+      });
 
   const formatarData = (data: Date) =>
     data.toLocaleString("pt-BR", {

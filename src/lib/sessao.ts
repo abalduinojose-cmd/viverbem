@@ -25,8 +25,15 @@ const opcoesSessao: SessionOptions = {
   },
 };
 
-/** Obtém a sessão atual (funciona em Server Components e rotas de API). */
+/** Obtém a sessão atual (funciona em Server Components e rotas de API).
+ *  Na vitrine estática (DEMO=1) não há cookie nem servidor: as páginas do
+ *  painel são geradas com a sessão fixa do gestor, e quem decide o que a
+ *  pessoa vê é o navegador (components/admin/ModoDemo.tsx). */
 export async function obterSessao() {
+  if (process.env.DEMO === "1") {
+    const { SESSAO_DEMO } = await import("./adminDemo");
+    return { ...SESSAO_DEMO } as unknown as Awaited<ReturnType<typeof getIronSession<DadosSessao>>>;
+  }
   return getIronSession<DadosSessao>(await cookies(), opcoesSessao);
 }
 

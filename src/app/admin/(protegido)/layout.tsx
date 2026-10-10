@@ -8,10 +8,17 @@
 //     preço no site), categorias (criar, renomear, tirar do site) e as
 //     seções da home com a arte da dobra. Não vê números, clientes, log
 //     nem acessos, e não apaga nem publica.
+//
+// Na vitrine estática (DEMO=1, 10/10/2026) não há cookie: as páginas são
+// geradas com a sessão fixa do gestor e o GuardaDemo, no navegador, cuida
+// de quem entrou, do que o colaborador vê e de avisar que nada é gravado.
 import { redirect } from "next/navigation";
+import { asset } from "@/lib/asset";
+import { EH_DEMO } from "@/lib/adminDemo";
 import { obterSessao } from "@/lib/sessao";
 import { PAPEL_ADMIN, PAPEL_OPERADOR } from "@/lib/tipos";
 import { CascaAdmin, type ItemNav } from "@/components/admin/CascaAdmin";
+import { GuardaDemo } from "@/components/admin/ModoDemo";
 
 export default async function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const sessao = await obterSessao();
@@ -33,12 +40,15 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
     { href: "/admin/produtos", rotulo: "Produtos e preços", icone: "produtos", grupo: "Catálogo" },
     { href: "/admin/categorias", rotulo: "Categorias", icone: "categorias", grupo: "Catálogo" },
     { href: "/admin/site", rotulo: "Home e arte da dobra", icone: "vitrine", grupo: "Catálogo" },
-    { href: "/", rotulo: "Ver o site", icone: "site", grupo: "Site", externo: true }
+    // Link comum (abre em outra aba): precisa do prefixo da prévia à mão
+    { href: asset("/"), rotulo: "Ver o site", icone: "site", grupo: "Site", externo: true }
   );
 
-  return (
+  const casca = (
     <CascaAdmin itens={itens} nome={sessao.nome ?? "Usuário"} papel={sessao.papel ?? PAPEL_OPERADOR}>
       {children}
     </CascaAdmin>
   );
+
+  return EH_DEMO ? <GuardaDemo>{casca}</GuardaDemo> : casca;
 }

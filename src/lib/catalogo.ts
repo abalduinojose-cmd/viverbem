@@ -14,6 +14,7 @@ import {
   ehIndustrializado,
 } from "@/lib/tipos";
 import { INCLUIR_PRODUTO, categoriaParaDTO, produtoParaDTO } from "@/lib/produtoDTO";
+import type { AdminDemo } from "@/lib/adminDemo";
 
 export interface Catalogo {
   // Só as categorias ligadas no painel ("No site")
@@ -35,6 +36,8 @@ export interface RetratoDemo {
     heroDesktop2?: string | null;
     heroCelular2?: string | null;
   };
+  /** O que o painel mostra na prévia (10/10/2026, ver lib/adminDemo.ts) */
+  admin?: AdminDemo;
 }
 
 const EH_DEMO = process.env.DEMO === "1";

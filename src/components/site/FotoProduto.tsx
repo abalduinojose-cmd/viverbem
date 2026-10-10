@@ -27,6 +27,11 @@ export function FotoProduto({
       </div>
     );
   }
+  // Os desenhos neutros (.svg) têm um fundo claro próprio: fundidos por
+  // multiplicação, o fundo some no gelo do ladrilho e eles não aparecem
+  // como uma caixa branca; e sem a sombra, que contornaria o retângulo
+  // (10/10/2026, "acerte os erros de enquadramento")
+  const desenho = fotoUrl.toLowerCase().endsWith(".svg");
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -35,6 +40,7 @@ export function FotoProduto({
       width={500}
       height={500}
       className={`object-cover ${className}`}
+      style={desenho ? { mixBlendMode: "multiply", filter: "none" } : undefined}
       draggable={false}
       loading={prioritaria ? "eager" : "lazy"}
       decoding="async"

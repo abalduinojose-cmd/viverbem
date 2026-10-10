@@ -22,11 +22,14 @@ export function GaleriaProduto({
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-[2rem] border border-fio bg-gradient-to-b from-gelo to-white flex items-end justify-center min-h-[20rem] md:min-h-[30rem] p-6 md:p-9">
-        {/* A luz dourada da bancada */}
+      {/* O ladrilho quadrado, sem fio, com o pote centrado (10/10/2026,
+          "acerte os erros de enquadramento": antes o pote ficava colado na
+          base de um ladrilho alto, com vazio em cima) */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gelo/60 flex items-center justify-center aspect-square p-8 md:p-12">
+        {/* A luz dourada da bancada, logo abaixo do pote */}
         <span
           aria-hidden="true"
-          className="absolute inset-x-[15%] bottom-6 h-20 bg-[radial-gradient(50%_60%_at_50%_70%,rgba(201,165,107,0.42),transparent_70%)]"
+          className="absolute left-1/2 top-[68%] h-[14%] w-[58%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(201,165,107,0.36),transparent_70%)]"
         />
 
         {fotos.length === 0 ? (
@@ -44,7 +47,9 @@ export function GaleriaProduto({
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
               {...(i === 0 ? { fetchPriority: "high" as const } : {})}
-              className={`relative max-w-full max-h-[24rem] md:max-h-[28.5rem] object-contain drop-shadow-[0_28px_26px_rgba(16,42,74,0.25)] ${
+              // Desenho neutro (.svg): fundido no gelo e sem a sombra, senão vira uma caixa branca
+              style={src.toLowerCase().endsWith(".svg") ? { mixBlendMode: "multiply", filter: "none" } : undefined}
+              className={`relative max-w-full max-h-full object-contain [filter:drop-shadow(0_18px_16px_rgba(201,165,107,0.36))_drop-shadow(0_3px_3px_rgba(16,42,74,0.14))] ${
                 i === atual ? "animar-surgir" : "hidden"
               }`}
             />

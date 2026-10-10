@@ -11,6 +11,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { asset } from "@/lib/asset";
 import { SECOES_HOME, type ChaveSecao, type SecoesHome } from "@/lib/secoes";
 import { AvisoAdmin, BotaoAdmin, CabecalhoAdmin, CartaoAdmin, Interruptor, Selo, classeBotaoAdmin } from "./PecasAdmin";
 
@@ -144,7 +145,7 @@ export function ConfiguracaoSite({ secoes, artes }: { secoes: SecoesHome; artes:
         titulo="Home e arte da dobra"
         descricao="O que aparece na página inicial e as artes que abrem o site. Tudo vale na hora."
         acao={
-          <a href="/" target="_blank" rel="noopener noreferrer" className={classeBotaoAdmin("secundario")}>
+          <a href={asset("/")} target="_blank" rel="noopener noreferrer" className={classeBotaoAdmin("secundario")}>
             Ver a home
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -225,7 +226,7 @@ export function ConfiguracaoSite({ secoes, artes }: { secoes: SecoesHome; artes:
                       <div className={`${t.proporcao} w-full rounded-xl overflow-hidden bg-gelo/70 border border-fio flex items-center justify-center`}>
                         {url ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={url} alt={nome} className="w-full h-full object-cover" />
+                          <img src={asset(url)} alt={nome} className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-xs text-grafite-claro px-4 text-center">Sem arte enviada</span>
                         )}

@@ -2,7 +2,9 @@
 // Passa o papel do usuário para o cliente: o colaborador não vê "Apagar",
 // não reordena e não publica o que cadastrou (isso é do gestor).
 // As categorias alimentam o filtro por categoria.
+// Na vitrine estática (DEMO=1) tudo vem do retrato (lib/adminDemo.ts).
 import { db } from "@/lib/db";
+import { EH_DEMO, SESSAO_DEMO, lerAdminDemo } from "@/lib/adminDemo";
 import { obterSessao } from "@/lib/sessao";
 import { INCLUIR_PRODUTO, categoriaParaDTO, produtoParaDTO } from "@/lib/produtoDTO";
 import { PAPEL_OPERADOR } from "@/lib/tipos";
@@ -11,6 +13,11 @@ import { ListaProdutos } from "@/components/admin/ListaProdutos";
 export const dynamic = "force-dynamic";
 
 export default async function PaginaProdutos() {
+  if (EH_DEMO) {
+    const a = await lerAdminDemo();
+    return <ListaProdutos papel={SESSAO_DEMO.papel} categorias={a.categorias} produtos={a.produtos} />;
+  }
+
   const [produtos, categorias, sessao] = await Promise.all([
     db.produto.findMany({
       orderBy: [{ ordem: "asc" }, { nome: "asc" }],
