@@ -79,7 +79,7 @@ export function Footer() {
       <span aria-hidden="true" className="malha-banner" />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -right-32 -top-40 -z-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.18),transparent_62%)]"
+        className="pointer-events-none absolute -right-32 -top-40 -z-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.18),transparent_62%)]"
       />
       {/* ---------- Rodapé centralizado ---------- */}
       <div className="relative max-w-7xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-9 md:pb-10 flex flex-col items-center text-center">
@@ -112,7 +112,7 @@ export function Footer() {
           {CONTATOS.map((c) => {
             const Icone = c.icone;
             const classe =
-              "group relative inline-flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-white/85 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(16,42,74,0.95)]";
+              "group relative inline-flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-white/85 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:text-white hover:shadow-[0_16px_32px_-16px_rgba(54,52,107,0.95)]";
             const miolo = (
               <>
                 <span

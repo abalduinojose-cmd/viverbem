@@ -26,7 +26,7 @@ export function GaleriaProduto({
         {/* A luz dourada da bancada */}
         <span
           aria-hidden="true"
-          className="absolute inset-x-[15%] bottom-6 h-20 bg-[radial-gradient(50%_60%_at_50%_70%,rgba(192,160,96,0.42),transparent_70%)]"
+          className="absolute inset-x-[15%] bottom-6 h-20 bg-[radial-gradient(50%_60%_at_50%_70%,rgba(201,165,107,0.42),transparent_70%)]"
         />
 
         {fotos.length === 0 ? (
@@ -44,7 +44,7 @@ export function GaleriaProduto({
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
               {...(i === 0 ? { fetchPriority: "high" as const } : {})}
-              className={`relative max-w-full max-h-[24rem] md:max-h-[28.5rem] object-contain drop-shadow-[0_28px_26px_rgba(16,42,74,0.25)] ${
+              className={`relative max-w-full max-h-[24rem] md:max-h-[28.5rem] object-contain drop-shadow-[0_28px_26px_rgba(54,52,107,0.25)] ${
                 i === atual ? "animar-surgir" : "hidden"
               }`}
             />

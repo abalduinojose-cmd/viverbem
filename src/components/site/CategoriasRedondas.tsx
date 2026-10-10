@@ -36,7 +36,7 @@ export function CategoriasRedondas({
           return (
             <li key={c.id}>
               <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-3 text-center">
-                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
+                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(54,52,107,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
                   {img?.tipo === "foto" ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -58,7 +58,7 @@ export function CategoriasRedondas({
                         height={400}
                         loading="lazy"
                         decoding="async"
-                        className="max-w-full max-h-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.28)] transition-transform duration-500 group-hover:-translate-y-1"
+                        className="max-w-full max-h-full object-contain drop-shadow-[0_6px_8px_rgba(54,52,107,0.28)] transition-transform duration-500 group-hover:-translate-y-1"
                       />
                     </span>
                   ) : (

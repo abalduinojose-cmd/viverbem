@@ -65,7 +65,7 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
   return (
     <Link
       href={href}
-      className={`group banner-noite em-noite relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 text-center transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)] w-44 md:w-48 p-5`}
+      className={`group banner-noite em-noite relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 text-center transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(54,52,107,0.6)] w-44 md:w-48 p-5`}
     >
       {banner.imagem ? (
         <>
@@ -87,11 +87,11 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
           <span aria-hidden="true" className="malha-banner" />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -right-14 -top-14 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(192,160,96,0.32),transparent_62%)]"
+            className="pointer-events-none absolute -right-14 -top-14 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.32),transparent_62%)]"
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -left-12 -bottom-16 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(63,146,224,0.35),transparent_62%)]"
+            className="pointer-events-none absolute -left-12 -bottom-16 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(80,160,235,0.35),transparent_62%)]"
           />
         </>
       )}

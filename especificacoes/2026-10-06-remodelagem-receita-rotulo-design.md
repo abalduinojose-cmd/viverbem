@@ -1,5 +1,27 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 51 (10/10/2026): paleta nova definida pelo usuário: branco, céu #50A0EB (o azul fraco da hero), índigo #36346B e ouro #C9A56B. Não publicado.**
+> Pedido: "as cores do projeto são o branco, azul fraco que está na
+> animação da hero e o #36346B e o #C9A56B, distribua essas cores no
+> projeto, o site deve ter essas cores predominantes; a ideia é um site
+> clean de alta performance e alta conversão". Mapa (tokens em
+> `globals.css`): tinta, navy e noite = #36346B (tinta escura #2A2856 no
+> hover); novo `--color-ceu` #50A0EB (a luz da hero em `roteiros.ts`,
+> `luz: [80,160,235]`) e `--color-ceu-claro` #8AB8EA, usados só como luz e
+> superfície (halo da abertura, brilho dos banners, gelo #EAF4FD e fio
+> #E3E8F2 como tintas do céu); ouro #C9A56B (claro #D9BD8A sobre o escuro,
+> escuro #9C7B46 em texto pequeno), `--ouro-degrade` refeito em volta dele;
+> grafite #26253A e cinza #66657E puxados para o índigo. `.banner-noite`
+> vai de #46437F a #26244C com o céu no alto e o ouro embaixo; o botão do
+> carrinho usa o ouro da marca (hover ouro escuro). As cores fixas dos
+> componentes (hex e rgba de sombras, brilhos e degradês) foram trocadas
+> em bloco pelo mapa; na hero, o véu dos potes e as paradas do ouro
+> também. Fora: o verde do WhatsApp, o vermelho do logo, o painel
+> administrativo e os arquivos da animação da receita em curso na outra
+> sessão (`CartaoReceita`, `FaleComAGente`, `receita/`). Histórico: a
+> paleta do Instagram (roxo-marinho + dourado + creme + areia) tinha sido
+> reprovada em 07/10; desta vez a base continua branca, com o céu da hero.
+
 > **ADENDO 49 (10/10/2026): "Adicionar" com texto e ícone em branco, textos em português simples, linha de confiança no lugar do aviso, rodapé levemente modernizado e carrinho mais moderno. Não publicado.**
 > Pedidos: "coloque os ícones e escritos em branco, vamos ver se vai ficar
 > bom, quero deixar o site mais clean"; "melhore a frase no receita em mãos

@@ -166,7 +166,7 @@ export default async function PaginaSobre() {
               altura={611}
               revelar="carga"
               prioritaria
-              className="w-full aspect-[4/5] lg:aspect-square rounded-[1.75rem] shadow-[0_30px_60px_-40px_rgba(16,42,74,0.5)]"
+              className="w-full aspect-[4/5] lg:aspect-square rounded-[1.75rem] shadow-[0_30px_60px_-40px_rgba(54,52,107,0.5)]"
             />
             <figcaption className="legenda-foto entra mt-4" style={{ "--atraso": "1000ms" } as CSSProperties}>
               Acompanhamos gerações inteiras de famílias.
@@ -228,7 +228,7 @@ export default async function PaginaSobre() {
       <section
         id="futuro"
         aria-labelledby="titulo-futuro"
-        className={`relative z-[2] -mt-9 rounded-t-[2.25rem] md:rounded-t-[3rem] bg-white shadow-[0_-30px_60px_-40px_rgba(13,35,64,0.45)] ${ANCORA}`}
+        className={`relative z-[2] -mt-9 rounded-t-[2.25rem] md:rounded-t-[3rem] bg-white shadow-[0_-30px_60px_-40px_rgba(54,52,107,0.45)] ${ANCORA}`}
       >
         <div className="capitulo max-w-6xl mx-auto px-5 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
@@ -258,7 +258,7 @@ export default async function PaginaSobre() {
             alt="A equipe da Viver Bem dentro da loja, ao lado da poltrona de atendimento"
             largura={599}
             altura={598}
-            className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none aspect-square rounded-[1.75rem] shadow-[0_30px_60px_-40px_rgba(16,42,74,0.5)]"
+            className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none aspect-square rounded-[1.75rem] shadow-[0_30px_60px_-40px_rgba(54,52,107,0.5)]"
           />
         </div>
       </section>

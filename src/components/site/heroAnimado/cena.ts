@@ -291,7 +291,7 @@ function prepararPote(img: HTMLImageElement, altura: number): Sprites {
   dctx.imageSmoothingQuality = "high";
   dctx.drawImage(pequeno, 0, 0, desfocado.width, desfocado.height);
   dctx.globalCompositeOperation = "source-atop";
-  dctx.fillStyle = "rgba(13, 35, 64, 0.38)";
+  dctx.fillStyle = "rgba(54, 52, 107, 0.38)";
   dctx.fillRect(0, 0, desfocado.width, desfocado.height);
 
   const altReflexo = Math.round(a * 0.42);
@@ -583,10 +583,10 @@ function prepararTextos(ctx: CanvasRenderingContext2D, e: Enquadramento, f: Font
 
 // O ouro metálico do site (--ouro-degrade)
 const PARADAS_OURO: [number, [number, number, number]][] = [
-  [0, [201, 171, 108]],
-  [0.42, [179, 144, 79]],
-  [0.7, [220, 195, 138]],
-  [1, [169, 133, 69]],
+  [0, [224, 196, 143]],
+  [0.42, [201, 165, 107]],
+  [0.7, [232, 212, 166]],
+  [1, [180, 143, 85]],
 ];
 
 /** O degradê de ouro entre x0 e x1, com um brilho que corre (posição 0 a
@@ -604,9 +604,9 @@ export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, bril
   for (const [p, c] of PARADAS_OURO) g.addColorStop(p, `rgb(${c[0]}, ${c[1]}, ${c[2]})`);
   if (brilho > -0.2 && brilho < 1.2) {
     const b = limitar(brilho);
-    g.addColorStop(limitar(b - 0.12), "rgba(214,188,130,1)");
+    g.addColorStop(limitar(b - 0.12), "rgba(224,196,143,1)");
     g.addColorStop(b, "#fbf0d2");
-    g.addColorStop(limitar(b + 0.12), "rgba(196,164,100,1)");
+    g.addColorStop(limitar(b + 0.12), "rgba(201,165,107,1)");
   }
   return g;
 }
@@ -681,9 +681,9 @@ export async function criarCena(
   }
   const particulas = gerarParticulas();
   const [pr, pg, pb] = roteiro.poeira;
-  const bolinhas = [bolinha("rgba(214,186,125,A)"), bolinha(`rgba(${pr},${pg},${pb},A)`), bolinha("rgba(255,255,255,A)")];
+  const bolinhas = [bolinha("rgba(217,189,138,A)"), bolinha(`rgba(${pr},${pg},${pb},A)`), bolinha("rgba(255,255,255,A)")];
   const luzFundo = luzPronta(...roteiro.luz);
-  const luzOuro = luzPronta(205, 170, 105);
+  const luzOuro = luzPronta(201, 165, 107);
   const sombra = luzPronta(2, 9, 22, 0.75);
   // Uma tela mínima só para instanciar fontes no aquecimento
   const provador = novaTela(8, 8).getContext("2d")!;
@@ -987,7 +987,7 @@ export async function criarCena(
       const rot = anguloCarrossel(t);
       const r = 160 * enq.ep;
       ctx.save();
-      ctx.fillStyle = "#e3cb93";
+      ctx.fillStyle = "#e8d4a6";
       for (let i = 0; i < 36; i++) {
         const phi = rot + (i / 36) * TAU;
         const q = P(enq.potesX + r * Math.sin(phi), enq.chao, ORBITA_CENTRO - r * Math.cos(phi), cam);
@@ -1347,7 +1347,7 @@ export async function criarCena(
       const forca = Math.sin(Math.PI * volta);
       ctx.lineCap = "round";
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = `rgba(232, 204, 146, ${0.32 * forca})`;
+      ctx.strokeStyle = `rgba(232, 212, 166, ${0.32 * forca})`;
       for (let j = 1; j <= 4; j++) {
         const comp = perimetro * 0.07 * j;
         ctx.setLineDash([comp, perimetro * 2]);
@@ -1365,13 +1365,13 @@ export async function criarCena(
       const respira = 0.5 - 0.5 * Math.cos((TAU * 3 * t) / DURACAO);
       const halo = r.raioPonto * (2.4 + 1.6 * respira);
       const gh = ctx.createRadialGradient(r.pontoX, cy, 0, r.pontoX, cy, halo);
-      gh.addColorStop(0, `rgba(232, 204, 146, ${(0.4 + 0.2 * respira) * acende})`);
-      gh.addColorStop(1, "rgba(232, 204, 146, 0)");
+      gh.addColorStop(0, `rgba(232, 212, 166, ${(0.4 + 0.2 * respira) * acende})`);
+      gh.addColorStop(1, "rgba(232, 212, 166, 0)");
       ctx.globalCompositeOperation = "lighter";
       ctx.fillStyle = gh;
       ctx.fillRect(r.pontoX - halo, cy - halo, halo * 2, halo * 2);
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "#e1c68f";
+      ctx.fillStyle = "#e0c48f";
       ctx.beginPath();
       ctx.arc(r.pontoX, cy, r.raioPonto * acende, 0, TAU);
       ctx.fill();
@@ -1434,7 +1434,7 @@ export async function criarCena(
         ctx.fillText(passo.numero.texto, 0, dy);
         x = passo.numero.largura + tp * 0.6;
       } else {
-        ctx.fillStyle = "#c0a060";
+        ctx.fillStyle = "#c9a56b";
         ctx.beginPath();
         ctx.arc(tp * 0.25, dy - tp * 0.34, tp * 0.19, 0, TAU);
         ctx.fill();

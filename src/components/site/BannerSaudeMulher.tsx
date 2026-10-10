@@ -46,7 +46,7 @@ export function SecaoSaudeMulher({ produtos }: { produtos: ProdutoDTO[] }) {
       {/* A animação, no cartão azul-noite inteiro clicável */}
       <Link
         href={LINK_LINHA}
-        className="revelar vao-titulo group banner-noite em-noite relative block overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)] h-[min(calc((100vw-2.5rem)*1.444),34rem)] md:h-[24rem] lg:h-[26rem] xl:h-[28rem]"
+        className="revelar vao-titulo group banner-noite em-noite relative block overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white shadow-[0_30px_60px_-36px_rgba(54,52,107,0.6)] h-[min(calc((100vw-2.5rem)*1.444),34rem)] md:h-[24rem] lg:h-[26rem] xl:h-[28rem]"
       >
         <CenaAnimada roteiro="mulher" />
         <span className="sr-only">Saúde em cada fase da mulher. Beleza e autoestima.</span>

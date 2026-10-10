@@ -22,7 +22,7 @@ export function FotoProduto({
       <div className={`flex items-center justify-center ${className}`} aria-label={nome}>
         <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <rect x="7" y="2.5" width="10" height="19" rx="5" stroke="#1C69B5" strokeWidth="1.5" opacity="0.55" />
-          <path d="M7 12h10" stroke="#b3904f" strokeWidth="1.5" opacity="0.7" />
+          <path d="M7 12h10" stroke="#c9a56b" strokeWidth="1.5" opacity="0.7" />
         </svg>
       </div>
     );

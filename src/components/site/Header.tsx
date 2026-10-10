@@ -138,7 +138,7 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
 // Pílula da fileira de categorias: a ativa em navy, as outras em gelo
 const classeCategoria = (ativo: boolean) =>
   `shrink-0 inline-flex items-center h-11 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
-    ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
+    ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(54,52,107,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
   }`;
 
 // Botões do celular (carrinho, busca e menu) numa cápsula branca com fio,
@@ -200,7 +200,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           vantagens com ícone em ouro, separadas por um fio; os links
           institucionais em pílulas na ponta. Nada quebra linha: cada item
           entra só a partir da largura em que cabe. */}
-      <div className="hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
+      <div className="hidden md:block bg-[linear-gradient(90deg,#36346b_0%,#0f3157_55%,#124a86_100%)] text-white">
         <div className="max-w-7xl mx-auto px-5 md:px-8 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
           <ul className="flex items-center min-w-0">
             <li className="flex items-center">
