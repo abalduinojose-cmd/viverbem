@@ -11,7 +11,7 @@ import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 
 const ITENS = [
-  { icone: <IconeMoto tamanho={20} />, titulo: "Delivery", texto: "por toda Petrópolis" },
+  { icone: <IconeMoto tamanho={20} />, titulo: "Delivery", texto: "Petrópolis e Região" },
   { icone: <IconeLoja tamanho={18} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
   { icone: <IconeReceita tamanho={18} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
   {

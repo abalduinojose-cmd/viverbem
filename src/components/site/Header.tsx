@@ -80,7 +80,7 @@ const INSTITUCIONAL = [
 // Vantagens da faixa do topo (computador). Para a faixa nunca quebrar
 // linha, a nota do Google entra de lg para cima e a retirada só de xl.
 const VANTAGENS = [
-  { icone: <IconeMoto tamanho={16} />, texto: "Delivery por toda Petrópolis" },
+  { icone: <IconeMoto tamanho={16} />, texto: "Delivery em Petrópolis e Região" },
   {
     icone: <IconeEstrela tamanho={14} />,
     texto: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google · ${AVALIACOES_GOOGLE_TOTAL} avaliações`,

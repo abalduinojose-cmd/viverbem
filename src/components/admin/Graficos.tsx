@@ -278,7 +278,7 @@ export function GraficoEntregas({ entregas, retiradas }: { entregas: number; ret
       />
       <p className="text-grafite-claro text-xs mt-4 leading-relaxed">
         {pctEntrega >= 50
-          ? "A maior parte sai de moto: vale acompanhar a fila de entrega."
+          ? "A maior parte sai pelo Delivery: vale acompanhar a fila de entrega."
           : "A maior parte é retirada na loja: vale ter o pedido pronto na frente."}
       </p>
     </div>

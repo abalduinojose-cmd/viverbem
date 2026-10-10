@@ -754,7 +754,7 @@ export function CarrinhoDrawer() {
                         {
                           modo: ENTREGA_DELIVERY,
                           titulo: "Receber em casa",
-                          apoio: "de moto",
+                          apoio: "Delivery",
                           icone: <IconeMoto tamanho={24} />,
                         },
                       ].map((opcao) => (

@@ -123,12 +123,12 @@ function Sanfona({
 const PASSOS_PEDIDO = [
   { titulo: "Adicione ao carrinho", texto: "e envie o pedido pelo WhatsApp." },
   { titulo: "O farmacêutico confere", texto: "e passa o valor e o prazo." },
-  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, de moto.` },
+  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, pelo Delivery.` },
 ];
 
 // Selos de logística, embaixo da foto: só o que dá para comprovar
 const SELOS = [
-  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "por toda Petrópolis" },
+  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "Petrópolis e Região" },
   { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
 ];
 

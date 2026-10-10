@@ -74,7 +74,7 @@ const MARCOS = [
     ano: "Hoje",
     titulo: `${ANOS_TRADICAO} anos de cuidado sob medida`,
     texto:
-      "Três lojas, a mesma equipe de farmacêuticos e o pedido pela receita também pelo site, com entrega em toda Petrópolis.",
+      "Três lojas, a mesma equipe de farmacêuticos e o pedido pela receita também pelo site, com Delivery em Petrópolis e Região.",
   },
 ];
 
@@ -252,7 +252,7 @@ export default async function PaginaSobre() {
             </p>
             {/* O que não mudou, em três pílulas com o ponto de ouro (10/10/2026) */}
             <ul className="mt-6 flex flex-wrap gap-2">
-              {["Receita conferida pelo farmacêutico", "Fórmula com o seu nome no rótulo", "Retirada grátis ou entrega de moto"].map((t) => (
+              {["Receita conferida pelo farmacêutico", "Fórmula com o seu nome no rótulo", "Retirada grátis ou Delivery"].map((t) => (
                 <li key={t} className="chip !min-h-10 !px-3.5 text-sm">
                   <span aria-hidden="true" className="mr-2 size-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
                   {t}

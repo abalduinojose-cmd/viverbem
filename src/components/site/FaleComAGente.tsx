@@ -209,7 +209,7 @@ export function FaleComAGente() {
               ))}
             </ul>
             <p className="mt-auto pt-4 text-xs text-cinza leading-relaxed">
-              Retirada grátis em qualquer loja. Entrega de moto em toda Petrópolis.
+              Retirada grátis em qualquer loja. Delivery em Petrópolis e Região.
             </p>
           </div>
 

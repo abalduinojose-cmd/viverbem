@@ -97,7 +97,7 @@ const PASSOS = [
   },
   {
     titulo: "Retire ou receba",
-    texto: `Sem custo em uma das ${UNIDADES.length} lojas, ou em casa, de moto, em toda Petrópolis.`,
+    texto: `Sem custo em uma das ${UNIDADES.length} lojas, ou em casa, pelo Delivery, em Petrópolis e Região.`,
     detalhe: "A taxa e o prazo da entrega são combinados pelo WhatsApp.",
     icone: <IconeMoto tamanho={22} />,
     lojas: true,
