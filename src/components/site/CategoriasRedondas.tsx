@@ -26,7 +26,7 @@ export function CategoriasRedondas({
     <section aria-labelledby="titulo-categorias" className="pt-0.5 md:pt-1 max-w-7xl mx-auto px-5 md:px-8">
       <div className="revelar text-center">
         <h2 id="titulo-categorias" className="titulo-secao text-[calc(var(--tam-titulo)*0.9)]">
-          Nossas <span className="italic">categorias</span>
+          Conheça nossas <span className="italic">linhas de produtos</span>
         </h2>
       </div>
 

@@ -1305,3 +1305,30 @@ summary::-webkit-details-marker {
     animation: none !important;
   }
 }
+
+/* "Como funciona" v8 (11/10/2026, "modernize ainda mais"): os passos em
+   stories. No computador um passo de cada vez acende em azul-noite por uns
+   4 s, e a barra de ouro dele se enche no mesmo tempo (a barra reinicia
+   quando o passo muda: o span é remontado); o mouse em cima pausa; tocar
+   num cartão escolhe. Roda também com "reduzir movimento" (pedido do
+   usuário: o Windows dele está sem animações). */
+.passo-cartao {
+  transition:
+    background-color 0.55s,
+    border-color 0.55s,
+    color 0.55s,
+    box-shadow 0.55s,
+    transform 0.55s;
+}
+.passo-barra-enche {
+  transform-origin: 0% 50%;
+  animation: passo-enche linear both;
+}
+@keyframes passo-enche {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

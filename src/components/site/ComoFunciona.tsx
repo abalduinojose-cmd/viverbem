@@ -1,32 +1,37 @@
+"use client";
 // "Como funciona": a trilha do pedido pela receita, da foto da prescrição
 // até a retirada ou a entrega, em quatro passos. Aparece na home, na
 // página A Viver Bem e na página /como-funciona (sem o cabeçalho).
 //
-// Sétima versão (11/10/2026, pedido: "deixe mais moderno, tá muito
-// amador"): um STEPPER de verdade. No computador, uma linha de ouro
-// atravessa os quatro passos e cresce quando a fileira entra na tela
-// (scroll-driven, roda também com "reduzir movimento"); sobre a linha,
-// quatro nós brancos com o ícone e um fio de ouro; embaixo de cada nó, o
-// "passo 01" pequeno em ouro, o título, o texto e o detalhe, sem caixas.
-// Até o tablet, os passos são cartões que arrastam para o lado (pedido de
-// 10/10/2026), cada um com o nó do ícone, o número em marca d'água e a
-// barra de ouro embaixo acompanhando a faixa. Depois dos passos, o convite
-// da receita em azul-noite, largo: título em duas vozes, apoio, os botões
-// da dobra (botao-vivo e botao-vidro) e a linha de confiança.
+// Oitava versão (11/10/2026, pedido: "modernize ainda mais"): os passos
+// EM STORIES. No computador, quatro barras de ouro no alto (as mesmas que
+// contam os passos no letreiro da dobra) e quatro cartões; um passo de
+// cada vez ACENDE em azul-noite, com a luz de ouro e a malha, enquanto a
+// barra dele se enche em uns 4 s; depois passa ao próximo, em laço, só
+// com a seção à vista. O mouse em cima pausa; tocar num cartão escolhe.
+// Cada cartão leva o número grande em ouro itálico, o ícone num quadrado
+// (gelo no claro, vidro no escuro), o título, o texto e o detalhe. Até o
+// tablet, os cartões arrastam para o lado (pedido de 10/10/2026), todos
+// claros, com a barra de ouro embaixo acompanhando a faixa. Depois dos
+// passos, o convite da receita em azul-noite, largo (inalterado).
 //
-// Versões anteriores: 10/10 lista num cartão com o convite preso ao lado
-// (sexta); 08/10 quatro cartões com traço e faixa (quinta); 07/10 um cartão
-// dividido por fios (quarta). Esta seção absorveu as duas que contavam o
-// mesmo processo: o processo é contado uma vez.
+// Versões anteriores: 11/10 stepper com a linha de ouro e nós (sétima);
+// 10/10 lista num cartão com o convite preso ao lado (sexta); 08/10 quatro
+// cartões com traço e faixa (quinta); 07/10 um cartão dividido por fios
+// (quarta). Esta seção absorveu as duas que contavam o mesmo processo.
 //
 // Texto de processo, não de resultado: manipulado não pode ter promessa
 // de efeito (RDC 67/2007 e RDC 96/2008). Antes de mexer no texto, confirme
 // com o farmacêutico responsável.
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { UNIDADES, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 import { IconeLoja } from "./IconesVantagens";
 import { IconeMoto } from "./IconeMoto";
 import { IconeWhatsApp } from "./icones";
+
+// Quanto tempo cada passo fica aceso no computador
+const DURACAO_PASSO = 4200;
 
 // Prancheta com o visto: o farmacêutico confere
 function IconeConfere() {
@@ -108,14 +113,15 @@ const CONFIANCA = [
   { icone: <IconeCadeado />, texto: "Sua receita e seus dados ficam só com a nossa equipe." },
 ];
 
-/** O nó do passo: um círculo branco com o ícone e um fio de ouro */
-function No({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="relative z-[1] flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-tinta ring-1 ring-ouro/50 shadow-[0_14px_30px_-16px_rgba(16,42,74,0.45),0_0_0_6px_rgba(201,165,107,0.1)]">
-      {children}
-    </span>
-  );
+// Só o computador acende os passos; até o tablet a pessoa arrasta
+const CONSULTA_COMPUTADOR = "(min-width: 64rem)";
+function assinarLargura(avisar: () => void) {
+  const consulta = window.matchMedia(CONSULTA_COMPUTADOR);
+  consulta.addEventListener("change", avisar);
+  return () => consulta.removeEventListener("change", avisar);
 }
+const lerLargura = () => window.matchMedia(CONSULTA_COMPUTADOR).matches;
+const lerLarguraNoServidor = () => false;
 
 export function ComoFunciona({
   className = "secao",
@@ -125,6 +131,35 @@ export function ComoFunciona({
   /** Falso na página /como-funciona, que já tem o próprio título */
   cabecalho?: boolean;
 }) {
+  const computador = useSyncExternalStore(assinarLargura, lerLargura, lerLarguraNoServidor);
+  const faixa = useRef<HTMLOListElement>(null);
+  const [ativo, setAtivo] = useState(0);
+  const [pausado, setPausado] = useState(false);
+  const [visivel, setVisivel] = useState(false);
+  // Conta as retomadas: a barra remonta e recomeça junto com o tempo
+  const [rodada, setRodada] = useState(0);
+
+  // Só anda com a fileira à vista
+  useEffect(() => {
+    const el = faixa.current;
+    if (!el) return;
+    const observador = new IntersectionObserver(([e]) => setVisivel(e.isIntersecting), { threshold: 0.3 });
+    observador.observe(el);
+    return () => observador.disconnect();
+  }, []);
+
+  // O próximo passo, depois da duração (pausa com o mouse em cima)
+  useEffect(() => {
+    if (!computador || !visivel || pausado) return;
+    const tempo = setTimeout(() => setAtivo((a) => (a + 1) % PASSOS.length), DURACAO_PASSO);
+    return () => clearTimeout(tempo);
+  }, [ativo, rodada, computador, visivel, pausado]);
+
+  const escolher = (i: number) => {
+    setAtivo(i);
+    setRodada((r) => r + 1);
+  };
+
   return (
     <section
       id="como-funciona"
@@ -148,59 +183,116 @@ export function ComoFunciona({
         </div>
       )}
 
-      {/* ---------- Os quatro passos: stepper no computador, faixa até o tablet ---------- */}
+      {/* ---------- Os quatro passos: stories no computador, faixa até o tablet ---------- */}
       <div className={`passos-escopo ${cabecalho ? "vao-titulo" : ""}`}>
-        <ol className="passos-faixa relative flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0">
-          {/* A linha de ouro que atravessa os nós (só no computador): cresce
-              quando a fileira entra na tela */}
-          {/* Do centro do primeiro nó ao centro do último: meia coluna de cada
-              lado (as colunas têm 2rem de vão entre si) */}
-          <span aria-hidden="true" className="hidden lg:block absolute left-[calc((100%-6rem)/8)] right-[calc((100%-6rem)/8)] top-7 h-px bg-fio" />
-          <span aria-hidden="true" className="traco-liga hidden lg:block absolute left-[calc((100%-6rem)/8)] right-[calc((100%-6rem)/8)] top-7 h-px" />
-
+        {/* As barras que contam os passos (só no computador): as de trás
+            cheias, a da vez se enchendo, as da frente vazias */}
+        <div aria-hidden="true" className="hidden lg:grid grid-cols-4 gap-5 mb-5">
           {PASSOS.map((p, i) => (
-            <li
+            <button
               key={p.titulo}
-              className="group relative flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] border border-fio bg-white p-5 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:w-auto lg:shrink lg:items-center lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:text-center lg:shadow-none"
+              type="button"
+              tabIndex={-1}
+              onClick={() => escolher(i)}
+              className="group/barra h-5 cursor-pointer"
             >
-              {/* O número em marca d'água (só nos cartões) */}
-              <span aria-hidden="true" className="numero-tinta pointer-events-none absolute right-4 top-1 text-[4.5rem] leading-none opacity-20 lg:hidden">
-                {String(i + 1).padStart(2, "0")}
+              <span className="block h-[3px] w-full overflow-hidden rounded-full bg-fio transition-colors group-hover/barra:bg-ouro/30">
+                {computador && i < ativo && <span className="block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />}
+                {computador && i === ativo && (
+                  <span
+                    key={`${ativo}-${rodada}`}
+                    className="passo-barra-enche block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]"
+                    style={{ animationDuration: `${DURACAO_PASSO}ms`, animationPlayState: pausado ? "paused" : "running" }}
+                  />
+                )}
               </span>
-              <No>{p.icone}</No>
-              <span className="mt-5 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ouro-escuro">
-                passo {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="mt-2 text-[1.2rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
-                <span className="sr-only">Passo {i + 1}: </span>
-                {p.titulo}
-              </h3>
-              <p className="mt-2.5 text-[0.95rem] leading-relaxed text-grafite lg:max-w-[26ch]">{p.texto}</p>
-              <p className="mt-1.5 text-sm leading-relaxed text-cinza lg:max-w-[26ch]">{p.detalhe}</p>
-
-              {/* Passo 04: as lojas, em chips com o mapa */}
-              {p.lojas && (
-                <ul className="mt-auto flex flex-wrap gap-2 pt-4 lg:justify-center">
-                  {UNIDADES.map((u) => (
-                    <li key={u.bairro}>
-                      <a
-                        href={linkMapaUnidade(u.bairro, u.endereco)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="chip !min-h-9 !px-3 text-[0.8rem]"
-                        title={u.endereco}
-                      >
-                        <span className="mr-1.5 -ml-0.5 text-ouro">
-                          <IconeLoja tamanho={14} />
-                        </span>
-                        {u.bairro}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
+            </button>
           ))}
+        </div>
+
+        <ol
+          ref={faixa}
+          onMouseEnter={() => setPausado(true)}
+          onMouseLeave={() => {
+            setPausado(false);
+            setRodada((r) => r + 1);
+          }}
+          className="passos-faixa relative flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0"
+        >
+          {PASSOS.map((p, i) => {
+            const aceso = computador && i === ativo;
+            return (
+              <li
+                key={p.titulo}
+                onClick={() => escolher(i)}
+                className={`passo-cartao group relative flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] border p-5 md:p-6 lg:w-auto lg:shrink lg:min-h-[19rem] lg:cursor-pointer ${
+                  aceso
+                    ? "border-transparent bg-noite text-white shadow-[0_30px_60px_-36px_rgba(13,35,64,0.65)] lg:-translate-y-1"
+                    : "border-fio bg-white text-navy shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:hover:border-ouro/40"
+                }`}
+              >
+                {/* A atmosfera do cartão aceso: a malha e a luz de ouro, em fade */}
+                <span
+                  aria-hidden="true"
+                  className={`malha-banner transition-opacity duration-500 ${aceso ? "opacity-100" : "opacity-0"}`}
+                />
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.32),transparent_62%)] transition-opacity duration-500 ${
+                    aceso ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+
+                {/* O número grande em ouro e o ícone no quadrado */}
+                <span className="relative flex items-start justify-between gap-3">
+                  <span aria-hidden="true" className="numero-tinta text-[2.4rem] md:text-[2.7rem]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-500 ${
+                      aceso ? "bg-white/10 text-white ring-1 ring-white/15" : "bg-gelo text-tinta"
+                    }`}
+                  >
+                    {p.icone}
+                  </span>
+                </span>
+
+                <h3 className="relative mt-5 text-[1.2rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] leading-snug">
+                  <span className="sr-only">Passo {i + 1}: </span>
+                  {p.titulo}
+                </h3>
+                <p className={`relative mt-2.5 text-[0.95rem] leading-relaxed transition-colors duration-500 ${aceso ? "text-white/80" : "text-grafite"}`}>
+                  {p.texto}
+                </p>
+                <p className={`relative mt-1.5 text-sm leading-relaxed transition-colors duration-500 ${aceso ? "text-white/55" : "text-cinza"}`}>
+                  {p.detalhe}
+                </p>
+
+                {/* Passo 04: as lojas, em chips com o mapa */}
+                {p.lojas && (
+                  <ul className="relative mt-auto flex flex-wrap gap-2 pt-4">
+                    {UNIDADES.map((u) => (
+                      <li key={u.bairro}>
+                        <a
+                          href={linkMapaUnidade(u.bairro, u.endereco)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="chip !min-h-9 !px-3 text-[0.8rem]"
+                          title={u.endereco}
+                        >
+                          <span className="mr-1.5 -ml-0.5 text-ouro">
+                            <IconeLoja tamanho={14} />
+                          </span>
+                          {u.bairro}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ol>
         {/* A barra de ouro que anda com a faixa (só até o tablet) */}
         <div aria-hidden="true" className="lg:hidden mt-4 mx-auto h-[3px] w-28 rounded-full bg-fio overflow-hidden">

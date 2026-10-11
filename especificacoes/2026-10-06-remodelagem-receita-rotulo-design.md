@@ -1,5 +1,25 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 62 (11/10/2026): "Conheça nossas linhas de produtos" e o Como funciona v8, em stories; 19º push.**
+> Pedidos: "mude 'Nossas categorias' por 'Conheça nossas linhas de
+> produtos'"; "modernize ainda mais a seção Como funciona"; "atualize o
+> link prévio do GitHub". Título das categorias trocado (itálico em "linhas
+> de produtos"). Como funciona v8 (`ComoFunciona.tsx`, agora client): os
+> passos EM STORIES. No computador, quatro barras de ouro no alto (as
+> mesmas do letreiro da dobra) e quatro cartões; um passo de cada vez
+> acende em azul-noite, com a malha e a luz de ouro em fade, enquanto a
+> barra dele se enche em 4,2 s; depois passa ao próximo, em laço, só com a
+> fileira à vista (IntersectionObserver); o mouse em cima pausa (a barra
+> congela e, ao sair, recomeça junto com o tempo); tocar num cartão ou numa
+> barra escolhe. Cada cartão leva o número grande em ouro itálico
+> (`numero-tinta`), o ícone num quadrado (gelo no claro, vidro no escuro),
+> título, texto e detalhe; no passo 04 os chips das lojas com o mapa. Até o
+> tablet os cartões seguem arrastando para o lado (pedido de 10/10), todos
+> claros, com a barra de ouro embaixo acompanhando a faixa; nada acende
+> (`matchMedia` por `useSyncExternalStore`). O stepper com a linha e os nós
+> (v7) saiu; o convite da receita embaixo ficou igual. CSS novo:
+> `.passo-cartao` (transições) e `.passo-barra-enche` (a barra enchendo).
+
 > **ADENDO 61 (11/10/2026): cabeçalho na moldura da dobra (computador). Não publicado.**
 > Pedido (print com as três faixas do cabeçalho circuladas): "corrija a
 > parte marcada na versão desktop, deixe ela enquadrada com o site,
