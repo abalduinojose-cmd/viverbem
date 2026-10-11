@@ -73,7 +73,7 @@ const POEIRA = Array.from({ length: 18 }, (_, i) => {
   };
 });
 
-const FAISCAS = 12;
+const FAISCAS = 8;
 const TEXTO_1 = "Receita conferida";
 const TEXTO_2 = "Já te mando o valor.";
 
@@ -342,17 +342,26 @@ export function CenaReceita({ className = "" }: { className?: string }) {
         E.texto2.textContent = TEXTO_2.slice(0, n2);
       }
 
-      // O "conferida": onda de choque, brilho e faíscas de ouro
-      const q = trecho(t, 5.72, 6.35);
+      // O "conferida" (11/10/2026): dois anéis que abrem em tempos e
+      // larguras diferentes, com riscos finos de ouro que somem no meio do
+      // caminho. Era um estouro de raios grossos saindo do centro, que é o
+      // desenho de efeito de dez anos atrás.
       (L.faiscas ?? []).forEach((el, i) => {
-        const ang = (i / FAISCAS) * 360 + 8;
-        const dist = mix(6, 34, saiQuinta(q));
-        const esc = q < 0.25 ? q / 0.25 : 1 - (q - 0.25) / 0.75;
-        s(el, `rotate(${ang}deg) translateX(${dist}px) scaleX(${Math.max(0.001, esc)})`, q > 0 && q < 1 ? 1 : 0);
+        const ang = (i / FAISCAS) * 360 + 12;
+        const d = i * 0.012;
+        const pi = saiQuinta(trecho(t, 5.72 + d, 6.16 + d));
+        const dist = mix(7, 30, pi);
+        // Sobe e some dentro do próprio trajeto: vira rastro, não raio
+        const alfa = pi > 0 && pi < 1 ? Math.sin(Math.PI * pi) ** 1.5 : 0;
+        s(el, `rotate(${ang}deg) translateX(${dist}px) scaleX(${mix(1, 0.35, pi).toFixed(3)})`, alfa);
       });
-      const qo = trecho(t, 5.7, 6.3);
-      s(E.onda, `scale(${mix(0.4, 4.2, saiQuinta(qo))})`, qo > 0 && qo < 1 ? 0.9 * (1 - qo) : 0);
-      s(E.brilhoOuro, `scale(${mix(0.6, 1.3, saiCubica(trecho(t, 5.7, 6.0)))})`, 0.8 * pulso(t, 5.65, 6.6));
+      const anel = (el: HTMLElement | undefined, a: number, b: number, ate: number, forca: number) => {
+        const p = trecho(t, a, b);
+        s(el, `scale(${mix(0.35, ate, saiQuinta(p))})`, p > 0 && p < 1 ? forca * (1 - p) ** 1.4 : 0);
+      };
+      anel(E.onda, 5.7, 6.26, 3.6, 0.95);
+      anel(E.onda2, 5.84, 6.5, 5.4, 0.5);
+      s(E.brilhoOuro, `scale(${mix(0.6, 1.25, saiCubica(trecho(t, 5.7, 6.0)))})`, 0.7 * pulso(t, 5.65, 6.6));
 
       // A luz que corre pelo vidro do celular (na chegada e depois)
       const vidro = t < 2 ? trecho(t, 1.0, 1.6) : trecho(t, 7.0, 7.7);
@@ -629,11 +638,14 @@ export function CenaReceita({ className = "" }: { className?: string }) {
                 className="absolute -left-[40px] -top-[40px] w-[80px] h-[80px] rounded-full bg-[radial-gradient(circle,rgba(224,196,143,0.55),transparent_65%)] opacity-0"
               />
               <span data-c="onda" className="absolute -left-[8px] -top-[8px] w-[16px] h-[16px] rounded-full border-[1.5px] border-[#e0c48f] opacity-0" />
+              {/* O segundo anel abre depois e mais largo, bem mais fino: é
+                  o que dá profundidade ao pulso, em vez de um aro só */}
+              <span data-c="onda2" className="absolute -left-[8px] -top-[8px] w-[16px] h-[16px] rounded-full border border-[#e0c48f]/70 opacity-0" />
               {Array.from({ length: FAISCAS }, (_, i) => (
                 <span
                   key={i}
                   data-c="faiscas"
-                  className="absolute left-0 top-0 w-[10px] h-[2px] -mt-[1px] rounded-full bg-[image:var(--ouro-degrade)] opacity-0"
+                  className="absolute left-0 top-0 w-[7px] h-[1.5px] -mt-[0.75px] rounded-full bg-[image:var(--ouro-degrade)] opacity-0"
                   style={{ transformOrigin: "0% 50%" }}
                 />
               ))}
