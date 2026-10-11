@@ -90,11 +90,15 @@ const VANTAGENS = [
   { icone: <IconeLoja tamanho={15} />, texto: `Retirada sem taxa em ${UNIDADES.length} lojas`, aPartirDe: "xl" as const },
 ];
 
-// Itens do submenu "A Viver Bem" (âncoras da página Sobre), no menu do celular
+// Itens do submenu "A Viver Bem" no menu do celular. Desde 11/10/2026
+// (pedido: "coloque também os produtos"; "quero uma página só para as
+// avaliações"; "melhore a página Como funciona"): os produtos entram no
+// alto, e Como funciona e as avaliações têm página própria.
 const MENU_SOBRE = [
+  { href: "/produtos", rotulo: "Produtos" },
   { href: "/sobre#historia", rotulo: "Nossa história" },
-  { href: "/sobre#como-funciona", rotulo: "Como funciona" },
-  { href: "/sobre#avaliacoes", rotulo: "O que dizem os clientes" },
+  { href: "/como-funciona", rotulo: "Como funciona" },
+  { href: "/avaliacoes", rotulo: "O que dizem os clientes" },
 ];
 
 function IconeLupa() {

@@ -149,12 +149,19 @@ export async function obterCategorias(): Promise<CategoriaDTO[]> {
 // Só entram no site as avaliações COM foto do cliente: um cartão com
 // a inicial no lugar do rosto passa impressão de depoimento inventado.
 export async function obterAvaliacoes(): Promise<DepoimentoDTO[]> {
+  return (await obterTodasAvaliacoes()).filter((a) => Boolean(a.fotoUrl));
+}
+
+/** TODAS as avaliações ativas, com e sem foto: a página /avaliacoes
+ *  (11/10/2026, "uma página só para as avaliações, com 30") mostra a
+ *  inicial no lugar do rosto de quem não tem foto no Google. */
+export async function obterTodasAvaliacoes(): Promise<DepoimentoDTO[]> {
   if (EH_DEMO) {
-    return (await lerRetratoDemo()).avaliacoes.filter((a) => Boolean(a.fotoUrl));
+    return (await lerRetratoDemo()).avaliacoes;
   }
 
   const avaliacoes = await db.depoimento.findMany({
-    where: { ativo: true, NOT: { fotoUrl: null } },
+    where: { ativo: true },
     orderBy: { ordem: "asc" },
   });
 

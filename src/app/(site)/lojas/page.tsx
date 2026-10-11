@@ -10,27 +10,21 @@
 // cartão com foto por loja (a farmácia não tem foto de cada fachada; se
 // mandar, é só trocar a imagem). Embaixo, o horário com o estado ao vivo.
 // Sistema "Branco, azul e ouro" (06/10/2026).
+// 11/10/2026 ("modernize e deixe mais dinâmica"): a lista das lojas virou
+// LojasInterativas: tocar numa loja mostra o mapa dela ao lado, com o
+// estado ao vivo e as ações.
 import type { Metadata } from "next";
 import { asset } from "@/lib/asset";
-import { ANOS_TRADICAO, UNIDADES, linkMapaUnidade, WHATSAPP_LOJA, WHATSAPP_NUMERO } from "@/lib/tipos";
+import { ANOS_TRADICAO, UNIDADES, WHATSAPP_LOJA } from "@/lib/tipos";
 import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
-import { IconeWhatsApp } from "@/components/site/icones";
+import { LojasInterativas } from "@/components/site/LojasInterativas";
 
 export const metadata: Metadata = {
   title: "Lojas · Manipulação Viver Bem",
   description:
-    "As 3 lojas da Viver Bem em Petrópolis: Centro, Corrêas e Posse. Endereços, horário e como chegar.",
+    "As 3 lojas da Viver Bem em Petrópolis: Centro, Corrêas e Posse. Endereços, mapa, horário e como chegar.",
 };
-
-function IconePino() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      <circle cx="12" cy="11" r="2.3" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
 
 export default function PaginaLojas() {
   return (
@@ -71,50 +65,11 @@ export default function PaginaLojas() {
         </div>
       </section>
 
-      {/* ---------- As lojas, em lista com fio ---------- */}
+      {/* ---------- As lojas, com o mapa da escolhida (11/10/2026, "mais dinâmica") ---------- */}
       <section aria-label="As lojas" className="px-5 md:px-8 pt-10 md:pt-14">
-        <ol className="escalonado max-w-6xl mx-auto border-y border-fio divide-y divide-fio">
-          {UNIDADES.map((u, i) => (
-            <li
-              key={u.bairro}
-              className="grid grid-cols-[3rem_1fr] md:grid-cols-[5rem_1fr_auto] items-center gap-x-4 md:gap-x-8 gap-y-4 py-7 md:py-9"
-            >
-              <span aria-hidden="true" className="numero-tinta text-[2rem] md:text-[2.6rem] leading-none">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-
-              <div className="min-w-0">
-                <h2 className="text-[1.6rem] md:text-[2rem] font-semibold tracking-[-0.035em] text-navy leading-tight">
-                  {u.bairro}
-                </h2>
-                <p className="mt-1.5 text-cinza leading-relaxed">{u.endereco}</p>
-                {u.telefone && <p className="mt-1 text-sm text-cinza tabular-nums">Telefone {u.telefone}</p>}
-              </div>
-
-              {/* As ações: o mapa é a principal; o WhatsApp é o mesmo das três */}
-              <div className="col-start-2 md:col-start-3 flex items-center gap-2.5">
-                <a
-                  href={linkMapaUnidade(u.bairro, u.endereco)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="botao botao-principal botao-compacto !min-h-11 !gap-2"
-                >
-                  <IconePino />
-                  Como chegar
-                </a>
-                <a
-                  href={`https://wa.me/${WHATSAPP_NUMERO}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Falar no WhatsApp sobre a loja ${u.bairro}`}
-                  className="botao botao-secundario !min-h-11 w-11 !px-0"
-                >
-                  <IconeWhatsApp tamanho={19} className="text-[#25D366]" />
-                </a>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <div className="max-w-6xl mx-auto">
+          <LojasInterativas unidades={UNIDADES} />
+        </div>
       </section>
 
       {/* ---------- Horário e o pedido pela receita ---------- */}

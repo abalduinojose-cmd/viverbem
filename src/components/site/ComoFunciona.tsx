@@ -106,30 +106,40 @@ const PASSOS = [
 
 // A linha de confiança, dentro do convite: o aviso legal em dois pontos curtos
 const CONFIANCA = [
-  { icone: <IconeEscudo />, texto: "Manipulamos só com receita válida, de profissional habilitado." },
+  { icone: <IconeEscudo />, texto: "Manipulação com receita válida." },
   { icone: <IconeCadeado />, texto: "Sua receita e seus dados ficam só com a nossa equipe." },
 ];
 
-export function ComoFunciona({ className = "secao" }: { className?: string }) {
+export function ComoFunciona({
+  className = "secao",
+  cabecalho = true,
+}: {
+  className?: string;
+  /** Falso na página /como-funciona, que já tem o próprio título */
+  cabecalho?: boolean;
+}) {
   return (
     <section
       id="como-funciona"
-      aria-labelledby="titulo-como-funciona"
+      aria-labelledby={cabecalho ? "titulo-como-funciona" : undefined}
+      aria-label={cabecalho ? undefined : "Os quatro passos"}
       className={`max-w-7xl mx-auto px-5 md:px-8 scroll-mt-[calc(var(--altura-cabecalho)+1rem)] ${className}`}
     >
       {/* ---------- Cabeçalho: rótulo, título em duas vozes e o apoio embaixo ---------- */}
-      <div className="revelar max-w-3xl">
-        <p className="rotulo-pilula">como funciona</p>
-        <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
-          Do envio da receita <span className="italic">à entrega</span>
-        </h2>
-        <p className="texto-apoio mt-5 max-w-[36rem]">
-          Quatro passos, da foto da receita até a retirada ou a entrega. Cada fórmula é
-          preparada depois do pedido, conforme a receita.
-        </p>
-      </div>
+      {cabecalho && (
+        <div className="revelar max-w-3xl">
+          <p className="rotulo-pilula">como funciona</p>
+          <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
+            Do envio da receita <span className="italic">à entrega</span>
+          </h2>
+          <p className="texto-apoio mt-5 max-w-[36rem]">
+            Quatro passos, da foto da receita até a retirada ou a entrega. Cada fórmula é
+            preparada depois do pedido, conforme a receita.
+          </p>
+        </div>
+      )}
 
-      <div className="vao-titulo grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
+      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start ${cabecalho ? "vao-titulo" : ""}`}>
         {/* ---------- Os quatro passos: no celular e no tablet, cartões que
             arrastam para o lado com a barra de ouro embaixo (pedido de
             10/10/2026, "tem que ser arrastando para o lado no mobile"); no

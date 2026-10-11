@@ -46,6 +46,7 @@ const PAGINAS_DINAMICAS = [
   path.join("src", "app", "(site)", "produtos", "[categoria]", "page.tsx"),
   path.join("src", "app", "(site)", "sobre", "page.tsx"),
   path.join("src", "app", "(site)", "produto", "[slug]", "page.tsx"),
+  path.join("src", "app", "(site)", "avaliacoes", "page.tsx"),
   // o painel em modo demonstração
   path.join(ADMIN, "painel", "page.tsx"),
   path.join(ADMIN, "produtos", "page.tsx"),
@@ -221,8 +222,9 @@ async function gerarRetrato() {
         })),
         pedidos: gerarPedidosFicticios(todos),
       },
+      // Todas as ativas, com e sem foto: a home filtra as com foto; a página
+      // /avaliacoes mostra todas (11/10/2026)
       avaliacoes: avaliacoes
-        .filter((a) => a.fotoUrl)
         .map((a) => ({
           id: a.id,
           nome: a.nome,

@@ -1,5 +1,39 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 57 (11/10/2026): sem vazamento lateral no celular, páginas próprias de Como funciona (com perguntas frequentes) e de Avaliações (39 reais do Google, busca e assuntos), Lojas com o mapa da loja escolhida, banner dos 20 anos sobre a foto, Produtos no menu do celular e textos. Não publicado.**
+> Pedidos: "o site tá saindo da tela no mobile, quero 100% responsivo";
+> "melhore a página Como funciona, mais moderna"; "'Manipulamos só com
+> receita válida, de profissional habilitado' vira 'Manipulação com receita
+> válida'"; "O que os clientes dizem tá levando para a nossa história, quero
+> uma página só para as avaliações, com 30, moderna e dinâmica"; "modernize
+> e deixe a página de lojas mais dinâmica"; "coloque também os produtos no
+> menu"; dois textos novos (Saúde da Mulher e Reels); "modernize a parte
+> com os 20 anos". Vazamento: medido página por página a 360 e 422 px
+> (home, lojas, A Viver Bem, produtos, produto, contato), nada passava da
+> largura; mesmo assim o `body` ganhou `overflow-x: clip`, que corta
+> qualquer coisa que vazar sem virar área de rolagem (os sticky seguem).
+> Avaliações: a página `/avaliacoes` (`ListaAvaliacoes`): cartão da nota em
+> azul-noite com "Avaliar a Viver Bem" (link direto para escrever a
+> avaliação no Google, `AVALIAR_GOOGLE_URL`), busca por palavra, chips de
+> assunto (atendimento, qualidade, preço, entrega, WhatsApp), mural em
+> colunas, "ver mais" de 9 em 9; `obterTodasAvaliacoes()` traz as com e
+> sem foto (inicial no lugar do rosto); o retrato do demo passou a levar
+> todas. O banco tinha 27 reais; o scraper do Google (Apify,
+> compass/google-maps-reviews-scraper, 80 mais recentes, placeId
+> ChIJnz1PkICpmQARI67bD1sFiE8) rendeu 12 novas com texto e nota 5 (8 com
+> foto real baixada por `scripts/juntar-avaliacoes.js`, que junta à lista
+> `prisma/avaliacoes-google.js` e roda o `aplicar-avaliacoes.js`): 39 no
+> banco, 26 com foto. Como funciona: página `/como-funciona` (abertura com
+> três números, os quatro passos com `cabecalho={false}`,
+> `PerguntasFrequentes` com seis sanfonas de processo, e o convite para as
+> avaliações). Lojas: `LojasInterativas` (cliente): tocar numa loja mostra
+> ao lado, preso no computador, o cartão dela com o mapa do Google
+> embutido (embed público, sem chave), o estado ao vivo e as ações. Menu
+> do celular: Produtos no alto, Como funciona e O que dizem os clientes
+> apontando para as páginas novas. `BannerHistoria` v5: foto 4:5 com véu
+> escuro na base e o "20 anos construindo cuidado" direto sobre a foto, sem
+> o painel branco. Linha de confiança: "Manipulação com receita válida.".
+
 > **ADENDO 56 (10/10/2026): clique nos produtos com mais folga no arrasto, Como funciona arrastando no celular, catálogo com a banda dos mais procurados, Lojas com a fachada sem pessoas e lista tipográfica, carrinho com linhas em gelo. Não publicado (só com o comando dele).**
 > Pedidos: "não consigo abrir a página dos produtos quando clico nos
 > produtos"; "o Como funciona tem que ser arrastando para o lado na versão

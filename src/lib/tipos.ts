@@ -161,3 +161,5 @@ export const AVALIACOES_GOOGLE_NOTA = 5.0;
 
 export const PERFIL_GOOGLE_URL =
   "https://www.google.com/maps/search/?api=1&query=Viver%20Bem%20-%20Farm%C3%A1cia%20de%20Manipula%C3%A7%C3%A3o&query_place_id=ChIJnz1PkICpmQARI67bD1sFiE8";
+/** Abre direto a caixa de "escrever avaliação" do perfil no Google (página /avaliacoes) */
+export const AVALIAR_GOOGLE_URL = "https://search.google.com/local/writereview?placeid=ChIJnz1PkICpmQARI67bD1sFiE8";

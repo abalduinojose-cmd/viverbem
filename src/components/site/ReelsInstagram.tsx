@@ -290,7 +290,7 @@ export function ReelsInstagram() {
             Por dentro da <span className="italic">Viver Bem</span>
           </h2>
           <p className="texto-apoio mt-4 max-w-md">
-            O laboratório, as lojas e quem faz a Viver Bem no dia a dia, direto do nosso
+            Conheça nosso laboratório, nossas lojas e a equipe Viver Bem, direto do
             Instagram.
           </p>
         </div>

@@ -1,6 +1,8 @@
 // Avaliações REAIS do Google (Viver Bem - Farmácia de Manipulação).
 // Gerado por scripts/baixar-avaliacoes.js — não edite à mão.
 // Todas com nota 5. As fotos ficam em public/uploads/avaliacoes/.
+// 11/10/2026: 12 avaliações novas (as mais recentes do perfil)
+// juntadas pelo script juntar-avaliacoes.js, para a página /avaliacoes.
 module.exports = [
   {
     "nome": "Edilene Lima",
@@ -136,5 +138,65 @@ module.exports = [
     "nome": "Marcela A Kuster",
     "texto": "Atendimento excelente! Preço e prazo de entrega justos.",
     "fotoUrl": "/uploads/avaliacoes/marcela-a-kuster.jpg"
+  },
+  {
+    "nome": "Lili Braga",
+    "texto": "A Viver Bem tem excelente atendimento e produtos de confiança! A melhor!",
+    "fotoUrl": "/uploads/avaliacoes/lili-braga.jpg"
+  },
+  {
+    "nome": "Maria Alice Mansur",
+    "texto": "O atendimento melhorou muito. São simpáticos, pontuais e bem responsáveis. Gosto muito de comprar lá.",
+    "fotoUrl": "/uploads/avaliacoes/maria-alice-mansur.jpg"
+  },
+  {
+    "nome": "Gisele Luiza",
+    "texto": "O pessoal é muito atencioso e gentil e os valores são justos.",
+    "fotoUrl": "/uploads/avaliacoes/gisele-luiza.jpg"
+  },
+  {
+    "nome": "Rose Godois",
+    "texto": "Atendimento: excelente\nProdutos: excelente\nEmbalagem: lindas\nEntregas: muito rápido\nQualidade: exata como pedi\nTransparência: parabéns excelente\nNota 10/10⭐⭐⭐⭐⭐",
+    "fotoUrl": "/uploads/avaliacoes/rose-godois.jpg"
+  },
+  {
+    "nome": "Janiiny Mourah",
+    "texto": "O atendimento é rápido e satisfatório. Fui muito bem bem atendida.",
+    "fotoUrl": "/uploads/avaliacoes/janiiny-mourah.jpg"
+  },
+  {
+    "nome": "Adriana Teles",
+    "texto": "Excelente! Tainara resolveu tudo que precisava com rapidez.",
+    "fotoUrl": "/uploads/avaliacoes/adriana-teles.jpg"
+  },
+  {
+    "nome": "Wallace Sutter",
+    "texto": "Atendimento excelente, sem contar o comprometimento que eles tem como os seus clientes e a rapidez com que eles, manipulam os medicamentos",
+    "fotoUrl": "/uploads/avaliacoes/wallace-sutter.jpg"
+  },
+  {
+    "nome": "Rosangela M.A",
+    "texto": "Minha experiência nessa farmácia de manipulação é muito boa. Os funcionários são sempre atenciosos,  educados e gentis ao nos atender tanto pessoalmente quanto on line. Quanto a manipulação utilizam fórmulas de inteira confiança.",
+    "fotoUrl": null
+  },
+  {
+    "nome": "Maria da Conceição",
+    "texto": "Gosto muito de comprar aqui. O atendimento é sempre muito bom!",
+    "fotoUrl": null
+  },
+  {
+    "nome": "Daniela Azevedo",
+    "texto": "Farmácia Excelente: Atendimento preciso e entrega rápida dos medicamentos.",
+    "fotoUrl": null
+  },
+  {
+    "nome": "Eliane Gomes",
+    "texto": "Excelência na qualidade das manipulações e atendimento cordial. 👏👏👍",
+    "fotoUrl": null
+  },
+  {
+    "nome": "Isabel Baldi",
+    "texto": "Sempre fui muito bem atendida, gosto muito dos remédios da Manipulação.",
+    "fotoUrl": null
   }
 ];

@@ -103,6 +103,11 @@ body {
   font-family: var(--font-sans);
   letter-spacing: -0.005em;
   -webkit-tap-highlight-color: transparent;
+  /* Nada vaza para o lado no celular (11/10/2026, "site 100% responsivo
+     que não deixe a tela vazar"): clip corta o que passar da largura sem
+     virar uma área de rolagem, então os blocos presos (sticky) continuam
+     funcionando. As faixas que rolam para o lado têm a própria rolagem. */
+  overflow-x: clip;
 }
 
 @layer base {
