@@ -136,7 +136,9 @@ body {
     font-family: var(--font-destaque);
     font-style: italic;
     font-weight: 400;
-    font-size: 1.1em;
+    /* 1,16em desde 11/10/2026: a voz serifada um pouco maior que a sans
+       pesada ao lado, para as duas vozes contrastarem de verdade */
+    font-size: 1.16em;
     letter-spacing: -0.015em;
     background-image: var(--ouro-degrade);
     -webkit-background-clip: text;
@@ -235,13 +237,15 @@ body {
     margin-inline: auto;
   }
 
-  /* Título de seção: UM tamanho para o site inteiro, peso 600, navy */
+  /* Título de seção: UM tamanho para o site inteiro, navy. Peso 700 desde
+     11/10/2026 (revisão pelo guia de estética da Anthropic: contraste por
+     extremos, o título pesado contra o corpo em 400 e o rótulo miúdo) */
   .titulo-secao {
     font-family: var(--font-sans);
     font-size: var(--tam-titulo);
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.02;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.045em;
     color: var(--color-navy);
     text-wrap: balance;
   }
@@ -541,7 +545,14 @@ body {
   .folha {
     position: relative;
     border-radius: 2.25rem 2.25rem 0 0;
-    background: var(--color-papel);
+    /* Atmosfera na folha clara (11/10/2026, guia de estética: fundo com
+       profundidade em vez de cor chapada): um sopro de azul no alto à
+       direita e de ouro embaixo à esquerda, fracos o bastante para a folha
+       seguir branca */
+    background:
+      radial-gradient(70% 40% at 92% 0%, rgba(28, 105, 181, 0.07), transparent 65%),
+      radial-gradient(55% 35% at 4% 100%, rgba(201, 165, 107, 0.09), transparent 62%),
+      var(--color-papel);
     box-shadow: 0 -30px 60px -40px rgba(13, 35, 64, 0.35);
     margin-top: -2.25rem;
     padding-top: 1.5rem;
@@ -1332,3 +1343,14 @@ summary::-webkit-details-marker {
     transform: scaleX(1);
   }
 }
+
+/* Entrada orquestrada do cabeçalho (11/10/2026, guia de estética: uma
+   carga de página bem coreografada vale mais que microinterações soltas):
+   as três faixas descem em cascata, uma vez, na primeira carga. Roda também
+   com "reduzir movimento" (pedido do usuário). */
+.entrada-topo {
+  animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.entrada-topo-1 { animation-delay: 0ms; }
+.entrada-topo-2 { animation-delay: 110ms; }
+.entrada-topo-3 { animation-delay: 220ms; }

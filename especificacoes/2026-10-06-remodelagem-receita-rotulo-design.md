@@ -1,5 +1,29 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 64 (11/10/2026): revisão anti-genérico II pelo guia de estética da Anthropic. NÃO publicado: o usuário quer ver antes; se não gostar, volta ao commit b1278be.**
+> Pedido: "estude as skills (claude-cookbooks-main) e melhore usando todo o
+> conhecimento; tire e melhore tudo que tiver cara de genérico, mantendo a
+> essência e a estrutura; não atualize o GitHub, quero ver primeiro". O
+> guia (`coding/prompting_for_frontend_aesthetics.ipynb`) ataca em quatro
+> eixos: tipografia por extremos, cor dominante com acento afiado, uma
+> carga de página orquestrada e fundo com atmosfera, fugindo de padrões de
+> componente previsíveis. O site já cumpria cor (branco dominante, navy na
+> estrutura, ouro como acento) e boa parte do movimento. O que mudou:
+> (1) tipografia: `.titulo-secao` de 600 para 700 e tracking -0,045em, e a
+> palavra serifada dos títulos de 1,1 para 1,16em, para as duas vozes
+> contrastarem de verdade (o corpo segue em 400, o rótulo miúdo em caixa
+> alta); (2) fundo: as folhas claras ganharam um sopro de azul no alto à
+> direita (7%) e de ouro embaixo à esquerda (9%), profundidade sem deixar
+> de ser branco; (3) movimento: as três faixas do cabeçalho descem em
+> cascata na primeira carga (`.entrada-topo`, 0/110/220 ms); (4) padrão de
+> componente: as perguntas frequentes deixaram as caixas arredondadas com
+> chevron em círculo e viraram uma lista editorial com fios, o número em
+> ouro itálico na frente e um "+" fino que vira "x" ao abrir. Ficaram como
+> estavam, de propósito: as pílulas de vantagens (ele acabou de ajustá-las),
+> os cartões de avaliação (ele pediu em 06/10 sem itálico serifado ali), o
+> Fale com a gente e o rodapé (iterados com ele). As outras skills da pasta
+> (documentos, finanças, auditoria de notebooks) não se aplicam ao site.
+
 > **ADENDO 63 (11/10/2026): título das linhas de produtos numa linha só, vantagens 15% maiores no computador; 20º push.**
 > Pedidos (print do celular com o título em duas linhas e print das
 > pílulas): "diminua a letra e coloque na mesma linha"; "na versão desktop

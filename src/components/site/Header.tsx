@@ -211,7 +211,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           vantagens com ícone em ouro, separadas por um fio; os links
           institucionais em pílulas na ponta. Nada quebra linha: cada item
           entra só a partir da largura em que cabe. */}
-      <div className="hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
+      <div className="entrada-topo entrada-topo-1 hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
         <div className="max-w-[90rem] mx-auto px-5 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
           <ul className="flex items-center min-w-0">
             <li className="flex items-center">
@@ -276,7 +276,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
       </div>
 
       {/* ---------- 2. Linha principal ---------- */}
-      <div className="max-w-[90rem] mx-auto px-5 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
+      <div className="entrada-topo entrada-topo-2 max-w-[90rem] mx-auto px-5 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
         <Link
           href="/"
           onClick={(e) => {
@@ -350,7 +350,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
       {/* ---------- 3. Fileira de categorias em pílulas ---------- */}
       <nav
         aria-label="Categorias"
-        className="relative border-t border-fio/70 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white/90 md:after:hidden"
+        className="entrada-topo entrada-topo-3 relative border-t border-fio/70 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white/90 md:after:hidden"
       >
         <div className="max-w-[90rem] mx-auto px-5 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
           <Link
