@@ -1,5 +1,19 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 61 (11/10/2026): cabeçalho na moldura da dobra (computador). Não publicado.**
+> Pedido (print com as três faixas do cabeçalho circuladas): "corrija a
+> parte marcada na versão desktop, deixe ela enquadrada com o site,
+> respeitando as regras de alinhamento, de leve em todo o site". Medido: o
+> cabeçalho estava em `max-w-7xl` + `px-8` e o banner da dobra em
+> `max-w-[90rem]` + `px-5`; numa tela de ~1420 px o logo nascia uns 85 px
+> para dentro da borda do banner, e o carrinho terminava 85 px antes da
+> borda direita. As três faixas do cabeçalho passaram para a MESMA moldura
+> do banner (`Header.tsx`): a 1600 px o logo, o selo "Aberto agora" e o
+> chip "Todos" começam no mesmo x da borda do banner, e "Carrinho",
+> "Contato" e o chip "Como funciona" terminam no x da borda direita. As
+> seções seguem em `max-w-7xl` (conteúdo um passo para dentro do banner,
+> como já era). No celular nada muda.
+
 > **ADENDO 60 (11/10/2026): hero sem trancos (filtro de imagem por tamanho e pulo de quadro só quando pesa), produtos sem sombra e 4% maiores, página de contato com formulário que abre o WhatsApp; 17º push.**
 > Pedidos: "o vídeo da hero dá uma travadinha, melhore isso"; "tire a
 > sombra debaixo dos produtos e aumente a foto do produto em 4%"; "melhore

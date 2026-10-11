@@ -10,6 +10,13 @@
 // Fica preso ao topo (sticky) e ocupa espaço no fluxo da página, então as
 // páginas não precisam de margem no topo. A altura está em
 // --altura-cabecalho (globals.css), usada pela barra do catálogo.
+//
+// 11/10/2026 ("deixe o cabeçalho enquadrado com o site"): as três faixas
+// usam a MESMA moldura da dobra (max-w-[90rem] + px-5), então no
+// computador o logo nasce na borda esquerda do banner e o carrinho termina
+// na borda direita; antes o cabeçalho ficava em max-w-7xl/px-8, uns 90 px
+// mais estreito de cada lado que o banner nas telas largas. No celular
+// nada muda (o px-5 já era o mesmo).
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -205,7 +212,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           institucionais em pílulas na ponta. Nada quebra linha: cada item
           entra só a partir da largura em que cabe. */}
       <div className="hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
+        <div className="max-w-[90rem] mx-auto px-5 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
           <ul className="flex items-center min-w-0">
             <li className="flex items-center">
               <SeloAbertoFaixa />
@@ -269,7 +276,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
       </div>
 
       {/* ---------- 2. Linha principal ---------- */}
-      <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
+      <div className="max-w-[90rem] mx-auto px-5 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
         <Link
           href="/"
           onClick={(e) => {
@@ -345,7 +352,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
         aria-label="Categorias"
         className="relative border-t border-fio/70 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white/90 md:after:hidden"
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
+        <div className="max-w-[90rem] mx-auto px-5 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
           <Link
             href="/produtos"
             aria-current={pathname === "/produtos" ? "page" : undefined}
