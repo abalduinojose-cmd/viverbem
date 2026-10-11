@@ -134,9 +134,15 @@ export function CenaAnimada({ roteiro: nome }: { roteiro: NomeRoteiro }) {
     // Enquanto a página rola, a animação desenha um quadro sim, outro não
     // (08/10/2026, "site 100% fluindo"): no celular cada quadro dela custa
     // uns 15 ms mais o envio da imagem para a tela, e quem precisa dos
-    // quadros inteiros é a rolagem. Parada a página, volta a desenhar todos
+    // quadros inteiros é a rolagem. Parada a página, volta a desenhar todos.
+    // 11/10/2026 ("o vídeo da hero dá uma travadinha"): só pula quadros
+    // quando o desenho está mesmo pesando (média móvel acima de 6 ms de
+    // CPU por quadro). Com a rolagem suave da roda, qualquer toque gerava
+    // eventos de scroll por meio segundo, e nesse tempo a animação caía
+    // para 30 quadros por segundo sem precisar: era o tranco que se via
     let ultimaRolagem = -1e9;
     let pulaEste = false;
+    let custoMedio = 0;
     const aoRolarPagina = () => {
       ultimaRolagem = performance.now();
     };
@@ -146,11 +152,13 @@ export function CenaAnimada({ roteiro: nome }: { roteiro: NomeRoteiro }) {
       if (!cena) return;
       // O próximo quadro já fica pedido: um erro no desenho não para o laço
       quadro = requestAnimationFrame(passo);
-      if (agora - ultimaRolagem < 160) {
+      if (agora - ultimaRolagem < 160 && custoMedio > 6) {
         pulaEste = !pulaEste;
         if (pulaEste) return;
       }
+      const antes = performance.now();
       cena.desenhar(congelado !== null ? Number(congelado) : tempoDaCoreografia(roteiro, (agora - inicio) / 1000));
+      custoMedio += (performance.now() - antes - custoMedio) * 0.1;
     };
     const tocar = () => {
       if (rodando || !cena || !visivel || document.hidden) return;

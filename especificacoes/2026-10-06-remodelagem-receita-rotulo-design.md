@@ -1,5 +1,34 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 60 (11/10/2026): hero sem trancos (filtro de imagem por tamanho e pulo de quadro só quando pesa), produtos sem sombra e 4% maiores, página de contato com formulário que abre o WhatsApp; 17º push.**
+> Pedidos: "o vídeo da hero dá uma travadinha, melhore isso"; "tire a
+> sombra debaixo dos produtos e aumente a foto do produto em 4%"; "melhore
+> a página de contato também e atualize o GitHub". Hero: medido quadro a
+> quadro no navegador do painel (a mesma máquina do usuário, Vega 8), com
+> `heroCena.desenhar(t)` em laço e uma cópia 2x2 + getImageData por quadro
+> para obrigar o desenho de verdade. O custo não estava no texto nem nos
+> clips: era o filtro bicúbico (`imageSmoothingQuality: "high"`) em TODA
+> imagem desenhada com escala, nas luzes, na poeira e nos potes; sem GPU
+> no canvas ele custa metade do quadro. Agora cada desenho escolhe o
+> filtro: luzes, sombra e bolinhas sempre no bilinear (`desenharLuz`), os
+> potes no bilinear até 3x de redução e no bicúbico só quando estão longe
+> (`desenharPote`, também no palco da Saúde da Mulher), os textos seguem
+> no bicúbico. Ciclo inteiro: p50 de 16,8 para 6,8 ms por quadro;
+> carrossel de 13,9 para ~8; fecho de 11,9 para 6,3. As imagens de apoio
+> viraram ImageBitmap (`congelar`), neutro na medição, mas imutáveis e já
+> em textura. E o laço só pula quadros durante a rolagem quando a média
+> móvel do desenho passa de 6 ms: com a rolagem suave da roda, qualquer
+> toque gerava eventos de scroll por meio segundo e a animação caía para 30
+> quadros por segundo sem precisar, que é o tranco mais provável de se ver
+> no computador. Produtos: a luz dourada e a sombra sob o pote saíram do
+> cartão e da galeria do produto; a foto ganhou `scale-[1.04]`. Contato:
+> `FormularioContato` (nome opcional, assunto em chips, mensagem, o balão
+> mostrando a mensagem como vai chegar e o botão verde que abre o WhatsApp
+> com o texto pronto; nada vai para o servidor, funciona na vitrine
+> estática); ao lado, o cartão do Instagram e as três lojas com o mapa de
+> cada uma e o telefone fixo do Centro; a abertura ficou com o WhatsApp em
+> verde e o horário ao vivo; a lista numerada antiga saiu.
+
 > **ADENDO 59 (11/10/2026): nome dos produtos centrado, aviso legal fora do rodapé "por enquanto", painel do gestor levemente mais moderno; 16º push.**
 > Pedidos: "quero o nome dos produtos centralizados, tanto para mobile
 > quanto para desktop"; "exclua isso do rodapé por enquanto" (o parágrafo

@@ -177,16 +177,16 @@ export function criarFases(palco: Palco): Coreografia {
       if (s.naFrente > 0.01) {
         const r = h * 1.2;
         ctx.globalAlpha = 0.5 * s.naFrente * s.alfa;
-        ctx.drawImage(palco.luzFundo, pe.x - r, pe.y - h * 0.55 - r, r * 2, r * 2);
+        palco.luz(palco.luzFundo, pe.x - r, pe.y - h * 0.55 - r, r * 2, r * 2);
       }
       // Sombra e reflexo só perto do chão: quem flutua alto quase não
       // reflete, e o reflexo desce junto com a altura
       const perto = limitar(1 - s.sobe / (18 * e.ep)) * s.alfa * (1 - s.desfoque * 0.7);
       if (perto > 0.02) {
         ctx.globalAlpha = perto;
-        ctx.drawImage(palco.sombra, chao.x - l * 0.55, chao.y - l * 0.1, l * 1.1, l * 0.2);
+        palco.luz(palco.sombra, chao.x - l * 0.55, chao.y - l * 0.1, l * 1.1, l * 0.2);
         ctx.globalAlpha = perto * 0.9;
-        ctx.drawImage(sp.reflexo, pe.x - l / 2, chao.y + (chao.y - pe.y), l, h * 0.42);
+        palco.pote(sp.reflexo, pe.x - l / 2, chao.y + (chao.y - pe.y), l, h * 0.42, true);
       }
       // Rastro enquanto desliza: duas posições de antes, desfocadas
       const antes = estadoPote(i, t - 0.03);
@@ -201,7 +201,7 @@ export function criarFases(palco: Palco): Coreografia {
           const hh = sp.altura * e.ep * q.s;
           const ll = hh * sp.proporcao * r.giro;
           ctx.globalAlpha = a * r.alfa;
-          ctx.drawImage(sp.desfocado, q.x - ll * 0.58, q.y - hh * 1.08, ll * 1.16, hh * 1.16);
+          palco.pote(sp.desfocado, q.x - ll * 0.58, q.y - hh * 1.08, ll * 1.16, hh * 1.16, true);
         }
       }
 
@@ -210,12 +210,12 @@ export function criarFases(palco: Palco): Coreografia {
       // Os de longe ficam um pouco mais apagados: o da frente é o assunto
       if (s.desfoque > 0.01) {
         ctx.globalAlpha = s.alfa * mix(1, 0.72, s.desfoque);
-        ctx.drawImage(sp.desfocado, pe.x - l * 0.58, pe.y - h * 1.08, l * 1.16, h * 1.16);
+        palco.pote(sp.desfocado, pe.x - l * 0.58, pe.y - h * 1.08, l * 1.16, h * 1.16, true);
       }
       const nitidez = s.alfa * (1 - s.desfoque);
       if (nitidez > 0.01) {
         ctx.globalAlpha = nitidez;
-        ctx.drawImage(sp.nitido, x, y, l, h);
+        palco.pote(sp.nitido, x, y, l, h);
         // A luz que corre pelo rótulo quando o pote chega na frente, e de
         // novo no pouso (da direita para a esquerda; na dobra é o contrário)
         const varre = s.chegou > 0 && s.chegou < 1 && s.naFrente > 0.6 ? s.chegou : trecho(t, 5.8, 6.3);
@@ -247,9 +247,9 @@ export function criarFases(palco: Palco): Coreografia {
 
     // A atmosfera: luz rosada e um halo de ouro
     ctx.globalAlpha = visivel * (0.22 + 0.1 * fase);
-    ctx.drawImage(palco.luzFundo, c.x - R * 2.3, c.y - R * 2.3, R * 4.6, R * 4.6);
+    palco.luz(palco.luzFundo, c.x - R * 2.3, c.y - R * 2.3, R * 4.6, R * 4.6);
     ctx.globalAlpha = visivel * fase * (0.14 + 0.06 * respiro + 0.16 * fecho);
-    ctx.drawImage(palco.luzOuro, c.x - R * 1.7, c.y - R * 1.7, R * 3.4, R * 3.4);
+    palco.luz(palco.luzOuro, c.x - R * 1.7, c.y - R * 1.7, R * 3.4, R * 3.4);
 
     ctx.save();
     ctx.translate(c.x, c.y);
@@ -267,7 +267,7 @@ export function criarFases(palco: Palco): Coreografia {
       ctx.save();
       ctx.clip();
       ctx.globalAlpha = visivel * (0.42 + 0.12 * fecho);
-      ctx.drawImage(palco.luzOuro, -R * 1.15, -R * 1.15, R * 2.3, R * 2.3);
+      palco.luz(palco.luzOuro, -R * 1.15, -R * 1.15, R * 2.3, R * 2.3);
       ctx.restore();
       // O limbo iluminado, em ouro
       ctx.lineCap = "round";
@@ -303,7 +303,7 @@ export function criarFases(palco: Palco): Coreografia {
     const b = palco.P(c + W, e.chao, 0, cam);
     // Luz dourada rente ao chão
     ctx.globalAlpha = 0.3 * abre;
-    ctx.drawImage(palco.luzOuro, a.x, a.y - 18, b.x - a.x, 36);
+    palco.luz(palco.luzOuro, a.x, a.y - 18, b.x - a.x, 36);
     const g = ctx.createLinearGradient(a.x, 0, b.x, 0);
     g.addColorStop(0, "rgba(214, 186, 125, 0)");
     g.addColorStop(0.5, "rgba(230, 204, 146, 0.9)");
@@ -378,7 +378,7 @@ export function criarFases(palco: Palco): Coreografia {
       const respira = 0.5 - 0.5 * Math.cos((TAU * 3 * t) / DURACAO);
       const halo = r.raioPonto * (2.4 + 1.6 * respira);
       ctx.globalAlpha = (0.4 + 0.2 * respira) * ponto;
-      ctx.drawImage(palco.luzOuro, r.pontoX - halo, cy - halo, halo * 2, halo * 2);
+      palco.luz(palco.luzOuro, r.pontoX - halo, cy - halo, halo * 2, halo * 2);
       ctx.globalAlpha = 1;
       ctx.fillStyle = "#e1c68f";
       ctx.beginPath();
@@ -514,7 +514,7 @@ export function criarFases(palco: Palco): Coreografia {
     if (acesa > 0.01) {
       const g = l.tamanho * 1.6;
       ctx.globalAlpha = 0.55 * acesa;
-      ctx.drawImage(palco.luzOuro, cx - g, cy - g * 0.6, g * 2, g * 1.2);
+      palco.luz(palco.luzOuro, cx - g, cy - g * 0.6, g * 2, g * 1.2);
     }
     // O brilho que corre: agora da direita para a esquerda
     const corre = t < 4.5 ? trecho(t, 2.85, 3.55) : trecho(t, 5.6, 6.15);

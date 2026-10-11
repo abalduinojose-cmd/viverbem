@@ -241,12 +241,16 @@ function misturarPontos(a: P3[], b: P3[], p: number): P3[] {
 
 // ---------------------------------------------------------------- potes
 
+/** Uma imagem pronta para o drawImage: a tela de apoio ou, congelada, o
+ *  ImageBitmap dela */
+export type Imagem = HTMLCanvasElement | ImageBitmap;
+
 export type Sprites = {
-  nitido: HTMLCanvasElement;
-  desfocado: HTMLCanvasElement;
-  reflexo: HTMLCanvasElement;
+  nitido: Imagem;
+  desfocado: Imagem;
+  reflexo: Imagem;
   /** A silhueta clara, para a faixa de luz que corre pelo rótulo */
-  mascara: HTMLCanvasElement;
+  mascara: Imagem;
   proporcao: number; // largura / altura
   altura: number;
 };
@@ -256,6 +260,23 @@ function novaTela(l: number, a: number) {
   c.width = Math.max(1, Math.round(l));
   c.height = Math.max(1, Math.round(a));
   return c;
+}
+
+/** Congela uma tela de apoio numa imagem imutável (ImageBitmap), que o
+ *  navegador guarda como textura na GPU: cada drawImage dela vira só um
+ *  desenho. Tela pequena (abaixo de 256 px) é de CPU, e desenhá-la na tela
+ *  acelerada mandava os pixels para a GPU de novo a cada quadro: as luzes
+ *  e a poeira (30 bolinhas por quadro) custavam mais da metade do quadro,
+ *  medido em 11/10/2026 ("o vídeo da hero dá uma travadinha": p50 de 13,6
+ *  para 5,8 ms sem elas). Sem createImageBitmap (Safari antigo), fica a
+ *  própria tela. */
+async function congelar(tela: Imagem): Promise<Imagem> {
+  if (!(tela instanceof HTMLCanvasElement) || typeof createImageBitmap !== "function") return tela;
+  try {
+    return await createImageBitmap(tela);
+  } catch {
+    return tela;
+  }
 }
 
 /** Recorta o pote pela parte opaca da foto e prepara as três versões:
@@ -620,7 +641,7 @@ export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, bril
 
 // ---------------------------------------------------------------- a cena
 
-export type SpriteTexto = { tela: HTMLCanvasElement; x0: number; y0: number; l: number; a: number };
+export type SpriteTexto = { tela: Imagem; x0: number; y0: number; l: number; a: number };
 export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Luz: SpriteTexto };
 
 /** O que a cena empresta a uma coreografia de fora (ver fases.ts): o
@@ -631,9 +652,13 @@ export type Palco = {
   ctx: CanvasRenderingContext2D;
   roteiro: Roteiro;
   potes: Sprites[];
-  luzFundo: HTMLCanvasElement;
-  luzOuro: HTMLCanvasElement;
-  sombra: HTMLCanvasElement;
+  luzFundo: Imagem;
+  luzOuro: Imagem;
+  sombra: Imagem;
+  /** Desenha uma luz ou a poeira no filtro barato (ver desenharLuz) */
+  luz: (img: Imagem, x: number, y: number, l: number, a: number) => void;
+  /** Desenha um pote no filtro que o tamanho pede (ver desenharPote) */
+  pote: (img: Imagem, x: number, y: number, l: number, a: number, suave?: boolean) => void;
   enq: () => Enquadramento;
   textos: () => Textos;
   sprites: () => SpritesDeTexto | null;
@@ -649,6 +674,7 @@ export type Palco = {
     largura: number,
     forca: number,
     limite?: number,
+    suave?: boolean,
   ) => void;
   particulas: (t: number, cam: Camera, frente: boolean) => void;
 };
@@ -683,15 +709,27 @@ export async function criarCena(
   // Um pote por pedaço: recortar, desfocar, refletir e mascarar cada foto
   const potes: Sprites[] = [];
   for (let i = 0; i < imagens.length; i++) {
-    potes.push(prepararPote(imagens[i], roteiro.potes[i].altura));
+    const s = prepararPote(imagens[i], roteiro.potes[i].altura);
     await pausa();
+    // Congeladas em ImageBitmap (ver congelar): a textura já fica na GPU
+    potes.push({
+      ...s,
+      nitido: await congelar(s.nitido),
+      desfocado: await congelar(s.desfocado),
+      reflexo: await congelar(s.reflexo),
+      mascara: await congelar(s.mascara),
+    });
   }
   const particulas = gerarParticulas();
   const [pr, pg, pb] = roteiro.poeira;
-  const bolinhas = [bolinha("rgba(214,186,125,A)"), bolinha(`rgba(${pr},${pg},${pb},A)`), bolinha("rgba(255,255,255,A)")];
-  const luzFundo = luzPronta(...roteiro.luz);
-  const luzOuro = luzPronta(205, 170, 105);
-  const sombra = luzPronta(2, 9, 22, 0.75);
+  // As telas pequenas (luzes e bolinhas) eram o que mais pesava por quadro
+  // desenhadas como tela (ver congelar): congeladas, viram um desenho cada
+  const bolinhas = await Promise.all(
+    [bolinha("rgba(214,186,125,A)"), bolinha(`rgba(${pr},${pg},${pb},A)`), bolinha("rgba(255,255,255,A)")].map(congelar),
+  );
+  const luzFundo = await congelar(luzPronta(...roteiro.luz));
+  const luzOuro = await congelar(luzPronta(205, 170, 105));
+  const sombra = await congelar(luzPronta(2, 9, 22, 0.75));
   // Uma tela mínima só para instanciar fontes no aquecimento
   const provador = novaTela(8, 8).getContext("2d")!;
   // E uma tela de GPU (de 256 para cima o Chrome acelera) para onde o
@@ -752,10 +790,19 @@ export async function criarCena(
     c.translate(-x0, -y0);
     c.textBaseline = "alphabetic";
     pintar(c);
-    return { tela, x0, y0, l, a };
+    const sprite: SpriteTexto = { tela, x0, y0, l, a };
+    // A tela já serve; a imagem congelada a substitui assim que fica pronta
+    void congelar(tela).then((imagem) => {
+      sprite.tela = imagem;
+    });
+    return sprite;
   }
 
   function prepararSpritesDeTexto() {
+    // Solta as texturas do jogo anterior (o banner mudou de tamanho)
+    if (spritesTexto && typeof ImageBitmap !== "undefined") {
+      for (const s of Object.values(spritesTexto)) if (s.tela instanceof ImageBitmap) s.tela.close();
+    }
     const { l1, l2, l3 } = textos;
     const letraALetra = (linha: Linha, cor: string) => (c: CanvasRenderingContext2D) => {
       c.font = fonteDe(linha);
@@ -788,6 +835,32 @@ export async function criarCena(
 
   const pintarSprite = (s: SpriteTexto) => ctx.drawImage(s.tela, s.x0, s.y0, s.l, s.a);
 
+  /** Desenha uma luz (degradê radial pronto) ou uma bolinha da poeira no
+   *  filtro bilinear: ampliar essas imagens com o filtro bicúbico ("high",
+   *  o padrão da tela) custava METADE do quadro onde o canvas não tem GPU
+   *  (medido em 11/10/2026, "o vídeo da hero dá uma travadinha": carrossel
+   *  de 13,9 para 6,6 ms por quadro, fecho de 11,9 para 6,6), e num degradê
+   *  suave o olho não vê diferença. Os potes e os textos seguem em "high". */
+  function desenharLuz(img: Imagem, x: number, y: number, l: number, a: number) {
+    ctx.imageSmoothingQuality = "low";
+    ctx.drawImage(img, x, y, l, a);
+    ctx.imageSmoothingQuality = "high";
+  }
+
+  /** Desenha um pote no filtro que o tamanho pede: até 3x de redução o
+   *  bilinear ("low") basta e custa metade do bicúbico (medido em
+   *  11/10/2026: carrossel de 14,0 para 7,7 ms por quadro, fecho de 12,8
+   *  para 6,6); menor que isso, "high" (mipmaps), para não tremer ao longe
+   *  (um pote tão longe já sai misturado com a versão desfocada, então o
+   *  limite pode ser folgado). O desfocado e o reflexo, já suaves, vão
+   *  sempre no barato (`suave`). */
+  const REDUCAO_BILINEAR = 0.34;
+  function desenharPote(img: Imagem, x: number, y: number, l: number, a: number, suave = false) {
+    ctx.imageSmoothingQuality = suave || (a * escala * dpr) / img.height >= REDUCAO_BILINEAR ? "low" : "high";
+    ctx.drawImage(img, x, y, l, a);
+    ctx.imageSmoothingQuality = "high";
+  }
+
   /** Uma faixa vertical de luz sobre uma imagem: a versão clara dela (a
    *  máscara) recortada em faixas concêntricas, mais forte no centro. Faz
    *  o papel de um degradê sobre a imagem sem desenhar em tela de apoio a
@@ -802,7 +875,10 @@ export async function criarCena(
     largura: number,
     forca: number,
     limite = Infinity,
+    suave = false,
   ) {
+    // Sobre um pote perto, o bilinear basta (ver desenharPote)
+    if (suave) ctx.imageSmoothingQuality = "low";
     for (const c of [1, 0.62, 0.34, 0.14]) {
       const w = largura * c;
       const ini = centro - w / 2;
@@ -816,6 +892,7 @@ export async function criarCena(
       ctx.drawImage(mascara, x, y, l, a);
       ctx.restore();
     }
+    ctx.imageSmoothingQuality = "high";
   }
 
   /** Paga de antemão o que custa na primeira vez: cada peso que o bloom
@@ -919,12 +996,12 @@ export async function criarCena(
     const c = P(enq.potesX, enq.chao - 135 * enq.ep, ORBITA_CENTRO, cam);
     const raio = 230 * enq.ep * c.s;
     ctx.globalAlpha = 0.28 * chegada + 0.1;
-    ctx.drawImage(luzFundo, c.x - raio, c.y - raio, raio * 2, raio * 2);
+    desenharLuz(luzFundo, c.x - raio, c.y - raio, raio * 2, raio * 2);
     // Luz dourada no chão (o mesmo círculo, achatado)
     const ch = P(enq.potesX, enq.chao, ORBITA_CENTRO, cam);
     const rr = 210 * enq.ep * ch.s;
     ctx.globalAlpha = 0.34 * chegada + 0.22 * fecho;
-    if (ctx.globalAlpha > 0.005) ctx.drawImage(luzOuro, ch.x - rr, ch.y - rr * 0.3, rr * 2, rr * 0.6);
+    if (ctx.globalAlpha > 0.005) desenharLuz(luzOuro, ch.x - rr, ch.y - rr * 0.3, rr * 2, rr * 0.6);
     ctx.globalAlpha = 1;
   }
 
@@ -939,7 +1016,7 @@ export async function criarCena(
       const q = P(p.nx * meiaLargura, y + 12 * Math.sin(fase), p.z, cam);
       const r = Math.min(46, p.r * q.s * (frente ? 1.6 : 1));
       ctx.globalAlpha = p.alfa * (0.55 + 0.45 * Math.sin(fase * 2));
-      ctx.drawImage(bolinhas[p.cor], q.x - r, q.y - r, r * 2, r * 2);
+      desenharLuz(bolinhas[p.cor], q.x - r, q.y - r, r * 2, r * 2);
     }
     ctx.restore();
   }
@@ -1033,8 +1110,8 @@ export async function criarCena(
       const sp = potes[i];
       ctx.save();
       ctx.globalAlpha = noChao;
-      ctx.drawImage(sp.reflexo, g.q.x - g.l / 2, g.q.y, g.l, g.h * 0.42);
-      ctx.drawImage(sombra, g.q.x - g.l * 0.55, g.q.y - g.l * 0.1, g.l * 1.1, g.l * 0.2);
+      desenharPote(sp.reflexo, g.q.x - g.l / 2, g.q.y, g.l, g.h * 0.42, true);
+      desenharLuz(sombra, g.q.x - g.l * 0.55, g.q.y - g.l * 0.1, g.l * 1.1, g.l * 0.2);
       ctx.restore();
     }
 
@@ -1047,7 +1124,7 @@ export async function criarCena(
         for (let k = 3; k >= 1; k--) {
           const r = geometriaPote(i, Math.max(0, t - k * 0.016), cam);
           ctx.globalAlpha = r.e.alfa * 0.18;
-          ctx.drawImage(sp.desfocado, r.q.x - r.l * 0.58, r.q.y - r.h * 1.08, r.l * 1.16, r.h * 1.16);
+          desenharPote(sp.desfocado, r.q.x - r.l * 0.58, r.q.y - r.h * 1.08, r.l * 1.16, r.h * 1.16, true);
         }
       }
 
@@ -1055,7 +1132,7 @@ export async function criarCena(
       const y = g.q.y - g.h;
       if (g.desfoque > 0.01) {
         ctx.globalAlpha = g.e.alfa;
-        ctx.drawImage(sp.desfocado, g.q.x - g.l * 0.58, g.q.y - g.h * 1.08, g.l * 1.16, g.h * 1.16);
+        desenharPote(sp.desfocado, g.q.x - g.l * 0.58, g.q.y - g.h * 1.08, g.l * 1.16, g.h * 1.16, true);
       }
       const nitidez = g.e.alfa * (1 - g.desfoque);
       if (nitidez > 0.01) {
@@ -1066,8 +1143,11 @@ export async function criarCena(
         const posLuz = naVarredura ? mix(-0.3, 1.3, saiCubica(varredura)) : 0.5 - 0.42 * Math.sin(g.e.angulo);
         const forcaLuz = (naVarredura ? 0.5 : 0.2 * (1 - trecho(t, 5.25, 5.6))) * nitidez;
         ctx.globalAlpha = nitidez;
-        ctx.drawImage(sp.nitido, x, y, g.l, g.h);
-        if (forcaLuz > 0.01) faixaDeLuz(sp.mascara, x, y, g.l, g.h, x + posLuz * g.l, g.l * 0.32, forcaLuz);
+        desenharPote(sp.nitido, x, y, g.l, g.h);
+        if (forcaLuz > 0.01) {
+          const perto = (g.h * escala * dpr) / sp.nitido.height >= REDUCAO_BILINEAR;
+          faixaDeLuz(sp.mascara, x, y, g.l, g.h, x + posLuz * g.l, g.l * 0.32, forcaLuz, Infinity, perto);
+        }
       }
     }
     ctx.globalAlpha = 1;
@@ -1514,6 +1594,8 @@ export async function criarCena(
     luzFundo,
     luzOuro,
     sombra,
+    luz: desenharLuz,
+    pote: desenharPote,
     enq: () => enq,
     textos: () => textos,
     sprites: () => spritesTexto,

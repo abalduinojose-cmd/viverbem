@@ -1,11 +1,27 @@
-// CONTATOS: o WhatsApp como ação principal, o horário ao vivo e as 3
-// unidades em lista com fio. Sistema "Branco, azul e ouro" (06/10/2026).
-// As unidades vêm de lib/tipos.ts, a mesma lista do rodapé e das lojas.
+// CONTATOS. Sistema "Branco, azul e ouro" (06/10/2026). As unidades vêm de
+// lib/tipos.ts, a mesma lista do rodapé e das lojas.
+//
+// 11/10/2026 ("melhore a página de contato"): a página ganhou um formulário
+// de verdade, que abre a mensagem pronta no WhatsApp (FormularioContato),
+// ao lado do Instagram e das três lojas com o mapa de cada uma. A abertura
+// segue com o WhatsApp como ação principal (agora no verde dele, como no
+// resto do site) e o horário ao vivo. A lista numerada das lojas saiu: as
+// três ficam no cartão ao lado do formulário, com o telefone fixo do
+// Centro, e no "Fale com a gente" do fim da página.
 import type { Metadata } from "next";
 import Link from "next/link";
-import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
+import {
+  INSTAGRAM_PERFIL,
+  INSTAGRAM_URL,
+  UNIDADES,
+  WHATSAPP_LOJA,
+  WHATSAPP_NUMERO,
+  linkMapaUnidade,
+} from "@/lib/tipos";
 import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
+import { FormularioContato } from "@/components/site/FormularioContato";
+import { IconeInstagram, IconeWhatsApp, SetaDireita } from "@/components/site/icones";
 
 export const metadata: Metadata = {
   title: "Contatos · Manipulação Viver Bem",
@@ -13,86 +29,136 @@ export const metadata: Metadata = {
     "Fale com a Manipulação Viver Bem pelo WhatsApp e visite as nossas 3 unidades em Petrópolis: Centro, Corrêas e Posse.",
 };
 
+// A conversa direta, sem o formulário: a mensagem já vai pronta
+const MENSAGEM = "Olá! Vim pelo site e gostaria de tirar uma dúvida.";
+const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM)}`;
+
+const classeCartao =
+  "rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]";
+
+// Pino do mapa (as lojas)
+function IconePino() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <circle cx="12" cy="11" r="2.3" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
 export default function PaginaContato() {
   return (
     <main className="flex-1">
-      {/* Abertura */}
-      <section className="halo-marca px-5 md:px-8 pt-10 md:pt-12 pb-5">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:items-end">
-          <div className="lg:col-span-7">
-            <p className="rotulo">fale com a gente</p>
+      {/* ---------- Abertura: o WhatsApp como ação principal e o horário ao vivo ---------- */}
+      <section className="halo-marca px-5 md:px-8 pt-10 md:pt-12 pb-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:items-end">
+          <div className="lg:col-span-7 revelar">
+            <p className="rotulo-pilula">contato</p>
             <h1 className="titulo-secao vao-rotulo">
               Estamos <span className="italic">perto de você</span>
             </h1>
             <p className="texto-apoio mt-4 max-w-xl">
-              Fale conosco pelo WhatsApp no horário das lojas, ou visite uma das{" "}
-              {UNIDADES.length} unidades em Petrópolis.
+              Tire dúvidas, peça um orçamento ou combine a retirada. Pelo WhatsApp, a resposta
+              vem no horário das lojas.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
               <a
-                href={`https://wa.me/${WHATSAPP_NUMERO}`}
+                href={LINK_WHATSAPP}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="botao botao-principal"
+                className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-full bg-[#1DA851] text-white text-[1.02rem] font-semibold shadow-[0_18px_40px_-16px_rgba(29,168,81,0.7)] transition-colors hover:bg-[#178a43] active:scale-[0.98]"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.1 1.4 2.5 1.6.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.4 0-.1 0 .6-.2 1.3Z" />
-                </svg>
+                <IconeWhatsApp tamanho={20} />
                 Falar no {WHATSAPP_LOJA}
               </a>
               <BotaoEnviarReceita className="botao-link self-center sm:self-auto" />
             </div>
           </div>
 
-          {/* Horário com o estado ao vivo */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 revelar">
             <HorarioAtendimento />
           </div>
         </div>
       </section>
 
-      {/* As unidades, em lista com fio */}
-      <section className="px-5 md:px-8 max-w-6xl mx-auto pt-10 md:pt-12 pb-14 md:pb-18">
-        <p className="rotulo">onde nos encontrar</p>
-        <h2 className="titulo-bloco mt-2">
-          {UNIDADES.length} lojas em <span className="italic">Petrópolis</span>
-        </h2>
+      {/* ---------- O formulário, o Instagram e as lojas ---------- */}
+      <section className="px-5 md:px-8 pt-8 md:pt-10 pb-14 md:pb-18">
+        <div className="max-w-7xl mx-auto escalonado grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 lg:items-stretch">
+          <div className="lg:col-span-7">
+            <FormularioContato />
+          </div>
 
-        <ul className="escalonado lista-fichas lista-fichas-fechada mt-8">
-          {UNIDADES.map((u, i) => (
-            <li key={u.bairro} className="grid grid-cols-[2.5rem_1fr] sm:grid-cols-[4rem_1fr_auto] items-center gap-x-4 sm:gap-x-8 gap-y-4 py-6 md:py-7">
-              <span aria-hidden="true" className="numero-tinta text-xl md:text-2xl">
-                {String(i + 1).padStart(2, "0")}
+          <div className="lg:col-span-5 flex flex-col gap-4 md:gap-5">
+            {/* Instagram */}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${classeCartao} group flex flex-col transition duration-300 hover:-translate-y-1 hover:border-ouro/40`}
+            >
+              <span className="rotulo-pilula">instagram</span>
+              <span className="mt-4 flex items-center gap-3">
+                <span className="shrink-0 flex size-11 items-center justify-center rounded-2xl bg-gelo text-tinta transition-colors group-hover:bg-tinta group-hover:text-white">
+                  <IconeInstagram tamanho={20} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[1.1rem] font-semibold text-navy tracking-[-0.02em] leading-tight">
+                    @{INSTAGRAM_PERFIL}
+                  </span>
+                  <span className="mt-0.5 block text-sm text-cinza leading-snug">
+                    Novidades, bastidores do laboratório e direct.
+                  </span>
+                </span>
               </span>
-              <div className="min-w-0">
-                <h3 className="text-[1.35rem] md:text-2xl font-semibold tracking-[-0.03em] text-navy leading-tight">{u.bairro}</h3>
-                <p className="text-cinza leading-relaxed mt-1">{u.endereco}, Petrópolis/RJ</p>
-                {u.telefone && (
-                  <p className="text-cinza text-sm mt-1 tabular-nums">Telefone {u.telefone}</p>
-                )}
-              </div>
-              <a
-                href={linkMapaUnidade(u.bairro, u.endereco)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="botao-link col-start-2 sm:col-start-3 justify-self-start"
-              >
-                Ver no mapa
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-            </li>
-          ))}
-        </ul>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-navy transition-colors group-hover:text-tinta">
+                Seguir a Viver Bem
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  <SetaDireita tamanho={15} />
+                </span>
+              </span>
+            </a>
 
-        <p className="text-cinza mt-8">
-          Fotos, horário e como chegar em cada loja na{" "}
-          <Link href="/lojas" className="text-tinta font-medium hover:underline">
-            página das lojas
-          </Link>
-          .
-        </p>
+            {/* As 3 lojas, cada uma com o seu mapa */}
+            <div className={`${classeCartao} flex-1 flex flex-col`}>
+              <span className="rotulo-pilula">{UNIDADES.length} lojas em Petrópolis</span>
+              <ul className="mt-3 lista-fichas">
+                {UNIDADES.map((u) => (
+                  <li key={u.bairro}>
+                    <a
+                      href={linkMapaUnidade(u.bairro, u.endereco)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-4 py-3.5"
+                    >
+                      <span aria-hidden="true" className="shrink-0 flex size-10 items-center justify-center rounded-xl bg-gelo text-tinta transition-colors group-hover:bg-tinta group-hover:text-white">
+                        <IconePino />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[1.02rem] font-semibold text-navy tracking-[-0.02em] leading-tight transition-colors group-hover:text-tinta">
+                          {u.bairro}
+                        </span>
+                        <span className="mt-0.5 block text-sm text-cinza leading-snug">
+                          {u.endereco}
+                          {u.telefone && <span className="tabular-nums"> · {u.telefone}</span>}
+                        </span>
+                      </span>
+                      <span className="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy">
+                        Mapa
+                        <span className="transition-transform duration-300 group-hover:translate-x-1">
+                          <SetaDireita tamanho={14} />
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/lojas" className="botao-link !min-h-11 !text-sm mt-auto pt-3 self-start">
+                Fotos, horário e como chegar
+                <SetaDireita tamanho={14} />
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   );

@@ -26,11 +26,8 @@ export function GaleriaProduto({
           "acerte os erros de enquadramento": antes o pote ficava colado na
           base de um ladrilho alto, com vazio em cima) */}
       <div className="relative overflow-hidden rounded-[2rem] bg-gelo/60 flex items-center justify-center aspect-square p-8 md:p-12">
-        {/* A luz dourada da bancada, logo abaixo do pote */}
-        <span
-          aria-hidden="true"
-          className="absolute left-1/2 top-[68%] h-[14%] w-[58%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(201,165,107,0.36),transparent_70%)]"
-        />
+        {/* (A luz dourada sob o pote saiu em 11/10/2026, junto com a sombra:
+            "tire a sombra debaixo dos produtos") */}
 
         {fotos.length === 0 ? (
           <FotoProduto fotoUrl={null} nome={nome} className="relative" />
@@ -47,9 +44,9 @@ export function GaleriaProduto({
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
               {...(i === 0 ? { fetchPriority: "high" as const } : {})}
-              // Desenho neutro (.svg): fundido no gelo e sem a sombra, senão vira uma caixa branca
-              style={src.toLowerCase().endsWith(".svg") ? { mixBlendMode: "multiply", filter: "none" } : undefined}
-              className={`relative max-w-full max-h-full object-contain [filter:drop-shadow(0_18px_16px_rgba(201,165,107,0.36))_drop-shadow(0_3px_3px_rgba(16,42,74,0.14))] ${
+              // Desenho neutro (.svg): fundido no gelo, senão vira uma caixa branca
+              style={src.toLowerCase().endsWith(".svg") ? { mixBlendMode: "multiply" } : undefined}
+              className={`relative max-w-full max-h-full object-contain scale-[1.04] ${
                 i === atual ? "animar-surgir" : "hidden"
               }`}
             />
