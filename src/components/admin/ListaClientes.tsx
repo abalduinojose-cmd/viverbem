@@ -145,7 +145,7 @@ export function ListaClientes({ clientes }: { clientes: ClienteDTO[] }) {
           const itens = lerItens(c.itens);
           const expandido = aberto === c.id;
           return (
-            <div key={c.id} className="bg-white rounded-2xl border border-fio overflow-hidden">
+            <div key={c.id} className="bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] overflow-hidden">
               <button
                 type="button"
                 onClick={() => setAberto(expandido ? null : c.id)}

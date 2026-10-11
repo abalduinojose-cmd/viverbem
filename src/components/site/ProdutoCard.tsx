@@ -76,9 +76,11 @@ export function ProdutoCard({
         )}
       </div>
 
-      <div className={`flex flex-1 flex-col gap-1 ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
+      {/* Nome, categoria e descrição centrados (11/10/2026, "quero o nome dos
+          produtos centralizados, no celular e no computador") */}
+      <div className={`flex flex-1 flex-col items-center gap-1 text-center ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
         {mostrarCategoria && produto.categoriaNome && (
-          <p className="rotulo !text-cinza text-[0.62rem] truncate">{produto.categoriaNome}</p>
+          <p className="rotulo !text-cinza text-[0.62rem] truncate max-w-full">{produto.categoriaNome}</p>
         )}
         <h3 className="text-[1rem] font-medium leading-snug tracking-[-0.015em] text-navy line-clamp-2">
           {/* O link se estende sobre o cartão inteiro */}
@@ -95,7 +97,7 @@ export function ProdutoCard({
           <p className="mt-1 text-[1.05rem] font-semibold text-navy tabular-nums tracking-[-0.01em]">{formatarPreco(preco)}</p>
         )}
         {industrializado && <p className="text-sm text-cinza line-clamp-2 mt-0.5">{produto.descricao}</p>}
-        <div className="relative z-[1] mt-auto pt-3">
+        <div className="relative z-[1] mt-auto w-full pt-3">
           <BotaoAdicionar produto={produto} />
         </div>
       </div>

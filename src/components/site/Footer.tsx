@@ -158,11 +158,8 @@ export function Footer() {
           </ul>
         </nav>
 
-        {/* Aviso legal, curto e centralizado */}
-        <p className="mt-8 max-w-xl text-xs leading-relaxed text-white/55">
-          Manipulados só com receita de profissional habilitado. O nome e o WhatsApp do
-          pedido ficam com a Viver Bem, só para o atendimento, conforme a LGPD.
-        </p>
+        {/* (O aviso legal em parágrafo saiu em 11/10/2026, a pedido, "por
+            enquanto"; a linha de confiança do Como funciona segue no site) */}
 
         {/* Linha final, com pontos de ouro no lugar dos separadores */}
         <div className="mt-10 w-full border-t border-white/10 pt-7">

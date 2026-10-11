@@ -159,7 +159,7 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
 
       {/* Criação */}
       {criando && (
-        <form onSubmit={criar} className="bg-white rounded-2xl border border-fio p-5 md:p-6 mt-5 flex flex-col gap-5 animar-surgir">
+        <form onSubmit={criar} className="bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-5 md:p-6 mt-5 flex flex-col gap-5 animar-surgir">
           <h2 className="font-semibold text-navy">Novo acesso</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <CampoAdmin rotulo="Nome" obrigatorio>
@@ -240,7 +240,7 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
         {usuarios.map((u) => {
           const souEu = u.id === meuId;
           return (
-            <div key={u.id} className={`bg-white rounded-2xl border border-fio p-4 sm:p-5 ${u.ativo ? "" : "opacity-70"}`}>
+            <div key={u.id} className={`bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-4 sm:p-5 ${u.ativo ? "" : "opacity-70"}`}>
               <div className="flex items-start gap-3.5">
                 {u.ativo ? (
                   <Inicial nome={u.nome} tamanho="lg" />

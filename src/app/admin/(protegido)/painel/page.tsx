@@ -109,7 +109,7 @@ export default async function PaginaPainel() {
       />
 
       {/* ---------- Números do mês ---------- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-7">
         <CartaoNumero
           rotulo="Pedidos no mês"
           valor={String(m.pedidosMes)}
@@ -132,7 +132,7 @@ export default async function PaginaPainel() {
       </div>
 
       {/* ---------- Gráficos ---------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
         <CartaoAdmin titulo="Faturamento por mês" apoio="Últimos 6 meses, só produtos com preço">
           <div className="px-5 pb-5 mt-4">
             <GraficoFaturamento dados={m.porMes} />
@@ -163,13 +163,13 @@ export default async function PaginaPainel() {
               comPrecoNoSite={m.catalogo.comPrecoNoSite}
             />
             <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-xl bg-nevoa px-3.5 py-3">
+              <div className="rounded-2xl bg-nevoa px-3.5 py-3">
                 <dt className="text-[0.66rem] font-semibold tracking-[0.12em] uppercase text-cinza">Com foto</dt>
                 <dd className="mt-1 font-semibold text-navy tabular-nums">
                   {m.catalogo.comFoto} <span className="text-grafite-claro font-normal">de {m.catalogo.total}</span>
                 </dd>
               </div>
-              <div className="rounded-xl bg-nevoa px-3.5 py-3">
+              <div className="rounded-2xl bg-nevoa px-3.5 py-3">
                 <dt className="text-[0.66rem] font-semibold tracking-[0.12em] uppercase text-cinza">Categorias</dt>
                 <dd className="mt-1 font-semibold text-navy tabular-nums">
                   {m.catalogo.categoriasNoSite} <span className="text-grafite-claro font-normal">de {m.catalogo.categorias} no site</span>
@@ -234,8 +234,8 @@ export default async function PaginaPainel() {
                   <Link
                     key={a.r}
                     href={a.href}
-                    className={`rounded-xl px-4 py-3 border transition-colors ${
-                      a.grave ? "border-carimbo/30 bg-carimbo/5 hover:border-carimbo/60" : "border-fio hover:border-tinta/40"
+                    className={`rounded-2xl px-4 py-3.5 border transition-colors ${
+                      a.grave ? "border-carimbo/30 bg-carimbo/5 hover:border-carimbo/60" : "border-fio bg-nevoa/60 hover:border-tinta/40"
                     }`}
                   >
                     <p className={`text-2xl font-semibold tabular-nums tracking-tight ${a.grave ? "text-carimbo" : "text-navy"}`}>{a.n}</p>
@@ -333,9 +333,9 @@ export default async function PaginaPainel() {
             <Link
               key={a.titulo}
               href={a.href}
-              className="group bg-white rounded-2xl border border-fio hover:border-tinta/40 px-4 py-3.5 flex items-center gap-3 transition-colors"
+              className="group bg-white rounded-[1.25rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:border-tinta/40 hover:-translate-y-0.5 px-4 py-4 flex items-center gap-3 transition duration-300"
             >
-              <span className="shrink-0 w-9 h-9 rounded-xl bg-nevoa text-grafite-claro group-hover:bg-gelo group-hover:text-tinta flex items-center justify-center transition-colors">
+              <span className="shrink-0 w-10 h-10 rounded-xl bg-gelo text-tinta group-hover:bg-tinta group-hover:text-white flex items-center justify-center transition-colors">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   {ICONES[a.icone]}
                 </svg>

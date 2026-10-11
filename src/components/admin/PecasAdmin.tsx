@@ -7,6 +7,11 @@
 // quem está logado, a marca da página ativa). Vermelho só em ação
 // destrutiva. Três camadas: os tokens de cor vêm do globals.css, as
 // classes abaixo são os tokens de componente, e as telas só compõem.
+//
+// 11/10/2026 ("modernize o painel do gestor, mas está bom do jeito que
+// está, só deixe mais moderno"): cantos mais suaves (1,5rem) e fio mais
+// leve nos cartões, uma sombra bem baixa, os números de destaque maiores,
+// o título de página maior e os botões em pílula. A estrutura é a mesma.
 
 /** Cabeçalho padrão de página: rótulo pequeno com o fio de ouro, título,
  *  explicação e a ação principal à direita. */
@@ -25,10 +30,10 @@ export function CabecalhoAdmin({
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
       <div className="min-w-0">
         {rotulo && <p className="rotulo-pilula mb-2">{rotulo}</p>}
-        <h1 className="text-[1.65rem] md:text-[2rem] font-semibold text-navy tracking-[-0.03em] leading-[1.1]">
+        <h1 className="text-[1.8rem] md:text-[2.2rem] font-semibold text-navy tracking-[-0.035em] leading-[1.05]">
           {titulo}
         </h1>
-        {descricao && <p className="text-cinza text-sm md:text-[0.95rem] mt-1.5">{descricao}</p>}
+        {descricao && <p className="text-cinza text-sm md:text-[0.95rem] mt-2">{descricao}</p>}
       </div>
       {acao && <div className="shrink-0 flex flex-wrap gap-2">{acao}</div>}
     </div>
@@ -51,7 +56,7 @@ export function CartaoAdmin({
   acao?: React.ReactNode;
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-fio ${className}`}>
+    <div className={`bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] ${className}`}>
       {(titulo || acao) && (
         <div className="flex items-start justify-between gap-3 px-5 pt-5">
           <div className="min-w-0">
@@ -90,17 +95,17 @@ export function CartaoNumero({
     vermelho: "text-carimbo",
   }[tom];
   return (
-    <div className="bg-white rounded-2xl border border-fio px-4 py-4 md:px-5">
+    <div className="bg-white rounded-[1.5rem] border border-fio/80 px-5 py-5 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] transition-colors hover:border-tinta/30">
       <div className="flex items-start justify-between gap-2">
         <p className="text-[0.66rem] font-semibold tracking-[0.14em] uppercase text-cinza leading-tight">
           {rotulo}
         </p>
         {extra}
       </div>
-      <p className={`text-[1.7rem] md:text-[2rem] font-semibold tracking-[-0.03em] leading-none mt-3 tabular-nums ${cor}`}>
+      <p className={`text-[2rem] md:text-[2.4rem] font-semibold tracking-[-0.035em] leading-none mt-4 tabular-nums ${cor}`}>
         {valor}
       </p>
-      {apoio && <p className="text-grafite-claro text-xs mt-2">{apoio}</p>}
+      {apoio && <p className="text-grafite-claro text-xs mt-2.5">{apoio}</p>}
     </div>
   );
 }
@@ -154,7 +159,7 @@ export function classeBotaoAdmin(
   tamanho: "normal" | "pequeno" = "normal"
 ) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
+    "inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
   const dimensao = tamanho === "pequeno" ? "h-9 px-3.5 text-[0.8rem]" : "h-11 px-4 text-sm";
   const tom = {
     primario: "bg-navy text-white hover:bg-tinta",

@@ -1,5 +1,26 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 59 (11/10/2026): nome dos produtos centrado, aviso legal fora do rodapé "por enquanto", painel do gestor levemente mais moderno; 16º push.**
+> Pedidos: "quero o nome dos produtos centralizados, tanto para mobile
+> quanto para desktop"; "exclua isso do rodapé por enquanto" (o parágrafo
+> "Manipulados só com receita de profissional habilitado. O nome e o
+> WhatsApp do pedido ficam com a Viver Bem, só para o atendimento, conforme
+> a LGPD."); "modernize o painel de gestor, mas tá bom do jeito que está,
+> só deixe mais moderno"; "limpe a janela de contexto e atualize o GitHub"
+> (a limpeza é o /compact do lado dele). Cartão de produto (`ProdutoCard`,
+> nas duas variantes): o bloco de texto virou coluna centrada (categoria,
+> nome, preço quando houver, descrição) e o botão do carrinho ocupa a
+> largura toda embaixo. Rodapé: o parágrafo legal saiu (fica um comentário
+> no lugar, com a data); a linha de confiança "Manipulação com receita
+> válida" segue no Como funciona. Painel: só os tokens de componente em
+> `PecasAdmin` mudaram, a estrutura das telas é a mesma: cartões com canto
+> de 1,5rem, fio mais leve (fio/80) e uma sombra bem baixa; os números do
+> mês maiores (2rem/2,4rem) e com o fio acendendo no hover; título de
+> página maior; botões em pílula; os atalhos da visão geral com o ícone em
+> gelo que vira azul no hover e sobem meio passo; os alertas e os cartões
+> soltos das outras telas (produtos, categorias, clientes, acessos, log,
+> formulário) seguem o mesmo cartão para não destoar.
+
 > **ADENDO 58 (11/10/2026): Como funciona como stepper (v7), fotos em todas as 39 avaliações, "Ver mais avaliações no Google" no fim; 15º push, a primeira prévia para a cliente.**
 > Pedidos: "melhore o Como funciona, mais moderno, tá muito amador";
 > "coloque as fotos na parte de avaliações e no final 'ver mais avaliações

@@ -349,7 +349,7 @@ export function ListaProdutos({
 
       {/* ---------- A lista ---------- */}
       {listaFiltrada.length === 0 ? (
-        <div className="mt-5 bg-white rounded-2xl border border-fio">
+        <div className="mt-5 bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]">
           <VazioAdmin titulo="Nenhum produto encontrado" descricao="Tente outro termo de busca ou limpe os filtros." />
         </div>
       ) : (

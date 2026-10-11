@@ -41,7 +41,7 @@ export default async function PaginaLog() {
         descricao={`Registro automático das últimas ${registros.length} ações no painel.`}
       />
 
-      <div className="mt-6 bg-white rounded-2xl border border-fio overflow-hidden">
+      <div className="mt-6 bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] overflow-hidden">
         {registros.length === 0 ? (
           <VazioAdmin
             titulo="Nenhuma alteração registrada"

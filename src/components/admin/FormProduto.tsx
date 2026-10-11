@@ -60,7 +60,7 @@ const novaChave = () => `f${Date.now()}-${contadorChave++}`;
 
 function Secao({ titulo, texto, children }: { titulo: string; texto?: string; children: React.ReactNode }) {
   return (
-    <section className="bg-white rounded-2xl border border-fio p-5 md:p-6">
+    <section className="bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-5 md:p-6">
       <h2 className="font-semibold text-navy">{titulo}</h2>
       {texto && <p className="text-sm text-cinza mt-0.5 leading-relaxed">{texto}</p>}
       <div className="mt-5 flex flex-col gap-5">{children}</div>

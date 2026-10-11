@@ -187,7 +187,7 @@ export function ListaCategorias({ categorias, papel }: { categorias: CategoriaCo
       {/* Lista */}
       <div className="mt-3 flex flex-col gap-3">
         {lista.length === 0 && (
-          <div className="bg-white rounded-2xl border border-fio">
+          <div className="bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]">
             <VazioAdmin titulo="Nenhuma categoria" descricao="Crie a primeira no campo acima." />
           </div>
         )}
@@ -198,7 +198,7 @@ export function ListaCategorias({ categorias, papel }: { categorias: CategoriaCo
             onDragStart={() => (indiceArrastado.current = indice)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => aoSoltar(indice)}
-            className={`bg-white rounded-2xl border border-fio p-4 sm:p-5 transition-opacity ${
+            className={`bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-4 sm:p-5 transition-opacity ${
               ocupado === c.id ? "opacity-60" : ""
             } ${c.visivel ? "" : "bg-nevoa/60"}`}
           >
