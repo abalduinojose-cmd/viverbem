@@ -7,7 +7,7 @@ module.exports = [
   {
     "nome": "Edilene Lima",
     "texto": "Minha experiência com a Farmácia Viver Bem é sempre maravilhosa e satisfatória. A Farmácia oferece produtos de qualidade e o atendimento também não fica de fora. As meninas são muitíssimo simpáticas e atenciosas. O atendimento é rápido tanto presencialmente quanto on-line. EU RECOMENDO",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/edilene-lima.jpg"
   },
   {
     "nome": "Karoll Carboni",
@@ -17,7 +17,7 @@ module.exports = [
   {
     "nome": "Viviane Sutter",
     "texto": "Farmácia de minha inteira confiança, eu e minha família somos clientes a muitos anos. Além de preços acessíveis a qualidade é indiscutível. Estou cursando nutrição período 4/8 e quando estiver formada, essa será minha indicação também para meus futuros pacientes.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/viviane-sutter.jpg"
   },
   {
     "nome": "Bianca Borsato",
@@ -87,7 +87,7 @@ module.exports = [
   {
     "nome": "Jane Loureiro",
     "texto": "Déborah como sempre tira todas as minhas dúvidas e me ajudou nas minhas escolhas. Muita paciência e extremamente atenciosa.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/jane-loureiro.jpg"
   },
   {
     "nome": "Bruna Oliveira",
@@ -97,27 +97,27 @@ module.exports = [
   {
     "nome": "Claudia de F. Campos Morelli",
     "texto": "Atendimento muito bom. Ótimos produtos e entrega rápida e segura. Super indico.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/claudia-de-f-campos-morelli.jpg"
   },
   {
     "nome": "Andrea Amorim",
     "texto": "Pronto atendimento. Que simpática! Facilidade em encomendar o produto. Melhor preço pesquisado.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/andrea-amorim.jpg"
   },
   {
     "nome": "Ana Maria",
     "texto": "Já sou cliente muitos anos. Gosto muito do atendimento. Todos muitos simpáticos.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/ana-maria.jpg"
   },
   {
     "nome": "Sahara Raposo",
     "texto": "Atendimento excelente, super recomendo! Produtos de ótima qualidade, com preços maravilhosos.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/sahara-raposo.jpg"
   },
   {
     "nome": "Tânia Falch",
     "texto": "Ótimo atendimento, bom preço e entrega rápida. Super indico!",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/tania-falch.jpg"
   },
   {
     "nome": "João Luis",
@@ -177,26 +177,26 @@ module.exports = [
   {
     "nome": "Rosangela M.A",
     "texto": "Minha experiência nessa farmácia de manipulação é muito boa. Os funcionários são sempre atenciosos,  educados e gentis ao nos atender tanto pessoalmente quanto on line. Quanto a manipulação utilizam fórmulas de inteira confiança.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/rosangela-m-a.jpg"
   },
   {
     "nome": "Maria da Conceição",
     "texto": "Gosto muito de comprar aqui. O atendimento é sempre muito bom!",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/maria-da-conceicao.jpg"
   },
   {
     "nome": "Daniela Azevedo",
     "texto": "Farmácia Excelente: Atendimento preciso e entrega rápida dos medicamentos.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/daniela-azevedo.jpg"
   },
   {
     "nome": "Eliane Gomes",
     "texto": "Excelência na qualidade das manipulações e atendimento cordial. 👏👏👍",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/eliane-gomes.jpg"
   },
   {
     "nome": "Isabel Baldi",
     "texto": "Sempre fui muito bem atendida, gosto muito dos remédios da Manipulação.",
-    "fotoUrl": null
+    "fotoUrl": "/uploads/avaliacoes/isabel-baldi.jpg"
   }
 ];

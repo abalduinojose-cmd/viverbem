@@ -1,25 +1,23 @@
 // "Como funciona": a trilha do pedido pela receita, da foto da prescrição
-// até a retirada ou a entrega, em quatro passos. Aparece na home e na
-// página A Viver Bem.
+// até a retirada ou a entrega, em quatro passos. Aparece na home, na
+// página A Viver Bem e na página /como-funciona (sem o cabeçalho).
 //
-// Sexta versão (10/10/2026, pedido: "o Como funciona está muito simples, é
-// uma parte importante do site, tem que estar mais moderna e clean";
-// "modernize os botões"; "exclua o WhatsApp" da linha de confiança): os
-// quatro cartões viraram UMA lista num cartão branco, cada passo com o
-// número grande em ouro à esquerda, o ícone num quadrado gelo (que acende
-// em azul no hover), o título, o texto e o detalhe; no passo 04 as lojas
-// em chips. Ao lado, preso ao rolar no computador, o convite da receita em
-// azul-noite com os botões da dobra (o branco com o fio de ouro que
-// percorre a borda e o de vidro) e a linha de confiança dentro dele, sem
-// o telefone. No celular, a lista vem primeiro e o convite embaixo (a
-// faixa que arrastava para o lado saiu: a lista lê melhor).
+// Sétima versão (11/10/2026, pedido: "deixe mais moderno, tá muito
+// amador"): um STEPPER de verdade. No computador, uma linha de ouro
+// atravessa os quatro passos e cresce quando a fileira entra na tela
+// (scroll-driven, roda também com "reduzir movimento"); sobre a linha,
+// quatro nós brancos com o ícone e um fio de ouro; embaixo de cada nó, o
+// "passo 01" pequeno em ouro, o título, o texto e o detalhe, sem caixas.
+// Até o tablet, os passos são cartões que arrastam para o lado (pedido de
+// 10/10/2026), cada um com o nó do ícone, o número em marca d'água e a
+// barra de ouro embaixo acompanhando a faixa. Depois dos passos, o convite
+// da receita em azul-noite, largo: título em duas vozes, apoio, os botões
+// da dobra (botao-vivo e botao-vidro) e a linha de confiança.
 //
-// Versões anteriores: 08/10 quatro cartões com o traço de ouro e a faixa
-// no celular (quinta); 07/10 um cartão só dividido por fios (quarta); o
-// painel inteiro em azul-noite tinha sido reprovado antes. Esta seção
-// absorveu as duas que contavam o mesmo processo ("Cada pessoa tem sua
-// fórmula" e "Receba em casa ou retire na loja"): o processo é contado
-// uma vez. Textos curtos e formais (10/10/2026).
+// Versões anteriores: 10/10 lista num cartão com o convite preso ao lado
+// (sexta); 08/10 quatro cartões com traço e faixa (quinta); 07/10 um cartão
+// dividido por fios (quarta). Esta seção absorveu as duas que contavam o
+// mesmo processo: o processo é contado uma vez.
 //
 // Texto de processo, não de resultado: manipulado não pode ter promessa
 // de efeito (RDC 67/2007 e RDC 96/2008). Antes de mexer no texto, confirme
@@ -104,11 +102,20 @@ const PASSOS = [
   },
 ];
 
-// A linha de confiança, dentro do convite: o aviso legal em dois pontos curtos
+// A linha de confiança, no convite: o aviso legal em dois pontos curtos
 const CONFIANCA = [
   { icone: <IconeEscudo />, texto: "Manipulação com receita válida." },
   { icone: <IconeCadeado />, texto: "Sua receita e seus dados ficam só com a nossa equipe." },
 ];
+
+/** O nó do passo: um círculo branco com o ícone e um fio de ouro */
+function No({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="relative z-[1] flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-tinta ring-1 ring-ouro/50 shadow-[0_14px_30px_-16px_rgba(16,42,74,0.45),0_0_0_6px_rgba(201,165,107,0.1)]">
+      {children}
+    </span>
+  );
+}
 
 export function ComoFunciona({
   className = "secao",
@@ -125,124 +132,127 @@ export function ComoFunciona({
       aria-label={cabecalho ? undefined : "Os quatro passos"}
       className={`max-w-7xl mx-auto px-5 md:px-8 scroll-mt-[calc(var(--altura-cabecalho)+1rem)] ${className}`}
     >
-      {/* ---------- Cabeçalho: rótulo, título em duas vozes e o apoio embaixo ---------- */}
+      {/* ---------- Cabeçalho: rótulo, título em duas vozes e o apoio ---------- */}
       {cabecalho && (
-        <div className="revelar max-w-3xl">
-          <p className="rotulo-pilula">como funciona</p>
-          <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
-            Do envio da receita <span className="italic">à entrega</span>
-          </h2>
-          <p className="texto-apoio mt-5 max-w-[36rem]">
-            Quatro passos, da foto da receita até a retirada ou a entrega. Cada fórmula é
-            preparada depois do pedido, conforme a receita.
+        <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">
+          <div className="lg:col-span-7">
+            <p className="rotulo-pilula">como funciona</p>
+            <h2 id="titulo-como-funciona" className="titulo-secao vao-rotulo">
+              Do envio da receita <span className="italic">à entrega</span>
+            </h2>
+          </div>
+          <p className="texto-apoio lg:col-span-5 max-w-md lg:pb-1.5 lg:text-right">
+            Quatro passos, pelo WhatsApp e com o farmacêutico. Cada fórmula é preparada depois
+            do pedido, conforme a receita.
           </p>
         </div>
       )}
 
-      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start ${cabecalho ? "vao-titulo" : ""}`}>
-        {/* ---------- Os quatro passos: no celular e no tablet, cartões que
-            arrastam para o lado com a barra de ouro embaixo (pedido de
-            10/10/2026, "tem que ser arrastando para o lado no mobile"); no
-            computador, uma lista só num cartão branco ---------- */}
-        <div className="passos-escopo lg:col-span-7">
-          <ol className="passos-faixa escalonado flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:block lg:overflow-visible lg:mx-0 lg:px-7 lg:pb-0 lg:rounded-[2rem] lg:border lg:border-fio lg:bg-white lg:shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)]">
-            {PASSOS.map((p, i) => (
-              <li
-                key={p.titulo}
-                className="group flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col gap-4 rounded-[1.5rem] border border-fio bg-white p-5 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:grid lg:w-auto lg:shrink lg:grid-cols-[4.5rem_1fr] lg:gap-x-5 lg:gap-y-0 lg:rounded-none lg:border-0 lg:border-b lg:border-fio lg:bg-transparent lg:p-0 lg:py-7 lg:shadow-none lg:last:border-b-0"
-              >
-                <span aria-hidden="true" className="numero-tinta -mt-1 text-[2.4rem] leading-none lg:text-[3rem]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gelo text-tinta transition-colors duration-300 group-hover:bg-tinta group-hover:text-white">
-                      {p.icone}
-                    </span>
-                    <h3 className="text-[1.15rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
-                      <span className="sr-only">Passo {i + 1}: </span>
-                      {p.titulo}
-                    </h3>
-                  </div>
-                  <p className="mt-3 max-w-[52ch] text-[0.95rem] md:text-base leading-relaxed text-grafite">{p.texto}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-cinza">{p.detalhe}</p>
+      {/* ---------- Os quatro passos: stepper no computador, faixa até o tablet ---------- */}
+      <div className={`passos-escopo ${cabecalho ? "vao-titulo" : ""}`}>
+        <ol className="passos-faixa relative flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0">
+          {/* A linha de ouro que atravessa os nós (só no computador): cresce
+              quando a fileira entra na tela */}
+          {/* Do centro do primeiro nó ao centro do último: meia coluna de cada
+              lado (as colunas têm 2rem de vão entre si) */}
+          <span aria-hidden="true" className="hidden lg:block absolute left-[calc((100%-6rem)/8)] right-[calc((100%-6rem)/8)] top-7 h-px bg-fio" />
+          <span aria-hidden="true" className="traco-liga hidden lg:block absolute left-[calc((100%-6rem)/8)] right-[calc((100%-6rem)/8)] top-7 h-px" />
 
-                  {/* Passo 04: as lojas, em chips com o mapa */}
-                  {p.lojas && (
-                    <ul className="mt-auto flex flex-wrap gap-2 pt-4">
-                      {UNIDADES.map((u) => (
-                        <li key={u.bairro}>
-                          <a
-                            href={linkMapaUnidade(u.bairro, u.endereco)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="chip !min-h-9 !px-3 text-[0.8rem] md:!min-h-10 md:!px-3.5 md:text-sm"
-                            title={u.endereco}
-                          >
-                            <span className="mr-1.5 -ml-0.5 text-ouro">
-                              <IconeLoja tamanho={14} />
-                            </span>
-                            {u.bairro}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-          {/* A barra de ouro que anda com a faixa (só até o tablet) */}
-          <div aria-hidden="true" className="lg:hidden mt-4 mx-auto h-[3px] w-28 rounded-full bg-fio overflow-hidden">
-            <span className="passos-barra block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />
-          </div>
+          {PASSOS.map((p, i) => (
+            <li
+              key={p.titulo}
+              className="group relative flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] border border-fio bg-white p-5 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:w-auto lg:shrink lg:items-center lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:text-center lg:shadow-none"
+            >
+              {/* O número em marca d'água (só nos cartões) */}
+              <span aria-hidden="true" className="numero-tinta pointer-events-none absolute right-4 top-1 text-[4.5rem] leading-none opacity-20 lg:hidden">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <No>{p.icone}</No>
+              <span className="mt-5 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ouro-escuro">
+                passo {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-2 text-[1.2rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-snug">
+                <span className="sr-only">Passo {i + 1}: </span>
+                {p.titulo}
+              </h3>
+              <p className="mt-2.5 text-[0.95rem] leading-relaxed text-grafite lg:max-w-[26ch]">{p.texto}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-cinza lg:max-w-[26ch]">{p.detalhe}</p>
+
+              {/* Passo 04: as lojas, em chips com o mapa */}
+              {p.lojas && (
+                <ul className="mt-auto flex flex-wrap gap-2 pt-4 lg:justify-center">
+                  {UNIDADES.map((u) => (
+                    <li key={u.bairro}>
+                      <a
+                        href={linkMapaUnidade(u.bairro, u.endereco)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="chip !min-h-9 !px-3 text-[0.8rem]"
+                        title={u.endereco}
+                      >
+                        <span className="mr-1.5 -ml-0.5 text-ouro">
+                          <IconeLoja tamanho={14} />
+                        </span>
+                        {u.bairro}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ol>
+        {/* A barra de ouro que anda com a faixa (só até o tablet) */}
+        <div aria-hidden="true" className="lg:hidden mt-4 mx-auto h-[3px] w-28 rounded-full bg-fio overflow-hidden">
+          <span className="passos-barra block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />
         </div>
+      </div>
 
-        {/* ---------- O convite da receita, preso ao lado no computador ---------- */}
-        <div className="revelar relative overflow-hidden rounded-[2rem] banner-noite em-noite p-6 md:p-8 text-white ring-1 ring-inset ring-white/10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)] lg:col-span-5 lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
-          <span aria-hidden="true" className="malha-banner" />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.3),transparent_62%)]"
-          />
-          <div className="relative">
+      {/* ---------- O convite da receita, largo ---------- */}
+      <div className="revelar relative mt-10 md:mt-14 overflow-hidden rounded-[2rem] banner-noite em-noite p-6 md:p-8 lg:px-10 lg:py-9 text-white ring-1 ring-inset ring-white/10 shadow-[0_30px_60px_-36px_rgba(13,35,64,0.6)]">
+        <span aria-hidden="true" className="malha-banner" />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.3),transparent_62%)]"
+        />
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 lg:items-center">
+          <div className="lg:col-span-7">
             <p className="rotulo-pilula">receita em mãos?</p>
-            <p className="titulo-banner mt-4 text-[1.7rem] md:text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
+            <p className="titulo-banner mt-3 text-[1.6rem] md:text-[2rem] font-semibold leading-[1.05] tracking-[-0.035em] text-balance">
               Envie a foto <span className="italic">da sua receita.</span>
             </p>
-            <p className="mt-3 max-w-[40ch] text-[0.95rem] leading-relaxed text-white/70">
+            <p className="mt-3 max-w-[46ch] text-[0.95rem] leading-relaxed text-white/70">
               A foto vai pelo WhatsApp. O farmacêutico confere e responde com o valor e o
               prazo.
             </p>
-            {/* Os botões da dobra: o branco com o fio de ouro e o de vidro */}
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <BotaoEnviarReceita comIcone={false} className="botao botao-vivo !gap-2.5">
-                <span className="text-ouro-escuro">
-                  <IconeReceita tamanho={20} />
-                </span>
-                Enviar receita
-              </BotaoEnviarReceita>
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMERO}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="botao botao-vidro !gap-2.5"
-              >
-                <IconeWhatsApp tamanho={18} className="text-[#25D366]" />
-                Tirar uma dúvida
-              </a>
-            </div>
-            {/* A linha de confiança, dentro do convite */}
-            <ul className="mt-7 flex flex-col gap-2.5 border-t border-white/10 pt-5 text-[0.8rem] leading-snug text-white/70">
-              {CONFIANCA.map((c) => (
-                <li key={c.texto} className="flex items-center gap-2.5">
-                  <span className="shrink-0 text-ouro-claro">{c.icone}</span>
-                  {c.texto}
-                </li>
-              ))}
-            </ul>
+          </div>
+          <div className="lg:col-span-5 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row lg:justify-end">
+            <BotaoEnviarReceita comIcone={false} className="botao botao-vivo !gap-2.5">
+              <span className="text-ouro-escuro">
+                <IconeReceita tamanho={20} />
+              </span>
+              Enviar receita
+            </BotaoEnviarReceita>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMERO}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="botao botao-vidro !gap-2.5"
+            >
+              <IconeWhatsApp tamanho={18} className="text-[#25D366]" />
+              Tirar uma dúvida
+            </a>
           </div>
         </div>
+        {/* A linha de confiança */}
+        <ul className="relative mt-6 flex flex-col gap-2 border-t border-white/10 pt-5 text-[0.8rem] leading-snug text-white/70 sm:flex-row sm:flex-wrap sm:gap-x-6">
+          {CONFIANCA.map((c) => (
+            <li key={c.texto} className="flex items-center gap-2.5">
+              <span className="shrink-0 text-ouro-claro">{c.icone}</span>
+              {c.texto}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

@@ -1,5 +1,24 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 58 (11/10/2026): Como funciona como stepper (v7), fotos em todas as 39 avaliações, "Ver mais avaliações no Google" no fim; 15º push, a primeira prévia para a cliente.**
+> Pedidos: "melhore o Como funciona, mais moderno, tá muito amador";
+> "coloque as fotos na parte de avaliações e no final 'ver mais avaliações
+> no Google'"; "limpe a janela de contexto e atualize o GitHub, vou mandar
+> a primeira prévia para o cliente" (a limpeza é o /compact do lado dele).
+> Como funciona v7: no computador, um stepper com a linha de ouro
+> atravessando quatro nós brancos (ícone, fio de ouro, sombra) que cresce
+> quando a fileira entra na tela (`.traco-liga`, scroll-driven); sob cada
+> nó, "passo 01" em ouro, título, texto e detalhe, centrados, sem caixas;
+> até o tablet seguem os cartões que arrastam, agora com o nó do ícone e o
+> número em marca d'água; o convite da receita voltou a ser largo, abaixo
+> dos passos, com os botões da dobra e a linha de confiança; o apoio do
+> cabeçalho foi para a direita. Avaliações: `scripts/baixar-avatares.js`
+> baixa o avatar do Google (o círculo com a inicial que o Google mesmo
+> mostra) de quem não tinha foto própria: 39 de 39 com imagem; com isso a
+> home também passa a carregar todas no carrossel (`obterAvaliacoes`
+> filtra por foto). No fim da lista, sempre, o link "Ver mais avaliações
+> no Google" com o G, além do "ver mais" de nove em nove.
+
 > **ADENDO 57 (11/10/2026): sem vazamento lateral no celular, páginas próprias de Como funciona (com perguntas frequentes) e de Avaliações (39 reais do Google, busca e assuntos), Lojas com o mapa da loja escolhida, banner dos 20 anos sobre a foto, Produtos no menu do celular e textos. Não publicado.**
 > Pedidos: "o site tá saindo da tela no mobile, quero 100% responsivo";
 > "melhore a página Como funciona, mais moderna"; "'Manipulamos só com
