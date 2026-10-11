@@ -25,7 +25,15 @@ export function CategoriasRedondas({
   return (
     <section aria-labelledby="titulo-categorias" className="pt-0.5 md:pt-1 max-w-7xl mx-auto px-5 md:px-8">
       <div className="revelar text-center">
-        <h2 id="titulo-categorias" className="titulo-secao text-[calc(var(--tam-titulo)*0.9)]">
+        {/* Numa linha só em qualquer tela (11/10/2026, "diminua a letra e
+            coloque na mesma linha"): o título mede 14,4 em de largura
+            (medido no navegador), então a letra fica no que couber na caixa
+            (100vw menos o recuo e a barra de rolagem), com folga, e no
+            computador em 82% do título de seção */}
+        <h2
+          id="titulo-categorias"
+          className="titulo-secao whitespace-nowrap text-[min(calc(var(--tam-titulo)*0.82),calc((100vw_-_3.5rem)/15.2))]"
+        >
           Conheça nossas <span className="italic">linhas de produtos</span>
         </h2>
       </div>

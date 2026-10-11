@@ -1,5 +1,21 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 63 (11/10/2026): título das linhas de produtos numa linha só, vantagens 15% maiores no computador; 20º push.**
+> Pedidos (print do celular com o título em duas linhas e print das
+> pílulas): "diminua a letra e coloque na mesma linha"; "na versão desktop
+> pode aumentar 15% a parte do print"; "atualize o GitHub". Título
+> "Conheça nossas linhas de produtos": medido no navegador, mede 14,4 em de
+> largura; a letra passou a `min(82% do título de seção, (100vw - 3,5rem)
+> / 15,2)` com `white-space: nowrap`, então cabe numa linha em qualquer
+> tela (no celular de 437 px, de 34,9 para ~25 px) e no computador fica
+> um pouco menor que antes (82% em vez de 90%). A primeira conta (13,9 em,
+> 2,5rem) cortava o "s" final no celular: a largura medida a 100 px tinha
+> dado 13,5 em, mas no tamanho real deu 14,4. Vantagens (`Beneficios`):
+> do lg para cima as pílulas crescem 15% (altura 3,5 para 4rem, círculo do
+> ícone 2,75 para 3,15rem, o ícone em scale 1,15, título 0,9 para
+> 1,035rem, apoio 0,78 para 0,9rem, recuos e vão maiores); celular e
+> tablet iguais.
+
 > **ADENDO 62 (11/10/2026): "Conheça nossas linhas de produtos" e o Como funciona v8, em stories; 19º push.**
 > Pedidos: "mude 'Nossas categorias' por 'Conheça nossas linhas de
 > produtos'"; "modernize ainda mais a seção Como funciona"; "atualize o
