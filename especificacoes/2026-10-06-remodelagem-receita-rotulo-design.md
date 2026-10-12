@@ -1,5 +1,13 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 65 (12/10/2026): dobra do celular 10% mais baixa. Não publicado.**
+> Pedido: "na versão mobile a cena animada está muito grande de altura,
+> tomando grande parte da tela; diminua 10%". A altura do banner no celular
+> (`Abertura.tsx`) foi de `min(2 x (100vw - 1,5rem), 46rem)` para
+> `min(1,8 x (100vw - 1,5rem), 41,4rem)`: a 437 px, de 736 para 662 px; a
+> 390 px, de 732 para 659 px. A cena em canvas reenquadra sozinha
+> (`enquadrar` no modo retrato). Computador sem mudança (30/34rem).
+
 > **ADENDO 64 (11/10/2026): revisão anti-genérico II pelo guia de estética da Anthropic. NÃO publicado: o usuário quer ver antes; se não gostar, volta ao commit b1278be.**
 > Pedido: "estude as skills (claude-cookbooks-main) e melhore usando todo o
 > conhecimento; tire e melhore tudo que tiver cara de genérico, mantendo a

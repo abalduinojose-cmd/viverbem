@@ -133,13 +133,16 @@ export function Abertura({ artes = [] }: { artes?: ArteHero[] }) {
 
   // ---------- Modo padrão: a animação da dobra ----------
   // Desde 08/10/2026 (pedido do usuário) o banner é a animação de 7 s
+  // 12/10/2026 ("na versão mobile a cena está muito grande de altura,
+  // diminua 10%"): o banner do celular foi de 2x a largura (teto 46rem)
+  // para 1,8x (teto 41,4rem), 10% mais baixo; a cena reenquadra sozinha.
   // (HeroAnimado), no celular e no desktop: a frase, os potes e os passos
   // estão dentro dela. O h1 e o texto de apoio seguem no HTML só para
   // leitores de tela e o Google, e os botões ficam por cima, na base (à
   // esquerda no desktop, alinhados com o título da animação).
   return (
     <section aria-labelledby="titulo-abertura" className="max-w-[90rem] mx-auto px-3 md:px-5 pt-3 md:pt-4">
-      <div className="banner-noite em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white h-[min(calc((100vw-1.5rem)*2),46rem)] md:h-[30rem] lg:h-[34rem] xl:h-[36rem]">
+      <div className="banner-noite em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] ring-1 ring-inset ring-white/10 text-white h-[min(calc((100vw-1.5rem)*1.8),41.4rem)] md:h-[30rem] lg:h-[34rem] xl:h-[36rem]">
         <HeroAnimado />
         <div className="absolute inset-x-0 bottom-0 z-[1] px-5 pb-6 md:px-12 md:pb-10">
           <h1 id="titulo-abertura" className="sr-only">
