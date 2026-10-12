@@ -134,8 +134,11 @@ export function Abertura({ artes = [] }: { artes?: ArteHero[] }) {
   // ---------- Modo padrão: a animação da dobra ----------
   // Desde 08/10/2026 (pedido do usuário) o banner é a animação de 7 s
   // 12/10/2026 ("na versão mobile a cena está muito grande de altura,
-  // diminua 10%"): o banner do celular foi de 2x a largura (teto 46rem)
-  // para 1,8x (teto 41,4rem), 10% mais baixo; a cena reenquadra sozinha.
+  // diminua 10%" e depois "volte com o tamanho da cena, quero que o
+  // retângulo azul diminua 10%"): o banner do celular foi de 2x a largura
+  // (teto 46rem) para 1,8x (teto 41,4rem), 10% mais baixo, e a cena segue
+  // no tamanho de antes: o palco do retrato em cena.ts (FORMATOS.dobra)
+  // também encurtou 10%, apertando só o vão entre os passos e os potes.
   // (HeroAnimado), no celular e no desktop: a frase, os potes e os passos
   // estão dentro dela. O h1 e o texto de apoio seguem no HTML só para
   // leitores de tela e o Google, e os botões ficam por cima, na base (à

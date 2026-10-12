@@ -131,7 +131,11 @@ export type Enquadramento = {
 // só na base. Medidas em unidades do palco (no retrato, 360 de largura)
 const FORMATOS = {
   dobra: {
-    retrato: { altura: 720, cy: 330, chao: 195, ep: 1, capsulaY: 120, rotuloTela: 54, tamanhoMax: 48, tamanhoRotulo: 11, tamanhoPasso: 16, limitePassos: 568 - 44 - 330 },
+    // 12/10/2026: o banner do celular ficou 10% mais baixo (648 em vez de 720)
+    // SEM encolher a cena: a cápsula sobe 10 (44 do alto), o centro sobe 30
+    // e o chão dos potes fica 183 acima da base (era 195): o que apertou foi
+    // o vão entre o letreiro dos passos e os potes
+    retrato: { altura: 648, cy: 300, chao: 165, ep: 1, capsulaY: 120, rotuloTela: 44, tamanhoMax: 48, tamanhoRotulo: 11, tamanhoPasso: 16, limitePassos: 465 - 44 - 300 },
     paisagem: { altura: 560, cy: 250, reservaBase: 40 + 56, rotuloTela: 66, tamanhoMax: 84, tamanhoRotulo: 13, tamanhoPasso: 18, capsulaY: 70, epMax: 1.42 },
   },
   cartao: {
