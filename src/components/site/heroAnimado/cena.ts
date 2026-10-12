@@ -153,7 +153,15 @@ function enquadrar(l: number, a: number, formato: Roteiro["formato"]) {
     const f = FORMATOS[formato].retrato;
     const largura = 360;
     const altura = f.altura;
-    const k = Math.min(l / largura, a / altura);
+    // 12/10/2026 ("quero que preencha mais um pouco e enquadre, bem de
+    // leve"): nos celulares largos o teto de altura do banner deixava uma
+    // margem nas laterais; a dobra pode crescer até 4% além do que a altura
+    // permite, cortando um pouco no alto (a cápsula começa a 24 do topo,
+    // então só um quarto do corte vai para cima) e o resto na base, sob os
+    // botões. No celular estreito o palco já ocupa a largura toda e nada
+    // muda. O cartão da Saúde da Mulher segue justo.
+    const folga = formato === "dobra" ? 1.04 : 1;
+    const k = Math.min(l / largura, (a / altura) * folga);
     const enq: Enquadramento = {
       modo: "retrato",
       largura,
@@ -172,8 +180,10 @@ function enquadrar(l: number, a: number, formato: Roteiro["formato"]) {
       tamanhoPasso: f.tamanhoPasso,
       limitePassos: f.limitePassos,
     };
-    // O palco encosta na base, onde estão os botões
-    return { enq, k, ox: (l - largura * k) / 2, oy: a - altura * k };
+    // O palco encosta na base, onde estão os botões; quando passa da caixa
+    // (a folga acima), um quarto do corte vai para o alto e o resto para a base
+    const sobra = a - altura * k;
+    return { enq, k, ox: (l - largura * k) / 2, oy: sobra >= 0 ? sobra : sobra * 0.25 };
   }
   const f = FORMATOS[formato].paisagem;
   const altura = f.altura;

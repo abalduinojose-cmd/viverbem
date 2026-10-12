@@ -16,7 +16,13 @@
 > que apertou foi o vão entre o letreiro dos passos e os potes. Conferido
 > nos quadros 2,9 s, 4,6 s e 6,0 s a 375 e 437 px: cápsula, título, passo e
 > potes do tamanho de antes, anel do chão logo acima do "Enviar receita".
-> Computador sem mudança (30/34rem).
+> Depois, "quero que preencha mais um pouco e enquadre, bem de leve": nos
+> celulares largos (acima de ~410 px) o teto de 41,4rem deixava margem nas
+> laterais; a dobra ganhou uma folga de 4% além do que a altura permite
+> (`enquadrar`, só no formato `dobra`), cortando um quarto no alto (a
+> cápsula começa a 24 unidades do topo; com 7% e corte ao meio ela ficava
+> cortada) e o resto na base, sob os botões. No celular estreito o palco já
+> ocupa a largura toda e nada muda. Computador sem mudança (30/34rem).
 
 > **ADENDO 64 (11/10/2026): revisão anti-genérico II pelo guia de estética da Anthropic. NÃO publicado: o usuário quer ver antes; se não gostar, volta ao commit b1278be.**
 > Pedido: "estude as skills (claude-cookbooks-main) e melhore usando todo o
