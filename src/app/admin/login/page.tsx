@@ -83,11 +83,19 @@ export default function PaginaLogin() {
   const campo = `${classeCampoAdmin} !pl-11 !h-12`;
 
   return (
-    <div className="banner-noite em-noite flex-1 flex items-center justify-center px-4 py-10 relative overflow-hidden">
-      <span aria-hidden="true" className="malha-banner" />
+    // Duas folhas (13/10/2026): a da marca, no azul, e a do formulário, no
+    // branco. Antes era um cartão de 384px sozinho no meio de um campo azul
+    // enorme, e o vazio é que datava a tela. No celular a folha da marca
+    // vira uma faixa curta no alto e o formulário continua embaixo.
+    // grid-rows-[auto_1fr] no celular: a faixa azul fica do tamanho do que
+    // tem dentro e o formulário herda o resto. Sem isso as duas dividiam a
+    // altura e o azul tomava quase metade da tela.
+    <div className="flex-1 grid grid-rows-[auto_1fr] lg:grid-rows-none lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1.15fr_1fr]">
+      {/* ---------------- A folha da marca ---------------- */}
+      <div className="banner-noite em-noite relative overflow-hidden flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-12">
+        <span aria-hidden="true" className="malha-banner" />
 
-      <div className="relative w-full max-w-sm">
-        <div className="bg-white rounded-[1.75rem] shadow-[0_30px_70px_-30px_rgba(5,17,33,0.6)] p-7 sm:p-9">
+        <div className="relative flex items-center justify-between gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset("/logo.png")}
@@ -95,13 +103,57 @@ export default function PaginaLogin() {
             draggable={false}
             width={560}
             height={246}
-            className="h-11 w-auto object-contain mx-auto"
+            className="h-10 lg:h-12 w-auto object-contain brightness-0 invert"
           />
-          <p className="rotulo-pilula justify-center w-full mt-6 !text-[0.62rem]">Painel</p>
-          <h1 className="text-[1.5rem] font-semibold text-navy text-center tracking-[-0.03em] mt-2">
+          <Link
+            href="/"
+            className="lg:hidden inline-flex items-center gap-1.5 text-[0.8rem] text-white/70 hover:text-white transition-colors"
+          >
+            Ver o site
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+        </div>
+
+        {/* Só no computador: é o espaço que antes ficava vazio */}
+        <div className="relative hidden lg:block max-w-md py-10">
+          <p className="rotulo-pilula !text-[0.62rem]">Painel</p>
+          <p className="mt-5 text-[2.3rem] xl:text-[2.7rem] font-semibold leading-[1.08] tracking-[-0.035em] text-white">
+            O site da Viver Bem,
+            <br />
+            <span className="font-display italic text-ouro">no seu controle</span>
+          </p>
+          <ul className="mt-8 flex flex-col gap-3.5">
+            {[
+              "Produtos, fotos e preços do catálogo",
+              "As artes que abrem a página inicial",
+              "Os pedidos e os contatos que chegam",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-white/75 leading-snug">
+                <span
+                  aria-hidden="true"
+                  className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[image:var(--ouro-degrade)]"
+                />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="relative hidden lg:block text-white/40 text-[0.78rem]">
+          Manipulação e Homeopatia · Petrópolis, 3 lojas
+        </p>
+      </div>
+
+      {/* ---------------- A folha do formulário ---------------- */}
+      <div className="bg-white flex items-start lg:items-center justify-center px-5 py-9 lg:py-10 lg:px-10">
+        <div className="w-full max-w-sm">
+          <p className="rotulo-pilula !text-[0.62rem] lg:hidden">Painel</p>
+          <h1 className="text-[1.75rem] lg:text-[2rem] font-semibold text-navy tracking-[-0.035em] mt-3 lg:mt-0">
             Entrar no painel
           </h1>
-          <p className="text-cinza text-sm text-center mt-1.5">
+          <p className="text-cinza text-[0.95rem] mt-2">
             Gestor e equipe entram pela mesma porta.
           </p>
 
@@ -205,23 +257,22 @@ export default function PaginaLogin() {
               {bloqueado ? `Bloqueado por ${minutos} min` : carregando ? "Entrando..." : "Entrar"}
             </button>
           </form>
+
+          <p className="text-grafite-claro text-[0.8rem] leading-relaxed mt-7 pt-6 border-t border-fio">
+            Esqueceu a senha? Peça ao gestor para gerar uma nova em Acessos ao painel. Cinco erros
+            bloqueiam por 30 minutos.
+          </p>
+
+          <Link
+            href="/"
+            className="hidden lg:inline-flex mt-5 items-center gap-2 text-sm text-cinza hover:text-tinta transition-colors"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Voltar para o site
+          </Link>
         </div>
-
-        <p className="text-white/50 text-xs text-center mt-6 leading-relaxed">
-          Esqueceu a senha? Peça ao gestor para gerar uma nova
-          <br />
-          em Acessos ao painel. Cinco erros bloqueiam por 30 minutos.
-        </p>
-
-        <Link
-          href="/"
-          className="mt-4 flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Voltar para o site
-        </Link>
       </div>
     </div>
   );
