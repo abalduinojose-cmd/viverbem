@@ -40,6 +40,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { INSTAGRAM_PERFIL, INSTAGRAM_URL } from "@/lib/tipos";
 import { asset } from "@/lib/asset";
 import { IconeInstagram } from "./icones";
+import { SegurarParaVer } from "./SegurarParaVer";
+import { VisorReels, type ControleVisor } from "./VisorReels";
 
 const REELS = [
   { arquivo: "/videos/reel-1.mp4", capa: "/videos/reel-1.jpg", titulo: "Curiosidades da manipulação" },
@@ -47,6 +49,37 @@ const REELS = [
   { arquivo: "/videos/reel-3.mp4", capa: "/videos/reel-3.jpg", titulo: "Área dos olhos" },
   { arquivo: "/videos/reel-4.mp4", capa: "/videos/reel-4.jpg", titulo: "Pads faciais" },
 ];
+
+// O que aparece no centro quando a pessoa segura um reel no celular
+// (adendo 69): o vídeo tocando mudo, em laço, enquanto o dedo está em cima.
+// O play é dado aqui, e não pelo autoPlay: o React marca o mudo só pela
+// propriedade, sem o atributo `muted`, e sem o atributo o navegador
+// carregava o cabeçalho do vídeo e parava (o iPhone exige o atributo).
+function PreviaReel({ reel }: { reel: (typeof REELS)[number] }) {
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.play().catch(() => {});
+  }, []);
+  return (
+    <div className="aspect-[9/16] overflow-hidden rounded-[1.75rem] bg-navy shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/15">
+      <video
+        ref={video}
+        src={asset(reel.arquivo)}
+        poster={asset(reel.capa)}
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="h-full w-full object-cover"
+      />
+    </div>
+  );
+}
 
 function IconeSom({ mudo }: { mudo: boolean }) {
   return (
@@ -142,6 +175,17 @@ export function ReelsInstagram() {
   const [mudo, setMudo] = useState(true);
   // A pessoa já clicou para tocar: dali em diante vale a escolha dela de som
   const somLiberado = useRef(false);
+  // O visor em tela cheia (adendo 69) e o tipo do último toque no cartão:
+  // dedo abre o visor; mouse e teclado tocam no próprio cartão, como antes
+  const visor = useRef<ControleVisor>(null);
+  const tipoToque = useRef("");
+
+  function abrirVisor(i: number) {
+    pausouPorConta.current = true;
+    videos.current.forEach((v) => v && !v.paused && v.pause());
+    setTocando(false);
+    visor.current?.abrir(i);
+  }
 
   // Centraliza o cartão na faixa (celular); no computador não há rolagem
   function centralizar(i: number) {
@@ -319,92 +363,118 @@ export function ReelsInstagram() {
                   : "ring-fio lg:scale-[0.94] lg:opacity-80 lg:hover:opacity-100"
               }`}
             >
-              {/* Sem `el.muted = true` aqui: esta função roda de novo a cada
-                  renderização e silenciava o vídeo logo depois do clique no
-                  som (era a causa do "sem áudio"). Quem decide o mudo é
-                  tocar(), antes de cada play. */}
-              <video
-                ref={(el) => {
-                  videos.current[i] = el;
-                }}
-                src={asset(reel.arquivo)}
-                poster={asset(reel.capa)}
-                preload="none"
-                playsInline
-                onTimeUpdate={() => aoProgresso(i)}
-                onEnded={() => aoTerminar(i)}
-                className="w-full h-full object-cover"
-              />
-
-              {/* Barra de progresso fina no alto, como nos stories */}
-              <span aria-hidden="true" className="absolute top-3 left-4 right-4 h-[3px] rounded-full bg-white/30 overflow-hidden">
-                <span
-                  ref={(el) => {
-                    barras.current[i] = el;
-                  }}
-                  className="block h-full w-full origin-left bg-[image:var(--ouro-degrade)]"
-                  style={{ transform: "scaleX(0)" }}
-                />
-              </span>
-
-              {/* Tocar e pausar: o cartão inteiro */}
-              <button
-                type="button"
-                onClick={() => alternar(i)}
-                aria-label={estaTocando ? `Pausar: ${reel.titulo}` : `Assistir: ${reel.titulo}`}
-                className="absolute inset-0 flex items-center justify-center"
+              <SegurarParaVer
+                className="absolute inset-0"
+                largura="min(78vw, 20rem, calc((100dvh - 7rem) * 0.5625))"
+                previa={<PreviaReel reel={reel} />}
               >
-                {/* O véu escuro embaixo, para o título ler bem; some enquanto toca */}
-                <span
-                  aria-hidden="true"
-                  className={`absolute inset-0 bg-gradient-to-t from-noite/75 via-noite/10 to-noite/15 transition-opacity duration-300 ${
-                    estaTocando ? "opacity-0" : "opacity-100"
-                  }`}
+                {/* Sem `el.muted = true` aqui: esta função roda de novo a cada
+                    renderização e silenciava o vídeo logo depois do clique no
+                    som (era a causa do "sem áudio"). Quem decide o mudo é
+                    tocar(), antes de cada play. */}
+                <video
+                  ref={(el) => {
+                    videos.current[i] = el;
+                  }}
+                  src={asset(reel.arquivo)}
+                  poster={asset(reel.capa)}
+                  preload="none"
+                  playsInline
+                  onTimeUpdate={() => aoProgresso(i)}
+                  onEnded={() => aoTerminar(i)}
+                  className="w-full h-full object-cover"
                 />
-                <span
-                  className={`relative w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-navy flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
-                    estaTocando
-                      ? "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
-                      : "opacity-100 group-hover:scale-105"
-                  }`}
-                >
-                  {estaTocando ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <rect x="6" y="5" width="4" height="14" rx="1.2" />
-                      <rect x="14" y="5" width="4" height="14" rx="1.2" />
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="translate-x-px">
-                      <path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5Z" />
-                    </svg>
-                  )}
-                </span>
-              </button>
 
-              {/* Som, só no que está tocando */}
-              {estaTocando && (
+                {/* Barra de progresso fina no alto, como nos stories */}
+                <span aria-hidden="true" className="absolute top-3 left-4 right-4 h-[3px] rounded-full bg-white/30 overflow-hidden">
+                  <span
+                    ref={(el) => {
+                      barras.current[i] = el;
+                    }}
+                    className="block h-full w-full origin-left bg-[image:var(--ouro-degrade)]"
+                    style={{ transform: "scaleX(0)" }}
+                  />
+                </span>
+
+                {/* Tocar e pausar: o cartão inteiro */}
                 <button
                   type="button"
-                  onClick={alternarSom}
-                  aria-label={mudo ? "Ativar o som" : "Silenciar"}
-                  aria-pressed={!mudo}
-                  className="absolute bottom-3 right-3 w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition"
+                  onPointerDown={(e) => (tipoToque.current = e.pointerType)}
+                  onClick={() => {
+                    const dedo = tipoToque.current === "touch";
+                    tipoToque.current = "";
+                    if (dedo) abrirVisor(i);
+                    else alternar(i);
+                  }}
+                  aria-label={estaTocando ? `Pausar: ${reel.titulo}` : `Assistir: ${reel.titulo}`}
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  <IconeSom mudo={mudo} />
+                  {/* O véu escuro embaixo, para o título ler bem; some enquanto toca */}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-0 bg-gradient-to-t from-noite/75 via-noite/10 to-noite/15 transition-opacity duration-300 ${
+                      estaTocando ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                  <span
+                    className={`relative w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm text-navy flex items-center justify-center shadow-[0_14px_30px_-12px_rgba(16,42,74,0.55)] transition duration-300 ${
+                      estaTocando
+                        ? "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
+                        : "opacity-100 group-hover:scale-105"
+                    }`}
+                  >
+                    {estaTocando ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <rect x="6" y="5" width="4" height="14" rx="1.2" />
+                        <rect x="14" y="5" width="4" height="14" rx="1.2" />
+                      </svg>
+                    ) : (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="translate-x-px">
+                        <path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5Z" />
+                      </svg>
+                    )}
+                  </span>
                 </button>
-              )}
 
-              {/* O título, em branco sobre o véu; some enquanto toca */}
-              <span
-                className={`pointer-events-none absolute left-4 right-4 bottom-4 text-white text-[0.95rem] sm:text-[1rem] font-semibold leading-snug tracking-[-0.015em] transition-opacity duration-300 ${
-                  estaTocando ? "opacity-0" : "opacity-100"
-                }`}
-              >
-                <span className="block text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-claro mb-1">
-                  Reel
+                {/* Som, só no que está tocando */}
+                {estaTocando && (
+                  <button
+                    type="button"
+                    data-sem-segurar
+                    onClick={alternarSom}
+                    aria-label={mudo ? "Ativar o som" : "Silenciar"}
+                    aria-pressed={!mudo}
+                    className="absolute bottom-3 right-3 w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/35 flex items-center justify-center transition"
+                  >
+                    <IconeSom mudo={mudo} />
+                  </button>
+                )}
+
+                {/* O título, em branco sobre o véu; some enquanto toca */}
+                <span
+                  className={`pointer-events-none absolute left-4 right-4 bottom-4 text-white text-[0.95rem] sm:text-[1rem] font-semibold leading-snug tracking-[-0.015em] transition-opacity duration-300 ${
+                    estaTocando ? "opacity-0" : "opacity-100"
+                  }`}
+                >
+                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-claro mb-1">
+                    Reel
+                  </span>
+                  {reel.titulo}
                 </span>
-                {reel.titulo}
-              </span>
+
+                {/* Computador: abre o mesmo visor em tela cheia */}
+                <button
+                  type="button"
+                  data-sem-segurar
+                  onClick={() => abrirVisor(i)}
+                  aria-label={`Ver em tela cheia: ${reel.titulo}`}
+                  className="absolute right-3 top-6 hidden h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur-sm transition hover:bg-white/35 focus-visible:opacity-100 group-hover:opacity-100 lg:flex"
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </SegurarParaVer>
             </div>
           );
         })}
@@ -443,6 +513,8 @@ export function ReelsInstagram() {
       <div className="revelar mt-8 flex justify-center lg:hidden">
         <BotaoInstagram />
       </div>
+
+      <VisorReels reels={REELS} ref={visor} />
     </section>
   );
 }

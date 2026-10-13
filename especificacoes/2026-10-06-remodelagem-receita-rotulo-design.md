@@ -1,6 +1,18 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 69 (13/10/2026): segurar para ver (produto e reel) e reels em tela cheia. ESPECIFICAÇÃO, ainda não implementada.**
+> **ADENDO 69 (13/10/2026): segurar para ver (produto e reel) e reels em tela cheia. IMPLEMENTADO e testado.**
+> Feito em `SegurarParaVer.tsx` (o gesto e a ampliação), `VisorReels.tsx`
+> (a tela cheia), `ProdutoCard.tsx` e `ReelsInstagram.tsx`. Testado com
+> toque simulado a 390 px (19 conferências: segurar, soltar sem abrir,
+> dedo que anda, botão do carrinho, toque rápido, prévia muda do reel,
+> visor abrindo com som, arraste para o lado, voltar e arraste para baixo)
+> e com mouse a 1440 px (9: mouse não amplia, clique toca no cartão,
+> expandir, setas, Esc). Dois defeitos achados nos testes e corrigidos: o
+> visor ficava preso à seção dos reels (um ancestral com transform prende
+> o position: fixed) e o cabeçalho aparecia por cima; agora vai por
+> portal para o body. E a prévia do reel não tocava: o React põe o mudo
+> só como propriedade, sem o atributo `muted`, e o play automático
+> esperava o atributo; a prévia dá o play ela mesma.
 > Pedido: "quando pressionar o dedo no produto, sem clicar, ele aumenta e
 > fica mais visível para ver; quando soltar o dedo, ele diminui. Isso para
 > mobile. Faça um efeito parecido no Instagram também, com opção de ver o

@@ -1374,3 +1374,18 @@ summary::-webkit-details-marker {
 .entrada-topo-1 { animation-delay: 0ms; }
 .entrada-topo-2 { animation-delay: 110ms; }
 .entrada-topo-3 { animation-delay: 220ms; }
+
+/* Segurar para ver (adendo 69): no toque, segurar o cartão não seleciona
+   texto nem abre o menu do sistema ("salvar imagem", a prévia de link do
+   iPhone) por cima da ampliação. Com mouse nada muda. */
+@media (hover: none) {
+  .segurar-para-ver {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .segurar-para-ver img,
+  .segurar-para-ver video {
+    -webkit-user-drag: none;
+  }
+}

@@ -20,8 +20,26 @@ import { ProdutoDTO, ehIndustrializado, precoVisivel } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
+import { SegurarParaVer } from "./SegurarParaVer";
 
 export type VarianteCartao = "cartao" | "limpa";
+
+// O que aparece no centro da tela quando a pessoa segura o cartão no
+// celular (adendo 69): só para ver, sem botões. A foto já está no cache,
+// porque é a mesma do cartão.
+function PreviaProduto({ produto }: { produto: ProdutoDTO }) {
+  return (
+    <div className="rounded-[2rem] bg-white p-3 pb-6 shadow-[0_40px_80px_-30px_rgba(5,17,33,0.75)]">
+      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-[1.6rem] bg-gradient-to-b from-gelo to-gelo/30 p-6">
+        <FotoProduto fotoUrl={produto.fotoUrl} nome={produto.nome} className="max-h-full w-auto max-w-full !object-contain" />
+      </div>
+      <div className="mt-5 px-3 text-center">
+        {produto.categoriaNome && <p className="rotulo !text-cinza text-[0.6875rem]">{produto.categoriaNome}</p>}
+        <p className="mt-1.5 text-[1.25rem] font-semibold leading-snug tracking-[-0.02em] text-navy">{produto.nome}</p>
+      </div>
+    </div>
+  );
+}
 
 export function ProdutoCard({
   produto,
@@ -42,60 +60,62 @@ export function ProdutoCard({
   const limpa = variante === "limpa";
 
   return (
-    <article
-      className={
-        limpa
-          ? "group relative flex h-full w-full flex-col"
-          : "group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60"
-      }
-    >
-      <div
-        className={`relative aspect-square overflow-hidden flex items-center justify-center ${
+    <SegurarParaVer className="h-full w-full" previa={<PreviaProduto produto={produto} />}>
+      <article
+        className={
           limpa
-            ? "rounded-[1.75rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
-            : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
-        }`}
+            ? "group relative flex h-full w-full flex-col"
+            : "group relative flex h-full w-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 pb-4 transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] focus-within:border-ouro/60"
+        }
       >
-        {/* Sem sombra nem luz sob o pote (11/10/2026, "tire a sombra debaixo
-            dos produtos"; a luz dourada e a sombra quente de 10/10 saíram) e
-            a foto 4% maior, a pedido */}
-        <FotoProduto
-          fotoUrl={produto.fotoUrl}
-          nome={produto.nome}
-          className="relative max-h-full w-auto max-w-full !object-contain scale-[1.04] transition-transform duration-500 group-hover:-translate-y-1.5"
-        />
-        {industrializado && produto.novidade && (
-          <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">
-            Novidade
-          </span>
-        )}
-      </div>
-
-      {/* Nome, categoria e descrição centrados (11/10/2026, "quero o nome dos
-          produtos centralizados, no celular e no computador") */}
-      <div className={`flex flex-1 flex-col items-center gap-1 text-center ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
-        {mostrarCategoria && produto.categoriaNome && (
-          <p className="rotulo !text-cinza text-[0.6875rem] truncate max-w-full">{produto.categoriaNome}</p>
-        )}
-        <h3 className="text-[1rem] font-medium leading-snug tracking-[-0.015em] text-navy line-clamp-2">
-          {/* O link se estende sobre o cartão inteiro */}
-          <Link
-            href={href}
-            className={`transition-colors hover:text-tinta focus-visible:outline-none after:absolute after:inset-0 ${
-              limpa ? "after:rounded-[1.75rem]" : "after:rounded-[1.75rem]"
-            }`}
-          >
-            {produto.nome}
-          </Link>
-        </h3>
-        {preco !== null && (
-          <p className="mt-1 text-[1.05rem] font-semibold text-navy tabular-nums tracking-[-0.01em]">{formatarPreco(preco)}</p>
-        )}
-        {industrializado && <p className="text-sm text-cinza line-clamp-2 mt-0.5">{produto.descricao}</p>}
-        <div className="relative z-[1] mt-auto w-full pt-3">
-          <BotaoAdicionar produto={produto} />
+        <div
+          className={`relative aspect-square overflow-hidden flex items-center justify-center ${
+            limpa
+              ? "rounded-[1.75rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
+              : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
+          }`}
+        >
+          {/* Sem sombra nem luz sob o pote (11/10/2026, "tire a sombra debaixo
+              dos produtos"; a luz dourada e a sombra quente de 10/10 saíram) e
+              a foto 4% maior, a pedido */}
+          <FotoProduto
+            fotoUrl={produto.fotoUrl}
+            nome={produto.nome}
+            className="relative max-h-full w-auto max-w-full !object-contain scale-[1.04] transition-transform duration-500 group-hover:-translate-y-1.5"
+          />
+          {industrializado && produto.novidade && (
+            <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">
+              Novidade
+            </span>
+          )}
         </div>
-      </div>
-    </article>
+
+        {/* Nome, categoria e descrição centrados (11/10/2026, "quero o nome dos
+            produtos centralizados, no celular e no computador") */}
+        <div className={`flex flex-1 flex-col items-center gap-1 text-center ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
+          {mostrarCategoria && produto.categoriaNome && (
+            <p className="rotulo !text-cinza text-[0.6875rem] truncate max-w-full">{produto.categoriaNome}</p>
+          )}
+          <h3 className="text-[1rem] font-medium leading-snug tracking-[-0.015em] text-navy line-clamp-2">
+            {/* O link se estende sobre o cartão inteiro */}
+            <Link
+              href={href}
+              className={`transition-colors hover:text-tinta focus-visible:outline-none after:absolute after:inset-0 ${
+                limpa ? "after:rounded-[1.75rem]" : "after:rounded-[1.75rem]"
+              }`}
+            >
+              {produto.nome}
+            </Link>
+          </h3>
+          {preco !== null && (
+            <p className="mt-1 text-[1.05rem] font-semibold text-navy tabular-nums tracking-[-0.01em]">{formatarPreco(preco)}</p>
+          )}
+          {industrializado && <p className="text-sm text-cinza line-clamp-2 mt-0.5">{produto.descricao}</p>}
+          <div data-sem-segurar className="relative z-[1] mt-auto w-full pt-3">
+            <BotaoAdicionar produto={produto} />
+          </div>
+        </div>
+      </article>
+    </SegurarParaVer>
   );
 }
