@@ -1,5 +1,111 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 66 (13/10/2026): a dobra passa a ter 3 vagas, cada uma foto, vídeo ou a cena animada. ESPECIFICAÇÃO, ainda não implementada.**
+> Pedido, já corrigido pelo usuário no meio da conversa: "quero que o site
+> fique como está, quero apenas que no painel tenha as opções de trocar
+> banners. aí pode ser foto ou animation e no máximo 3". O pedido inicial
+> falava em 4 banners e 2 vídeos; ele reduziu para 3 vagas no total e
+> deixou claro que a dobra não muda de cara, muda só quem a controla.
+>
+> **O que fica decidido**
+>
+> 1. **Três vagas, numa fila só.** O limite `MAX_ARTES_HERO` vai de 2 para
+>    3. A dobra continua alternando entre as vagas preenchidas, na ordem
+>    das vagas. Com uma vaga só, fica parada, como já é hoje. Com nenhuma,
+>    cai na composição padrão (texto e potes), como já é hoje.
+> 2. **Cada vaga tem um tipo:** `foto`, `video` ou `cena`.
+>    - `foto`: guarda as duas imagens de hoje (computador e celular). É o
+>      comportamento atual, e é o tipo padrão de quem já tem arte enviada.
+>    - `video`: guarda um arquivo de vídeo.
+>    - `cena`: não guarda arquivo nenhum. É só a marca de que naquela vaga
+>      entra a animação dos potes que o site já tem (`HeroAnimado`).
+> 3. **O vídeo toca até o fim e só então o rodízio passa** (escolha do
+>    usuário, contra a opção de laço de 7 segundos). Teto de **15 segundos**
+>    no envio: acima disso o painel recusa e explica, porque um vídeo longo
+>    prende a dobra. Mudo, sem controles, `playsinline`, e o primeiro
+>    quadro serve de cartaz enquanto carrega.
+> 4. **O vídeo é um arquivo só, horizontal.** No celular ele é cortado pelo
+>    centro (`object-cover`), como fizemos na Cabana Afrodite. O painel
+>    avisa para não pôr texto nas pontas da peça. Decisão tomada por mim
+>    para a cliente não ter que montar duas versões de cada vídeo; se o
+>    usuário preferir arte vertical separada, é um campo a mais na vaga.
+> 5. **O resto da dobra não muda.** Mesmos 7 segundos por foto, mesmas
+>    bolinhas no alto, mesma pausa com o mouse em cima e com a aba
+>    escondida, mesmos três botões por cima, mesma altura do bloco no
+>    celular e no computador.
+>
+> **Como fica guardado (segue o padrão que já existe)**
+>
+> Em `Configuracao`, uma linha por campo, com o sufixo da vaga a partir da
+> segunda, que é o que `chavesDaArte(i)` já faz:
+>
+> | vaga | tipo | foto do computador | foto do celular | vídeo |
+> |---|---|---|---|---|
+> | 1 | `heroTipo` | `heroDesktop` | `heroCelular` | `heroVideo` |
+> | 2 | `heroTipo2` | `heroDesktop2` | `heroCelular2` | `heroVideo2` |
+> | 3 | `heroTipo3` | `heroDesktop3` | `heroCelular3` | `heroVideo3` |
+>
+> Vaga sem `heroTipo` gravado vale como `foto`, então o que já está no ar
+> continua igual sem migração nenhuma. A alternativa de guardar as três
+> peças numa linha só em JSON foi considerada e descartada: o ganho (ficar
+> pronto para arrastar e reordenar) é para um problema que não foi pedido, e
+> o custo cairia no leitor da vitrine estática, que é a prévia que a cliente
+> usa.
+>
+> **O tipo em código**
+>
+> `ArteHero` deixa de ser só `{desktop, celular}` e vira união discriminada
+> por `tipo`, em `lib/hero.ts`. `obterArtesHero()` passa a devolver também
+> as vagas de `cena` (que não têm arquivo) e as de `video`. A regra de hoje
+> "sem desktop, a vaga não entra" continua valendo só para as vagas de foto.
+>
+> **O que muda no site**
+>
+> `CarrosselArte` escolhe o que desenhar por vaga: `<picture>` para foto,
+> `<video>` para vídeo, `<HeroAnimado>` para cena. O relógio de 7 segundos
+> continua para foto e cena; na vaga de vídeo o rodízio não usa relógio e
+> espera o evento `ended`. O ciclo da cena (`DURACAO` em cena.ts) é de 7
+> segundos exatos, o mesmo tempo da vaga, então a vaga de cena mostra um
+> ciclo inteiro **desde que a animação comece do zero quando a vaga entra**;
+> sem isso ela aparece num ponto qualquer do meio. A cena precisa reiniciar
+> na troca, não apenas despausar. `Abertura.tsx` deixa de decidir entre "tem arte"
+> e "não tem arte" pelo tamanho da lista e passa a montar sempre o rodízio
+> quando houver pelo menos uma vaga preenchida.
+>
+> O canvas da cena já sabe viver dentro de um bloco, medir o próprio
+> tamanho e pausar fora da tela (ele já aparece duas vezes na home, na dobra
+> e no banner da Saúde da Mulher), então entrar como vaga do rodízio não
+> pede reescrita dele. **Ponto de atenção:** com a cena numa vaga que está
+> escondida, o canvas não pode continuar desenhando; a pausa por
+> visibilidade precisa valer para a vaga inativa, não só para o bloco fora
+> da tela.
+>
+> **O que muda no painel**
+>
+> Em "Home e arte da dobra", cada cartão de vaga ganha a escolha do tipo em
+> três botões, e o formulário abaixo troca conforme a escolha: foto pede as
+> duas artes como hoje, vídeo pede um arquivo com o aviso dos 15 segundos e
+> do corte no celular, cena não pede nada e só mostra o que vai aparecer. O
+> cartão da vaga 3 nasce vazio. O texto de apoio do bloco ("Até duas...")
+> passa a falar em três e nos três tipos.
+>
+> **Limites e recusa**
+>
+> - Vídeo: MP4 (H.264) ou WEBM, até 15 segundos e até 12 MB. Acima disso o
+>   envio é recusado com a razão escrita na tela.
+> - Foto: JPG, PNG ou WEBP até 8 MB, como já é hoje.
+> - A duração é conferida no navegador antes de subir o arquivo, e de novo
+>   no servidor, porque a conferência do navegador é só conveniência.
+>
+> **O que NÃO entra neste adendo**
+>
+> Som, controles de player, botão de play, arte vertical própria para
+> vídeo, arrastar para reordenar as vagas, e qualquer mudança no visual da
+> dobra. Também não entram os outros quatro pedidos do mesmo dia (modernizar
+> a tela de entrada, os painéis de gestor e de colaborador, a parte de
+> produtos e a ordem dos catálogos): ficaram para depois desta, a pedido.
+
+
 > **ADENDO 65 (12/10/2026): dobra do celular 10% mais baixa. Não publicado.**
 > Pedido: "na versão mobile a cena animada está muito grande de altura,
 > tomando grande parte da tela; diminua 10%". A altura do banner no celular

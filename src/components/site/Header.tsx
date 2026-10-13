@@ -290,6 +290,8 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           }}
           className="shrink-0 active:scale-95 transition-transform"
         >
+          {/* No computador, 3,36rem = 12% a mais que os 3rem de antes
+              (pedido de 13/10). O celular não muda. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset("/logo.png")}
@@ -297,11 +299,14 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             draggable={false}
             width={220}
             height={97}
-            className="h-[2.85rem] md:h-12 w-auto object-contain"
+            className="h-[2.85rem] md:h-[3.36rem] w-auto object-contain"
           />
         </Link>
 
-        <div className="hidden md:block flex-1 max-w-xl">
+        {/* Sem teto de largura: com max-w-xl a busca parava em 576px e
+            sobrava um vão de 381px até os botões, a 1440 e a 1680. Agora
+            ela ocupa o que sobra entre a logo e as ações. */}
+        <div className="hidden md:block flex-1 min-w-0">
           <CampoBusca />
         </div>
 
