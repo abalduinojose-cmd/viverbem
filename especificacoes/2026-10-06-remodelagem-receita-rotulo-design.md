@@ -1,5 +1,91 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 69 (13/10/2026): segurar para ver (produto e reel) e reels em tela cheia. ESPECIFICAÇÃO, ainda não implementada.**
+> Pedido: "quando pressionar o dedo no produto, sem clicar, ele aumenta e
+> fica mais visível para ver; quando soltar o dedo, ele diminui. Isso para
+> mobile. Faça um efeito parecido no Instagram também, com opção de ver o
+> vídeo na tela cheia e arrastar para o lado para ver os outros."
+>
+> **1. Segurar para ver o produto (só no toque)**
+>
+> - Segurar o cartão por 0,4 s sem mexer o dedo: o cartão sai da lista e
+>   cresce até o centro da tela, sobre um fundo escurecido e desfocado,
+>   mostrando a foto grande, a área e o nome. A ampliação ocupa 78% da
+>   largura da tela, até 22rem, e não tem botões: é só para ver.
+> - Soltar: ele encolhe de volta para o lugar exato de onde saiu e some.
+>   **Soltar não abre o produto.**
+> - Toque rápido (menos de 0,4 s) continua abrindo a página do produto.
+> - Se o dedo andar mais de 8 px antes dos 0,4 s, é rolagem (da página ou
+>   da faixa de produtos) e nada acontece. Depois que o cartão cresceu, a
+>   página não rola enquanto o dedo estiver na tela.
+> - Segurar em cima do botão "Adicionar ao carrinho" não dispara o efeito:
+>   o botão continua sendo só botão.
+> - Some o menu do celular que aparece ao segurar imagem e link ("salvar
+>   imagem", "abrir em nova aba"): `-webkit-touch-callout: none` e o
+>   `contextmenu` cancelado no cartão, só no toque.
+> - No Android, vibração de 12 ms no instante em que cresce. O iPhone não
+>   permite vibrar pelo site; lá é só a animação.
+> - Vale para todos os cartões de produto (faixas da home, catálogo,
+>   categoria e "Mais em..." da página do produto). No computador, com
+>   mouse, nada muda.
+>
+> **2. Segurar um reel**
+>
+> O mesmo gesto e a mesma animação: o reel cresce até o centro e toca
+> mudo, em laço, enquanto o dedo está em cima; soltar, ele volta e para.
+>
+> **3. Reels em tela cheia**
+>
+> - **Celular: o toque no reel abre direto em tela cheia** (escolha do
+>   usuário), já tocando com som, a partir daquele reel. O reel deixa de
+>   tocar dentro do próprio cartão no celular.
+> - **Computador: continua tocando no cartão como hoje**, e cada reel ganha
+>   um botão de expandir no canto, que abre o mesmo visor.
+> - O visor ocupa a tela inteira (100dvh), fundo preto, o vídeo em
+>   `object-contain` no formato vertical. No alto, as 4 barrinhas dos
+>   stories: as de trás cheias, a da vez enchendo com o tempo do vídeo.
+>   Embaixo, o título do reel e o botão do Instagram.
+> - Arrastar para o lado passa para o próximo ou o anterior, com o
+>   deslize nativo do navegador (faixa horizontal com `scroll-snap`, um
+>   reel por tela). Só o reel à vista toca; os outros param e voltam ao
+>   começo. No computador, setas na tela e as teclas ← e →.
+> - Tocar no vídeo pausa e retoma. Botão de som no canto.
+> - Quando um reel termina, entra o próximo sozinho; no último, o visor
+>   fica parado no fim.
+> - Fecha pelo X, por arrastar para baixo mais de 120 px, pela tecla Esc e
+>   pelo botão voltar do Android (o visor entra no histórico com
+>   `pushState`, para o voltar fechar o visor em vez de sair do site).
+> - Com o visor aberto, a página atrás não rola.
+>
+> **Som (ponto de atenção)**
+>
+> O toque que abre o visor é um gesto da pessoa, então o primeiro vídeo
+> toca com som. O Safari do iPhone pode recusar som nos vídeos seguintes,
+> trocados por arraste; para evitar, o mesmo toque que abre o visor
+> "destrava" os 4 vídeos (um `play()` seguido de `pause()` em cada). Se
+> ainda assim o navegador recusar, o vídeo toca mudo e o botão de som
+> pisca uma vez, em vez de ficar parado em silêncio.
+>
+> **Como se faz (sem dependência nova)**
+>
+> - Um gancho `useSegurarParaVer`, usado pelo cartão de produto e pelo
+>   reel: eventos de ponteiro só com `pointerType === "touch"`, o relógio
+>   de 0,4 s, o limite de 8 px, e o clique que vem depois de um "ver"
+>   engolido para não navegar.
+> - A ampliação é uma camada fixa por cima de tudo (portal no `body`), que
+>   copia a posição do cartão e anima até o centro com a Web Animations
+>   API (transform e opacity, em torno de 280 ms na ida e 220 ms na volta),
+>   para rodar também com "reduzir movimento" ligado, como o resto do
+>   site.
+> - O visor dos reels é um componente novo, `VisorReels`, aberto pelo
+>   `ReelsInstagram`; os mesmos 4 arquivos, sem baixar nada a mais até
+>   abrir.
+>
+> **O que não muda**
+>
+> O visual dos cartões de produto e da fileira de reels; o toque rápido no
+> produto; o computador nos cartões de produto.
+
 > **ADENDO 66 (13/10/2026): a dobra passa a ter 3 vagas, cada uma foto, vídeo ou a cena animada. ESPECIFICAÇÃO, ainda não implementada.**
 > Pedido, já corrigido pelo usuário no meio da conversa: "quero que o site
 > fique como está, quero apenas que no painel tenha as opções de trocar
