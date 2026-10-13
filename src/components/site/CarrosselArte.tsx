@@ -69,7 +69,7 @@ export function CarrosselArte({ artes, children }: { artes: ArteHero[]; children
             >
               <span
                 aria-hidden="true"
-                className={`block h-2 rounded-full transition-all duration-300 ${
+                className={`block h-2 rounded-full transition-[width,background-color] duration-300 ease-out ${
                   i === ativa ? "w-7 bg-[image:var(--ouro-degrade)]" : "w-2 bg-white/50 group-hover/ponto:bg-white/80"
                 }`}
               />

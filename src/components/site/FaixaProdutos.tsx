@@ -104,7 +104,11 @@ export function FaixaProdutos({
       <div
         ref={faixaRef}
         {...arraste.props}
-        className={`flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra pb-2 -mx-1 px-1 snap-x md:cursor-grab ${
+        // -mx-4 px-4 + scroll-px-4 (13/10/2026): os cartões continuam
+        // alinhados com a coluna do título, mas o recorte da faixa ganhou
+        // 16px de folga dos dois lados. Com 4px, a sombra e o levante do
+        // cartão no hover eram cortados na borda.
+        className={`flex gap-4 md:gap-5 overflow-x-auto rolagem-sem-barra pt-1 pb-3 -mt-1 -mx-4 px-4 scroll-px-4 snap-x md:cursor-grab ${
           arraste.arrastando ? "md:cursor-grabbing select-none snap-none" : ""
         } ${className}`}
       >

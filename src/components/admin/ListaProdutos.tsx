@@ -364,7 +364,7 @@ export function ListaProdutos({
                 onDragStart={() => (indiceArrastado.current = indice)}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={() => aoSoltar(indice)}
-                className={`bg-white rounded-2xl border px-4 py-3 md:px-5 grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto_auto] items-center gap-x-4 gap-y-3 transition-all hover:shadow-[0_18px_40px_-30px_rgba(16,42,74,0.35)] ${
+                className={`bg-white rounded-2xl border px-4 py-3 md:px-5 grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto_auto] items-center gap-x-4 gap-y-3 transition-[box-shadow,border-color] duration-200 hover:shadow-[0_18px_40px_-30px_rgba(16,42,74,0.35)] ${
                   p.ativo ? "border-fio" : "border-carimbo/25"
                 } ${ocupado === p.id ? "opacity-60" : ""}`}
               >
@@ -376,7 +376,7 @@ export function ListaProdutos({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={asset(p.fotoUrl)} alt="" className="max-w-full max-h-full object-contain" />
                     ) : (
-                      <span className="text-[0.58rem] text-grafite-claro text-center leading-tight">sem foto</span>
+                      <span className="text-[0.6875rem] text-grafite-claro text-center leading-tight">sem foto</span>
                     )}
                   </div>
                 </div>

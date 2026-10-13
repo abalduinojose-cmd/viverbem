@@ -34,7 +34,7 @@ export function BannerHistoria() {
         />
         {/* O véu: escuro na base, para o texto, e um fio de luz no alto */}
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-navy/10" />
-        <span className="absolute left-4 top-4 inline-flex items-center gap-2 h-7 px-3 rounded-full bg-white/90 text-navy text-[0.66rem] font-semibold uppercase tracking-[0.12em]">
+        <span className="absolute left-4 top-4 inline-flex items-center gap-2 h-7 px-3 rounded-full bg-white/90 text-navy text-[0.6875rem] font-semibold uppercase tracking-[0.12em]">
           <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
           desde 2006
         </span>

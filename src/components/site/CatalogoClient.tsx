@@ -207,7 +207,7 @@ export function CatalogoClient({
                   className="pointer-events-none absolute -right-10 -top-14 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.3),transparent_62%)]"
                 />
                 <span className="relative flex-1 min-w-0">
-                  <span className="rotulo-pilula !text-[0.6rem]">receita</span>
+                  <span className="rotulo-pilula !text-[0.6875rem]">receita</span>
                   <span className="titulo-banner block mt-2.5 text-[1.05rem] sm:text-[1.15rem] font-semibold leading-tight tracking-[-0.02em]">
                     Tem a receita? <span className="italic">Envie a foto</span>
                   </span>
@@ -247,7 +247,7 @@ export function CatalogoClient({
               onChange={(e) => setBusca(e.target.value)}
               placeholder={categoriaAtiva ? `Buscar em ${categoriaAtiva.nome}...` : "Buscar por nome ou ativo..."}
               aria-label="Buscar"
-              className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-11 text-[0.95rem] text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
+              className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-11 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
             />
             {buscando && (
               <button

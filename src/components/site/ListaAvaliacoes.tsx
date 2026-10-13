@@ -92,7 +92,7 @@ export function ListaAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] })
             }}
             placeholder="Buscar nas avaliações..."
             aria-label="Buscar nas avaliações"
-            className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-4 text-[0.95rem] text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
+            className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-4 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
           />
         </div>
         <div className="flex gap-2 overflow-x-auto rolagem-sem-barra -mx-5 px-5 md:mx-0 md:px-0 md:flex-1 md:min-w-0" role="group" aria-label="Filtrar por assunto">

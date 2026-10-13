@@ -324,7 +324,7 @@ export function FormProduto({
                   <img src={f.preview.startsWith("blob:") ? f.preview : asset(f.preview)} alt={`Foto ${i + 1}`} className="max-w-full max-h-full object-contain" />
                 </div>
                 {i === 0 && (
-                  <span className="absolute top-1.5 left-1.5 h-5 px-2 rounded-full bg-[image:var(--ouro-degrade)] text-navy text-[0.6rem] font-semibold uppercase tracking-wider flex items-center">
+                  <span className="absolute top-1.5 left-1.5 h-5 px-2 rounded-full bg-[image:var(--ouro-degrade)] text-navy text-[0.6875rem] font-semibold uppercase tracking-wider flex items-center">
                     Capa
                   </span>
                 )}
@@ -376,7 +376,7 @@ export function FormProduto({
                     <circle cx="9" cy="10" r="1.8" stroke="currentColor" strokeWidth="1.7" />
                     <path d="m5 18 5-4.5 3.5 3 2.5-2 4.5 3.5" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
                   </svg>
-                  <span className="text-[0.68rem] font-medium">{fotos.length === 0 ? "Enviar" : "Mais uma"}</span>
+                  <span className="text-[0.6875rem] font-medium">{fotos.length === 0 ? "Enviar" : "Mais uma"}</span>
                   <input type="file" accept="image/*" multiple onChange={adicionarFotos} className="sr-only" />
                 </label>
               </li>

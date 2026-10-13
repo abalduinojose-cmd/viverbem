@@ -400,7 +400,7 @@ export function ReelsInstagram() {
                   estaTocando ? "opacity-0" : "opacity-100"
                 }`}
               >
-                <span className="block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-ouro-claro mb-1">
+                <span className="block text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-claro mb-1">
                   Reel
                 </span>
                 {reel.titulo}
@@ -431,7 +431,7 @@ export function ReelsInstagram() {
             {/* A bolinha é pequena; a área de toque é o botão inteiro (44px) */}
             <span
               aria-hidden="true"
-              className={`block h-2.5 rounded-full transition-all duration-300 ${
+              className={`block h-2.5 rounded-full transition-[width,background-color] duration-300 ease-out ${
                 i === ativo ? "w-7 bg-[image:var(--ouro-degrade)]" : "w-2.5 bg-fio group-hover/ponto:bg-ouro/50"
               }`}
             />

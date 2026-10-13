@@ -97,7 +97,7 @@ export function CartaoNumero({
   return (
     <div className="bg-white rounded-[1.5rem] border border-fio/80 px-5 py-5 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] transition-colors hover:border-tinta/30">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-[0.66rem] font-semibold tracking-[0.14em] uppercase text-cinza leading-tight">
+        <p className="text-[0.6875rem] font-semibold tracking-[0.14em] uppercase text-cinza leading-tight">
           {rotulo}
         </p>
         {extra}
@@ -130,7 +130,7 @@ export function Selo({
   }[tom];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-[0.64rem] font-semibold tracking-[0.08em] uppercase whitespace-nowrap ${classe} ${className}`}
+      className={`inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-[0.6875rem] font-semibold tracking-[0.08em] uppercase whitespace-nowrap ${classe} ${className}`}
     >
       {children}
     </span>
@@ -172,10 +172,10 @@ export function classeBotaoAdmin(
 
 /** Campo de texto do painel (input e select). */
 export const classeCampoAdmin =
-  "w-full bg-white border border-fio rounded-xl px-4 h-11 text-[0.95rem] text-grafite placeholder:text-grafite-claro/80 focus:outline-none focus:border-tinta focus:ring-4 focus:ring-tinta/10 transition-shadow";
+  "w-full bg-white border border-fio rounded-xl px-4 h-11 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:border-tinta focus:ring-4 focus:ring-tinta/10 transition-shadow";
 /** Área de texto do painel. */
 export const classeAreaAdmin =
-  "w-full bg-white border border-fio rounded-xl px-4 py-3 text-[0.95rem] text-grafite placeholder:text-grafite-claro/80 focus:outline-none focus:border-tinta focus:ring-4 focus:ring-tinta/10 transition-shadow resize-y";
+  "w-full bg-white border border-fio rounded-xl px-4 py-3 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:border-tinta focus:ring-4 focus:ring-tinta/10 transition-shadow resize-y";
 
 /** Rótulo + campo, com a dica embaixo quando houver. */
 export function CampoAdmin({

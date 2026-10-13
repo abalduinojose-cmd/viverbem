@@ -54,7 +54,7 @@ export function GaleriaProduto({
         )}
 
         {novidade && (
-          <span className="absolute top-4 left-4 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">
+          <span className="absolute top-4 left-4 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">
             Novidade
           </span>
         )}

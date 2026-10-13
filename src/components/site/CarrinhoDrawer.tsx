@@ -439,7 +439,7 @@ export function CarrinhoDrawer() {
                           }`}
                         >
                           <span
-                            className={`flex size-6 items-center justify-center rounded-full text-[0.68rem] tabular-nums transition-colors ${
+                            className={`flex size-6 items-center justify-center rounded-full text-[0.6875rem] tabular-nums transition-colors ${
                               atual
                                 ? "bg-navy text-white"
                                 : feita

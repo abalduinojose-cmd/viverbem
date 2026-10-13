@@ -171,7 +171,7 @@ export function ConfiguracaoSite({ secoes, artes }: { secoes: SecoesHome; artes:
           {SECOES_HOME.map((s, i) => (
             <li key={s.chave} className="flex items-center justify-between gap-4 py-1">
               <span className="flex items-start gap-3 min-w-0">
-                <span className="mt-3 w-6 text-[0.68rem] font-semibold tabular-nums text-grafite-claro">
+                <span className="mt-3 w-6 text-[0.6875rem] font-semibold tabular-nums text-grafite-claro">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <Interruptor

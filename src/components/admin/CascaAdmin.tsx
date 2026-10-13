@@ -84,13 +84,13 @@ export function CascaAdmin({
           className="h-9 w-auto object-contain"
           draggable={false}
         />
-        <p className="rotulo-pilula mt-3 !text-[0.62rem]">{ehGestor ? "Painel do gestor" : "Painel da equipe"}</p>
+        <p className="rotulo-pilula mt-3 !text-[0.6875rem]">{ehGestor ? "Painel do gestor" : "Painel da equipe"}</p>
       </div>
 
       <nav className="flex-1 px-3 py-2 overflow-y-auto" aria-label="Páginas do painel">
         {Object.entries(grupos).map(([grupo, lista]) => (
           <div key={grupo}>
-            <p className="px-3 pt-4 pb-1.5 text-[0.6rem] font-semibold tracking-[0.2em] uppercase text-grafite-claro">
+            <p className="px-3 pt-4 pb-1.5 text-[0.6875rem] font-semibold tracking-[0.2em] uppercase text-grafite-claro">
               {grupo}
             </p>
             {lista.map((i) => {
@@ -146,7 +146,7 @@ export function CascaAdmin({
           <Inicial nome={nome} />
           <div className="min-w-0">
             <p className="text-sm font-medium text-navy truncate">{nome}</p>
-            <p className="text-[0.65rem] uppercase tracking-wider text-grafite-claro">{nomePapel(papel)}</p>
+            <p className="text-[0.6875rem] uppercase tracking-wider text-grafite-claro">{nomePapel(papel)}</p>
           </div>
         </div>
         <BotaoSair />

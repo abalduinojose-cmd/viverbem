@@ -38,7 +38,12 @@
   --color-cinza: #5b6169;
   --color-ouro: #c9a56b;
   --color-ouro-claro: #d9bd8a;
-  --color-ouro-escuro: #9c7b46;
+  /* Ouro para TEXTO em fundo claro (13/10/2026): o #9c7b46 rendia 3,9:1
+     no branco; este rende 5,4:1 no branco e 4,8:1 no gelo. O ouro de
+     enfeite e de fundo continua o #c9a56b. */
+  --color-ouro-escuro: #85652f;
+  /* Texto de exemplo dos campos: o grafite-claro rendia 2,9:1 na busca */
+  --color-grafite-suave: #646c77;
   --color-carimbo: #e02129;
   --color-carimbo-escuro: #b81b22;
   /* Fundo do painel administrativo: um gelo ainda mais claro */
@@ -177,7 +182,8 @@ body {
     border-radius: 9999px;
     background: rgba(28, 105, 181, 0.06);
     box-shadow: inset 0 0 0 1px rgba(28, 105, 181, 0.1);
-    font-size: 0.68rem;
+    /* 11px: piso de leitura para texto funcional (13/10/2026) */
+    font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -194,9 +200,20 @@ body {
     box-shadow: 0 0 0 3px rgba(201, 165, 107, 0.16);
   }
   .em-noite .rotulo-pilula {
-    color: var(--color-ouro-claro);
+    /* Creme de ouro, não o ouro claro: na ponta clara do degradê azul
+       das faixas o ouro claro rendia 2,8 a 3,3:1; este rende 4,7:1 no azul
+       mais claro medido (13/10/2026) */
+    color: #faf5ea;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  }
+  /* Superfície clara dentro de um bloco escuro (o cartão da entrada do
+     painel): sem isto a regra de cima vazava e a pílula ficava ouro claro
+     no branco, a 1,8:1 (13/10/2026) */
+  .em-noite .em-claro .rotulo-pilula {
+    color: var(--color-tinta);
+    background: rgba(28, 105, 181, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(28, 105, 181, 0.1);
   }
   /* Legenda de foto: itálico serifado com o fio de ouro na frente
      (fotos da página A Viver Bem, 07/10/2026) */
@@ -474,7 +491,10 @@ body {
     min-height: 2.75rem;
     padding: 0 1.1rem;
     border-radius: 9999px;
-    background: var(--color-ouro);
+    /* 13/10/2026: o branco sobre o ouro #c9a56b rendia 2,3:1. O texto
+       branco foi pedido (10/10), então quem escurece é o fundo: o ouro
+       escuro rende 5,4:1 com o branco. */
+    background: var(--color-ouro-escuro);
     color: #fff;
     font-weight: 600;
     font-size: 0.92rem;
@@ -484,7 +504,7 @@ body {
     transition: background-color 0.25s, color 0.25s, transform 0.25s;
   }
   .botao-carrinho:hover {
-    background: var(--color-ouro-escuro);
+    background: #6e5427;
   }
   .botao-carrinho:active {
     transform: scale(0.98);

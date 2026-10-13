@@ -45,13 +45,32 @@ function tempoRelativo(iso: string) {
 }
 
 // Selo de variação contra o mês passado
+// O lugar do gráfico quando ainda não há o que desenhar (13/10/2026): sem
+// pedido nenhum o painel mostrava eixos e uma linha no zero, que parecia
+// erro. Ocupa a mesma proporção do gráfico, para nada pular quando o
+// primeiro pedido chegar.
+function GraficoVazio({ titulo, texto }: { titulo: string; texto: string }) {
+  return (
+    <div className="aspect-[520/190] rounded-2xl border border-dashed border-fio bg-nevoa/50 flex flex-col items-center justify-center text-center px-6 gap-2">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-tinta/60">
+        <path d="M4 20h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <rect x="6" y="12" width="3" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
+        <rect x="11" y="8" width="3" height="10" rx="1" stroke="currentColor" strokeWidth="1.6" />
+        <rect x="16" y="14" width="3" height="4" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      </svg>
+      <p className="font-semibold text-navy text-[0.95rem]">{titulo}</p>
+      <p className="text-cinza text-sm max-w-xs leading-snug">{texto}</p>
+    </div>
+  );
+}
+
 function Variacao({ valor }: { valor: number | null }) {
   if (valor === null) return null;
   const subiu = valor > 0;
   const parado = valor === 0;
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[0.68rem] font-semibold rounded-full px-2 py-0.5 tabular-nums ${
+      className={`inline-flex items-center gap-1 text-[0.6875rem] font-semibold rounded-full px-2 py-0.5 tabular-nums ${
         parado ? "bg-nevoa text-cinza" : subiu ? "bg-green-50 text-green-700" : "bg-carimbo/10 text-carimbo"
       }`}
       title="Em relação ao mês passado"
@@ -80,6 +99,8 @@ export default async function PaginaPainel() {
   if (sessao.papel !== PAPEL_ADMIN) redirect("/admin/produtos");
 
   const m = await obterMetricas();
+  // Sem pedido nenhum, as setas de "em relação ao mês passado" não dizem nada
+  const semPedidos = m.totalPedidos === 0;
   const mes = new Date().toLocaleDateString("pt-BR", { month: "long" });
   const alertas = [
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
@@ -113,19 +134,19 @@ export default async function PaginaPainel() {
         <CartaoNumero
           rotulo="Pedidos no mês"
           valor={String(m.pedidosMes)}
-          extra={<Variacao valor={m.pedidosVariacao} />}
+          extra={<Variacao valor={semPedidos ? null : m.pedidosVariacao} />}
           apoio={`${m.totalPedidos} desde o início`}
         />
         <CartaoNumero
           rotulo="Receitas no mês"
           valor={String(m.receitasMes)}
-          extra={<Variacao valor={m.receitasVariacao} />}
+          extra={<Variacao valor={semPedidos ? null : m.receitasVariacao} />}
           apoio="pedidos com foto de receita"
         />
         <CartaoNumero
           rotulo="Faturamento"
           valor={formatarPreco(m.faturamentoMes)}
-          extra={<Variacao valor={m.faturamentoVariacao} />}
+          extra={<Variacao valor={semPedidos ? null : m.faturamentoVariacao} />}
           apoio="só produtos com preço no site"
         />
         <CartaoNumero rotulo="Clientes no mês" valor={String(m.clientesUnicos)} apoio="WhatsApps diferentes" />
@@ -135,12 +156,26 @@ export default async function PaginaPainel() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
         <CartaoAdmin titulo="Faturamento por mês" apoio="Últimos 6 meses, só produtos com preço">
           <div className="px-5 pb-5 mt-4">
-            <GraficoFaturamento dados={m.porMes} />
+            {m.porMes.every((x) => x.faturamento === 0) ? (
+              <GraficoVazio
+                titulo="Ainda sem faturamento"
+                texto="As barras aparecem quando entrar o primeiro pedido de um produto com preço no site."
+              />
+            ) : (
+              <GraficoFaturamento dados={m.porMes} />
+            )}
           </div>
         </CartaoAdmin>
         <CartaoAdmin titulo="Pedidos por dia" apoio="Últimos 14 dias, receitas incluídas">
           <div className="px-5 pb-5 mt-4">
-            <GraficoPedidosDia dados={m.porDia} />
+            {m.porDia.every((x) => x.pedidos === 0) ? (
+              <GraficoVazio
+                titulo="Nenhum pedido nos últimos 14 dias"
+                texto="Cada pedido feito pelo site, pelo carrinho ou pela foto da receita, vira um ponto aqui."
+              />
+            ) : (
+              <GraficoPedidosDia dados={m.porDia} />
+            )}
           </div>
         </CartaoAdmin>
       </div>
@@ -164,13 +199,13 @@ export default async function PaginaPainel() {
             />
             <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-2xl bg-nevoa px-3.5 py-3">
-                <dt className="text-[0.66rem] font-semibold tracking-[0.12em] uppercase text-cinza">Com foto</dt>
+                <dt className="text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza">Com foto</dt>
                 <dd className="mt-1 font-semibold text-navy tabular-nums">
                   {m.catalogo.comFoto} <span className="text-grafite-claro font-normal">de {m.catalogo.total}</span>
                 </dd>
               </div>
               <div className="rounded-2xl bg-nevoa px-3.5 py-3">
-                <dt className="text-[0.66rem] font-semibold tracking-[0.12em] uppercase text-cinza">Categorias</dt>
+                <dt className="text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza">Categorias</dt>
                 <dd className="mt-1 font-semibold text-navy tabular-nums">
                   {m.catalogo.categoriasNoSite} <span className="text-grafite-claro font-normal">de {m.catalogo.categorias} no site</span>
                 </dd>
@@ -296,7 +331,10 @@ export default async function PaginaPainel() {
       >
         <div className="px-5 pb-5">
           {m.ultimos.length === 0 ? (
-            <p className="text-cinza text-sm mt-3">Nenhum pedido registrado ainda.</p>
+            <p className="text-cinza text-sm mt-3">
+              Nenhum pedido registrado ainda. Os pedidos feitos pelo site aparecem aqui, com o nome, o
+              WhatsApp e o código de cada um.
+            </p>
           ) : (
             <ul className="flex flex-col divide-y divide-fio mt-1">
               {m.ultimos.map((p) => (
@@ -327,7 +365,7 @@ export default async function PaginaPainel() {
 
       {/* ---------- Atalhos do dia a dia, por último de propósito ---------- */}
       <div className="mt-6 mb-2">
-        <p className="rotulo-pilula !text-[0.62rem]">Atalhos</p>
+        <p className="rotulo-pilula !text-[0.6875rem]">Atalhos</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-3">
           {ATALHOS.map((a) => (
             <Link

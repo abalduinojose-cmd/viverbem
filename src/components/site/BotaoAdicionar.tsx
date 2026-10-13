@@ -54,7 +54,7 @@ export function BotaoAdicionar({
   if (compacto) {
     const classeSuave = adicionado
       ? "bg-green-700 border-green-700 text-white"
-      : "bg-white border-fio text-navy hover:bg-ouro-claro hover:border-ouro-claro hover:text-white";
+      : "bg-white border-fio text-navy hover:bg-ouro-escuro hover:border-ouro-escuro hover:text-white";
     return (
       <button
         type="button"

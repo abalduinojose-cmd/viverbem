@@ -57,7 +57,7 @@ export default function PaginaLojas() {
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-[50%_40%]"
             />
-            <figcaption className="absolute left-4 top-4 inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/92 text-navy text-[0.66rem] font-semibold uppercase tracking-[0.12em]">
+            <figcaption className="absolute left-4 top-4 inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/92 text-navy text-[0.6875rem] font-semibold uppercase tracking-[0.12em]">
               <span aria-hidden="true" className="size-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />
               há {ANOS_TRADICAO} anos em Petrópolis
             </figcaption>

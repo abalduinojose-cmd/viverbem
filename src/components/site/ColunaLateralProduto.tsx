@@ -63,7 +63,7 @@ function Bloco({
   if (itens.length === 0) return null;
   return (
     <section aria-label={titulo} className="rounded-[1.75rem] border border-fio bg-white p-4 md:p-5 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
-      <p className="rotulo-pilula !text-[0.64rem]">{rotulo}</p>
+      <p className="rotulo-pilula !text-[0.6875rem]">{rotulo}</p>
       <h2 className="mt-2 text-[1.15rem] font-semibold tracking-[-0.025em] text-navy">{titulo}</h2>
       <ul className="mt-2 lista-fichas">
         {itens.map((p) => (

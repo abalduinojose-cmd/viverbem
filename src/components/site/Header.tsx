@@ -64,7 +64,7 @@ function BotaoCarrinho({
           <IconeCarrinho tamanho={20} />
           {totalItens > 0 && (
             <span
-              className={`absolute -top-2 -right-2.5 text-[0.65rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white ${
+              className={`absolute -top-2 -right-2.5 text-[0.6875rem] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center ring-2 ring-white ${
                 selo === "ouro" ? "bg-ouro-claro text-navy" : "bg-navy text-white"
               }`}
             >
@@ -140,7 +140,7 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
         required
         placeholder="O que você procura? Nome ou ativo"
         aria-label="Buscar no site"
-        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-claro focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
+        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
       />
     </Formulario>
   );
@@ -409,7 +409,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
           className="md:hidden bg-white border-t border-fio px-5 pt-2 pb-6 flex flex-col max-h-[calc(100dvh-var(--altura-cabecalho))] overflow-y-auto animar-surgir"
         >
           {/* A Viver Bem: linhas limpas, só o texto e a seta (07/10/2026) */}
-          <p className="pt-3 pb-1 rotulo !text-cinza text-[0.66rem]">A Viver Bem</p>
+          <p className="pt-3 pb-1 rotulo !text-cinza text-[0.6875rem]">A Viver Bem</p>
           <ul className="lista-fichas">
             {MENU_SOBRE.map((l) => (
               <li key={l.href}>

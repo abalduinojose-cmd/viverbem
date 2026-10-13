@@ -100,7 +100,7 @@ export default function PaginaLogin() {
       <div className="relative w-full max-w-[25.5rem]">
         {/* O fio de ouro no alto do cartão é a assinatura da marca: sai do
             nada nas pontas e acende no meio */}
-        <div className="relative overflow-hidden rounded-[2rem] bg-white p-7 sm:p-9 shadow-[0_2px_4px_rgba(5,17,33,0.06),0_40px_80px_-32px_rgba(5,17,33,0.7)]">
+        <div className="em-claro relative overflow-hidden rounded-[2rem] bg-white p-7 sm:p-9 shadow-[0_2px_4px_rgba(5,17,33,0.06),0_40px_80px_-32px_rgba(5,17,33,0.7)]">
           <span
             aria-hidden="true"
             className="absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(201,165,107,0.85),transparent)]"
@@ -116,7 +116,7 @@ export default function PaginaLogin() {
             className="h-12 w-auto object-contain mx-auto"
           />
 
-          <p className="rotulo-pilula justify-center w-full mt-7 !text-[0.62rem]">Painel</p>
+          <p className="rotulo-pilula !flex mx-auto mt-7 !text-[0.6875rem]">Painel</p>
           <h1 className="text-[1.75rem] font-semibold text-navy text-center tracking-[-0.035em] leading-[1.15] mt-3">
             Entrar no painel
           </h1>
@@ -226,7 +226,7 @@ export default function PaginaLogin() {
           </form>
         </div>
 
-        <p className="text-white/55 text-[0.78rem] text-center mt-7 leading-relaxed">
+        <p className="text-white/70 text-[0.78rem] text-center mt-7 leading-relaxed">
           Esqueceu a senha? Peça ao gestor para gerar uma nova
           <br />
           em Acessos ao painel. Cinco erros bloqueiam por 30 minutos.

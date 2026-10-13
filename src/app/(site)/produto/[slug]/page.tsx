@@ -254,7 +254,7 @@ export default async function PaginaProduto({ params }: Props) {
                 claro com fios (07/10/2026, "melhore o print": a trilha com os
                 círculos e a linha saiu, no celular e no computador) */}
             <div className="mt-9 rounded-[1.75rem] bg-gelo/50 p-5 md:p-6">
-              <p className="rotulo-pilula !text-[0.64rem]">Como pedir</p>
+              <p className="rotulo-pilula !text-[0.6875rem]">Como pedir</p>
               <ol className="mt-3 lista-fichas">
                 {PASSOS_PEDIDO.map((p, i) => (
                   <li key={p.titulo} className="flex items-start gap-4 py-3.5">

@@ -163,7 +163,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
           {/* A nota, grande, com a escala ao lado e as estrelas embaixo */}
           <span className="mt-6 flex items-end gap-3">
             <span className="text-[4rem] md:text-[4.5rem] font-semibold leading-none tracking-[-0.05em] tabular-nums">{NOTA}</span>
-            <span className="pb-2 text-white/60 text-sm leading-tight">
+            <span className="pb-2 text-white/90 text-sm leading-tight">
               de 5<br />
               nota máxima
             </span>

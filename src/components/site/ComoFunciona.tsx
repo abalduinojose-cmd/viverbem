@@ -163,10 +163,18 @@ export function ComoFunciona({
   return (
     <section
       id="como-funciona"
-      aria-labelledby={cabecalho ? "titulo-como-funciona" : undefined}
-      aria-label={cabecalho ? undefined : "Os quatro passos"}
+      aria-labelledby={cabecalho ? "titulo-como-funciona" : "titulo-passos"}
       className={`max-w-7xl mx-auto px-5 md:px-8 scroll-mt-[calc(var(--altura-cabecalho)+1rem)] ${className}`}
     >
+      {/* Sem o cabeçalho visível (na página Como funciona, o h1 da página
+          faz o papel dele), o h2 fica só para leitor de tela: sem ele a
+          página pulava do h1 direto para o h3 dos passos (13/10/2026) */}
+      {!cabecalho && (
+        <h2 id="titulo-passos" className="sr-only">
+          Os quatro passos do pedido
+        </h2>
+      )}
+
       {/* ---------- Cabeçalho: rótulo, título em duas vozes e o apoio ---------- */}
       {cabecalho && (
         <div className="revelar grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">

@@ -65,7 +65,7 @@ export function ProdutoCard({
           className="relative max-h-full w-auto max-w-full !object-contain scale-[1.04] transition-transform duration-500 group-hover:-translate-y-1.5"
         />
         {industrializado && produto.novidade && (
-          <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">
+          <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">
             Novidade
           </span>
         )}
@@ -75,7 +75,7 @@ export function ProdutoCard({
           produtos centralizados, no celular e no computador") */}
       <div className={`flex flex-1 flex-col items-center gap-1 text-center ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
         {mostrarCategoria && produto.categoriaNome && (
-          <p className="rotulo !text-cinza text-[0.62rem] truncate max-w-full">{produto.categoriaNome}</p>
+          <p className="rotulo !text-cinza text-[0.6875rem] truncate max-w-full">{produto.categoriaNome}</p>
         )}
         <h3 className="text-[1rem] font-medium leading-snug tracking-[-0.015em] text-navy line-clamp-2">
           {/* O link se estende sobre o cartão inteiro */}
