@@ -83,10 +83,14 @@ export interface DepoimentoDTO {
 }
 
 /** O preço que pode aparecer no site, ou null. Desde 05/10/2026 o site não
- *  mostra preço de nada por padrão; o painel liga produto a produto, e só
- *  para industrializado com registro (RDC 67/2007). */
+ *  mostra preço de nada por padrão; o painel liga produto a produto.
+ *  14/10/2026 ("coloque a opção de preço em todos, mas o gestor escolhe"):
+ *  a chave vale para qualquer produto, manipulado inclusive. A orientação
+ *  da Anfarmag (RDC 67/2007, item 5.14) de não expor manipulado com preço
+ *  continua registrada no painel como aviso; a decisão é do gestor. O
+ *  carrinho segue só no industrializado. */
 export function precoVisivel(p: { venda?: string | null; mostrarPreco?: boolean; precoCentavos: number }): number | null {
-  return ehIndustrializado(p) && p.mostrarPreco && p.precoCentavos > 0 ? p.precoCentavos : null;
+  return p.mostrarPreco && p.precoCentavos > 0 ? p.precoCentavos : null;
 }
 
 /** Quebra um texto em itens por quebra de linha ou ";".

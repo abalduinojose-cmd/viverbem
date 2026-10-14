@@ -202,7 +202,7 @@ export function FormProduto({
         fotos: urls,
         fotosMudaram,
         ativo,
-        mostrarPreco: industrializado && mostrarPreco,
+        mostrarPreco,
         novidade: industrializado && novidade,
         destaque: industrializado && destaque,
         dosagens: dosagens.trim() || null,
@@ -516,15 +516,21 @@ export function FormProduto({
               aoAlternar={() => setAtivo((v) => !v)}
               cor="verde"
             />
+            {/* 14/10/2026: a chave do preço vale para qualquer produto; no
+                manipulado, com o aviso da Anfarmag na descrição */}
+            <Interruptor
+              ligado={mostrarPreco}
+              rotulo="Preço no site"
+              descricao={
+                industrializado
+                  ? "Mostra o preço no cartão e na página do produto. Desligado, o farmacêutico passa o valor pelo WhatsApp."
+                  : "Mostra o preço no cartão e na página. A Anfarmag orienta não expor manipulado com preço (RDC 67/2007, item 5.14): ligue só com o aval do farmacêutico responsável."
+              }
+              aoAlternar={() => setMostrarPreco((v) => !v)}
+              cor="ouro"
+            />
             {industrializado && (
               <>
-                <Interruptor
-                  ligado={mostrarPreco}
-                  rotulo="Preço no site"
-                  descricao="Mostra o preço no cartão e na página do produto. Desligado, o farmacêutico passa o valor pelo WhatsApp."
-                  aoAlternar={() => setMostrarPreco((v) => !v)}
-                  cor="ouro"
-                />
                 <Interruptor
                   ligado={novidade}
                   rotulo="Novidade"

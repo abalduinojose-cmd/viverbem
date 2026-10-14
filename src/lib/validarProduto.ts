@@ -68,8 +68,9 @@ export function validarCorpoProduto(corpo: Record<string, unknown>) {
       ativo: corpo.ativo !== false,
       novidade: industrializado && corpo.novidade === true,
       destaque: industrializado && corpo.destaque === true,
-      // Preço no site só para industrializado (RDC 67/2007)
-      mostrarPreco: industrializado && corpo.mostrarPreco === true,
+      // Preço no site em qualquer produto, a escolha do gestor (14/10/2026;
+      // antes só industrializado, pela RDC 67/2007, que segue como aviso)
+      mostrarPreco: corpo.mostrarPreco === true,
       categoriaId: corpo.categoriaId ? Number(corpo.categoriaId) : null,
       // Dosagens: texto livre separado por vírgula (ex.: "250mg, 500mg")
       dosagens: industrializado ? textoOuNulo(corpo.dosagens) : null,

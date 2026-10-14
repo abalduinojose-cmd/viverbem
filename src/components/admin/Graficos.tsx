@@ -328,11 +328,9 @@ export function GraficoCatalogo({
         ]}
       />
       <p className="text-grafite-claro text-xs mt-4 leading-relaxed">
-        {industrializados === 0
-          ? "Só manipulados: nenhum produto mostra preço no site, como pede a RDC 67/2007."
-          : comPrecoNoSite === 0
-            ? "Nenhum industrializado mostra o preço no site ainda. A chave fica em Produtos e preços."
-            : `${comPrecoNoSite} de ${industrializados} industrializados mostram o preço no site.`}
+        {comPrecoNoSite === 0
+          ? "Nenhum produto mostra o preço no site. A chave fica em Produtos e preços, produto a produto."
+          : `${comPrecoNoSite} de ${total} ${comPrecoNoSite === 1 ? "produto mostra" : "produtos mostram"} o preço no site.`}
       </p>
     </div>
   );

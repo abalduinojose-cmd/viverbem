@@ -94,7 +94,7 @@ export interface DadosMetricas {
   totalPedidos: number;
   produtos: ProdutoBase[];
   ultimos: PedidoBase[];
-  daJanela: { criadoEm: Date; totalCentavos: number }[];
+  daJanela: { criadoEm: Date; totalCentavos: number; receita?: boolean }[];
   categorias: CategoriaBase[];
   usuarios: UsuarioBase[];
   ultimasAcoes: AcaoBase[];
@@ -215,7 +215,7 @@ export function calcularMetricas(d: DadosMetricas) {
     noSite: produtos.filter((p) => p.ativo && p.aprovado).length,
     manipulados: produtos.length - industrializados.length,
     industrializados: industrializados.length,
-    comPrecoNoSite: industrializados.filter((p) => p.mostrarPreco).length,
+    comPrecoNoSite: produtos.filter((p) => p.mostrarPreco).length,
     comFoto: produtos.filter((p) => Boolean(p.fotoUrl)).length,
     categorias: categorias.length,
     categoriasNoSite: categorias.filter((c) => c.visivel).length,
@@ -263,11 +263,13 @@ export function calcularMetricas(d: DadosMetricas) {
 
   // Pedidos por dia nos últimos 14 dias, mesma lógica dos vazios
   const porDia = new Map<string, number>();
+  const receitasDia = new Map<string, number>();
   const diasRotulo: { chave: string; rotulo: string }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - i);
     const chave = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     porDia.set(chave, 0);
+    receitasDia.set(chave, 0);
     diasRotulo.push({
       chave,
       rotulo: `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`,
@@ -277,10 +279,12 @@ export function calcularMetricas(d: DadosMetricas) {
     const d = p.criadoEm;
     const chave = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     if (porDia.has(chave)) porDia.set(chave, (porDia.get(chave) ?? 0) + 1);
+    if (p.receita && receitasDia.has(chave)) receitasDia.set(chave, (receitasDia.get(chave) ?? 0) + 1);
   }
   const porDiaLista = diasRotulo.map((d) => ({
     rotulo: d.rotulo,
     pedidos: porDia.get(d.chave) ?? 0,
+    receitas: receitasDia.get(d.chave) ?? 0,
   }));
 
   return {

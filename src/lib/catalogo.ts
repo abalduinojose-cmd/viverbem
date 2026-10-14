@@ -49,13 +49,16 @@ const EH_DEMO = process.env.DEMO === "1";
  *  apareceria para quem abrisse o código-fonte, mesmo sem estar na tela.
  *  Do manipulado também não saem dosagem, apresentação e indicações. */
 function paraVitrine(p: ProdutoDTO): ProdutoDTO {
+  // 14/10/2026: a chave "preço no site" vale para todos; desligada, o
+  // preço nem sai do servidor
+  const comPreco = p.mostrarPreco && p.precoCentavos > 0;
   if (ehIndustrializado(p)) {
-    return p.mostrarPreco ? p : { ...p, precoCentavos: 0 };
+    return comPreco ? p : { ...p, precoCentavos: 0 };
   }
   return {
     ...p,
-    precoCentavos: 0,
-    mostrarPreco: false,
+    precoCentavos: comPreco ? p.precoCentavos : 0,
+    mostrarPreco: comPreco,
     novidade: false,
     destaque: false,
     dosagens: null,

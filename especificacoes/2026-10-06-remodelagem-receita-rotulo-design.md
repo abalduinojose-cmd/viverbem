@@ -31,6 +31,47 @@
 > volta, e o último quadro guardado leva as voltas. Medido: 2 a 4 ms por
 > quadro, 60 fps no desktop e no celular.
 
+> **ADENDO 75 (14/10/2026): preço opcional em todos os produtos, Produtos e preços e Home e arte da dobra mais limpos, faíscas suaves. IMPLEMENTADO, testado no localhost, publicado no 32º push.**
+> Pedido: "melhore a parte de produtos e preços, deixe mais clean e moderna
+> e fácil, coloque a opção de preço em todos, mas o gestor escolhe se quer
+> o preço ativado ou não / modernize a parte de home e arte de dobra, a
+> parte das fotos mais clean e moderna / em pedidos do mês na visão geral
+> melhore os gráficos no pedidos do mês e na receita".
+>
+> - **Preço em qualquer produto, a escolha do gestor.** A regra que
+>   trancava o preço no manipulado saiu de cinco lugares: `precoVisivel`
+>   (`tipos.ts`), `paraVitrine` (`catalogo.ts`: desligada a chave, o preço
+>   nem sai do servidor), `validarProduto.ts`, a rota PATCH
+>   (`api/admin/produtos/[id]`, que recusava com erro 400) e
+>   `metricas.ts` (`comPrecoNoSite` conta todos). O carrinho segue só no
+>   industrializado; o manipulado com preço continua pedindo pela receita.
+>   **Conformidade:** a Anfarmag orientou a cliente a não expor manipulado
+>   com preço (RDC 67/2007, item 5.14). Isso ficou como aviso, não como
+>   trava: o painel pede confirmação ao ligar num manipulado, mostra um
+>   triângulo âmbar na linha e repete a orientação na descrição da chave
+>   no formulário. O padrão de todo produto segue desligado.
+> - **Produtos e preços** (`ListaProdutos.tsx`): busca, categoria e chips
+>   numa barra de vidro; chip "Com preço (N)"; resumo com ícones e "N com
+>   preço"; linhas mais leves (capa 64px, tipo num selo pequeno, o preço
+>   numa coluna própria com "definir preço" quando está zerado e a chave
+>   "Preço no site" embaixo, desabilitada sem preço; "No site" ao lado;
+>   apagar só aparece inteiro no hover). Nada de lógica mudou (arrastar,
+>   publicar, editar no lugar).
+> - **Home e arte da dobra** (`ConfiguracaoSite.tsx`): as artes vieram
+>   para cima. Cada versão é um palco: o computador num quadro de
+>   navegador (barra com três pontos), o celular num aparelho ao lado na
+>   proporção real; vazios, são zonas de soltar o arquivo (arrastar da
+>   pasta ou clicar, com o tipo conferido antes de enviar); com arte,
+>   "Trocar" e "Remover" aparecem por cima no hover. As seções viraram
+>   ladrilhos em duas colunas com o estado em verde. Chips no cabeçalho
+>   ("9 de 9 seções no ar", "Dobra padrão / Modo arte").
+> - **Faíscas** (`PecasVivas.tsx`): a linha passou a ser suave
+>   (Catmull-Rom em Bézier, com os controles presos entre o chão e o teto
+>   para não mergulhar abaixo de zero nos dias sem pedido) e o "hoje"
+>   ganhou um halo. `metricas.porDia` ganhou `receitas` por dia: o cartão
+>   de receitas mostra a própria faísca (azul) e o apoio "N% dos pedidos";
+>   o anel ficou só nos clientes.
+>
 > **ADENDO 74 (14/10/2026): painel do gestor premium. IMPLEMENTADO e testado no localhost (1366, 1070 e celular); publicado no 31º push depois da segunda volta.**
 > **Segunda volta no mesmo dia ("quero mais moderno e atualize no github"):**
 > - **Barra do topo em vidro** no computador (`CascaAdmin`, `bg-nevoa/75` +

@@ -59,13 +59,9 @@ export async function PATCH(req: Request, contexto: Contexto) {
         }
         dados[c] = corpo[c] === true;
       } else if (c === "mostrarPreco") {
-        // Preço exposto só para industrializado com registro (RDC 67/2007)
-        if (!industrializado && corpo.mostrarPreco === true) {
-          return NextResponse.json(
-            { erro: "Manipulado não pode ter preço no site (RDC 67/2007)." },
-            { status: 400 }
-          );
-        }
+        // 14/10/2026: a chave vale para qualquer produto, a escolha do
+        // gestor (antes a rota recusava no manipulado, RDC 67/2007; o
+        // painel avisa e pede confirmação ao ligar num manipulado)
         dados.mostrarPreco = corpo.mostrarPreco === true;
       } else if (c === "precoCentavos") {
         const preco = Number(corpo.precoCentavos);

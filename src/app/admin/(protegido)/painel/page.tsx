@@ -127,8 +127,9 @@ export default async function PaginaPainel() {
   const mes = new Date().toLocaleDateString("pt-BR", { month: "long" });
   // Os mini-gráficos dos números: só quando há o que desenhar
   const faiscaPedidos = m.porDia.some((x) => x.pedidos > 0) ? m.porDia.map((x) => x.pedidos) : null;
+  const faiscaReceitas = m.porDia.some((x) => x.receitas > 0) ? m.porDia.map((x) => x.receitas) : null;
   const faiscaFaturamento = m.porMes.some((x) => x.faturamento > 0) ? m.porMes.map((x) => x.faturamento) : null;
-  const parteReceitas = m.pedidosMes > 0 ? (m.receitasMes / m.pedidosMes) * 100 : null;
+  const parteReceitas = m.pedidosMes > 0 ? Math.round((m.receitasMes / m.pedidosMes) * 100) : null;
   const parteClientes = m.pedidosMes > 0 ? (m.clientesUnicos / m.pedidosMes) * 100 : null;
   const alertas = [
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
@@ -183,16 +184,16 @@ export default async function PaginaPainel() {
           rotulo="Pedidos no mês"
           valor={String(m.pedidosMes)}
           extra={<Variacao noite valor={semPedidos ? null : m.pedidosVariacao} />}
-          apoio={`${m.totalPedidos} desde o início`}
-          visual={faiscaPedidos && <Faisca valores={faiscaPedidos} cor="ouro" className="h-9 w-28" />}
+          apoio={`${m.totalPedidos} desde o início · 14 dias`}
+          visual={faiscaPedidos && <Faisca valores={faiscaPedidos} cor="ouro" className="h-10 w-32" />}
         />
         <CartaoNumero
           icone={ICONES.receita}
           rotulo="Receitas no mês"
           valor={String(m.receitasMes)}
           extra={<Variacao valor={semPedidos ? null : m.receitasVariacao} />}
-          apoio="pedidos com foto de receita"
-          visual={parteReceitas !== null && <Anel pct={parteReceitas} rotulo="dos pedidos" />}
+          apoio={parteReceitas !== null ? `${parteReceitas}% dos pedidos · 14 dias` : "pedidos com foto de receita"}
+          visual={faiscaReceitas && <Faisca valores={faiscaReceitas} className="h-10 w-32" />}
         />
         <CartaoNumero
           icone={ICONES.faturamento}
@@ -200,7 +201,7 @@ export default async function PaginaPainel() {
           valor={formatarPreco(m.faturamentoMes)}
           extra={<Variacao valor={semPedidos ? null : m.faturamentoVariacao} />}
           apoio="só produtos com preço no site"
-          visual={faiscaFaturamento && <Faisca valores={faiscaFaturamento} className="h-9 w-28" />}
+          visual={faiscaFaturamento && <Faisca valores={faiscaFaturamento} className="h-10 w-32" />}
         />
         <CartaoNumero
           icone={ICONES.clientes}
