@@ -1982,6 +1982,62 @@
     ],
     "log": [
       {
+        "id": 44,
+        "usuario": "Administrador",
+        "acao": "alterou a home",
+        "detalhe": "ordem das seções",
+        "criadoEm": "2026-10-14T20:34:29.718Z"
+      },
+      {
+        "id": 43,
+        "usuario": "Administrador",
+        "acao": "tirou a mídia do site",
+        "detalhe": "Faixa Dermatologia & Estética, computador",
+        "criadoEm": "2026-10-14T20:34:29.157Z"
+      },
+      {
+        "id": 42,
+        "usuario": "Administrador",
+        "acao": "tirou a mídia do site",
+        "detalhe": "Dobra, arte 1, computador",
+        "criadoEm": "2026-10-14T20:34:27.806Z"
+      },
+      {
+        "id": 41,
+        "usuario": "Administrador",
+        "acao": "tirou a mídia do site",
+        "detalhe": "foto da linha Dermatologia & Estética",
+        "criadoEm": "2026-10-14T20:34:27.158Z"
+      },
+      {
+        "id": 40,
+        "usuario": "Administrador",
+        "acao": "alterou a home",
+        "detalhe": "ordem das seções",
+        "criadoEm": "2026-10-14T20:33:48.992Z"
+      },
+      {
+        "id": 39,
+        "usuario": "Administrador",
+        "acao": "trocou a mídia do site",
+        "detalhe": "Faixa Dermatologia & Estética, computador",
+        "criadoEm": "2026-10-14T20:33:46.775Z"
+      },
+      {
+        "id": 38,
+        "usuario": "Administrador",
+        "acao": "trocou a mídia do site",
+        "detalhe": "Dobra, arte 1, computador",
+        "criadoEm": "2026-10-14T20:33:46.241Z"
+      },
+      {
+        "id": 37,
+        "usuario": "Administrador",
+        "acao": "trocou a mídia do site",
+        "detalhe": "foto da linha Dermatologia & Estética",
+        "criadoEm": "2026-10-14T20:33:45.042Z"
+      },
+      {
         "id": 36,
         "usuario": "Sistema",
         "acao": "bloqueou o login",
@@ -2218,7 +2274,7 @@
         "codigo": "VB-1277",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-10-13T15:36:52.381Z"
+        "criadoEm": "2026-10-13T17:03:05.700Z"
       },
       {
         "id": 17,
@@ -2231,7 +2287,7 @@
         "codigo": "VB-1312",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-10-07T16:18:04.296Z"
+        "criadoEm": "2026-10-07T17:44:17.615Z"
       },
       {
         "id": 6,
@@ -2244,7 +2300,7 @@
         "codigo": "VB-1235",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-10-03T18:51:42.997Z"
+        "criadoEm": "2026-10-03T20:17:56.316Z"
       },
       {
         "id": 2,
@@ -2257,7 +2313,7 @@
         "codigo": "VB-1207",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-10-02T16:36:45.495Z"
+        "criadoEm": "2026-10-02T18:02:58.814Z"
       },
       {
         "id": 11,
@@ -2270,7 +2326,7 @@
         "codigo": "VB-1270",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-30T19:41:37.395Z"
+        "criadoEm": "2026-09-30T21:07:50.714Z"
       },
       {
         "id": 19,
@@ -2283,7 +2339,7 @@
         "codigo": "VB-1326",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-30T18:34:03.307Z"
+        "criadoEm": "2026-09-30T20:00:16.626Z"
       },
       {
         "id": 20,
@@ -2296,7 +2352,7 @@
         "codigo": "VB-1333",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-30T11:31:18.407Z"
+        "criadoEm": "2026-09-30T12:57:31.726Z"
       },
       {
         "id": 1,
@@ -2309,7 +2365,7 @@
         "codigo": "VB-1200",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-29T13:18:51.604Z"
+        "criadoEm": "2026-09-29T14:45:04.923Z"
       },
       {
         "id": 7,
@@ -2322,7 +2378,7 @@
         "codigo": "VB-1242",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-28T11:54:28.259Z"
+        "criadoEm": "2026-09-28T13:20:41.578Z"
       },
       {
         "id": 18,
@@ -2335,7 +2391,7 @@
         "codigo": "VB-1319",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-27T11:24:39.693Z"
+        "criadoEm": "2026-09-27T12:50:53.012Z"
       },
       {
         "id": 13,
@@ -2348,7 +2404,7 @@
         "codigo": "VB-1284",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-26T14:08:13.373Z"
+        "criadoEm": "2026-09-26T15:34:26.692Z"
       },
       {
         "id": 5,
@@ -2361,7 +2417,7 @@
         "codigo": "VB-1228",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-18T11:24:25.922Z"
+        "criadoEm": "2026-09-18T12:50:39.241Z"
       },
       {
         "id": 22,
@@ -2374,7 +2430,7 @@
         "codigo": "VB-1347",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-12T16:41:44.503Z"
+        "criadoEm": "2026-09-12T18:07:57.822Z"
       },
       {
         "id": 8,
@@ -2387,7 +2443,7 @@
         "codigo": "VB-1249",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-11T19:16:15.200Z"
+        "criadoEm": "2026-09-11T20:42:28.519Z"
       },
       {
         "id": 14,
@@ -2400,7 +2456,7 @@
         "codigo": "VB-1291",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-11T15:07:04.417Z"
+        "criadoEm": "2026-09-11T16:33:17.736Z"
       },
       {
         "id": 9,
@@ -2413,7 +2469,7 @@
         "codigo": "VB-1256",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-11T14:14:02.974Z"
+        "criadoEm": "2026-09-11T15:40:16.293Z"
       },
       {
         "id": 4,
@@ -2426,7 +2482,7 @@
         "codigo": "VB-1221",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-09T19:41:34.498Z"
+        "criadoEm": "2026-09-09T21:07:47.817Z"
       },
       {
         "id": 15,
@@ -2439,7 +2495,7 @@
         "codigo": "VB-1298",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-09T13:23:40.987Z"
+        "criadoEm": "2026-09-09T14:49:54.306Z"
       },
       {
         "id": 3,
@@ -2452,7 +2508,7 @@
         "codigo": "VB-1214",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-08T13:26:44.021Z"
+        "criadoEm": "2026-09-08T14:52:57.340Z"
       },
       {
         "id": 10,
@@ -2465,7 +2521,7 @@
         "codigo": "VB-1263",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-05T18:40:17.138Z"
+        "criadoEm": "2026-09-05T20:06:30.457Z"
       },
       {
         "id": 21,
@@ -2478,7 +2534,7 @@
         "codigo": "VB-1340",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-09-05T15:27:10.896Z"
+        "criadoEm": "2026-09-05T16:53:24.215Z"
       },
       {
         "id": 16,
@@ -2491,7 +2547,7 @@
         "codigo": "VB-1305",
         "totalCentavos": 0,
         "itens": "[]",
-        "criadoEm": "2026-08-31T12:36:08.189Z"
+        "criadoEm": "2026-08-31T14:02:21.508Z"
       }
     ]
   },
@@ -2897,9 +2953,18 @@
       "reels": true,
       "avaliacoes": true
     },
-    "heroDesktop": null,
-    "heroCelular": null,
-    "heroDesktop2": null,
-    "heroCelular2": null
+    "linhasFotos": {},
+    "banners": {},
+    "secoesOrdem": [
+      "categorias",
+      "maisProcurados",
+      "vitrinesAreas",
+      "prontaEntrega",
+      "comoFunciona",
+      "bannerMulher",
+      "reels",
+      "avaliacoes",
+      "bannerHistoria"
+    ]
   }
 }
