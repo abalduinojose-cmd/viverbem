@@ -29,7 +29,7 @@
 // baixa, lado a lado no computador; a linha "32 produtos · 6 áreas ·
 // receita conferida" saiu da abertura; mais ar entre as faixas.
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { infoCategoria } from "@/lib/categorias";
@@ -124,7 +124,6 @@ export function CatalogoClient({
   produtos,
   categoriaAtiva = null,
   buscaInicial = "",
-  contagens,
 }: {
   categorias: CategoriaDTO[];
   /** Na página de categoria, já vem só a categoria */
@@ -135,9 +134,8 @@ export function CatalogoClient({
   contagens?: { total: number; porCategoria: Record<number, number> };
 }) {
   const buscaDoEndereco = useSyncExternalStore(semAssinatura, lerBuscaDoEndereco, () => "");
-  // null = a pessoa ainda não digitou: vale a busca que veio no endereço
-  const [digitada, setBusca] = useState<string | null>(null);
-  const busca = digitada ?? (buscaInicial || buscaDoEndereco);
+  // A busca vem do cabeçalho, no endereço (?busca=termo)
+  const busca = buscaInicial || buscaDoEndereco;
   // Palavras sem acento: "omega 3" precisa achar "Ômega 3 Viver Bem"
   const termos = useMemo(() => termosDaBusca(busca), [busca]);
   const buscando = termos.length > 0;
@@ -224,82 +222,24 @@ export function CatalogoClient({
         </div>
       </div>
 
-      {/* ---------- Busca e áreas, numa barra só que gruda abaixo do cabeçalho
-          (no computador lado a lado; no celular a busca em cima e os chips
-          embaixo, arrastando) ---------- */}
-      <div className="sticky top-[var(--altura-cabecalho)] z-40 bg-white/85 backdrop-blur-xl border-b border-fio">
-        <div className="px-5 md:px-8 py-3 max-w-7xl mx-auto w-full md:flex md:items-center md:gap-5">
-          <div className="relative w-full md:max-w-sm md:shrink-0">
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-cinza"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <input
-              type="search"
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              placeholder={categoriaAtiva ? `Buscar em ${categoriaAtiva.nome}...` : "Buscar por nome ou ativo..."}
-              aria-label="Buscar"
-              className="w-full h-11 bg-gelo/70 border border-transparent rounded-full pl-11 pr-11 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/25 focus:border-tinta/40 focus:bg-white transition-colors"
-            />
-            {buscando && (
-              <button
-                type="button"
-                onClick={() => setBusca("")}
-                aria-label="Limpar busca"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-cinza hover:text-navy w-9 h-9 flex items-center justify-center"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </button>
-            )}
-          </div>
-
-          <nav
-            aria-label="Áreas do catálogo"
-            className="mt-3 md:mt-0 md:flex-1 md:min-w-0 flex gap-2 overflow-x-auto rolagem-sem-barra -mx-5 px-5 md:mx-0 md:px-0"
-          >
-            <Link
-              href="/produtos"
-              className={`chip !min-h-10 !px-3.5 text-sm ${!categoriaAtiva ? "chip-ativo" : ""}`}
-              aria-current={!categoriaAtiva ? "page" : undefined}
-            >
-              Todas
-              {contagens && <span className="ml-1.5 text-[0.72rem] tabular-nums opacity-60">{contagens.total}</span>}
-            </Link>
-            {categorias.map((c) => (
-              <Link
-                key={c.id}
-                href={`/produtos/${c.slug}`}
-                className={`chip !min-h-10 !px-3.5 text-sm ${categoriaAtiva?.id === c.id ? "chip-ativo" : ""}`}
-                aria-current={categoriaAtiva?.id === c.id ? "page" : undefined}
-              >
-                {c.nome}
-                {contagens?.porCategoria[c.id] ? (
-                  <span className="ml-1.5 text-[0.72rem] tabular-nums opacity-60">{contagens.porCategoria[c.id]}</span>
-                ) : null}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
+      {/* (A barra presa com a busca e as áreas saiu em 14/10/2026: "não
+          gostei, volte como estava antes", tirar a barra repetida. O
+          cabeçalho já tem as áreas e a busca, que chega aqui como
+          ?busca=termo.) */}
 
       {/* ---------- Conteúdo ---------- */}
       <div className="flex-1 px-5 md:px-8 py-8 pb-16 max-w-7xl mx-auto w-full">
         {buscando ? (
           <>
-            <h2 className="text-2xl font-semibold text-navy mb-6 tracking-[-0.03em]">
-              {resultadoBusca.length} {resultadoBusca.length === 1 ? "resultado" : "resultados"} para “
-              {busca.trim()}”
-            </h2>
+            <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <h2 className="text-2xl font-semibold text-navy tracking-[-0.03em]">
+                {resultadoBusca.length} {resultadoBusca.length === 1 ? "resultado" : "resultados"} para “
+                {busca.trim()}”
+              </h2>
+              <Link href="/produtos" className="botao-link !min-h-11 !text-sm">
+                Limpar busca
+              </Link>
+            </div>
             {resultadoBusca.length > 0 ? (
               <Grade lista={resultadoBusca} />
             ) : (

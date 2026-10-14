@@ -43,6 +43,10 @@ export type Roteiro = {
    *  Cada par é [segundo real, segundo da coreografia]; começa em [0, 0] e
    *  termina em [duração real, 7]. Sem ritmo, o ciclo dura os 7 s. */
   ritmo?: [number, number][];
+  /** O texto fica fora do canvas, em HTML vetorial (14/10/2026, Saúde da
+   *  Mulher: "quero letra cinética... a fonte em alta qualidade, vetorizada");
+   *  o canvas desenha só a cena */
+  textoEmHtml?: boolean;
 };
 
 export const ROTEIROS = {
@@ -89,6 +93,7 @@ export const ROTEIROS = {
   mulher: {
     formato: "cartao",
     coreografia: "fases",
+    textoEmHtml: true,
     // Na frente, no fecho, o ZincBlock (alto, rosa) e o Pó finalizador
     // (largo); o Composto pousa atrás, na ponta
     potes: [

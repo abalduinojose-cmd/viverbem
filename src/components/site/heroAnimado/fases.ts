@@ -84,6 +84,15 @@ function naFrente(i: number, t: number) {
   return vem * (1 - volta);
 }
 
+/** Em que passo do letreiro a cena está: 0 no primeiro pote, 3 no último,
+ *  4 no fecho e de 4 a 5 voltando ao primeiro (5 é o 0 da volta seguinte).
+ *  Exportado para o letreiro em HTML (TituloCinetico) andar junto */
+export function passoDoLetreiro(t: number) {
+  if (t < 5.3) return foco(t);
+  if (t < 6.4) return 3 + entraSaiCubica(trecho(t, 5.3, 5.85));
+  return 4 + entraSaiCubica(trecho(t, 6.4, 6.98));
+}
+
 /** O pouso de todos juntos no fecho, e a volta para longe no fim */
 const pouso = (t: number) => entraSaiCubica(trecho(t, 5.2, 6.05)) * (1 - entraSaiCubica(trecho(t, 6.2, 6.95)));
 
@@ -541,12 +550,7 @@ export function criarFases(palco: Palco): Coreografia {
     const entra = laco > 0 ? 1 : entraSaiSeno(trecho(t, 2.1, 2.55));
     const sai = 0;
     if (entra <= 0) return;
-    const u =
-      t < 5.3
-        ? foco(t)
-        : t < 6.4
-          ? 3 + entraSaiCubica(trecho(t, 5.3, 5.85))
-          : 4 + entraSaiCubica(trecho(t, 6.4, 6.98));
+    const u = passoDoLetreiro(t);
     const n = tx.passos.length;
     const passo = tp * 6.5;
     ctx.save();
@@ -610,6 +614,9 @@ export function criarFases(palco: Palco): Coreografia {
     desenharHorizonte(t, cam);
     desenharPotes(t, cam);
     palco.particulas(t, cam, true);
+    // O texto em HTML (TituloCinetico, 14/10/2026): o canvas fica só com a
+    // lua, os potes, a luz e a poeira
+    if (palco.roteiro.textoEmHtml) return;
     desenharRotulo(t, cam);
     desenharLinha3(t, cam);
     desenharLinha1(t, cam);

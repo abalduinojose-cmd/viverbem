@@ -15,17 +15,34 @@
 //     está aberta; fechada, diz quando volta;
 //   - o botão ocupa a largura toda no celular.
 //
+// Mesmo dia, segunda volta ("melhore o cartão do WhatsApp"): o cartão deixou
+// de ser um link só e ganhou função.
+//   - três assuntos prontos (fazer um pedido, enviar a receita, tirar uma
+//     dúvida): passar o mouse ou tocar troca a mensagem do balão, e cada um
+//     abre o WhatsApp já com a sua mensagem;
+//   - a foto do contato é a marca da farmácia, inteira e pequena dentro do
+//     círculo, como aparece no WhatsApp (o "Copiar" do número saiu no mesmo
+//     dia: "tire isso de copiar");
+//   - a prévia da conversa e o botão verde abrem com a mensagem escolhida.
+//
 // A animação roda pela Web Animations API, então aparece também com
 // "reduzir movimento" ligado, como o resto do site (o Windows do usuário
 // está com as animações desligadas). Roda uma vez só, ao entrar na tela.
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EstadoLoja } from "./HorarioAtendimento";
 import { IconeWhatsApp, SetaDireita } from "./icones";
 import { WHATSAPP_LOJA, WHATSAPP_NUMERO } from "@/lib/tipos";
+import { asset } from "@/lib/asset";
 
-const MENSAGEM = "Olá! Vim pelo site e gostaria de tirar uma dúvida.";
+const ASSUNTOS = [
+  { rotulo: "Fazer pedido", mensagem: "Olá! Vim pelo site e gostaria de fazer um pedido." },
+  { rotulo: "Enviar receita", mensagem: "Olá! Vim pelo site e gostaria de enviar a minha receita para orçamento." },
+  { rotulo: "Tirar dúvida", mensagem: "Olá! Vim pelo site e gostaria de tirar uma dúvida." },
+];
+// Começa no "tirar uma dúvida", a mensagem de antes
+const PADRAO = 2;
 const RESPOSTA = "Oi! Como podemos ajudar?";
-const LINK = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM)}`;
+const linkDe = (mensagem: string) => `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagem)}`;
 const MOLA = "cubic-bezier(0.34, 1.4, 0.64, 1)";
 
 function Vistos() {
@@ -38,8 +55,12 @@ function Vistos() {
 }
 
 export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja; className?: string }) {
-  const conversa = useRef<HTMLSpanElement>(null);
+  const conversa = useRef<HTMLAnchorElement>(null);
+  const texto = useRef<HTMLSpanElement>(null);
+  const [escolha, setEscolha] = useState(PADRAO);
   const aberto = estado?.aberto ?? false;
+  const mensagem = ASSUNTOS[escolha].mensagem;
+  const link = linkDe(mensagem);
 
   // A conversa acontece uma vez, quando o cartão aparece
   useEffect(() => {
@@ -118,15 +139,25 @@ export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja;
     };
   }, [aberto]);
 
+  // Trocar o assunto: o texto do balão some e volta já com a nova mensagem
+  const escolher = (i: number) => {
+    if (i === escolha) return;
+    setEscolha(i);
+    texto.current?.animate(
+      [
+        { opacity: 0, transform: "translateY(4px)" },
+        { opacity: 1, transform: "none" },
+      ],
+      { duration: 260, easing: "ease-out" }
+    );
+  };
+
   // Fechada, diz quando volta ("Abre amanhã às 9h")
   const status = estado ? (estado.aberto ? "online" : estado.detalhe.toLowerCase()) : "";
 
   return (
-    <a
-      href={LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`group relative h-full w-full flex flex-col text-left overflow-hidden rounded-[1.75rem] border border-fio bg-white shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:-translate-y-1 hover:border-[#25D366]/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] active:scale-[0.99] p-6 md:p-7 ${className}`}
+    <div
+      className={`group/cartao relative h-full w-full flex flex-col text-left overflow-hidden rounded-[1.75rem] border border-fio bg-white shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:border-[#25D366]/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] p-6 md:p-7 ${className}`}
     >
       {/* Um sopro do verde do WhatsApp no canto, para o cartão ter a cor dele */}
       <span
@@ -149,21 +180,28 @@ export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja;
         )}
       </span>
 
-      <span className="relative mt-5 block text-[1.75rem] md:text-[1.9rem] font-semibold text-navy tracking-[-0.035em] tabular-nums leading-none">
+      <span className="relative mt-4 block text-[1.75rem] md:text-[1.9rem] font-semibold text-navy tracking-[-0.035em] tabular-nums leading-none">
         {WHATSAPP_LOJA}
       </span>
-      <span className="relative mt-2 block text-sm text-cinza leading-snug">Dúvidas, pedidos e retirada.</span>
 
-      {/* A conversa, do jeito que ela aparece no celular */}
-      <span
+      {/* A conversa, do jeito que ela aparece no celular; abre o WhatsApp
+          com a mensagem do balão. (A linha "Dúvidas, pedidos e retirada"
+          saiu em 14/10/2026 junto com o rótulo dos assuntos: no computador o
+          cartão estava alto demais e esticava o da receita ao lado) */}
+      <a
         ref={conversa}
-        aria-hidden="true"
-        className="relative mt-5 block overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(16,42,74,0.5)]"
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Abrir o WhatsApp com a mensagem: ${mensagem}`}
+        className="relative mt-4 block overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(16,42,74,0.5)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-22px_rgba(16,42,74,0.55)]"
       >
         {/* A barra do contato */}
         <span className="flex items-center gap-2.5 bg-[#f0f2f5] px-3 py-2.5">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-[0.62rem] font-bold text-navy">
-            VB
+          {/* A marca inteira, pequena, no círculo branco */}
+          <span className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-black/10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={asset("/icone-512.png")} alt="" width={30} height={30} loading="lazy" decoding="async" className="size-[1.9rem] object-contain" />
           </span>
           <span className="min-w-0 leading-tight">
             <span className="block text-[0.85rem] font-semibold text-[#111b21]">Viver Bem</span>
@@ -178,7 +216,7 @@ export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja;
 
         {/* O fundo bege com a trama fina e os balões */}
         <span
-          className="flex flex-col gap-2 px-3 py-3.5"
+          className="flex flex-col gap-1.5 px-3 py-3"
           style={{
             backgroundColor: "#efeae2",
             backgroundImage: "radial-gradient(rgba(17,27,33,0.06) 1px, transparent 1.2px)",
@@ -189,42 +227,72 @@ export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja;
             data-enviada
             className="relative ml-auto block w-fit max-w-[30ch] rounded-xl rounded-tr-sm bg-[#d9fdd3] px-3 pt-2 pb-1.5 text-[0.88rem] leading-snug text-[#111b21] shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]"
           >
-            {MENSAGEM}
-            <span className="mt-0.5 flex items-center justify-end gap-1 text-[0.65rem] text-[#667781]">
+            <span ref={texto} className="block">
+              {mensagem}
+            </span>
+            <span className="mt-0.5 flex items-center justify-end gap-1 text-[0.6875rem] text-[#667781]">
               agora <Vistos />
             </span>
           </span>
 
           {aberto && (
-          <span className="relative h-9">
-            <span
-              data-digitando
-              className="absolute left-0 top-0 inline-flex items-center gap-1 rounded-xl rounded-tl-sm bg-white px-3 py-3 shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]"
-            >
-              {[0, 1, 2].map((i) => (
-                <span key={i} data-ponto className="block size-1.5 rounded-full bg-[#8696a0]" />
-              ))}
+            <span className="relative h-9">
+              <span
+                data-digitando
+                className="absolute left-0 top-0 inline-flex items-center gap-1 rounded-xl rounded-tl-sm bg-white px-3 py-3 shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]"
+              >
+                {[0, 1, 2].map((i) => (
+                  <span key={i} data-ponto className="block size-1.5 rounded-full bg-[#8696a0]" />
+                ))}
+              </span>
+              <span
+                data-resposta
+                className="absolute left-0 top-0 block w-fit max-w-[30ch] rounded-xl rounded-tl-sm bg-white px-3 py-2 text-[0.88rem] leading-snug text-[#111b21] shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]"
+              >
+                {RESPOSTA}
+              </span>
             </span>
-            <span
-              data-resposta
-              className="absolute left-0 top-0 block w-fit max-w-[30ch] rounded-xl rounded-tl-sm bg-white px-3 py-2 text-[0.88rem] leading-snug text-[#111b21] shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]"
-            >
-              {RESPOSTA}
-            </span>
-          </span>
           )}
+        </span>
+      </a>
+
+      {/* Os assuntos prontos: trocam a mensagem e cada um abre o WhatsApp com a sua */}
+      <span className="relative mt-3 block">
+        <span className="flex flex-wrap gap-2">
+          {ASSUNTOS.map((a, i) => (
+            <a
+              key={a.rotulo}
+              href={linkDe(a.mensagem)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => escolher(i)}
+              onFocus={() => escolher(i)}
+              onTouchStart={() => escolher(i)}
+              aria-label={`${a.rotulo} pelo WhatsApp`}
+              className={`inline-flex items-center h-9 rounded-full px-3 text-[0.78rem] font-semibold transition-colors ring-1 ring-inset ${
+                escolha === i ? "bg-[#d9fdd3] text-[#117a3c] ring-[#25D366]/45" : "bg-white text-navy ring-fio hover:bg-gelo"
+              }`}
+            >
+              {a.rotulo}
+            </a>
+          ))}
         </span>
       </span>
 
-      <span className="relative mt-auto pt-6 block">
-        <span className="flex w-full sm:w-auto sm:inline-flex items-center justify-center gap-2.5 h-[3.25rem] px-5 rounded-full bg-[#1DA851] text-white text-[0.98rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors group-hover:bg-[#178a43]">
+      <span className="relative mt-auto pt-5 block">
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group/botao flex w-full sm:w-auto sm:inline-flex items-center justify-center gap-2.5 h-[3.25rem] px-5 rounded-full bg-[#1DA851] text-white text-[0.98rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors hover:bg-[#178a43] active:scale-[0.99]"
+        >
           <IconeWhatsApp tamanho={19} />
           Chamar no WhatsApp
-          <span className="ml-1 flex size-7 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 group-hover:translate-x-1">
+          <span className="ml-1 flex size-7 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 group-hover/botao:translate-x-1">
             <SetaDireita tamanho={14} />
           </span>
-        </span>
+        </a>
       </span>
-    </a>
+    </div>
   );
 }

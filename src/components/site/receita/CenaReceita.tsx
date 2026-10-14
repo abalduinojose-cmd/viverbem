@@ -415,7 +415,10 @@ export function CenaReceita({ className = "" }: { className?: string }) {
     // celular gira e não pode encostar na borda do cartão)
     const ajustar = () => {
       const b = caixa.getBoundingClientRect();
-      const k = Math.min(b.width / LARGURA, b.height / ALTURA) * 0.92;
+      // 14/10/2026 ("a animação não está pegando todo o quadro no desktop"):
+      // a folga caiu de 8% para 2%, e a caixa dela ficou mais larga no
+      // cartão (ver CartaoReceita)
+      const k = Math.min(b.width / LARGURA, b.height / ALTURA) * 0.98;
       s(E.palco, `scale(${k > 0 ? k : 1})`);
     };
     ajustar();

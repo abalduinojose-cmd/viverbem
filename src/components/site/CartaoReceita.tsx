@@ -21,6 +21,7 @@
 // está com as animações desligadas.
 import { useEffect, useRef } from "react";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
+import { FONTES_PADRAO, JOGOS_DE_FONTES } from "./heroAnimado/fontes";
 import { SetaDireita } from "./icones";
 import { CenaReceita } from "./receita/CenaReceita";
 
@@ -39,8 +40,10 @@ const CICLO_BOTAO = 5200;
 
 // Curvas: saída longa e macia, saída com um passo além (mola) e entra-e-sai
 const SAIDA = "cubic-bezier(0.22, 1, 0.36, 1)";
-const MOLA = "cubic-bezier(0.34, 1.45, 0.64, 1)";
+const EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
 const ENTRA_SAI = "cubic-bezier(0.65, 0, 0.35, 1)";
+// A voz de display das animações (a mesma do "Saúde" e do "Especialistas")
+const FONTES = JOGOS_DE_FONTES[FONTES_PADRAO];
 
 export function CartaoReceita() {
   const palco = useRef<HTMLSpanElement>(null);
@@ -69,30 +72,32 @@ export function CartaoReceita() {
       ],
       { duration: 900, easing: SAIDA },
     );
-    // As letras brancas giram de deitadas para de pé, em 3D, uma depois da
-    // outra, saindo do desfoque
+    // As letras brancas sobem de trás de uma máscara, uma depois da outra,
+    // girando de leve e assentando (14/10/2026, "melhore as transições das
+    // fontes": antes giravam em 3D saindo de um desfoque; a mesma
+    // tipografia cinética do banner da Saúde da Mulher)
     todos<HTMLElement>("[data-letra]").forEach((l, i) => {
       entrar(
         l,
         [
-          { opacity: 0, transform: "translateY(55%) rotateX(-95deg) scale(0.9)", filter: "blur(6px)" },
-          { opacity: 1, offset: 0.4 },
-          { opacity: 1, transform: "none", filter: "blur(0px)" },
+          { opacity: 0, transform: "translateY(112%) rotate(6deg)" },
+          { opacity: 1, offset: 0.3 },
+          { opacity: 1, transform: "none" },
         ],
-        { duration: 1000, delay: 120 + i * 32, easing: MOLA },
+        { duration: 1100, delay: 120 + i * 42, easing: EXPO },
       );
     });
-    // As de ouro chegam inteiras, girando e ganhando foco, e depois um
-    // brilho corre por elas
+    // As de ouro sobem inteiras, logo atrás, e depois um brilho corre por
+    // elas
     todos<HTMLElement>("[data-ouro]").forEach((p, i) => {
       entrar(
         p,
         [
-          { opacity: 0, transform: "translateY(60%) rotateX(-80deg) skewX(-12deg)", filter: "blur(8px)" },
-          { opacity: 1, offset: 0.4 },
-          { opacity: 1, transform: "none", filter: "blur(0px)" },
+          { opacity: 0, transform: "translateY(110%)" },
+          { opacity: 1, offset: 0.35 },
+          { opacity: 1, transform: "none" },
         ],
-        { duration: 1100, delay: 520 + i * 110, easing: MOLA },
+        { duration: 1100, delay: 520 + i * 110, easing: EXPO },
       );
       entrar(
         p,
@@ -109,11 +114,10 @@ export function CartaoReceita() {
     entrar(
       um("[data-apoio]"),
       [
-        { opacity: 0, transform: "translateY(14px)", filter: "blur(8px)", clipPath: "inset(0 100% 0 0)" },
-        { opacity: 1, offset: 0.3 },
-        { opacity: 1, transform: "none", filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" },
+        { opacity: 0, transform: "translateY(12px)" },
+        { opacity: 1, transform: "none" },
       ],
-      { duration: 1100, delay: 800, easing: SAIDA },
+      { duration: 900, delay: 820, easing: EXPO },
     );
     // O botão chega com uma mola curta
     entrar(
@@ -226,23 +230,26 @@ export function CartaoReceita() {
         aria-hidden="true"
         className="pointer-events-none absolute -right-16 -top-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.3),transparent_62%)]"
       />
-      {/* A cena 3D: no celular em cima, larga; do tablet para cima à direita */}
-      <CenaReceita className="inset-x-0 top-[3.25rem] h-[15rem] md:inset-x-auto md:right-0 md:top-0 md:bottom-0 md:h-auto md:w-[48%] lg:w-[46%] xl:w-[45%]" />
+      {/* A cena 3D: no celular em cima, larga; do tablet para cima à direita,
+          em mais da metade do cartão (14/10/2026, "aproveite a tela toda na
+          versão desktop"; era 48/46/45%) */}
+      <CenaReceita className="inset-x-0 top-[3.25rem] h-[15rem] md:inset-x-auto md:right-0 md:top-0 md:bottom-0 md:h-auto md:w-[54%] lg:w-[56%] xl:w-[55%]" />
 
       <span data-rotulo="" className="relative rotulo-pilula">
         receita
       </span>
-      <span className="relative mt-auto pt-[15.25rem] md:pt-10 block max-w-[26rem] md:max-w-[22rem] lg:max-w-[16.5rem] xl:max-w-[21.5rem]">
+      {/* A coluna do texto para antes da cena (que agora ocupa 55% do
+          cartão): no xl o teto caiu de 21,5 para 17rem */}
+      <span className="relative mt-auto pt-[15.25rem] md:pt-8 block max-w-[26rem] md:max-w-[20rem] lg:max-w-[16.5rem] xl:max-w-[17rem]">
         <span className="titulo-banner block text-[1.7rem] md:text-[2.1rem] font-semibold leading-[1.04] tracking-[-0.035em] text-balance">
           <span className="sr-only">Enviar a foto da receita</span>
           {/* As letras e palavras animadas (os leitores de tela leem a frase acima) */}
           <span aria-hidden="true" className="relative">
             {TITULO.map((p, i) => (
               <span key={p.texto}>
-                <span
-                  className="relative inline-block align-top pt-[0.06em] -mt-[0.06em] pb-[0.16em] -mb-[0.16em] pr-[0.06em] -mr-[0.06em]"
-                  style={{ perspective: "500px" }}
-                >
+                {/* Cada palavra é a máscara das próprias letras (a folga em
+                    cima guarda o acento; a de baixo, o traço de ouro) */}
+                <span className="relative inline-block overflow-hidden align-top pt-[0.12em] -mt-[0.12em] pb-[0.18em] -mb-[0.18em] pr-[0.06em] -mr-[0.06em]">
                   {p.ouro ? (
                     <span
                       data-ouro=""
@@ -262,7 +269,12 @@ export function CartaoReceita() {
                     </span>
                   ) : (
                     Array.from(p.texto).map((c, k) => (
-                      <span key={k} data-letra="" className="inline-block" style={{ transformOrigin: "50% 100%" }}>
+                      <span
+                        key={k}
+                        data-letra=""
+                        className="inline-block origin-bottom-left tracking-[-0.04em]"
+                        style={{ fontFamily: FONTES.display, fontWeight: FONTES.pesoDisplay }}
+                      >
                         {c}
                       </span>
                     ))
@@ -301,9 +313,10 @@ export function CartaoReceita() {
             ))}
           </span>
         </span>
+        {/* Mais curto desde 14/10/2026 (o cartão estava alto demais no
+            computador); o código do pedido aparece no próprio formulário */}
         <span data-apoio="" className="block mt-3 text-white/70 text-[0.95rem] leading-snug">
-          Abre o seu pedido com um código. A foto vai pela conversa do WhatsApp; o farmacêutico
-          confere e passa o valor.
+          A foto vai pelo WhatsApp. O farmacêutico confere e passa o valor.
         </span>
       </span>
       <span data-cta="" className="relative mt-7 self-start">

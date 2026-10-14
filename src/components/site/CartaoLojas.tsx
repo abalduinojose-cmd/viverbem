@@ -1,38 +1,100 @@
 "use client";
 // As 3 lojas em "Fale com a gente" (14/10/2026, "modernize", com o cartão
 // selecionado). A lista segue a mesma (o pino, o bairro, o endereço e
-// "Como chegar", que abre o Google Maps); o que chegou foi um mapa
-// desenhado: um trajeto de ouro que liga Centro, Corrêas e Posse, como a
-// cidade sobe a serra. É ilustração, não mapa de verdade: o caminho real
-// fica no link de cada loja.
+// "Como chegar", que abre o Google Maps); em cima dela, um mapa.
 //
-//   - quando o cartão entra na tela, o trajeto se desenha e os três pinos
-//     caem um depois do outro (uma vez só);
-//   - passar o mouse ou o foco numa loja acende o pino dela no mapa, com
-//     um anel que pulsa;
-//   - "Retirada grátis" e o Delivery saíram da nota no pé e viraram duas
-//     pílulas embaixo do mapa.
+// O mapa passou por três versões no mesmo dia. Primeiro um trajeto de ouro
+// desenhado; depois o desenho com ruas, rio e setas ("coloque o mapa mais
+// real com as setas"); por fim, o pedido "não tá bom, quero mais simples,
+// mas com os pontos e o mapa real". Agora é o mapa de verdade (OpenStreetMap)
+// com só os três pontos:
 //
-// Roda pela Web Animations API, então aparece também com "reduzir
-// movimento" ligado, como o resto do site.
+//   - o enquadramento se ajusta ao tamanho da caixa: escolhe o maior zoom
+//     em que as três lojas cabem, com folga para os pinos;
+//   - as peças do mapa vêm do OpenStreetMap (com o crédito no canto, como a
+//     licença pede), um pouco desbotadas para o azul da marca aparecer;
+//   - quando o cartão entra na tela, os pinos caem um depois do outro;
+//     passar o mouse ou o foco numa loja da lista acende o pino dela, com
+//     um anel que pulsa; tocar num pino abre o Google Maps da loja.
+//
+// As animações rodam pela Web Animations API, então aparecem também com
+// "reduzir movimento" ligado, como o resto do site.
 import { useEffect, useRef, useState } from "react";
 import { UNIDADES, linkMapaUnidade } from "@/lib/tipos";
 
-// O trajeto, no viewBox 320 x 120: cada loja é a ponta de um trecho, então
-// o pino cai exatamente sobre a linha
-const PINOS = [
-  { x: 64, y: 84, rotulo: { x: 64, y: 106, ancora: "middle" } },
-  { x: 170, y: 62, rotulo: { x: 170, y: 84, ancora: "middle" } },
-  { x: 276, y: 34, rotulo: { x: 276, y: 58, ancora: "middle" } },
-] as const;
-const TRAJETO = "M14 98 C34 94 48 88 64 84 C102 74 128 52 170 62 C212 72 236 44 276 34 C290 31 300 28 308 26";
+// Onde fica cada loja (latitude, longitude), pelo bairro de UNIDADES
+const COORDENADAS: Record<string, [number, number]> = {
+  Centro: [-22.5092, -43.1772],
+  "Corrêas": [-22.4454, -43.1354],
+  Posse: [-22.2521, -43.0737],
+};
+// De que lado do pino vai o nome: Centro e Corrêas ficam perto um do
+// outro no mapa, então os nomes vão para lados opostos
+const LADO_DO_NOME: Record<string, "esquerda" | "direita"> = {
+  Centro: "esquerda",
+  "Corrêas": "direita",
+  Posse: "direita",
+};
+const PECA = 256;
 const MOLA = "cubic-bezier(0.34, 1.5, 0.64, 1)";
-// Curvas de nível em volta de um morro no alto à direita (a serra), no
-// viewBox 100 x 100 esticado na caixa
-const CURVAS_DE_NIVEL = [0, 1, 2, 3, 4, 5, 6].map((k) => {
-  const r = 12 + k * 13;
-  return `M${100 - r * 1.25} -2 C${100 - r * 1.2} ${r * 0.5} ${100 - r * 0.55} ${r * 1.05} ${102} ${r * 0.95 + 4}`;
-});
+
+/** Latitude e longitude para pixels do mundo no zoom z (Web Mercator) */
+function projetar(lat: number, lon: number, z: number) {
+  const n = PECA * 2 ** z;
+  const rad = (lat * Math.PI) / 180;
+  return {
+    x: ((lon + 180) / 360) * n,
+    y: ((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * n,
+  };
+}
+
+type Quadro = {
+  pecas: { chave: string; src: string; x: number; y: number }[];
+  pinos: { x: number; y: number }[];
+};
+
+/** O enquadramento: o maior zoom em que os três pontos cabem na caixa */
+function enquadrar(largura: number, altura: number): Quadro | null {
+  if (largura < 10 || altura < 10) return null;
+  const pontos = UNIDADES.map((u) => COORDENADAS[u.bairro]).filter(Boolean);
+  // Folga: dos lados 80px (o nome ao lado do pino), em cima 44 (o pino),
+  // embaixo 24
+  const livreX = largura - 160;
+  const livreY = altura - 68;
+  const caixaDe = (z: number) => {
+    const ps = pontos.map(([la, lo]) => projetar(la, lo, z));
+    const xs = ps.map((p) => p.x);
+    const ys = ps.map((p) => p.y);
+    return { ps, x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+  };
+  let z = 14;
+  while (z > 8) {
+    const c = caixaDe(z);
+    if (c.x1 - c.x0 <= livreX && c.y1 - c.y0 <= livreY) break;
+    z--;
+  }
+  const c = caixaDe(z);
+  const cx = (c.x0 + c.x1) / 2;
+  // O centro sobe a metade da diferença entre a folga de cima e a de baixo
+  const cy = (c.y0 + c.y1) / 2 - 10;
+  const ox = cx - largura / 2;
+  const oy = cy - altura / 2;
+  const pecas: Quadro["pecas"] = [];
+  const max = 2 ** z;
+  for (let tx = Math.floor(ox / PECA); tx <= Math.floor((ox + largura) / PECA); tx++) {
+    for (let ty = Math.floor(oy / PECA); ty <= Math.floor((oy + altura) / PECA); ty++) {
+      if (ty < 0 || ty >= max) continue;
+      const x = ((tx % max) + max) % max;
+      pecas.push({
+        chave: `${z}/${x}/${ty}`,
+        src: `https://tile.openstreetmap.org/${z}/${x}/${ty}.png`,
+        x: tx * PECA - ox,
+        y: ty * PECA - oy,
+      });
+    }
+  }
+  return { pecas, pinos: c.ps.map((p) => ({ x: p.x - ox, y: p.y - oy })) };
+}
 
 function IconePino() {
   return (
@@ -60,78 +122,69 @@ function IconeConfere() {
 }
 
 export function CartaoLojas({ className = "" }: { className?: string }) {
-  const mapa = useRef<SVGSVGElement>(null);
+  const caixa = useRef<HTMLDivElement>(null);
+  const [quadro, setQuadro] = useState<Quadro | null>(null);
   const [ativa, setAtiva] = useState<number | null>(null);
+  const [visto, setVisto] = useState(false);
 
-  // O trajeto se desenha e os pinos caem, uma vez, quando o mapa aparece
+  // O enquadramento acompanha o tamanho da caixa
   useEffect(() => {
-    const svg = mapa.current;
-    if (!svg) return;
-    const linha = svg.querySelector<SVGPathElement>("[data-trajeto]");
-    const pinos = svg.querySelectorAll<SVGGElement>("[data-pino]");
-    const rotulos = svg.querySelectorAll<SVGTextElement>("[data-rotulo]");
-    if (!linha) return;
-    const comprimento = linha.getTotalLength();
-    const animacoes: Animation[] = [];
-
-    linha.style.strokeDasharray = `${comprimento}`;
-    linha.style.strokeDashoffset = `${comprimento}`;
-    pinos.forEach((p) => (p.style.opacity = "0"));
-    rotulos.forEach((r) => (r.style.opacity = "0"));
-
-    const tocar = () => {
-      animacoes.push(
-        linha.animate([{ strokeDashoffset: comprimento }, { strokeDashoffset: 0 }], {
-          duration: 1300,
-          easing: "cubic-bezier(0.45, 0, 0.2, 1)",
-          fill: "both",
-        })
-      );
-      pinos.forEach((p, i) => {
-        // Cada pino cai quando a linha passa por ele
-        const atraso = 260 + i * 420;
-        animacoes.push(
-          p.animate(
-            [
-              { opacity: 0, transform: "translateY(-14px) scale(0.6)" },
-              { opacity: 1, transform: "none" },
-            ],
-            { duration: 520, delay: atraso, easing: MOLA, fill: "both" }
-          )
-        );
-        const r = rotulos[i];
-        if (r)
-          animacoes.push(
-            r.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: atraso + 220, easing: "ease-out", fill: "both" })
-          );
-      });
+    const el = caixa.current;
+    if (!el) return;
+    const medir = () => {
+      const r = el.getBoundingClientRect();
+      setQuadro(enquadrar(Math.round(r.width), Math.round(r.height)));
     };
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(el);
+    return () => observador.disconnect();
+  }, []);
 
+  // As peças do mapa só descem quando o cartão chega perto da tela
+  useEffect(() => {
+    const el = caixa.current;
+    if (!el) return;
     const observador = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         observador.disconnect();
-        tocar();
+        setVisto(true);
       },
-      { threshold: 0.5 }
+      { rootMargin: "200px 0px" }
     );
-    observador.observe(svg);
-    return () => {
-      observador.disconnect();
-      animacoes.forEach((a) => a.cancel());
-    };
+    observador.observe(el);
+    return () => observador.disconnect();
   }, []);
 
+  // Os pinos caem, um depois do outro, na primeira vez que o mapa aparece
+  const caiu = useRef(false);
+  useEffect(() => {
+    if (!visto || !quadro || caiu.current) return;
+    const el = caixa.current;
+    if (!el) return;
+    caiu.current = true;
+    el.querySelectorAll<HTMLElement>("[data-pino]").forEach((p, i) =>
+      p.animate(
+        [
+          { opacity: 0, transform: "translate(-50%, calc(-100% - 16px)) scale(0.6)" },
+          { opacity: 1, transform: "translate(-50%, -100%)" },
+        ],
+        { duration: 560, delay: 250 + i * 260, easing: MOLA, fill: "backwards" }
+      )
+    );
+  }, [visto, quadro]);
+
   // O anel do pino da loja em destaque pulsa (só enquanto houver uma)
-  const aneis = useRef<(SVGCircleElement | null)[]>([]);
+  const aneis = useRef<(HTMLSpanElement | null)[]>([]);
   useEffect(() => {
     if (ativa === null) return;
     const anel = aneis.current[ativa];
     if (!anel) return;
     const pulso = anel.animate(
       [
-        { opacity: 0.55, transform: "scale(1)" },
-        { opacity: 0, transform: "scale(2.6)" },
+        { opacity: 0.6, transform: "translate(-50%, -50%) scale(1)" },
+        { opacity: 0, transform: "translate(-50%, -50%) scale(2.6)" },
       ],
       { duration: 1400, iterations: Infinity, easing: "cubic-bezier(0.2, 0.6, 0.35, 1)" }
     );
@@ -145,84 +198,96 @@ export function CartaoLojas({ className = "" }: { className?: string }) {
       <span className="rotulo-pilula">{UNIDADES.length} lojas em Petrópolis</span>
 
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 lg:gap-7 flex-1">
-        {/* O mapa desenhado */}
+        {/* O mapa de verdade, com os três pontos */}
         <div className="flex flex-col gap-3">
           <div
-            className="relative overflow-hidden rounded-2xl bg-gelo ring-1 ring-inset ring-fio/70 flex-1 flex items-center"
-            style={{
-              backgroundImage: "radial-gradient(rgba(16,42,74,0.09) 1px, transparent 1.2px)",
-              backgroundSize: "14px 14px",
-            }}
+            ref={caixa}
+            className="relative overflow-hidden rounded-2xl bg-[#eef0ec] ring-1 ring-inset ring-fio/70 h-60 lg:h-auto lg:flex-1 lg:min-h-60"
           >
-            {/* Um sopro de ouro onde fica o Centro e de azul no alto da serra */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-10 -bottom-12 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.28),transparent_65%)]"
-            />
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -top-14 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(28,105,181,0.14),transparent_65%)]"
-            />
-            {/* As curvas de nível da serra, esticadas na caixa inteira: no
-                computador o mapa é mais alto que o desenho e o fundo não
-                fica vazio */}
-            <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full">
-              {CURVAS_DE_NIVEL.map((d, i) => (
-                <path key={i} d={d} fill="none" stroke="rgba(16,42,74,0.075)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-              ))}
-            </svg>
-            <svg ref={mapa} viewBox="0 0 320 120" className="relative block w-full h-auto" aria-hidden="true">
-              <defs>
-                <linearGradient id="lojas-ouro" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stopColor="#b48f55" />
-                  <stop offset="0.5" stopColor="#d9bd84" />
-                  <stop offset="1" stopColor="#b48f55" />
-                </linearGradient>
-              </defs>
-              {/* A estrada por baixo, larga e clara, e o trajeto de ouro por cima */}
-              <path d={TRAJETO} fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" />
-              <path data-trajeto d={TRAJETO} fill="none" stroke="url(#lojas-ouro)" strokeWidth="2.2" strokeLinecap="round" />
-              {PINOS.map((p, i) => {
-                const acesa = ativa === i;
-                return (
-                  <g key={i} transform={`translate(${p.x} ${p.y})`}>
-                    <circle
-                      ref={(el) => {
-                        aneis.current[i] = el;
-                      }}
-                      cy="-13.6"
-                      r="9"
-                      fill="none"
-                      stroke="#1c69b5"
-                      strokeWidth="1.5"
-                      opacity="0"
-                      style={{ transformBox: "fill-box", transformOrigin: "center" }}
-                    />
-                    <g data-pino style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}>
-                      {/* O pino: gota em azul (ou azul-noite quando acesa) com o miolo branco */}
+            {/* As peças do mapa, um pouco desbotadas */}
+            <div aria-hidden="true" className="absolute inset-0 [filter:saturate(0.55)_contrast(0.96)_brightness(1.04)]">
+              {visto &&
+                quadro?.pecas.map((p) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={p.chave}
+                    src={p.src}
+                    alt=""
+                    width={PECA}
+                    height={PECA}
+                    decoding="async"
+                    draggable={false}
+                    className="absolute max-w-none select-none"
+                    style={{ left: p.x, top: p.y, width: PECA, height: PECA }}
+                  />
+                ))}
+            </div>
+            {/* Um véu leve de azul, para o mapa conversar com o site */}
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#1c69b5]/[0.04]" />
+
+            {/* Os pontos: cada um abre o Google Maps da loja */}
+            {quadro?.pinos.map((p, i) => {
+              const u = UNIDADES[i];
+              if (!u) return null;
+              const acesa = ativa === i;
+              return (
+                <a
+                  key={u.bairro}
+                  href={linkMapaUnidade(u.bairro, u.endereco)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  onMouseEnter={() => setAtiva(i)}
+                  onMouseLeave={() => setAtiva(null)}
+                  className="absolute"
+                  style={{ left: p.x, top: p.y, zIndex: acesa ? 3 : 2 }}
+                >
+                  {/* O anel que pulsa no chão do pino */}
+                  <span
+                    ref={(el) => {
+                      aneis.current[i] = el;
+                    }}
+                    className="pointer-events-none absolute left-0 top-0 size-5 rounded-full border-2 border-tinta opacity-0"
+                    style={{ transform: "translate(-50%, -50%)" }}
+                  />
+                  <span
+                    data-pino
+                    className="absolute left-0 top-0 block"
+                    style={{ transform: "translate(-50%, -100%)", opacity: visto ? 1 : 0 }}
+                  >
+                    {/* O nome numa pílula branca, ao lado da cabeça do pino */}
+                    <span
+                      className={`absolute top-[3px] whitespace-nowrap rounded-full px-2 py-0.5 text-[0.6875rem] font-bold shadow-[0_4px_10px_-4px_rgba(13,35,64,0.45)] transition-colors ${
+                        LADO_DO_NOME[u.bairro] === "esquerda" ? "right-full mr-1" : "left-full ml-1"
+                      } ${acesa ? "bg-navy text-white" : "bg-white text-navy"}`}
+                    >
+                      {u.bairro}
+                    </span>
+                    <svg width="24" height="30" viewBox="0 0 24 30" aria-hidden="true" className="block drop-shadow-[0_3px_3px_rgba(13,35,64,0.35)]">
                       <path
-                        d="M0 0c-5.2-5.6-8.4-9.4-8.4-13.6a8.4 8.4 0 1 1 16.8 0c0 4.2-3.2 8-8.4 13.6Z"
+                        d="M12 29c-6.2-7-10.4-12-10.4-17.2a10.4 10.4 0 1 1 20.8 0C22.4 17 18.2 22 12 29Z"
                         fill={acesa ? "#0d2340" : "#1c69b5"}
+                        stroke="#ffffff"
+                        strokeWidth="1.6"
                         style={{ transition: "fill 0.25s" }}
                       />
-                      <circle cy="-13.6" r="3" fill="#ffffff" />
-                    </g>
-                    <text
-                      data-rotulo
-                      x={p.rotulo.x - p.x}
-                      y={p.rotulo.y - p.y}
-                      textAnchor={p.rotulo.ancora}
-                      fontSize="10"
-                      fontWeight={acesa ? 700 : 600}
-                      fill="#0d2340"
-                      letterSpacing="0.02em"
-                    >
-                      {UNIDADES[i]?.bairro}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
+                      <circle cx="12" cy="11.8" r="3.8" fill="#ffffff" />
+                    </svg>
+                  </span>
+                </a>
+              );
+            })}
+
+            {/* O crédito que a licença do mapa pede */}
+            <a
+              href="https://www.openstreetmap.org/copyright"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-1 right-1.5 z-[4] rounded bg-white/85 px-1.5 py-0.5 text-[0.625rem] leading-none text-cinza hover:text-navy"
+            >
+              © OpenStreetMap
+            </a>
           </div>
 
           <div className="flex flex-wrap gap-2">

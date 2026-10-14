@@ -108,8 +108,20 @@ function tempoNaVolta({ x, y, m }: Curva, t: number) {
   );
 }
 
-export function CenaAnimada({ roteiro: nome }: { roteiro: NomeRoteiro }) {
+export function CenaAnimada({
+  roteiro: nome,
+  aoQuadro,
+}: {
+  roteiro: NomeRoteiro;
+  /** Recebe o tempo da coreografia de cada quadro desenhado (com as voltas:
+   *  7 a 14 é a segunda), para o que fica fora do canvas andar junto */
+  aoQuadro?: (t: number) => void;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const aoQuadroRef = useRef(aoQuadro);
+  useEffect(() => {
+    aoQuadroRef.current = aoQuadro;
+  }, [aoQuadro]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -163,7 +175,9 @@ export function CenaAnimada({ roteiro: nome }: { roteiro: NomeRoteiro }) {
         if (pulaEste) return;
       }
       const antes = performance.now();
-      cena.desenhar(congelado !== null ? Number(congelado) : tempoDaCoreografia(roteiro, (agora - inicio) / 1000));
+      const t = congelado !== null ? Number(congelado) : tempoDaCoreografia(roteiro, (agora - inicio) / 1000);
+      cena.desenhar(t);
+      aoQuadroRef.current?.(t);
       custoMedio += (performance.now() - antes - custoMedio) * 0.1;
     };
     const tocar = () => {

@@ -1,5 +1,69 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 72 (14/10/2026): título cinético da Saúde da Mulher em HTML vetorial, mapa real das lojas, WhatsApp com assuntos, catálogo sem a barra repetida, receita no quadro inteiro e "ver mais" clean. IMPLEMENTADO, testado e publicado (29º push).**
+> Pedidos, na ordem: "o mapa está bom, mantenha a ideia mas coloque o mapa
+> mais real com as setas" e depois "não tá bom, quero mais simples, mas
+> com os pontos e o mapa real"; "melhore o cartão do WhatsApp", "melhore a
+> logo, quero ela menor e bem enquadrada, tire isso de copiar"; "não gostei
+> do CatalogoClient, volte como estava antes" (resposta: tirar a barra
+> repetida); "corrija todos os erros, quero tudo que é clicável
+> funcionando"; "a cena animada não está boa, quero letra cinética,
+> movimentos suaves e uma animação em JavaScript de alta qualidade... a
+> fonte em alta qualidade também, vetorizada"; "essa animação não tá
+> pegando todo o quadro no desktop, melhore as fontes e transições das
+> fontes e botões, aproveite a tela toda, no desktop está muito grande o
+> comprimento"; "melhore todos esses links (ver mais), quero algo mais
+> clean".
+>
+> - **Saúde da Mulher** (`heroAnimado/TituloCinetico.tsx`, `roteiros.ts`
+>   com `textoEmHtml`, `cena.ts`, `fases.ts` exporta `passoDoLetreiro`,
+>   `HeroAnimado.tsx` com `aoQuadro`): o texto saiu do canvas e virou HTML
+>   nas fontes do site (vetor, nítido em qualquer tela); o canvas ficou só
+>   com a lua, os potes, a luz e a poeira. Coreografia em Web Animations com
+>   curvas expo/quint: a cápsula do rótulo se abre do ponto de ouro;
+>   "Saúde" sobe letra a letra de trás de uma máscara, girando de leve;
+>   "em cada fase da" sobe palavra a palavra; "mulher" se revela da
+>   esquerda para a direita e uma luz corre pelo ouro (de novo a cada
+>   pouso dos potes); o letreiro dos passos é um rolo vertical que lê o
+>   tempo da cena a cada quadro e anda junto com o pote em destaque. Entra
+>   uma vez e fica. Medido no computador e no celular: o letreiro entra aos
+>   2,1 s da coreografia e o fio de ouro enche até o 4º passo.
+> - **Lojas** (`CartaoLojas.tsx`): mapa de verdade do OpenStreetMap (peças
+>   256px, zoom escolhido para as três lojas caberem na caixa, crédito no
+>   canto como a licença pede, desbotado com um véu azul da marca) com os
+>   três pinos e o nome ao lado (Centro à esquerda, os outros à direita);
+>   os pinos caem um a um ao aparecer; passar o mouse na lista acende o
+>   pino com anel pulsando; cada pino abre o Google Maps da loja.
+>   Coordenadas: Centro -22,5092/-43,1772; Corrêas -22,4454/-43,1354; Posse
+>   -22,2521/-43,0737. As duas versões desenhadas do mesmo dia (trajeto de
+>   ouro; ruas, rio e setas) foram descartadas.
+> - **WhatsApp** (`CartaoWhatsApp.tsx`): três assuntos prontos (Fazer
+>   pedido, Enviar receita, Tirar dúvida) que trocam a mensagem do balão e
+>   abrem o WhatsApp com ela; a conversa e o botão também abrem; a foto do
+>   contato é a marca inteira no círculo; o "Copiar" do número e a linha
+>   "Dúvidas, pedidos e retirada" saíram; mais compacto no computador (o
+>   cartão esticava o da receita: de 538 para 460px).
+> - **Catálogo** (`CatalogoClient.tsx`): saiu a barra presa com busca +
+>   áreas (repetia o cabeçalho). A busca chega pelo cabeçalho (?busca=) e o
+>   resultado ganhou "Limpar busca". Sem `useState`.
+> - **Receita** (`CartaoReceita.tsx`, `receita/CenaReceita.tsx`): a cena
+>   ocupa 54 a 56% do cartão (era 45 a 48%) com 2% de folga (era 8%): no
+>   computador o palco passou de 286 para 372px de largura; o texto para a
+>   17rem no xl, com 19px de folga até a cena; apoio mais curto; as letras
+>   brancas em Bricolage 800 sobem de trás da máscara (expo) em vez de girar
+>   em 3D saindo do desfoque; o apoio entra sem desfoque.
+> - **"Ver mais"** (`BotaoVerMais.tsx`): só o texto com a seta em ouro
+>   escuro; no hover um fio de ouro cresce embaixo e a seta dá um passo.
+>   Vale para vitrines, catálogo, Saúde da Mulher e página do produto.
+> - **Auditoria do clicável** (scratchpad `auditoria.cjs` e
+>   `cliques.cjs`): 45 páginas, 44 links internos (todos 200), 4 destinos
+>   externos (wa.me com número, Google Maps, Instagram, avaliar no Google),
+>   422 botões clicados no computador e no celular. Os 10 apontados "sem
+>   ação" eram falsos positivos: setas do carrossel rolam a faixa (sem
+>   mudança no DOM), a loja clicada já era a ativa, "Dúvida" já é o assunto
+>   padrão e o envio do contato é um formulário com campos obrigatórios
+>   (preenchido, abre wa.me com a mensagem montada, testado).
+>
 > **ADENDO 71 (14/10/2026): Saúde da Mulher sem cartão vazio e lojas com mapa desenhado. IMPLEMENTADO, não publicado.**
 > Pedidos: "na versão mobile melhore essa animação, está um espaço vazio,
 > tire isso e melhore a animação e a entrada das fontes" e "modernize" (o
