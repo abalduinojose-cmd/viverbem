@@ -107,7 +107,13 @@ export function CartaoAdmin({
 
 /** Número de destaque dos resumos. O valor conta de zero quando aparece;
  *  o ícone fica no canto, pequeno; a variante "noite" é o número que manda
- *  na tela, em azul-noite com a luz da marca. */
+ *  na tela, em azul-noite com a luz da marca.
+ *
+ *  14/10/2026, 2ª volta ("modernize, mas mantenha clean e de fácil
+ *  visualização"): o cartão virou três andares, o ícone com o rótulo no
+ *  alto, o número com a explicação no meio e o mini-gráfico num rodapé de
+ *  largura inteira. Antes a faísca ficava ao lado do texto de apoio e, nas
+ *  colunas estreitas do celular, o texto quebrava palavra por palavra. */
 export function CartaoNumero({
   rotulo,
   valor,
@@ -125,7 +131,7 @@ export function CartaoNumero({
   extra?: React.ReactNode;
   /** O desenho do ícone (os <path> de 24x24 de ICONES) */
   icone?: React.ReactNode;
-  /** Um mini-gráfico embaixo, à direita do apoio (Faisca, Anel) */
+  /** Um mini-gráfico no rodapé do cartão, na largura toda (Faisca, Anel) */
   visual?: React.ReactNode;
 }) {
   const noite = tom === "noite";
@@ -139,35 +145,37 @@ export function CartaoNumero({
   }[tom];
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.5rem] px-5 py-5 transition duration-300 hover:-translate-y-0.5 ${
+      className={`relative overflow-hidden rounded-[1.5rem] px-5 pt-4 pb-5 flex flex-col transition duration-300 hover:-translate-y-0.5 ${
         noite
           ? "banner-noite em-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)]"
           : "bg-white ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:ring-tinta/30 hover:shadow-[0_24px_44px_-30px_rgba(16,42,74,0.45)]"
       }`}
     >
       {noite && <span aria-hidden="true" className="malha-banner" />}
-      <div className="relative flex items-start justify-between gap-2">
-        <p className={`text-[0.6875rem] font-semibold tracking-[0.14em] uppercase leading-tight ${noite ? "text-white/60" : "text-cinza"}`}>{rotulo}</p>
-        <span className="flex items-center gap-2">
-          {extra}
+
+      {/* 1º andar: o ícone com o rótulo; a variação à direita */}
+      <div className="relative flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2.5 min-w-0">
           {icone && (
-            <span className={`flex size-8 items-center justify-center rounded-xl ${noite ? "bg-white/10 text-[#e1c68f]" : "bg-gelo text-tinta"}`}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <span className={`flex size-8 shrink-0 items-center justify-center rounded-xl ${noite ? "bg-white/10 text-[#e1c68f]" : "bg-gelo text-tinta"}`}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 {icone}
               </svg>
             </span>
           )}
+          <span className={`text-[0.6875rem] font-semibold tracking-[0.14em] uppercase leading-[1.25] text-balance ${noite ? "text-white/65" : "text-cinza"}`}>{rotulo}</span>
         </span>
+        {extra && <span className="shrink-0">{extra}</span>}
       </div>
-      <p className={`relative text-[2rem] md:text-[2.5rem] font-semibold tracking-[-0.04em] leading-none mt-4 tabular-nums ${cor}`}>
+
+      {/* 2º andar: o número e a explicação */}
+      <p className={`relative text-[2.1rem] md:text-[2.5rem] font-semibold tracking-[-0.04em] leading-none mt-4 tabular-nums ${cor}`}>
         <NumeroAnimado texto={String(valor)} />
       </p>
-      {(apoio || visual) && (
-        <div className="relative mt-2.5 flex items-end justify-between gap-3">
-          {apoio && <p className={`text-xs leading-snug ${noite ? "text-white/55" : "text-grafite-claro"}`}>{apoio}</p>}
-          {visual && <span className={`shrink-0 ${noite ? "text-white" : "text-navy"}`}>{visual}</span>}
-        </div>
-      )}
+      {apoio && <p className={`relative mt-2 text-xs leading-snug ${noite ? "text-white/60" : "text-grafite-claro"}`}>{apoio}</p>}
+
+      {/* 3º andar: o mini-gráfico, na largura toda */}
+      {visual && <div className={`relative mt-4 w-full ${noite ? "text-white" : "text-navy"}`}>{visual}</div>}
     </div>
   );
 }
@@ -279,6 +287,7 @@ export function Interruptor({
   desabilitado = false,
   cor = "tinta",
   descricao,
+  compacto = false,
 }: {
   ligado: boolean;
   rotulo: string;
@@ -287,6 +296,9 @@ export function Interruptor({
   cor?: "tinta" | "verde" | "ouro";
   /** Texto menor embaixo do rótulo */
   descricao?: string;
+  /** Só a chave; o rótulo fica para o leitor de tela (listas com o
+   *  cabeçalho da coluna dizendo o que a chave faz) */
+  compacto?: boolean;
 }) {
   const fundo = {
     tinta: "bg-tinta",
@@ -301,7 +313,8 @@ export function Interruptor({
       aria-checked={ligado}
       onClick={aoAlternar}
       disabled={desabilitado}
-      className="group flex items-center gap-2.5 min-h-10 py-1.5 text-left disabled:opacity-50 transition-opacity"
+      title={compacto ? rotulo : undefined}
+      className={`group flex items-center gap-2.5 text-left disabled:opacity-50 transition-opacity ${compacto ? "min-h-8 py-1" : "min-h-10 py-1.5"}`}
     >
       <span
         className={`relative w-10 h-6 rounded-full shrink-0 transition-colors ${
@@ -314,7 +327,7 @@ export function Interruptor({
           }`}
         />
       </span>
-      <span className="min-w-0">
+      <span className={compacto ? "sr-only" : "min-w-0"}>
         <span className={`block text-sm font-medium leading-tight ${ligado ? "text-navy" : "text-cinza"}`}>
           {rotulo}
         </span>

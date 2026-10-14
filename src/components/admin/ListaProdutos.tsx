@@ -162,6 +162,7 @@ export function ListaProdutos({
 
   // ---------- Drag-and-drop (gestor, sem filtros) ----------
   const podeArrastar = ehGestor && !filtrando;
+  const [colunas, colunasMd] = podeArrastar ? COLUNAS.comAlca : COLUNAS.semAlca;
   const indiceArrastado = useRef<number | null>(null);
 
   function aoSoltar(indiceDestino: number) {
@@ -361,164 +362,250 @@ export function ListaProdutos({
 
       {erro && <AvisoAdmin className="mt-3">{erro}</AvisoAdmin>}
 
-      {/* ---------- A lista ---------- */}
-      {listaFiltrada.length === 0 ? (
-        <div className="mt-4 bg-white rounded-[1.5rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]">
+      {/* ---------- A lista: um cartão só, com o cabeçalho das colunas ---------- */}
+      <div className="mt-4 bg-white rounded-[1.5rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] overflow-hidden">
+        {listaFiltrada.length === 0 ? (
           <VazioAdmin titulo="Nenhum produto encontrado" descricao="Tente outro termo de busca ou limpe os filtros." />
-        </div>
-      ) : (
-        <ul className="mt-4 flex flex-col gap-2">
-          {listaFiltrada.map((p, indice) => {
-            const industrializado = ehIndustrializado(p);
-            const totalFotos = p.fotos.length;
-            const precoExpostoNoManipulado = !industrializado && p.mostrarPreco;
-            return (
-              <li
-                key={p.id}
-                draggable={podeArrastar}
-                onDragStart={() => (indiceArrastado.current = indice)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => aoSoltar(indice)}
-                className={`group/linha bg-white rounded-2xl ring-1 ring-inset px-3.5 py-3 md:px-4 grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-x-4 gap-y-3 transition-[box-shadow,--tw-ring-color] duration-200 hover:shadow-[0_18px_40px_-30px_rgba(16,42,74,0.35)] ${
-                  p.ativo ? "ring-fio/80 hover:ring-tinta/30" : "ring-carimbo/25"
-                } ${ocupado === p.id ? "opacity-60" : ""}`}
-              >
-                {/* Capa (com a alça do gestor ao lado) */}
-                <div className="flex items-center gap-2.5">
-                  {podeArrastar && <Alca />}
-                  <div className="w-16 h-16 shrink-0 rounded-xl bg-gelo/70 overflow-hidden flex items-center justify-center p-1.5">
-                    {p.fotoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={asset(p.fotoUrl)} alt="" className="max-w-full max-h-full object-contain" />
-                    ) : (
-                      <span className="text-[0.6875rem] text-grafite-claro text-center leading-tight">sem foto</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Nome, tipo, área e selos */}
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <Link href={`/admin/produtos/${p.id}/editar`} className="font-semibold text-navy text-[0.98rem] leading-snug hover:text-tinta transition-colors">
-                      {p.nome}
-                    </Link>
-                    {p.tipo === TIPO_COMBO && <Selo tom="azul">Combo</Selo>}
-                    {!p.aprovado && <Selo tom="ambar">Aguardando o gestor</Selo>}
-                    {!p.ativo && <Selo tom="vermelho">Em falta</Selo>}
-                  </div>
-                  <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-cinza">
-                    <span className={`inline-flex items-center h-5 rounded-md px-1.5 font-medium ${industrializado ? "bg-gelo text-tinta" : "bg-nevoa text-cinza"}`}>
-                      {industrializado ? "Industrializado" : "Manipulado"}
-                    </span>
-                    <span className="truncate">{p.categoriaNome ?? "Sem categoria"}</span>
-                    {p.dosagens && <span className="truncate text-grafite-claro">{p.dosagens}</span>}
-                    <span className={totalFotos === 0 ? "text-carimbo font-medium" : "text-grafite-claro"}>
-                      {totalFotos === 0 ? "sem foto" : totalFotos === 1 ? "1 foto" : `${totalFotos} fotos`}
-                    </span>
-                  </p>
-                </div>
-
-                {/* O preço, com a chave do site embaixo (em todos os produtos) */}
-                <div className="col-span-2 md:col-span-1 flex md:flex-col items-center md:items-end gap-x-4 gap-y-0.5 border-t border-fio pt-2 md:border-0 md:pt-0 md:min-w-[8.5rem]">
-                  {editandoPreco === p.id ? (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-cinza text-sm">R$</span>
-                      <input
-                        value={precoTexto}
-                        onChange={(e) => setPrecoTexto(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") salvarPreco(p);
-                          if (e.key === "Escape") setEditandoPreco(null);
-                        }}
-                        autoFocus
-                        inputMode="decimal"
-                        aria-label="Novo preço"
-                        className="w-24 border border-tinta/40 rounded-lg px-2 h-9 text-base font-semibold text-navy focus:outline-none focus:ring-4 focus:ring-tinta/10"
+        ) : (
+          <>
+            <div
+              className={`hidden md:grid ${colunas} items-center gap-x-4 px-4 lg:px-5 h-10 border-b border-fio bg-nevoa/50 text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza`}
+            >
+              <span />
+              <span>Produto</span>
+              <span className="text-right">Preço</span>
+              <span className="text-center">Preço no site</span>
+              <span className="text-center">No site</span>
+              <span />
+            </div>
+            <ul className="divide-y divide-fio">
+              {listaFiltrada.map((p, indice) => {
+                const industrializado = ehIndustrializado(p);
+                const totalFotos = p.fotos.length;
+                const precoExpostoNoManipulado = !industrializado && p.mostrarPreco;
+                return (
+                  <li
+                    key={p.id}
+                    draggable={podeArrastar}
+                    onDragStart={() => (indiceArrastado.current = indice)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => aoSoltar(indice)}
+                    className={`group/linha relative px-3.5 py-3 md:px-4 lg:px-5 flex flex-wrap md:grid ${colunasMd} items-center gap-x-3 md:gap-x-4 gap-y-2.5 transition-colors duration-200 hover:bg-nevoa/55 ${
+                      ocupado === p.id ? "opacity-60" : ""
+                    }`}
+                  >
+                    {/* A marca na borda: ouro quando aguarda, vermelha em falta */}
+                    {(!p.ativo || !p.aprovado) && (
+                      <span
+                        aria-hidden="true"
+                        className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full ${!p.ativo ? "bg-carimbo/70" : "bg-[image:var(--ouro-degrade)]"}`}
                       />
-                      <button type="button" onClick={() => salvarPreco(p)} disabled={ocupado === p.id} aria-label="Salvar preço" className="w-9 h-9 rounded-lg bg-navy text-white flex items-center justify-center disabled:opacity-50">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
-                      <button type="button" onClick={() => setEditandoPreco(null)} aria-label="Cancelar" className="w-9 h-9 rounded-lg bg-nevoa text-cinza flex items-center justify-center">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                        </svg>
-                      </button>
-                      {erroPreco && <span className="text-carimbo text-xs">{erroPreco}</span>}
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditandoPreco(p.id);
-                        setPrecoTexto(centavosParaInput(p.precoCentavos));
-                        setErroPreco("");
-                      }}
-                      title="Clique para alterar o preço"
-                      className={`group inline-flex items-center gap-1.5 h-8 font-semibold text-[1.05rem] tabular-nums transition-colors hover:text-tinta ${
-                        p.precoCentavos > 0 ? (p.mostrarPreco ? "text-navy" : "text-cinza") : "text-grafite-claro text-sm font-medium"
-                      }`}
-                    >
-                      {p.precoCentavos > 0 ? formatarPreco(p.precoCentavos) : "definir preço"}
-                      <span className="text-grafite-claro opacity-0 group-hover:opacity-100 transition-opacity">
-                        <IconeLapis />
-                      </span>
-                    </button>
-                  )}
-                  <span className="inline-flex items-center gap-1.5 [&>button]:min-h-8 [&>button]:py-0.5">
-                    <Interruptor
-                      ligado={p.mostrarPreco}
-                      rotulo="Preço no site"
-                      aoAlternar={() => alternar(p, "mostrarPreco")}
-                      desabilitado={ocupado === p.id || p.precoCentavos === 0}
-                      cor="ouro"
-                    />
-                    {precoExpostoNoManipulado && (
-                      <span className="text-amber-600" title={AVISO_MANIPULADO} aria-label={AVISO_MANIPULADO}>
-                        <IconeAlerta />
-                      </span>
                     )}
-                  </span>
-                </div>
 
-                {/* A chave do site */}
-                <div className="col-span-2 md:col-span-1 flex items-center md:justify-end [&>button]:min-h-8 [&>button]:py-0.5">
-                  <Interruptor ligado={p.ativo} rotulo="No site" aoAlternar={() => alternar(p, "ativo")} desabilitado={ocupado === p.id} cor="verde" />
-                </div>
+                    {/* Capa (com a alça do gestor ao lado) */}
+                    <div className="flex items-center gap-2">
+                      {podeArrastar && <Alca />}
+                      <div className="w-14 h-14 shrink-0 rounded-xl bg-gelo/70 ring-1 ring-inset ring-navy/5 overflow-hidden flex items-center justify-center p-1.5">
+                        {p.fotoUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={asset(p.fotoUrl)} alt="" className="max-w-full max-h-full object-contain" />
+                        ) : (
+                          <span className="text-[0.625rem] text-grafite-claro text-center leading-tight">sem foto</span>
+                        )}
+                      </div>
+                    </div>
 
-                {/* Ações */}
-                <div className="col-span-2 md:col-span-1 flex items-center gap-1.5 md:justify-end">
-                  {ehGestor && !p.aprovado && (
-                    <BotaoAdmin variante="primario" tamanho="pequeno" onClick={() => alternar(p, "aprovado")} disabled={ocupado === p.id}>
-                      Publicar
-                    </BotaoAdmin>
-                  )}
-                  <Link href={`/admin/produtos/${p.id}/editar`} className={classeBotaoAdmin("secundario", "pequeno")}>
-                    <IconeLapis tamanho={14} />
-                    Editar
-                  </Link>
-                  {ehGestor && (
-                    <BotaoAdmin
-                      variante="perigo"
-                      tamanho="pequeno"
-                      onClick={() => apagar(p)}
-                      disabled={ocupado === p.id}
-                      aria-label={`Apagar ${p.nome}`}
-                      title="Apagar"
-                      className="!px-0 w-9 !border-transparent opacity-60 group-hover/linha:opacity-100 hover:!border-carimbo/60"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0-.8 12a2 2 0 0 1-2 1.9H8.8a2 2 0 0 1-2-1.9L6 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                      </svg>
-                    </BotaoAdmin>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                    {/* Nome, situação e a linha de apoio */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <Link
+                          href={`/admin/produtos/${p.id}/editar`}
+                          className="font-semibold text-navy text-[0.95rem] leading-snug hover:text-tinta transition-colors"
+                        >
+                          {p.nome}
+                        </Link>
+                        {p.tipo === TIPO_COMBO && <Selo tom="azul">Combo</Selo>}
+                        {!p.aprovado && <Selo tom="ouro">Aguardando</Selo>}
+                        {!p.ativo && <Selo tom="vermelho">Em falta</Selo>}
+                        {ehGestor && !p.aprovado && (
+                          <BotaoAdmin
+                            variante="primario"
+                            tamanho="pequeno"
+                            onClick={() => alternar(p, "aprovado")}
+                            disabled={ocupado === p.id}
+                            className="!h-7 !px-3 !text-[0.75rem]"
+                          >
+                            Publicar
+                          </BotaoAdmin>
+                        )}
+                      </div>
+                      <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-cinza">
+                        <span className={industrializado ? "text-tinta font-medium" : "text-cinza"}>{industrializado ? "Industrializado" : "Manipulado"}</span>
+                        <span aria-hidden="true" className="text-fio">
+                          ·
+                        </span>
+                        <span className="truncate">{p.categoriaNome ?? "Sem categoria"}</span>
+                        {p.dosagens && (
+                          <>
+                            <span aria-hidden="true" className="text-fio">
+                              ·
+                            </span>
+                            <span className="truncate text-grafite-claro">{p.dosagens}</span>
+                          </>
+                        )}
+                        <span aria-hidden="true" className="text-fio">
+                          ·
+                        </span>
+                        <span className={totalFotos === 0 ? "text-carimbo font-medium" : "text-grafite-claro"}>
+                          {totalFotos === 0 ? "sem foto" : totalFotos === 1 ? "1 foto" : `${totalFotos} fotos`}
+                        </span>
+                      </p>
+                    </div>
+
+                    {/* No celular, a segunda linha (preço, chaves e ações); no computador o
+                        invólucro some (contents) e cada parte vira uma coluna */}
+                    <div className="w-full flex items-center gap-3 border-t border-fio pt-2.5 md:contents">
+                      {/* O preço (em todos os produtos; clique para mudar) */}
+                      <div className="mr-auto md:mr-0 flex items-center md:justify-end gap-2">
+                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.12em] uppercase text-cinza">Preço</span>
+                        {editandoPreco === p.id ? (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cinza text-sm">R$</span>
+                            <input
+                              value={precoTexto}
+                              onChange={(e) => setPrecoTexto(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") salvarPreco(p);
+                                if (e.key === "Escape") setEditandoPreco(null);
+                              }}
+                              autoFocus
+                              inputMode="decimal"
+                              aria-label="Novo preço"
+                              className="w-24 border border-tinta/40 rounded-lg px-2 h-9 text-base font-semibold text-navy focus:outline-none focus:ring-4 focus:ring-tinta/10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => salvarPreco(p)}
+                              disabled={ocupado === p.id}
+                              aria-label="Salvar preço"
+                              className="w-9 h-9 rounded-lg bg-navy text-white flex items-center justify-center disabled:opacity-50"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditandoPreco(null)}
+                              aria-label="Cancelar"
+                              className="w-9 h-9 rounded-lg bg-nevoa text-cinza flex items-center justify-center"
+                            >
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                              </svg>
+                            </button>
+                            {erroPreco && <span className="text-carimbo text-xs">{erroPreco}</span>}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditandoPreco(p.id);
+                              setPrecoTexto(centavosParaInput(p.precoCentavos));
+                              setErroPreco("");
+                            }}
+                            title="Clique para alterar o preço"
+                            className={`group inline-flex items-center gap-1.5 h-8 rounded-lg -mr-1.5 px-1.5 tabular-nums transition-colors hover:bg-white hover:text-tinta hover:ring-1 hover:ring-fio ${
+                              p.precoCentavos > 0
+                                ? `font-semibold text-[1rem] ${p.mostrarPreco ? "text-navy" : "text-cinza"}`
+                                : "text-grafite-claro text-sm font-medium"
+                            }`}
+                          >
+                            {p.precoCentavos > 0 ? formatarPreco(p.precoCentavos) : "definir preço"}
+                            <span className="text-grafite-claro opacity-0 group-hover:opacity-100 transition-opacity">
+                              <IconeLapis />
+                            </span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* As duas chaves: no celular com o nome em cima, no computador só a chave (o cabeçalho diz o que é) */}
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.1em] uppercase text-cinza whitespace-nowrap">Preço no site</span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <Interruptor
+                            ligado={p.mostrarPreco}
+                            rotulo="Preço no site"
+                            aoAlternar={() => alternar(p, "mostrarPreco")}
+                            desabilitado={ocupado === p.id || p.precoCentavos === 0}
+                            cor="ouro"
+                            compacto
+                          />
+                          {precoExpostoNoManipulado && (
+                            <span className="text-amber-600" title={AVISO_MANIPULADO} aria-label={AVISO_MANIPULADO}>
+                              <IconeAlerta />
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.1em] uppercase text-cinza whitespace-nowrap">No site</span>
+                        <Interruptor
+                          ligado={p.ativo}
+                          rotulo="No site"
+                          aoAlternar={() => alternar(p, "ativo")}
+                          desabilitado={ocupado === p.id}
+                          cor="verde"
+                          compacto
+                        />
+                      </div>
+
+                      {/* Ações: editar e apagar em ícones que acendem na linha */}
+                      <div className="flex items-center gap-1 md:justify-end">
+                        <Link
+                          href={`/admin/produtos/${p.id}/editar`}
+                          title="Editar"
+                          aria-label={`Editar ${p.nome}`}
+                          className="inline-flex size-9 items-center justify-center rounded-xl text-cinza transition-colors hover:bg-white hover:text-navy hover:ring-1 hover:ring-fio md:opacity-60 md:group-hover/linha:opacity-100 md:focus-visible:opacity-100"
+                        >
+                          <IconeLapis tamanho={16} />
+                        </Link>
+                        {ehGestor && (
+                          <button
+                            type="button"
+                            onClick={() => apagar(p)}
+                            disabled={ocupado === p.id}
+                            aria-label={`Apagar ${p.nome}`}
+                            title="Apagar"
+                            className="inline-flex size-9 items-center justify-center rounded-xl text-cinza transition-colors hover:bg-carimbo/10 hover:text-carimbo disabled:opacity-40 md:opacity-0 md:group-hover/linha:opacity-100 md:focus-visible:opacity-100"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                              <path
+                                d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0-.8 12a2 2 0 0 1-2 1.9H8.8a2 2 0 0 1-2-1.9L6 7"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </div>
     </div>
   );
 }
+
+// As colunas da lista no computador: capa (mais larga quando há a alça),
+// produto, preço, as duas chaves e as ações. O cabeçalho e as linhas
+// dividem a mesma régua, por isso as larguras são fixas.
+const COLUNAS = {
+  semAlca: ["grid-cols-[3.5rem_minmax(0,1fr)_8rem_6.5rem_4.5rem_5rem]", "md:grid-cols-[3.5rem_minmax(0,1fr)_8rem_6.5rem_4.5rem_5rem]"],
+  comAlca: ["grid-cols-[5rem_minmax(0,1fr)_8rem_6.5rem_4.5rem_5rem]", "md:grid-cols-[5rem_minmax(0,1fr)_8rem_6.5rem_4.5rem_5rem]"],
+} as const;

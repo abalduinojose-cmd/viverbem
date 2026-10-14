@@ -1,5 +1,44 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 77 (14/10/2026): os cartões de número em três andares e a lista de produtos num cartão só. IMPLEMENTADO, conferido no localhost e na prévia, publicado no 34º push.**
+> Pedido (com os quatro cartões da visão geral selecionados, em prints do
+> celular onde "22 desde o início · 14 dias" quebrava palavra por
+> palavra ao lado da faísca): "modernize as seções selecionadas mas
+> mantenha clean e de fácil visualização; eu quero a seção de produtos
+> mais moderna no painel; atualize o github".
+> - `CartaoNumero` (PecasAdmin): três andares. No alto o ícone (azulejo
+>   pequeno) com o rótulo ao lado e a variação à direita; no meio o número
+>   e a explicação em linha inteira; no rodapé o mini-gráfico na largura
+>   toda. Antes a faísca ficava espremida ao lado do texto de apoio. O
+>   rótulo quebra em duas linhas em vez de cortar ("Aguardando você").
+>   A grade da visão geral vai a uma coluna no celular
+>   (`grid-cols-1 sm:grid-cols-2 xl:grid-cols-4`).
+> - `Faisca` (PecasVivas): estica na largura do cartão (viewBox 120x36 com
+>   preserveAspectRatio none), a área embaixo da linha virou degradê que
+>   some para baixo, e o ponto do "hoje" é um <span> por cima em
+>   porcentagem (dentro do SVG esticado virava uma elipse); ele aparece
+>   com um pulo curto depois que a linha termina de se desenhar.
+> - `Interruptor` ganhou `compacto` (só a chave; o rótulo vai para o
+>   leitor de tela e para o title).
+> - Produtos e preços (ListaProdutos): a lista virou UM cartão branco com
+>   o cabeçalho das colunas (Produto, Preço, Preço no site, No site) e as
+>   linhas separadas por fio, com a linha inteira acendendo em névoa ao
+>   passar o mouse. Os selos "Aguardando" e "Em falta" ficaram, e a linha
+>   ganha uma marca na borda esquerda (ouro aguardando, vermelha em
+>   falta). O tipo, a área, a dosagem e as fotos viraram uma frase com
+>   pontos no meio, sem o selo cinza. As chaves são compactas, o
+>   cabeçalho diz o que são. "Publicar" ficou ao lado do selo
+>   "Aguardando", no nome; editar e apagar viraram ícones que acendem
+>   na linha (apagar só aparece ao passar o mouse). As colunas têm
+>   largura fixa (régua igual no cabeçalho e nas linhas), 5 rem a mais
+>   na capa quando há a alça de arrastar. No celular a linha é flex: capa
+>   e nome em cima, e embaixo uma segunda linha com o preço, as duas
+>   chaves com o nome em cima e os ícones (`md:contents` no invólucro,
+>   que some no computador e cada parte vira coluna); 175 px por linha.
+> - Conferido: tsc e eslint limpos; 1366 e 390 no localhost (lista rolada
+>   no celular, sem rolagem lateral); a visão geral com as faíscas na
+>   prévia estática (o banco local está sem pedidos).
+
 > **ADENDO 73 (14/10/2026): animação da Saúde da Mulher refeita como vitrine, com os quatro produtos lado a lado, maiores e sem destaque. IMPLEMENTADO, medido e publicado (30º push).**
 > Pedido (com o canvas do cartão selecionado e dois prints do celular):
 > "não gostei da animação, mude toda ela tanto para mobile quanto para

@@ -4,7 +4,7 @@
 // sem JavaScript tudo aparece pronto e parado. Rodam também com "reduzir
 // movimento" ligado (o Windows do usuário está com as animações
 // desligadas e ele quer ver o movimento), por isso são curtas e contidas.
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 const SAIDA = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -131,6 +131,8 @@ function curvaSuave(pontos: (readonly [number, number])[], chao: number, teto: n
 export function Faisca({ valores, cor = "azul", className = "" }: { valores: number[]; cor?: "azul" | "ouro"; className?: string }) {
   const linha = useRef<SVGPathElement>(null);
   const area = useRef<SVGPathElement>(null);
+  const ponto = useRef<HTMLSpanElement>(null);
+  const idDegrade = useId();
   const L = 120;
   const A = 36;
   const maior = Math.max(...valores, 1);
@@ -143,18 +145,38 @@ export function Faisca({ valores, cor = "azul", className = "" }: { valores: num
   useEffect(() => {
     const el = linha.current;
     const fundo = area.current;
+    const hoje = ponto.current;
     if (!el) return;
-    const comprimento = el.getTotalLength();
+    // O traço não escala (non-scaling-stroke), então o tracejado é medido em
+    // pixels da tela, não nas unidades do viewBox: o comprimento vai
+    // multiplicado pela maior escala do SVG esticado (com folga). No fim o
+    // tracejado é tirado, para a linha ficar inteira em qualquer largura.
+    const caixa = el.ownerSVGElement?.getBoundingClientRect();
+    const escala = caixa ? Math.max(caixa.width / L, caixa.height / A, 1) : 1;
+    const comprimento = el.getTotalLength() * escala * 1.1;
     el.style.strokeDasharray = `${comprimento}`;
     el.style.strokeDashoffset = `${comprimento}`;
     if (fundo) fundo.style.opacity = "0";
+    if (hoje) hoje.style.opacity = "0";
     const animacoes: Animation[] = [];
     const observador = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         observador.disconnect();
-        animacoes.push(el.animate([{ strokeDashoffset: comprimento }, { strokeDashoffset: 0 }], { duration: 1300, easing: SAIDA, fill: "both" }));
+        const traco = el.animate([{ strokeDashoffset: comprimento }, { strokeDashoffset: 0 }], { duration: 1300, easing: SAIDA, fill: "both" });
+        traco.finished.then(() => (el.style.strokeDasharray = "none")).catch(() => {});
+        animacoes.push(traco);
         if (fundo) animacoes.push(fundo.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 500, fill: "both" }));
+        if (hoje) {
+          animacoes.push(
+            hoje.animate([{ opacity: 0, transform: "translate(-50%, -50%) scale(0.4)" }, { opacity: 1, transform: "translate(-50%, -50%) scale(1)" }], {
+              duration: 500,
+              delay: 1100,
+              easing: SAIDA,
+              fill: "both",
+            })
+          );
+        }
       },
       { threshold: 0.4 }
     );
@@ -165,14 +187,34 @@ export function Faisca({ valores, cor = "azul", className = "" }: { valores: num
     };
   }, [d]);
 
+  // O SVG estica na largura do cartão (preserveAspectRatio none), por isso o
+  // ponto do "hoje" é um <span> por cima, em porcentagem, para continuar
+  // redondo em qualquer largura
   return (
-    <svg viewBox={`0 0 ${L} ${A}`} preserveAspectRatio="none" aria-hidden="true" className={`block overflow-visible ${className}`}>
-      <path ref={area} d={fechada} fill={tinta} opacity="0.16" />
-      <path ref={linha} d={d} fill="none" stroke={tinta} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      {/* O "hoje": o ponto com um halo */}
-      <circle cx={ux} cy={uy} r="6" fill={tinta} opacity="0.22" vectorEffect="non-scaling-stroke" />
-      <circle cx={ux} cy={uy} r="2.8" fill={tinta} stroke={cor === "ouro" ? "#0d2340" : "#ffffff"} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-    </svg>
+    <span className={`relative block ${className}`} aria-hidden="true">
+      <svg viewBox={`0 0 ${L} ${A}`} preserveAspectRatio="none" className="block w-full h-full overflow-visible">
+        <defs>
+          <linearGradient id={idDegrade} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={tinta} stopOpacity="0.32" />
+            <stop offset="1" stopColor={tinta} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path ref={area} d={fechada} fill={`url(#${idDegrade})`} />
+        <path ref={linha} d={d} fill="none" stroke={tinta} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <span
+        ref={ponto}
+        className="absolute size-2.5 rounded-full ring-[1.5px]"
+        style={{
+          left: `${(ux / L) * 100}%`,
+          top: `${(uy / A) * 100}%`,
+          transform: "translate(-50%, -50%)",
+          background: tinta,
+          boxShadow: `0 0 0 5px ${tinta}38`,
+          ["--tw-ring-color" as string]: cor === "ouro" ? "#0d2340" : "#ffffff",
+        }}
+      />
+    </span>
   );
 }
 
