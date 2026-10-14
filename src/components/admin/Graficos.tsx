@@ -14,8 +14,25 @@ import { useState } from "react";
 import { formatarPreco } from "@/lib/preco";
 
 const AZUL = "#1c69b5"; // --color-tinta
-const OURO = "#b3904f"; // --color-ouro
+const OURO = "#c9a56b"; // --color-ouro
 const GRADE = "#e4e8ee"; // --color-fio
+
+// Degradês do azul da marca (14/10/2026, "dashboard premium"): as barras
+// vão do azul ao navy, a área da linha se esvai para baixo
+function DefsAzul() {
+  return (
+    <defs>
+      <linearGradient id="g-barra-azul" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#2f7cc4" />
+        <stop offset="1" stopColor="#0d2340" />
+      </linearGradient>
+      <linearGradient id="g-area-azul" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor={AZUL} stopOpacity="0.28" />
+        <stop offset="1" stopColor={AZUL} stopOpacity="0" />
+      </linearGradient>
+    </defs>
+  );
+}
 
 /** Escala "bonita" para o topo do eixo (1, 2 ou 5 vezes potência de 10). */
 function tetoRedondo(maior: number) {
@@ -70,6 +87,7 @@ export function GraficoFaturamento({
   return (
     <div className="relative">
       <svg viewBox={`0 0 ${L} ${A}`} className="w-full h-auto" role="img" aria-label="Faturamento por mês">
+        <DefsAzul />
         {/* Grade e eixo */}
         {ticks.map((t) => {
           const y = margem.topo + altura - (t / teto) * altura;
@@ -108,11 +126,11 @@ export function GraficoFaturamento({
                 onMouseLeave={() => setAtivo(null)}
               />
               {h > 0 && (
-                <rect x={x} y={y} width={larguraBarra} height={h} rx="4" fill={AZUL} opacity={opacidade} className="transition-opacity" pointerEvents="none" />
+                <rect x={x} y={y} width={larguraBarra} height={h} rx="4" fill="url(#g-barra-azul)" opacity={opacidade} className="transition-opacity" pointerEvents="none" />
               )}
               {/* Base reta: tampa o arredondamento de baixo da barra */}
               {h > 4 && (
-                <rect x={x} y={margem.topo + altura - 4} width={larguraBarra} height={4} fill={AZUL} opacity={opacidade} pointerEvents="none" />
+                <rect x={x} y={margem.topo + altura - 4} width={larguraBarra} height={4} fill="#0d2340" opacity={opacidade} pointerEvents="none" />
               )}
               <text x={margem.esq + banda * i + banda / 2} y={A - 8} textAnchor="middle" className="fill-grafite-claro" style={{ fontSize: 10 }}>
                 {d.rotulo}
@@ -169,6 +187,7 @@ export function GraficoPedidosDia({ dados }: { dados: { rotulo: string; pedidos:
   return (
     <div className="relative">
       <svg viewBox={`0 0 ${L} ${A}`} className="w-full h-auto" role="img" aria-label="Pedidos por dia">
+        <DefsAzul />
         {ticks.map((t) => {
           const y = margem.topo + altura - (teto > 0 ? (t / teto) * altura : 0);
           return (
@@ -182,8 +201,8 @@ export function GraficoPedidosDia({ dados }: { dados: { rotulo: string; pedidos:
         })}
 
         {/* Área lavada e linha */}
-        <path d={area} fill={AZUL} opacity="0.1" />
-        <path d={linha} fill="none" stroke={AZUL} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={area} fill="url(#g-area-azul)" />
+        <path d={linha} fill="none" stroke={AZUL} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
 
         {/* Marcador do último dia, em ouro: é o "hoje" */}
         <circle cx={ultimo.x} cy={ultimo.y} r="5" fill={OURO} stroke="#ffffff" strokeWidth="2" />

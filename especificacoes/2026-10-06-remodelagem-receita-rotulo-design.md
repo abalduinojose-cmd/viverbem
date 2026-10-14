@@ -31,6 +31,46 @@
 > volta, e o último quadro guardado leva as voltas. Medido: 2 a 4 ms por
 > quadro, 60 fps no desktop e no celular.
 
+> **ADENDO 74 (14/10/2026): painel do gestor premium. IMPLEMENTADO e testado no localhost (1366, 1070 e celular), NÃO publicado.**
+> Pedido, com a casca, a visão geral, o menu, os atalhos e o rodapé do
+> usuário selecionados: "modernize e melhore todos, quero um dashboard de
+> alta qualidade e premium". Feito no Fable 5.1.
+>
+> - **Casca** (`CascaAdmin.tsx`): a lateral virou a folha escura do painel,
+>   em azul-noite com a luz da marca e a malha fina (`banner-noite em-noite`
+>   + `malha-banner`, os mesmos dos banners do site); a marca num ladrilho
+>   branco; a página ativa é uma pílula de vidro (`bg-white/10`, anel
+>   branco) com a marca de ouro na borda e o ícone em ouro; grupos em caixa
+>   alta branca a 45%; quem está logado com a inicial em ouro e o "Sair"
+>   recolorido para o escuro (`[&>button]:` sobre o BotaoSair, sem mudar a
+>   API dele). No celular a barra do topo e a gaveta são a mesma folha. O
+>   conteúdo segue claro, com um sopro de azul no alto e `lg:p-8` (era p-10:
+>   na tela do usuário, de ~1070px, o conteúdo tem só ~720px).
+> - **Peças** (`PecasAdmin.tsx`): `CabecalhoAdmin` ganhou `tituloDestaque`
+>   (a segunda voz em itálico serifado ouro escuro, "Olá, *Administrador*")
+>   e `chips`; novo `ChipAdmin`; `CartaoNumero` ganhou `icone`, a contagem
+>   animada do valor e a variante `tom="noite"` (azul-noite, para o número
+>   que manda); botão primário com sombra. As outras telas (produtos,
+>   clientes, categorias, acessos, site) usam as peças sem mudança de API.
+> - **Peças vivas** (`PecasVivas.tsx`, novo, cliente): `NumeroAnimado`
+>   (conta de zero ao valor em 1,1 s quando aparece, só os dígitos, com o
+>   formato brasileiro preservado), `BarraViva` (enche ao aparecer) e
+>   `RelogioAgora` (a hora, a cada 30 s). Rodam com "reduzir movimento".
+> - **Visão geral** (`painel/page.tsx`): chips de data, hora e "Catálogo em
+>   dia"/"N pendências"; "Novo produto" como ação principal; o cartão escuro
+>   de pedidos no mês e ícones novos (`iconesAdmin`: pedidos, receita,
+>   faturamento); grades por largura real (`xl:grid-cols-4` nos números,
+>   `xl:grid-cols-2` nos gráficos, atalhos em `lg:3 / 2xl:5`, antes 5
+>   colunas espremidas em 719px); `LinkCanto` com seta nos cantos dos
+>   cartões; linhas dos últimos pedidos com hover; atalhos com a seta e um
+>   fio de ouro que cresce na base no hover.
+> - **Gráficos** (`Graficos.tsx`): ouro atualizado para #c9a56b, barras em
+>   degradê azul→navy e a área da linha esvaindo (`DefsAzul`).
+> - Login no localhost para conferir: credenciais do gestor em
+>   `prisma/seed.js` (script `painel2.cjs` no scratchpad lê de lá). Os
+>   erros do `tsc` na pasta `.next/dev/types` (validador das rotas de API
+>   com `params: Promise<unknown>`) já existiam e não são do painel.
+>
 > **ADENDO 72 (14/10/2026): título cinético da Saúde da Mulher em HTML vetorial, mapa real das lojas, WhatsApp com assuntos, catálogo sem a barra repetida, receita no quadro inteiro e "ver mais" clean. IMPLEMENTADO, testado e publicado (29º push).**
 > Pedidos, na ordem: "o mapa está bom, mantenha a ideia mas coloque o mapa
 > mais real com as setas" e depois "não tá bom, quero mais simples, mas

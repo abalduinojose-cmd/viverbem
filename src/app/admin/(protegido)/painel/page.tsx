@@ -6,20 +6,25 @@
 // atenção e a equipe (acessos e as últimas ações do log). Os últimos
 // pedidos e os atalhos do catálogo fecham a página. O colaborador não vê
 // números do negócio: cai direto nos produtos.
+//
+// 14/10/2026 ("modernize, quero um dashboard de alta qualidade e premium"):
+// o cumprimento ganhou o nome em itálico serifado e, embaixo, a data e a
+// hora viva; o número que manda (pedidos no mês) virou o cartão escuro em
+// azul-noite e os quatro ganharam ícone e contagem animada; as barras de
+// proporção enchem ao aparecer; os gráficos ganharam degradê; os atalhos
+// deixaram de ser cinco colunas espremidas (na tela do usuário, com a
+// lateral, o conteúdo tem uns 720px) e ganharam a seta. A informação é a
+// mesma.
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { obterSessao } from "@/lib/sessao";
 import { obterMetricas } from "@/lib/metricas";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
-import { CabecalhoAdmin, CartaoAdmin, CartaoNumero, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
+import { CabecalhoAdmin, CartaoAdmin, CartaoNumero, ChipAdmin, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
+import { BarraViva, RelogioAgora } from "@/components/admin/PecasVivas";
 import { ICONES } from "@/components/admin/iconesAdmin";
-import {
-  GraficoCatalogo,
-  GraficoFaturamento,
-  GraficoPedidosDia,
-  GraficoEntregas,
-} from "@/components/admin/Graficos";
+import { GraficoCatalogo, GraficoFaturamento, GraficoPedidosDia, GraficoEntregas } from "@/components/admin/Graficos";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +49,6 @@ function tempoRelativo(iso: string) {
   return d === 1 ? "ontem" : `há ${d} dias`;
 }
 
-// Selo de variação contra o mês passado
 // O lugar do gráfico quando ainda não há o que desenhar (13/10/2026): sem
 // pedido nenhum o painel mostrava eixos e uma linha no zero, que parecia
 // erro. Ocupa a mesma proporção do gráfico, para nada pular quando o
@@ -64,17 +68,24 @@ function GraficoVazio({ titulo, texto }: { titulo: string; texto: string }) {
   );
 }
 
-function Variacao({ valor }: { valor: number | null }) {
+// Selo de variação contra o mês passado
+function Variacao({ valor, noite = false }: { valor: number | null; noite?: boolean }) {
   if (valor === null) return null;
   const subiu = valor > 0;
   const parado = valor === 0;
+  const classe = noite
+    ? parado
+      ? "bg-white/10 text-white/70"
+      : subiu
+        ? "bg-green-400/20 text-green-200"
+        : "bg-white/10 text-[#f6c7c9]"
+    : parado
+      ? "bg-nevoa text-cinza"
+      : subiu
+        ? "bg-green-50 text-green-700"
+        : "bg-carimbo/10 text-carimbo";
   return (
-    <span
-      className={`inline-flex items-center gap-1 text-[0.6875rem] font-semibold rounded-full px-2 py-0.5 tabular-nums ${
-        parado ? "bg-nevoa text-cinza" : subiu ? "bg-green-50 text-green-700" : "bg-carimbo/10 text-carimbo"
-      }`}
-      title="Em relação ao mês passado"
-    >
+    <span className={`inline-flex items-center gap-1 text-[0.6875rem] font-semibold rounded-full px-2 py-0.5 tabular-nums ${classe}`} title="Em relação ao mês passado">
       {!parado && (
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d={subiu ? "M12 19V5m0 0-6 6m6-6 6 6" : "M12 5v14m0 0 6-6m-6 6-6-6"} stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -83,6 +94,18 @@ function Variacao({ valor }: { valor: number | null }) {
       {subiu ? "+" : ""}
       {valor}%
     </span>
+  );
+}
+
+/** Link discreto no canto dos cartões ("Abrir", "Ver todos") */
+function LinkCanto({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="group/lc inline-flex items-center gap-1 shrink-0 text-tinta text-sm font-medium">
+      {children}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="transition-transform group-hover/lc:translate-x-0.5">
+        <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </Link>
   );
 }
 
@@ -101,7 +124,9 @@ export default async function PaginaPainel() {
   const m = await obterMetricas();
   // Sem pedido nenhum, as setas de "em relação ao mês passado" não dizem nada
   const semPedidos = m.totalPedidos === 0;
-  const mes = new Date().toLocaleDateString("pt-BR", { month: "long" });
+  const agora = new Date();
+  const mes = agora.toLocaleDateString("pt-BR", { month: "long" });
+  const hoje = agora.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
   const alertas = [
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
     { n: m.alertas.semPreco, r: "industrializados sem preço", href: "/admin/produtos", grave: true },
@@ -115,8 +140,30 @@ export default async function PaginaPainel() {
     <div className="max-w-6xl">
       <CabecalhoAdmin
         rotulo="Gestão"
-        titulo={`Olá, ${(sessao.nome ?? "").split(" ")[0]}`}
+        titulo="Olá,"
+        tituloDestaque={(sessao.nome ?? "").split(" ")[0]}
         descricao={`Como está o mês de ${mes} na Viver Bem.`}
+        chips={
+          <>
+            <ChipAdmin>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3.5" y="5" width="17" height="15" rx="3" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              {hoje.charAt(0).toUpperCase() + hoje.slice(1)}
+            </ChipAdmin>
+            <ChipAdmin>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <RelogioAgora />
+            </ChipAdmin>
+            <ChipAdmin tom={alertas.some((a) => a.grave) ? "ouro" : "verde"}>
+              {alertas.some((a) => a.grave) ? `${alertas.filter((a) => a.grave).reduce((s, a) => s + a.n, 0)} pendências no catálogo` : "Catálogo em dia"}
+            </ChipAdmin>
+          </>
+        }
         acao={
           <>
             <Link href="/admin/clientes" className={classeBotaoAdmin("secundario")}>
@@ -125,42 +172,46 @@ export default async function PaginaPainel() {
             <Link href="/admin/log" className={classeBotaoAdmin("secundario")}>
               Ver o log
             </Link>
+            <Link href="/admin/produtos/novo" className={classeBotaoAdmin("primario")}>
+              Novo produto
+            </Link>
           </>
         }
       />
 
       {/* ---------- Números do mês ---------- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-7">
+      <div className="cascata grid grid-cols-2 xl:grid-cols-4 gap-4 mt-7">
         <CartaoNumero
+          tom="noite"
+          icone={ICONES.pedidos}
           rotulo="Pedidos no mês"
           valor={String(m.pedidosMes)}
-          extra={<Variacao valor={semPedidos ? null : m.pedidosVariacao} />}
+          extra={<Variacao noite valor={semPedidos ? null : m.pedidosVariacao} />}
           apoio={`${m.totalPedidos} desde o início`}
         />
         <CartaoNumero
+          icone={ICONES.receita}
           rotulo="Receitas no mês"
           valor={String(m.receitasMes)}
           extra={<Variacao valor={semPedidos ? null : m.receitasVariacao} />}
           apoio="pedidos com foto de receita"
         />
         <CartaoNumero
+          icone={ICONES.faturamento}
           rotulo="Faturamento"
           valor={formatarPreco(m.faturamentoMes)}
           extra={<Variacao valor={semPedidos ? null : m.faturamentoVariacao} />}
           apoio="só produtos com preço no site"
         />
-        <CartaoNumero rotulo="Clientes no mês" valor={String(m.clientesUnicos)} apoio="WhatsApps diferentes" />
+        <CartaoNumero icone={ICONES.clientes} rotulo="Clientes no mês" valor={String(m.clientesUnicos)} apoio="WhatsApps diferentes" />
       </div>
 
       {/* ---------- Gráficos ---------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
         <CartaoAdmin titulo="Faturamento por mês" apoio="Últimos 6 meses, só produtos com preço">
           <div className="px-5 pb-5 mt-4">
             {m.porMes.every((x) => x.faturamento === 0) ? (
-              <GraficoVazio
-                titulo="Ainda sem faturamento"
-                texto="As barras aparecem quando entrar o primeiro pedido de um produto com preço no site."
-              />
+              <GraficoVazio titulo="Ainda sem faturamento" texto="As barras aparecem quando entrar o primeiro pedido de um produto com preço no site." />
             ) : (
               <GraficoFaturamento dados={m.porMes} />
             )}
@@ -169,10 +220,7 @@ export default async function PaginaPainel() {
         <CartaoAdmin titulo="Pedidos por dia" apoio="Últimos 14 dias, receitas incluídas">
           <div className="px-5 pb-5 mt-4">
             {m.porDia.every((x) => x.pedidos === 0) ? (
-              <GraficoVazio
-                titulo="Nenhum pedido nos últimos 14 dias"
-                texto="Cada pedido feito pelo site, pelo carrinho ou pela foto da receita, vira um ponto aqui."
-              />
+              <GraficoVazio titulo="Nenhum pedido nos últimos 14 dias" texto="Cada pedido feito pelo site, pelo carrinho ou pela foto da receita, vira um ponto aqui." />
             ) : (
               <GraficoPedidosDia dados={m.porDia} />
             )}
@@ -181,22 +229,10 @@ export default async function PaginaPainel() {
       </div>
 
       {/* ---------- Catálogo, entregas e os mais pedidos ---------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-        <CartaoAdmin
-          titulo="O catálogo"
-          apoio={`${m.catalogo.noSite} de ${m.catalogo.total} produtos no site`}
-          acao={
-            <Link href="/admin/produtos" className="text-tinta text-sm font-medium hover:underline shrink-0">
-              Abrir
-            </Link>
-          }
-        >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <CartaoAdmin titulo="O catálogo" apoio={`${m.catalogo.noSite} de ${m.catalogo.total} produtos no site`} acao={<LinkCanto href="/admin/produtos">Abrir</LinkCanto>}>
           <div className="px-5 pb-5">
-            <GraficoCatalogo
-              manipulados={m.catalogo.manipulados}
-              industrializados={m.catalogo.industrializados}
-              comPrecoNoSite={m.catalogo.comPrecoNoSite}
-            />
+            <GraficoCatalogo manipulados={m.catalogo.manipulados} industrializados={m.catalogo.industrializados} comPrecoNoSite={m.catalogo.comPrecoNoSite} />
             <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-2xl bg-nevoa px-3.5 py-3">
                 <dt className="text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza">Com foto</dt>
@@ -239,12 +275,9 @@ export default async function PaginaPainel() {
                         </span>
                         <span className="font-semibold text-navy tabular-nums shrink-0">{p.quantidade}</span>
                       </div>
-                      {/* Barra proporcional ao campeão */}
+                      {/* Barra proporcional ao campeão, que enche ao aparecer */}
                       <div className="h-1.5 bg-nevoa rounded-full mt-1.5 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-[image:var(--ouro-degrade)]"
-                          style={{ width: `${Math.round((p.quantidade / maior) * 100)}%` }}
-                        />
+                        <BarraViva pct={Math.round((p.quantidade / maior) * 100)} className="h-full rounded-full bg-[image:var(--ouro-degrade)]" />
                       </div>
                     </li>
                   );
@@ -256,7 +289,7 @@ export default async function PaginaPainel() {
       </div>
 
       {/* ---------- Atenção e equipe ---------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
         <CartaoAdmin titulo="O que precisa de atenção" apoio={`${m.totalProdutos} produtos cadastrados`}>
           <div className="px-5 pb-5">
             {alertas.length === 0 ? (
@@ -264,17 +297,17 @@ export default async function PaginaPainel() {
                 Catálogo em ordem: nada esperando publicação, e todos os produtos têm foto e categoria.
               </p>
             ) : (
-              <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                 {alertas.map((a) => (
                   <Link
                     key={a.r}
                     href={a.href}
-                    className={`rounded-2xl px-4 py-3.5 border transition-colors ${
-                      a.grave ? "border-carimbo/30 bg-carimbo/5 hover:border-carimbo/60" : "border-fio bg-nevoa/60 hover:border-tinta/40"
+                    className={`group rounded-2xl px-4 py-3.5 ring-1 ring-inset transition-colors ${
+                      a.grave ? "ring-carimbo/30 bg-carimbo/5 hover:ring-carimbo/60" : "ring-fio bg-nevoa/60 hover:ring-tinta/40"
                     }`}
                   >
                     <p className={`text-2xl font-semibold tabular-nums tracking-tight ${a.grave ? "text-carimbo" : "text-navy"}`}>{a.n}</p>
-                    <p className="text-cinza text-xs mt-0.5">{a.r}</p>
+                    <p className="text-cinza text-xs mt-0.5 group-hover:text-navy transition-colors">{a.r}</p>
                   </Link>
                 ))}
               </div>
@@ -285,11 +318,7 @@ export default async function PaginaPainel() {
         <CartaoAdmin
           titulo="Equipe e atividade"
           apoio={`${m.equipe.ativos} ${m.equipe.ativos === 1 ? "acesso ativo" : "acessos ativos"}: ${m.equipe.gestores} gestor${m.equipe.gestores === 1 ? "" : "es"}, ${m.equipe.colaboradores} colaborador${m.equipe.colaboradores === 1 ? "" : "es"}`}
-          acao={
-            <Link href="/admin/usuarios" className="text-tinta text-sm font-medium hover:underline shrink-0">
-              Acessos
-            </Link>
-          }
+          acao={<LinkCanto href="/admin/usuarios">Acessos</LinkCanto>}
         >
           <div className="px-5 pb-5">
             {m.equipe.ultimasAcoes.length === 0 ? (
@@ -301,8 +330,7 @@ export default async function PaginaPainel() {
                     <Inicial nome={a.usuario} tamanho="sm" />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm text-navy leading-snug">
-                        <b className="font-semibold">{a.usuario}</b> {a.acao}{" "}
-                        <span className="text-cinza">{a.detalhe}</span>
+                        <b className="font-semibold">{a.usuario}</b> {a.acao} <span className="text-cinza">{a.detalhe}</span>
                       </p>
                     </div>
                     <span className="shrink-0 text-xs text-grafite-claro tabular-nums pt-0.5" title={formatarData(a.criadoEm)}>
@@ -312,33 +340,24 @@ export default async function PaginaPainel() {
                 ))}
               </ul>
             )}
-            <Link href="/admin/log" className="mt-2 inline-flex text-sm font-medium text-tinta hover:underline">
-              Ver o log completo
-            </Link>
+            <div className="mt-2">
+              <LinkCanto href="/admin/log">Ver o log completo</LinkCanto>
+            </div>
           </div>
         </CartaoAdmin>
       </div>
 
       {/* ---------- Últimos pedidos ---------- */}
-      <CartaoAdmin
-        className="mt-4"
-        titulo="Últimos pedidos"
-        acao={
-          <Link href="/admin/clientes" className="text-tinta text-sm font-medium hover:underline shrink-0">
-            Ver todos
-          </Link>
-        }
-      >
-        <div className="px-5 pb-5">
+      <CartaoAdmin className="mt-4" titulo="Últimos pedidos" acao={<LinkCanto href="/admin/clientes">Ver todos</LinkCanto>}>
+        <div className="px-3 pb-3 sm:px-4 sm:pb-4">
           {m.ultimos.length === 0 ? (
-            <p className="text-cinza text-sm mt-3">
-              Nenhum pedido registrado ainda. Os pedidos feitos pelo site aparecem aqui, com o nome, o
-              WhatsApp e o código de cada um.
+            <p className="text-cinza text-sm mt-3 px-2">
+              Nenhum pedido registrado ainda. Os pedidos feitos pelo site aparecem aqui, com o nome, o WhatsApp e o código de cada um.
             </p>
           ) : (
-            <ul className="flex flex-col divide-y divide-fio mt-1">
+            <ul className="flex flex-col mt-2">
               {m.ultimos.map((p) => (
-                <li key={p.id} className="flex items-center justify-between gap-3 py-3">
+                <li key={p.id} className="flex items-center justify-between gap-3 rounded-2xl px-2 py-3 transition-colors hover:bg-nevoa/70">
                   <div className="min-w-0 flex items-center gap-3">
                     <Inicial nome={p.nome} tamanho="sm" />
                     <div className="min-w-0">
@@ -366,22 +385,27 @@ export default async function PaginaPainel() {
       {/* ---------- Atalhos do dia a dia, por último de propósito ---------- */}
       <div className="mt-6 mb-2">
         <p className="rotulo-pilula !text-[0.6875rem]">Atalhos</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-3 mt-3">
           {ATALHOS.map((a) => (
             <Link
               key={a.titulo}
               href={a.href}
-              className="group bg-white rounded-[1.25rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:border-tinta/40 hover:-translate-y-0.5 px-4 py-4 flex items-center gap-3 transition duration-300"
+              className="group relative overflow-hidden bg-white rounded-[1.25rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:ring-tinta/40 hover:-translate-y-0.5 px-4 py-4 flex items-center gap-3 transition duration-300"
             >
-              <span className="shrink-0 w-10 h-10 rounded-xl bg-gelo text-tinta group-hover:bg-tinta group-hover:text-white flex items-center justify-center transition-colors">
+              {/* A marca de ouro que cresce na borda de baixo */}
+              <span aria-hidden="true" className="absolute inset-x-4 bottom-0 h-[2px] origin-left scale-x-0 rounded-full bg-[image:var(--ouro-degrade)] transition-transform duration-300 group-hover:scale-x-100" />
+              <span className="shrink-0 w-10 h-10 rounded-xl bg-gelo text-tinta group-hover:bg-navy group-hover:text-white flex items-center justify-center transition-colors">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   {ICONES[a.icone]}
                 </svg>
               </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-medium text-navy">{a.titulo}</span>
-                <span className="block text-xs text-grafite-claro">{a.apoio}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium text-navy truncate">{a.titulo}</span>
+                <span className="block text-xs text-grafite-claro truncate">{a.apoio}</span>
               </span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 text-grafite-claro transition-transform group-hover:translate-x-0.5 group-hover:text-navy">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </Link>
           ))}
         </div>

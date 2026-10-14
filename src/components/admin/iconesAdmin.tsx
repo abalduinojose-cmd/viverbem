@@ -59,6 +59,28 @@ export const ICONES = {
       <path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
     </>
   ),
+  // Os números do mês da visão geral (14/10/2026): a sacola do pedido, a
+  // receita com o Rx e as moedas do faturamento
+  pedidos: (
+    <>
+      <path d="M5.5 8.5h13l-.9 10.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5.5 8.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </>
+  ),
+  receita: (
+    <>
+      <path d="M6.5 3.5h8l4 4v13h-12v-17Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M14.5 3.5v4h4" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M9.5 11h2.4a1.6 1.6 0 0 1 0 3.2H9.5V11Zm0 3.2V17m2.2-2.8 3.3 3.6m0-3.6-3.3 3.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
+  faturamento: (
+    <>
+      <ellipse cx="12" cy="7" rx="7" ry="3" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5" stroke="currentColor" strokeWidth="1.7" />
+    </>
+  ),
 };
 
 export type NomeIcone = keyof typeof ICONES;

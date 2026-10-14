@@ -12,35 +12,69 @@
 // está, só deixe mais moderno"): cantos mais suaves (1,5rem) e fio mais
 // leve nos cartões, uma sombra bem baixa, os números de destaque maiores,
 // o título de página maior e os botões em pílula. A estrutura é a mesma.
+//
+// 14/10/2026 ("quero um dashboard de alta qualidade e premium"): a lateral
+// virou a folha escura (ver CascaAdmin); aqui o cabeçalho ganhou a segunda
+// voz em itálico serifado ("Olá, *Anderson*") e uma linha de chips; o
+// cartão de número ganhou o ícone no canto, a contagem animada do valor
+// (PecasVivas) e a variante "noite", em azul-noite, para o número que
+// manda na tela; o botão principal ganhou sombra. As telas que já usavam
+// as peças não mudam de API.
+import { NumeroAnimado } from "./PecasVivas";
 
 /** Cabeçalho padrão de página: rótulo pequeno com o fio de ouro, título,
  *  explicação e a ação principal à direita. */
 export function CabecalhoAdmin({
   rotulo,
   titulo,
+  tituloDestaque,
   descricao,
+  chips,
   acao,
 }: {
   rotulo?: string;
   titulo: string;
+  /** A segunda voz do título, em itálico serifado e ouro ("Olá, *Anderson*") */
+  tituloDestaque?: string;
   descricao?: string;
+  /** Uma linha de chips embaixo da explicação (a data, a hora, o estado) */
+  chips?: React.ReactNode;
   acao?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
       <div className="min-w-0">
-        {rotulo && <p className="rotulo-pilula mb-2">{rotulo}</p>}
-        <h1 className="text-[1.8rem] md:text-[2.2rem] font-semibold text-navy tracking-[-0.035em] leading-[1.05]">
+        {rotulo && <p className="rotulo-pilula mb-2.5">{rotulo}</p>}
+        <h1 className="text-[1.9rem] md:text-[2.4rem] font-semibold text-navy tracking-[-0.04em] leading-[1.02] text-balance">
           {titulo}
+          {tituloDestaque && (
+            <>
+              {" "}
+              <span className="italic font-normal text-ouro-escuro" style={{ fontFamily: "var(--font-destaque)" }}>
+                {tituloDestaque}
+              </span>
+            </>
+          )}
         </h1>
         {descricao && <p className="text-cinza text-sm md:text-[0.95rem] mt-2">{descricao}</p>}
+        {chips && <div className="mt-3 flex flex-wrap items-center gap-2">{chips}</div>}
       </div>
       {acao && <div className="shrink-0 flex flex-wrap gap-2">{acao}</div>}
     </div>
   );
 }
 
-/** Cartão branco padrão (borda fina, sem sombra pesada). */
+/** Chip de informação do cabeçalho (a data, a hora, um estado). */
+export function ChipAdmin({ children, tom = "claro" }: { children: React.ReactNode; tom?: "claro" | "verde" | "ouro" }) {
+  const classe = {
+    claro: "bg-white ring-1 ring-fio text-cinza",
+    verde: "bg-green-50 text-green-700",
+    ouro: "bg-ouro/10 text-ouro-escuro",
+  }[tom];
+  return <span className={`inline-flex items-center gap-1.5 h-8 rounded-full px-3 text-[0.78rem] font-medium tabular-nums ${classe}`}>{children}</span>;
+}
+
+/** Cartão branco padrão (fio fino, sombra baixa). */
 export function CartaoAdmin({
   children,
   className = "",
@@ -56,11 +90,11 @@ export function CartaoAdmin({
   acao?: React.ReactNode;
 }) {
   return (
-    <div className={`bg-white rounded-[1.5rem] border border-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] ${className}`}>
+    <div className={`bg-white rounded-[1.5rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] ${className}`}>
       {(titulo || acao) && (
         <div className="flex items-start justify-between gap-3 px-5 pt-5">
           <div className="min-w-0">
-            {titulo && <h2 className="font-semibold text-navy leading-snug">{titulo}</h2>}
+            {titulo && <h2 className="text-[1.02rem] font-semibold text-navy leading-snug tracking-[-0.01em]">{titulo}</h2>}
             {apoio && <p className="text-cinza text-xs mt-0.5">{apoio}</p>}
           </div>
           {acao}
@@ -71,41 +105,61 @@ export function CartaoAdmin({
   );
 }
 
-/** Número de destaque dos resumos. O ouro entra só como um fio curto sob
- *  o rótulo, para a leitura ficar nos números. */
+/** Número de destaque dos resumos. O valor conta de zero quando aparece;
+ *  o ícone fica no canto, pequeno; a variante "noite" é o número que manda
+ *  na tela, em azul-noite com a luz da marca. */
 export function CartaoNumero({
   rotulo,
   valor,
   apoio,
   tom = "navy",
   extra,
+  icone,
 }: {
   rotulo: string;
   valor: string | number;
   apoio?: string;
-  tom?: "navy" | "tinta" | "verde" | "ambar" | "vermelho";
+  tom?: "navy" | "tinta" | "verde" | "ambar" | "vermelho" | "noite";
   /** Algo no canto direito (ex.: a variação do mês) */
   extra?: React.ReactNode;
+  /** O desenho do ícone (os <path> de 24x24 de ICONES) */
+  icone?: React.ReactNode;
 }) {
+  const noite = tom === "noite";
   const cor = {
     navy: "text-navy",
     tinta: "text-tinta",
     verde: "text-green-700",
     ambar: "text-amber-600",
     vermelho: "text-carimbo",
+    noite: "text-white",
   }[tom];
   return (
-    <div className="bg-white rounded-[1.5rem] border border-fio/80 px-5 py-5 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] transition-colors hover:border-tinta/30">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-[0.6875rem] font-semibold tracking-[0.14em] uppercase text-cinza leading-tight">
-          {rotulo}
-        </p>
-        {extra}
+    <div
+      className={`relative overflow-hidden rounded-[1.5rem] px-5 py-5 transition-colors ${
+        noite
+          ? "banner-noite em-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)]"
+          : "bg-white ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:ring-tinta/30"
+      }`}
+    >
+      {noite && <span aria-hidden="true" className="malha-banner" />}
+      <div className="relative flex items-start justify-between gap-2">
+        <p className={`text-[0.6875rem] font-semibold tracking-[0.14em] uppercase leading-tight ${noite ? "text-white/60" : "text-cinza"}`}>{rotulo}</p>
+        <span className="flex items-center gap-2">
+          {extra}
+          {icone && (
+            <span className={`flex size-8 items-center justify-center rounded-xl ${noite ? "bg-white/10 text-[#e1c68f]" : "bg-gelo text-tinta"}`}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                {icone}
+              </svg>
+            </span>
+          )}
+        </span>
       </div>
-      <p className={`text-[2rem] md:text-[2.4rem] font-semibold tracking-[-0.035em] leading-none mt-4 tabular-nums ${cor}`}>
-        {valor}
+      <p className={`relative text-[2rem] md:text-[2.5rem] font-semibold tracking-[-0.04em] leading-none mt-4 tabular-nums ${cor}`}>
+        <NumeroAnimado texto={String(valor)} />
       </p>
-      {apoio && <p className="text-grafite-claro text-xs mt-2.5">{apoio}</p>}
+      {apoio && <p className={`relative text-xs mt-2.5 ${noite ? "text-white/55" : "text-grafite-claro"}`}>{apoio}</p>}
     </div>
   );
 }
@@ -162,7 +216,7 @@ export function classeBotaoAdmin(
     "inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
   const dimensao = tamanho === "pequeno" ? "h-9 px-3.5 text-[0.8rem]" : "h-11 px-4 text-sm";
   const tom = {
-    primario: "bg-navy text-white hover:bg-tinta",
+    primario: "bg-navy text-white hover:bg-tinta shadow-[0_14px_28px_-16px_rgba(13,35,64,0.7)]",
     secundario: "bg-white border border-fio text-navy hover:border-tinta/50 hover:text-tinta",
     fantasma: "text-cinza hover:text-navy hover:bg-nevoa",
     perigo: "bg-white border border-fio text-grafite-claro hover:border-carimbo/60 hover:text-carimbo",
