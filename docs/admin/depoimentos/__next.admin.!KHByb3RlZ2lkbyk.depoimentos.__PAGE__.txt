@@ -2,5 +2,5 @@
 2:I[98853,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js","/viverbem/_next/static/chunks/0fnk__f_eech4.js"],"RedirecionarDemo"]
 3:I[97367,["/viverbem/_next/static/chunks/05-c3ty_6dwfk.js","/viverbem/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"para":"/admin/produtos"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"bAnghLhGVVTr9ewsALfNE"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"para":"/admin/produtos"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"p-ku0EASquQTSpvyKwjGs"}
 5:null
