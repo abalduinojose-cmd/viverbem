@@ -13,7 +13,7 @@
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { criarCena, DURACAO, type Cena } from "./cena";
-import { criarFases } from "./fases";
+import { criarVitrine } from "./vitrine";
 import { FONTES_PADRAO, JOGOS_DE_FONTES, fontesParaCarregar } from "./fontes";
 import { ROTEIROS, type NomeRoteiro, type Roteiro } from "./roteiros";
 
@@ -246,7 +246,7 @@ export function CenaAnimada({
             imagens,
             fontes,
             roteiro,
-            roteiro.coreografia === "fases" ? criarFases : undefined,
+            roteiro.coreografia === "vitrine" ? criarVitrine : undefined,
             pausa,
           );
           if (!vivo) return;

@@ -658,7 +658,7 @@ export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, bril
 export type SpriteTexto = { tela: Imagem; x0: number; y0: number; l: number; a: number };
 export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Luz: SpriteTexto };
 
-/** O que a cena empresta a uma coreografia de fora (ver fases.ts): o
+/** O que a cena empresta a uma coreografia de fora (ver vitrine.ts): o
  *  contexto, o enquadramento e os textos medidos (que mudam quando o
  *  banner muda de tamanho, por isso são funções), as imagens prontas e os
  *  desenhos comuns */
@@ -691,12 +691,17 @@ export type Palco = {
     suave?: boolean,
   ) => void;
   particulas: (t: number, cam: Camera, frente: boolean) => void;
+  /** Quantos px CSS vale uma unidade do palco (para medir o HTML por cima) */
+  escala: () => number;
+  /** Quantos pixels do canvas vale uma unidade do palco (escala x densidade
+   *  da tela), para preparar imagens no tamanho exato em que vão aparecer */
+  densidade: () => number;
 };
 
 /** Uma coreografia diferente da dobra, sobre o mesmo palco: a câmera e o
  *  desenho de cada quadro */
 export type Coreografia = {
-  camera: (t: number) => Camera;
+  camera: (t: number, laco: number) => Camera;
   /** laco: quantas voltas inteiras já passaram (0 na primeira), para a
    *  coreografia fazer a entrada só uma vez */
   desenhar: (t: number, cam: Camera, laco: number) => void;
@@ -1623,6 +1628,8 @@ export async function criarCena(
     pintarSprite,
     faixaDeLuz,
     particulas: desenharParticulas,
+    escala: () => escala,
+    densidade: () => dpr * escala,
   });
 
   let ultimoT = 0;
@@ -1630,12 +1637,14 @@ export async function criarCena(
   function desenhar(tBruto: number) {
     const t = ((tBruto % DURACAO) + DURACAO) % DURACAO;
     const laco = Math.max(0, Math.floor(tBruto / DURACAO));
-    ultimoT = t;
+    // Guarda com as voltas: redesenhar depois de um redimensionamento não
+    // pode voltar à entrada da primeira volta
+    ultimoT = tBruto;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!larguraCss) return;
     ctx.setTransform(dpr * escala, 0, 0, dpr * escala, dpr * ox, dpr * oy);
-    const cam = coreografia ? coreografia.camera(t) : camera(t);
+    const cam = coreografia ? coreografia.camera(t, laco) : camera(t);
     ctx.translate(enq.cx, enq.cy);
     ctx.rotate(cam.giro);
     ctx.translate(-enq.cx, -enq.cy);

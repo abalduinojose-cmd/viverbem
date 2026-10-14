@@ -52,8 +52,13 @@ export function SecaoSaudeMulher({ produtos }: { produtos: ProdutoDTO[] }) {
             (HTML vetorial, 14/10/2026) */}
         <CenaMulher />
         <span className="sr-only">Saúde em cada fase da mulher. Beleza e autoestima.</span>
-        {/* Véu na base: o convite lê sobre o reflexo dos potes */}
-        <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-navy/85 to-transparent" />
+        {/* Véu na base, só do lado do convite: ele lê sobre o reflexo, e os
+            potes da vitrine (à direita no computador, na faixa toda no
+            celular) não escurecem */}
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-20 md:h-28 bg-gradient-to-t from-navy/85 to-transparent [mask-image:linear-gradient(90deg,#000_45%,transparent_80%)] md:[mask-image:linear-gradient(90deg,#000_26%,transparent_40%)]"
+        />
         <span className="absolute inset-x-0 bottom-0 z-[1] px-5 pb-5 md:px-12 md:pb-8">
           <span className="inline-flex items-center gap-2 text-[0.95rem] md:text-[1.05rem] font-medium text-white/90 transition-colors group-hover:text-white">
             Ver a linha Saúde da Mulher

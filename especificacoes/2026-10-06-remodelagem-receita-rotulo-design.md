@@ -1,5 +1,36 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 73 (14/10/2026): animação da Saúde da Mulher refeita como vitrine, com os quatro produtos lado a lado, maiores e sem destaque. IMPLEMENTADO, medido e publicado (30º push).**
+> Pedido (com o canvas do cartão selecionado e dois prints do celular):
+> "não gostei da animação, mude toda ela tanto para mobile quanto para
+> desktop, quero os produtos sem destacado e um pouco maiores e aproveite
+> mais o espaço das telas, depois atualize o github, quero a animação em
+> java em alta qualidade". Saiu a coreografia "fases" (lua de ouro, um pote
+> por vez na frente com a luz rosada, os outros desfocados ao longe;
+> `fases.ts` apagado) e entrou a "vitrine" (`heroAnimado/vitrine.ts`): os
+> quatro potes juntos, da esquerda para a direita ZincBlock, Pó
+> finalizador, Bastão e Composto (os altos nas pontas), todos nítidos e
+> iguais, sobre um espelho d'água com um fio de ouro. Entrada só na
+> primeira volta: o fio se desenha do centro, os potes sobem de trás dele
+> um a um com rastro e abrem um anel na água, a câmera chega perto. No
+> laço: cada pote flutua no seu ritmo e, a cada troca do letreiro, uma ola
+> passa pela fila (cada pote sobe um pouco, gira de leve e recebe uma faixa
+> de luz no rótulo; uma vez da esquerda, outra da direita) com um brilho
+> correndo no fio. Volta de 7 esticada para 11,9 s por igual (cada item do
+> letreiro fica ~2,4 s); letreiro e olas contam o tempo corrido, então
+> nada dá tranco na emenda. Espaço: o `TituloCinetico` mede onde o texto
+> termina (offset*, sem as transformações da entrada) e a vitrine ocupa o
+> resto: no celular a faixa inteira entre o letreiro e o convite (potes de
+> ~165 px a 390), no computador tudo à direita do título (até ~300 px de
+> altura a 1440), no tablet os potes se encostam um pouco em vez de
+> encolher. Qualidade: cada pote é reamostrado uma vez no tamanho exato
+> (createImageBitmap "high") e a escala tem teto pela resolução das fotos
+> (500x500, pote de ~280-330 px: até 1,3x). O véu da base ficou só do lado
+> do convite (máscara horizontal), para não escurecer os potes. Motor:
+> `Palco` ganhou `escala` e `densidade`, a câmera da coreografia recebe a
+> volta, e o último quadro guardado leva as voltas. Medido: 2 a 4 ms por
+> quadro, 60 fps no desktop e no celular.
+
 > **ADENDO 72 (14/10/2026): título cinético da Saúde da Mulher em HTML vetorial, mapa real das lojas, WhatsApp com assuntos, catálogo sem a barra repetida, receita no quadro inteiro e "ver mais" clean. IMPLEMENTADO, testado e publicado (29º push).**
 > Pedidos, na ordem: "o mapa está bom, mantenha a ideia mas coloque o mapa
 > mais real com as setas" e depois "não tá bom, quero mais simples, mas

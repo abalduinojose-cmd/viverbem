@@ -20,15 +20,17 @@
 //     assentando, como um bloco de After Effects com "text animator";
 //   - "em cada fase da" sobe palavra a palavra, logo atrás;
 //   - "mulher" se revela da esquerda para a direita e uma luz corre pelo
-//     ouro; a mesma luz volta toda vez que os potes pousam;
-//   - o letreiro dos passos é um rolo vertical que anda junto com o pote
-//     em destaque, quadro a quadro, lendo o tempo da cena.
+//     ouro; a mesma luz volta a cada volta do letreiro;
+//   - o letreiro dos passos é um rolo vertical que anda com o tempo da cena,
+//     quadro a quadro, e a cada troca uma ola passa pelos potes (vitrine.ts).
+// O bloco de texto se mede (sem as transformações da entrada) e conta à
+// cena onde termina: os potes ocupam o resto do cartão.
 // Tudo entra uma vez, quando o banner aparece, e fica. Roda também com
 // "reduzir movimento" ligado, como o resto do site.
 import { useEffect, useRef } from "react";
 import { CenaAnimada } from "./HeroAnimado";
 import { DURACAO } from "./cena";
-import { passoDoLetreiro } from "./fases";
+import { BRILHO_DO_TITULO, LETREIRO_INICIO, areaDoTexto, passoDoLetreiro } from "./vitrine";
 import { FONTES_PADRAO, JOGOS_DE_FONTES } from "./fontes";
 import { ROTEIROS } from "./roteiros";
 
@@ -126,23 +128,44 @@ export function CenaMulher() {
       { threshold: 0.3 }
     );
     observador.observe(el);
+
+    // Onde o texto termina, em px do cartão, pelas medidas do layout
+    // (offset*, que ignoram as transformações da entrada): a cena põe os
+    // potes no espaço que sobra
+    const medir = () => {
+      let direita = 0;
+      let base = 0;
+      for (const filho of Array.from(el.children) as HTMLElement[]) {
+        direita = Math.max(direita, el.offsetLeft + filho.offsetLeft + filho.offsetWidth);
+        base = Math.max(base, el.offsetTop + filho.offsetTop + filho.offsetHeight);
+      }
+      areaDoTexto.direita = Math.round(direita);
+      areaDoTexto.base = Math.round(base);
+    };
+    medir();
+    const medida = new ResizeObserver(medir);
+    medida.observe(el);
+    Array.from(el.children).forEach((filho) => medida.observe(filho));
     return () => {
       observador.disconnect();
+      medida.disconnect();
       animacoes.forEach((a) => a.cancel());
     };
   }, []);
 
-  // Cada quadro da cena: o letreiro anda com o pote em destaque, e a luz
-  // passa de novo pelo "mulher" quando os potes pousam
+  // Cada quadro da cena: o letreiro anda com o tempo dela (o tempo corrido,
+  // com as voltas), e a luz passa de novo pelo "mulher" a cada volta dele
   const aoQuadro = (tBruto: number) => {
     const laco = Math.max(0, Math.floor(tBruto / DURACAO));
     const t = tBruto - laco * DURACAO;
-    const u = passoDoLetreiro(t);
     const n = ROTEIRO.passos.length;
+    const total = passoDoLetreiro(tBruto);
+    // De 0 a n: o n é o primeiro de novo, chegando por baixo
+    const u = total - n * Math.floor(total / n);
 
     const caixa = letreiro.current;
     if (caixa) {
-      const entra = laco > 0 ? 1 : suave(trecho(t, 2.1, 2.6));
+      const entra = laco > 0 ? 1 : suave(trecho(t, LETREIRO_INICIO - 0.3, LETREIRO_INICIO + 0.05));
       caixa.style.opacity = String(entra);
       caixa.style.transform = `translateY(${(1 - entra) * 10}px)`;
     }
@@ -160,7 +183,7 @@ export function CenaMulher() {
 
     const antes = ultimoT.current;
     ultimoT.current = t;
-    if (mulher.current && antes >= 0 && antes < 5.55 && t >= 5.55) {
+    if (mulher.current && laco > 0 && antes >= 0 && antes < BRILHO_DO_TITULO && t >= BRILHO_DO_TITULO) {
       mulher.current.animate([{ backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0" }], { duration: 1500, easing: CURVA.meio });
     }
   };
