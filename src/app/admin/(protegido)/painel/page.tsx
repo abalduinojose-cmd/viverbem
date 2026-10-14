@@ -15,16 +15,22 @@
 // deixaram de ser cinco colunas espremidas (na tela do usuário, com a
 // lateral, o conteúdo tem uns 720px) e ganharam a seta. A informação é a
 // mesma.
+//
+// 14/10/2026, mais tarde ("um filtro para filtrar e comparar com o mesmo
+// período do ano ou do mês passado, com gráficos"): os números do mês, os
+// dois gráficos, como recebem e os mais pedidos viraram o PainelPeriodo
+// (filtro de período, comparação e um gráfico só com a escolha do que
+// medir); o catálogo virou três barras (no site, com foto, preço no site).
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { obterSessao } from "@/lib/sessao";
 import { obterMetricas } from "@/lib/metricas";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
-import { CabecalhoAdmin, CartaoAdmin, CartaoNumero, ChipAdmin, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
-import { Anel, BarraViva, Faisca } from "@/components/admin/PecasVivas";
+import { CabecalhoAdmin, CartaoAdmin, ChipAdmin, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
+import { BarraViva } from "@/components/admin/PecasVivas";
 import { ICONES } from "@/components/admin/iconesAdmin";
-import { GraficoCatalogo, GraficoFaturamento, GraficoPedidosDia, GraficoEntregas } from "@/components/admin/Graficos";
+import { PainelPeriodo } from "@/components/admin/PainelPeriodo";
 
 export const dynamic = "force-dynamic";
 
@@ -47,54 +53,6 @@ function tempoRelativo(iso: string) {
   if (h < 24) return `há ${h} h`;
   const d = Math.round(h / 24);
   return d === 1 ? "ontem" : `há ${d} dias`;
-}
-
-// O lugar do gráfico quando ainda não há o que desenhar (13/10/2026): sem
-// pedido nenhum o painel mostrava eixos e uma linha no zero, que parecia
-// erro. Ocupa a mesma proporção do gráfico, para nada pular quando o
-// primeiro pedido chegar.
-function GraficoVazio({ titulo, texto }: { titulo: string; texto: string }) {
-  return (
-    <div className="aspect-[520/190] rounded-2xl border border-dashed border-fio bg-nevoa/50 flex flex-col items-center justify-center text-center px-6 gap-2">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-tinta/60">
-        <path d="M4 20h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <rect x="6" y="12" width="3" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
-        <rect x="11" y="8" width="3" height="10" rx="1" stroke="currentColor" strokeWidth="1.6" />
-        <rect x="16" y="14" width="3" height="4" rx="1" stroke="currentColor" strokeWidth="1.6" />
-      </svg>
-      <p className="font-semibold text-navy text-[0.95rem]">{titulo}</p>
-      <p className="text-cinza text-sm max-w-xs leading-snug">{texto}</p>
-    </div>
-  );
-}
-
-// Selo de variação contra o mês passado
-function Variacao({ valor, noite = false }: { valor: number | null; noite?: boolean }) {
-  if (valor === null) return null;
-  const subiu = valor > 0;
-  const parado = valor === 0;
-  const classe = noite
-    ? parado
-      ? "bg-white/10 text-white/70"
-      : subiu
-        ? "bg-green-400/20 text-green-200"
-        : "bg-white/10 text-[#f6c7c9]"
-    : parado
-      ? "bg-nevoa text-cinza"
-      : subiu
-        ? "bg-green-50 text-green-700"
-        : "bg-carimbo/10 text-carimbo";
-  return (
-    <span className={`inline-flex items-center gap-1 text-[0.6875rem] font-semibold rounded-full px-2 py-0.5 tabular-nums ${classe}`} title="Em relação ao mês passado">
-      {!parado && (
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d={subiu ? "M12 19V5m0 0-6 6m6-6 6 6" : "M12 5v14m0 0 6-6m-6 6-6-6"} stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
-      {subiu ? "+" : ""}
-      {valor}%
-    </span>
-  );
 }
 
 /** Link discreto no canto dos cartões ("Abrir", "Ver todos") */
@@ -122,15 +80,6 @@ export default async function PaginaPainel() {
   if (sessao.papel !== PAPEL_ADMIN) redirect("/admin/produtos");
 
   const m = await obterMetricas();
-  // Sem pedido nenhum, as setas de "em relação ao mês passado" não dizem nada
-  const semPedidos = m.totalPedidos === 0;
-  const mes = new Date().toLocaleDateString("pt-BR", { month: "long" });
-  // Os mini-gráficos dos números: só quando há o que desenhar
-  const faiscaPedidos = m.porDia.some((x) => x.pedidos > 0) ? m.porDia.map((x) => x.pedidos) : null;
-  const faiscaReceitas = m.porDia.some((x) => x.receitas > 0) ? m.porDia.map((x) => x.receitas) : null;
-  const faiscaFaturamento = m.porMes.some((x) => x.faturamento > 0) ? m.porMes.map((x) => x.faturamento) : null;
-  const parteReceitas = m.pedidosMes > 0 ? Math.round((m.receitasMes / m.pedidosMes) * 100) : null;
-  const parteClientes = m.pedidosMes > 0 ? (m.clientesUnicos / m.pedidosMes) * 100 : null;
   const alertas = [
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
     { n: m.alertas.semPreco, r: "industrializados sem preço", href: "/admin/produtos", grave: true },
@@ -146,7 +95,7 @@ export default async function PaginaPainel() {
         rotulo="Gestão"
         titulo="Olá,"
         tituloDestaque={(sessao.nome ?? "").split(" ")[0]}
-        descricao={`Como está o mês de ${mes} na Viver Bem.`}
+        descricao="Como anda a Viver Bem. Escolha o período e compare com o mês ou o ano passado."
         chips={
           <>
             <ChipAdmin tom={alertas.some((a) => a.grave) ? "ouro" : "verde"}>
@@ -176,123 +125,41 @@ export default async function PaginaPainel() {
         }
       />
 
-      {/* ---------- Números do mês ---------- */}
-      <div className="cascata grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-7">
-        <CartaoNumero
-          tom="noite"
-          icone={ICONES.pedidos}
-          rotulo="Pedidos no mês"
-          valor={String(m.pedidosMes)}
-          extra={<Variacao noite valor={semPedidos ? null : m.pedidosVariacao} />}
-          apoio={`${m.totalPedidos} desde o início · 14 dias`}
-          visual={faiscaPedidos && <Faisca valores={faiscaPedidos} cor="ouro" className="h-9 w-full" />}
-        />
-        <CartaoNumero
-          icone={ICONES.receita}
-          rotulo="Receitas no mês"
-          valor={String(m.receitasMes)}
-          extra={<Variacao valor={semPedidos ? null : m.receitasVariacao} />}
-          apoio={parteReceitas !== null ? `${parteReceitas}% dos pedidos · 14 dias` : "pedidos com foto de receita"}
-          visual={faiscaReceitas && <Faisca valores={faiscaReceitas} className="h-9 w-full" />}
-        />
-        <CartaoNumero
-          icone={ICONES.faturamento}
-          rotulo="Faturamento"
-          valor={formatarPreco(m.faturamentoMes)}
-          extra={<Variacao valor={semPedidos ? null : m.faturamentoVariacao} />}
-          apoio="só produtos com preço no site"
-          visual={faiscaFaturamento && <Faisca valores={faiscaFaturamento} className="h-9 w-full" />}
-        />
-        <CartaoNumero
-          icone={ICONES.clientes}
-          rotulo="Clientes no mês"
-          valor={String(m.clientesUnicos)}
-          apoio="WhatsApps diferentes"
-          visual={parteClientes !== null && <Anel pct={parteClientes} rotulo="por pedido" cor="ouro" />}
-        />
-      </div>
+      {/* ---------- O período: filtro, números, gráfico comparativo, como
+           recebem e os mais pedidos (14/10/2026, PainelPeriodo) ---------- */}
+      <PainelPeriodo historico={m.historico} agora={m.agora} />
 
-      {/* ---------- Gráficos ---------- */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-        <CartaoAdmin titulo="Faturamento por mês" apoio="Últimos 6 meses, só produtos com preço">
-          <div className="px-5 pb-5 mt-4">
-            {m.porMes.every((x) => x.faturamento === 0) ? (
-              <GraficoVazio titulo="Ainda sem faturamento" texto="As barras aparecem quando entrar o primeiro pedido de um produto com preço no site." />
-            ) : (
-              <GraficoFaturamento dados={m.porMes} />
-            )}
-          </div>
-        </CartaoAdmin>
-        <CartaoAdmin titulo="Pedidos por dia" apoio="Últimos 14 dias, receitas incluídas">
-          <div className="px-5 pb-5 mt-4">
-            {m.porDia.every((x) => x.pedidos === 0) ? (
-              <GraficoVazio titulo="Nenhum pedido nos últimos 14 dias" texto="Cada pedido feito pelo site, pelo carrinho ou pela foto da receita, vira um ponto aqui." />
-            ) : (
-              <GraficoPedidosDia dados={m.porDia} />
-            )}
-          </div>
-        </CartaoAdmin>
-      </div>
-
-      {/* ---------- Catálogo, entregas e os mais pedidos ---------- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <CartaoAdmin titulo="O catálogo" apoio={`${m.catalogo.noSite} de ${m.catalogo.total} produtos no site`} acao={<LinkCanto href="/admin/produtos">Abrir</LinkCanto>}>
-          <div className="px-5 pb-5">
-            <GraficoCatalogo manipulados={m.catalogo.manipulados} industrializados={m.catalogo.industrializados} comPrecoNoSite={m.catalogo.comPrecoNoSite} />
-            <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-2xl bg-nevoa px-3.5 py-3">
-                <dt className="text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza">Com foto</dt>
-                <dd className="mt-1 font-semibold text-navy tabular-nums">
-                  {m.catalogo.comFoto} <span className="text-grafite-claro font-normal">de {m.catalogo.total}</span>
-                </dd>
+      {/* ---------- Catálogo ---------- */}
+      <CartaoAdmin className="mt-4" titulo="O catálogo" apoio={`${m.catalogo.total} produtos cadastrados em ${m.catalogo.categorias} categorias`} acao={<LinkCanto href="/admin/produtos">Abrir</LinkCanto>}>
+        <div className="px-5 pb-5 mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[
+            { rotulo: "No site", n: m.catalogo.noSite, de: m.catalogo.total, cor: "bg-green-600" },
+            { rotulo: "Com foto", n: m.catalogo.comFoto, de: m.catalogo.total, cor: "bg-tinta" },
+            { rotulo: "Preço no site", n: m.catalogo.comPrecoNoSite, de: m.catalogo.total, cor: "bg-[image:var(--ouro-degrade)]" },
+          ].map((c) => (
+            <div key={c.rotulo} className="rounded-2xl bg-nevoa/70 px-4 py-3.5">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="text-xs font-medium text-cinza">{c.rotulo}</span>
+                <span className="text-xs text-grafite-claro tabular-nums">{c.de > 0 ? Math.round((c.n / c.de) * 100) : 0}%</span>
               </div>
-              <div className="rounded-2xl bg-nevoa px-3.5 py-3">
-                <dt className="text-[0.6875rem] font-semibold tracking-[0.12em] uppercase text-cinza">Categorias</dt>
-                <dd className="mt-1 font-semibold text-navy tabular-nums">
-                  {m.catalogo.categoriasNoSite} <span className="text-grafite-claro font-normal">de {m.catalogo.categorias} no site</span>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </CartaoAdmin>
-
-        <CartaoAdmin titulo="Como recebem o pedido" apoio="Neste mês">
-          <div className="px-5 pb-5">
-            <GraficoEntregas entregas={m.entregas} retiradas={m.retiradas} />
-          </div>
-        </CartaoAdmin>
-
-        <CartaoAdmin titulo="Mais pedidos no mês" apoio="Produtos com preço">
-          <div className="px-5 pb-5">
-            {m.maisPedidos.length === 0 ? (
-              <p className="text-cinza text-sm mt-3 leading-relaxed">
-                Nenhum produto com preço pedido neste mês. Os pedidos pela receita contam em &quot;Receitas no mês&quot;.
+              <p className="mt-1.5 tabular-nums">
+                <span className="text-[1.5rem] font-semibold text-navy tracking-[-0.03em] leading-none">{c.n}</span>
+                <span className="text-sm text-grafite-claro"> de {c.de}</span>
               </p>
-            ) : (
-              <ul className="flex flex-col gap-2.5 mt-4">
-                {m.maisPedidos.map((p, i) => {
-                  const maior = m.maisPedidos[0].quantidade;
-                  return (
-                    <li key={p.nome}>
-                      <div className="flex items-baseline justify-between gap-3 text-sm">
-                        <span className="text-navy truncate">
-                          <span className="text-grafite-claro tabular-nums mr-1.5">{i + 1}.</span>
-                          {p.nome}
-                        </span>
-                        <span className="font-semibold text-navy tabular-nums shrink-0">{p.quantidade}</span>
-                      </div>
-                      {/* Barra proporcional ao campeão, que enche ao aparecer */}
-                      <div className="h-1.5 bg-nevoa rounded-full mt-1.5 overflow-hidden">
-                        <BarraViva pct={Math.round((p.quantidade / maior) * 100)} className="h-full rounded-full bg-[image:var(--ouro-degrade)]" />
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </CartaoAdmin>
-      </div>
+              <div className="mt-2.5 h-1.5 rounded-full bg-white overflow-hidden">
+                <BarraViva pct={c.de > 0 ? (c.n / c.de) * 100 : 0} className={`h-full rounded-full ${c.cor}`} />
+              </div>
+            </div>
+          ))}
+          <p className="md:col-span-3 flex flex-wrap gap-2 text-xs">
+            <span className="inline-flex items-center h-7 rounded-full bg-gelo px-3 font-medium text-tinta tabular-nums">{m.catalogo.manipulados} manipulados</span>
+            <span className="inline-flex items-center h-7 rounded-full bg-ouro/10 px-3 font-medium text-ouro-escuro tabular-nums">{m.catalogo.industrializados} industrializados</span>
+            <span className="inline-flex items-center h-7 rounded-full bg-white ring-1 ring-fio px-3 font-medium text-cinza tabular-nums">
+              {m.catalogo.categoriasNoSite} de {m.catalogo.categorias} categorias no site
+            </span>
+          </p>
+        </div>
+      </CartaoAdmin>
 
       {/* ---------- Atenção e equipe ---------- */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">

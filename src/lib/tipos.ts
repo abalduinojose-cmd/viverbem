@@ -167,3 +167,16 @@ export const PERFIL_GOOGLE_URL =
   "https://www.google.com/maps/search/?api=1&query=Viver%20Bem%20-%20Farm%C3%A1cia%20de%20Manipula%C3%A7%C3%A3o&query_place_id=ChIJnz1PkICpmQARI67bD1sFiE8";
 /** Abre direto a caixa de "escrever avaliação" do perfil no Google (página /avaliacoes) */
 export const AVALIAR_GOOGLE_URL = "https://search.google.com/local/writereview?placeid=ChIJnz1PkICpmQARI67bD1sFiE8";
+
+// Vídeo na galeria do produto (14/10/2026, "na opção de botar foto também
+// pode colocar vídeo"): a galeria guarda URLs; o que termina em .mp4 ou
+// .webm é vídeo. A capa (fotoUrl, usada nas listas, nos cartões e no
+// compartilhamento) é sempre a primeira FOTO, nunca um vídeo.
+export function ehVideo(url: string | null | undefined): boolean {
+  return !!url && /\.(mp4|webm)(?:[?#].*)?$/i.test(url);
+}
+
+/** A primeira foto (não vídeo) da galeria, ou null */
+export function capaDaGaleria(fotos: string[]): string | null {
+  return fotos.find((f) => !ehVideo(f)) ?? null;
+}

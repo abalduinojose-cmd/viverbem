@@ -1,5 +1,51 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 78 (14/10/2026): editar produto com vídeo e botão Salvar, categorias novas, filtro de período com comparação na visão geral, Como funciona v9, título da Saúde da Mulher centrado e busca com botão. IMPLEMENTADO, conferido no localhost e publicado no 35º push.**
+> Pedidos, na ordem: "melhore a parte de editar produtos, deixe mais clean
+> e moderna; na opção de botar foto também pode colocar vídeo e coloque um
+> botão salvar"; "melhore a parte de criar categoria, modernize a parte
+> dos produtos selecionada"; "quero no painel gestão um filtro para
+> filtrar e comparar com o mesmo período do ano ou mês passado, com
+> gráficos; melhore as seções selecionadas, mais moderno e clean"; "deixe
+> o Como funciona mais moderno, no mobile continue arrastando para o lado;
+> no motion, o Saúde em cada fase da mulher centralizado e maior um
+> pouco"; "deixe o botão de pesquisa funcionando e suba o site no github".
+> - FormProduto: duas colunas (tipo de venda em seletor, fotos e vídeos,
+>   informações, página do produto | prévia "Como aparece no site" e as
+>   chaves, presas ao rolar); barra de salvar presa no pé com o estado
+>   (não salvas / salvas / tudo salvo), botão Salvar e Ctrl+S; na edição
+>   salvar mantém a pessoa na página; sair com pendência pede confirmação.
+>   Galeria aceita MP4/WEBM até 40 MB (validarMidia na rota de upload),
+>   soltar arquivos, arrastar para reordenar, "usar como capa".
+>   `ehVideo`/`capaDaGaleria` em tipos.ts: a capa (fotoUrl) é sempre a
+>   primeira FOTO (DTO e validarProduto). GaleriaProduto do site toca o
+>   vídeo mudo em laço quando é o item à vista; miniatura com "play".
+> - ListaCategorias: cartão "Nova categoria" com campo e botão numa
+>   pílula e a prévia do endereço; lista num cartão com cabeçalho de
+>   colunas, posição numerada, total em pílula, chaves compactas, renomear
+>   no lugar e ícones; no celular segunda linha com as chaves (md:contents).
+> - Visão geral: PainelPeriodo (client) recebe `historico` enxuto de
+>   metricas.ts (sem nome/telefone; cliente vira um número) e `agora`.
+>   Período: este mês, 7/30/90 dias, este ano; comparar com o mesmo período
+>   do mês passado ou do ano passado (este ano só com o ano). Quatro
+>   números com variação e o valor da comparação; um gráfico de linhas
+>   (período azul com área, comparação tracejada em ouro, detalhe ao
+>   passar o dedo/mouse) com a escolha pedidos/receitas/faturamento/
+>   clientes, por dia até 32 dias, semana até 100, mês acima; como recebem
+>   e mais pedidos no período. O catálogo virou três barras (no site, com
+>   foto, preço no site) com chips. O gerador da prévia espalha pedidos
+>   fictícios por ~430 dias (antes 48) para a comparação ter dados.
+> - Como funciona v9: cartões mais baixos, ícone + "Passo 01" no alto, o
+>   número grande em marca d'água no canto, detalhe com visto de ouro,
+>   barra dos stories no pé de cada cartão; até o tablet a faixa segue
+>   arrastando, com pontos que acompanham o cartão e levam a ele.
+> - Saúde da Mulher: título centrado (coluna de 48% no computador) e
+>   ~12% maior; folga título/pote de 56 para 80 px no computador (o pote
+>   invadia "em cada fase da") e de 14 para 26 no celular.
+> - Busca do cabeçalho: a lupa e um botão "Buscar" enviam (antes só o
+>   Enter), campo vazio leva ao catálogo inteiro, o termo aparece no campo
+>   na página de resultados.
+
 > **ADENDO 77 (14/10/2026): os cartões de número em três andares e a lista de produtos num cartão só. IMPLEMENTADO, conferido no localhost e na prévia, publicado no 34º push.**
 > Pedido (com os quatro cartões da visão geral selecionados, em prints do
 > celular onde "22 desde o início · 14 dias" quebrava palavra por

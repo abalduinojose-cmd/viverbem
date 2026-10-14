@@ -4,9 +4,45 @@
 // as miniaturas embaixo para trocar. Todas as fotos ficam no HTML (as
 // outras escondidas), então o leitor de tela e o Google veem a galeria
 // inteira; só a primeira carrega com prioridade.
-import { useState } from "react";
+//
+// 14/10/2026: a galeria aceita vídeo (MP4/WEBM enviado pelo painel). O
+// vídeo toca sem som, em laço, só quando é o item à vista; a miniatura
+// mostra o primeiro quadro com o sinal de "play".
+import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
+import { ehVideo } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
+
+function VideoDaGaleria({ src, ativo, nome }: { src: string; ativo: boolean; nome: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    if (ativo) v.play().catch(() => {});
+    else v.pause();
+  }, [ativo]);
+  return (
+    <video
+      ref={ref}
+      src={asset(src)}
+      muted
+      loop
+      playsInline
+      controls
+      preload={ativo ? "auto" : "metadata"}
+      aria-label={`${nome}, vídeo`}
+      className={`relative max-w-full max-h-full rounded-2xl object-contain ${ativo ? "animar-surgir" : "hidden"}`}
+    />
+  );
+}
+
+function IconePlay({ tamanho = 14 }: { tamanho?: number }) {
+  return (
+    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor" />
+    </svg>
+  );
+}
 
 export function GaleriaProduto({
   fotos,
@@ -32,7 +68,10 @@ export function GaleriaProduto({
         {fotos.length === 0 ? (
           <FotoProduto fotoUrl={null} nome={nome} className="relative" />
         ) : (
-          fotos.map((src, i) => (
+          fotos.map((src, i) =>
+            ehVideo(src) ? (
+              <VideoDaGaleria key={src} src={src} ativo={i === atual} nome={nome} />
+            ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={src}
@@ -50,7 +89,8 @@ export function GaleriaProduto({
                 i === atual ? "animar-surgir" : "hidden"
               }`}
             />
-          ))
+            )
+          )
         )}
 
         {novidade && (
@@ -77,23 +117,32 @@ export function GaleriaProduto({
               type="button"
               role="tab"
               aria-selected={i === atual}
-              aria-label={`Foto ${i + 1} de ${fotos.length}`}
+              aria-label={`${ehVideo(src) ? "Vídeo" : "Foto"} ${i + 1} de ${fotos.length}`}
               onClick={() => setAtiva(i)}
-              className={`shrink-0 w-[4.25rem] h-[4.25rem] rounded-2xl border bg-gelo/60 p-1.5 flex items-center justify-center transition ${
+              className={`relative shrink-0 w-[4.25rem] h-[4.25rem] rounded-2xl border bg-gelo/60 p-1.5 flex items-center justify-center transition ${
                 i === atual ? "border-ouro ring-4 ring-ouro/15" : "border-fio hover:border-ouro/50"
               }`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset(src)}
-                alt=""
-                width={120}
-                height={120}
-                draggable={false}
-                loading="lazy"
-                decoding="async"
-                className="max-w-full max-h-full object-contain"
-              />
+              {ehVideo(src) ? (
+                <>
+                  <video src={`${asset(src)}#t=0.1`} muted playsInline preload="metadata" className="max-w-full max-h-full rounded-lg object-cover" />
+                  <span className="absolute inset-0 m-auto size-6 rounded-full bg-navy/80 text-white flex items-center justify-center">
+                    <IconePlay tamanho={11} />
+                  </span>
+                </>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={asset(src)}
+                  alt=""
+                  width={120}
+                  height={120}
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-w-full max-h-full object-contain"
+                />
+              )}
             </button>
           ))}
         </div>

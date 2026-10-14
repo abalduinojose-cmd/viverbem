@@ -7,7 +7,7 @@
 import { NextResponse } from "next/server";
 import { exigirSessaoApi } from "@/lib/sessao";
 import { salvarImagem } from "@/lib/armazenamento";
-import { validarImagem } from "@/lib/imagens";
+import { validarMidia } from "@/lib/imagens";
 
 export async function POST(req: Request) {
   if (!(await exigirSessaoApi())) {
@@ -16,11 +16,12 @@ export async function POST(req: Request) {
 
   const formulario = await req.formData();
   const arquivo = formulario.get("arquivo");
-  const conferido = validarImagem(arquivo);
+  // Foto ou vídeo (MP4/WEBM até 40 MB) da galeria do produto
+  const conferido = validarMidia(arquivo, true);
   if ("erro" in conferido) {
     return NextResponse.json({ erro: conferido.erro }, { status: 400 });
   }
 
   const url = await salvarImagem(arquivo as File, conferido.extensao);
-  return NextResponse.json({ url }, { status: 201 });
+  return NextResponse.json({ url, tipo: conferido.tipo }, { status: 201 });
 }

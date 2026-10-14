@@ -15,6 +15,14 @@
 // claros, com a barra de ouro embaixo acompanhando a faixa. Depois dos
 // passos, o convite da receita em azul-noite, largo (inalterado).
 //
+// Nona versão (14/10/2026, "deixe o Como funciona mais moderno; na
+// versão mobile continue arrastando para o lado"): cartões mais baixos,
+// sem o vazio embaixo; o número grande virou marca d'água no canto e, no
+// alto, o ícone com "Passo 01"; o detalhe ganhou o visto de ouro; as
+// barras dos stories saíram do alto e entraram no pé de cada cartão. Até
+// o tablet a faixa continua arrastando para o lado, agora com pontos que
+// acompanham o cartão à vista e levam a cada passo.
+//
 // Versões anteriores: 11/10 stepper com a linha de ouro e nós (sétima);
 // 10/10 lista num cartão com o convite preso ao lado (sexta); 08/10 quatro
 // cartões com traço e faixa (quinta); 07/10 um cartão dividido por fios
@@ -160,6 +168,25 @@ export function ComoFunciona({
     setRodada((r) => r + 1);
   };
 
+  // Até o tablet: qual cartão está à vista na faixa (pelo arrasto) e o
+  // ponto que leva a cada um
+  const [noCelular, setNoCelular] = useState(0);
+  const aoRolarFaixa = () => {
+    const el = faixa.current;
+    if (!el || computador) return;
+    const primeiro = el.firstElementChild as HTMLElement | null;
+    if (!primeiro) return;
+    const passo = primeiro.offsetWidth + 14;
+    const i = Math.max(0, Math.min(PASSOS.length - 1, Math.round(el.scrollLeft / passo)));
+    if (i !== noCelular) setNoCelular(i);
+  };
+  const irPara = (i: number) => {
+    const el = faixa.current;
+    const alvo = el?.children[i] as HTMLElement | undefined;
+    if (!el || !alvo) return;
+    el.scrollTo({ left: alvo.offsetLeft - el.offsetLeft - 20, behavior: "smooth" });
+  };
+
   return (
     <section
       id="como-funciona"
@@ -191,94 +218,80 @@ export function ComoFunciona({
         </div>
       )}
 
-      {/* ---------- Os quatro passos: stories no computador, faixa até o tablet ---------- */}
+      {/* ---------- Os quatro passos: stories no computador, faixa arrastável até o tablet ---------- */}
       <div className={`passos-escopo ${cabecalho ? "vao-titulo" : ""}`}>
-        {/* As barras que contam os passos (só no computador): as de trás
-            cheias, a da vez se enchendo, as da frente vazias */}
-        <div aria-hidden="true" className="hidden lg:grid grid-cols-4 gap-5 mb-5">
-          {PASSOS.map((p, i) => (
-            <button
-              key={p.titulo}
-              type="button"
-              tabIndex={-1}
-              onClick={() => escolher(i)}
-              className="group/barra h-5 cursor-pointer"
-            >
-              <span className="block h-[3px] w-full overflow-hidden rounded-full bg-fio transition-colors group-hover/barra:bg-ouro/30">
-                {computador && i < ativo && <span className="block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />}
-                {computador && i === ativo && (
-                  <span
-                    key={`${ativo}-${rodada}`}
-                    className="passo-barra-enche block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]"
-                    style={{ animationDuration: `${DURACAO_PASSO}ms`, animationPlayState: pausado ? "paused" : "running" }}
-                  />
-                )}
-              </span>
-            </button>
-          ))}
-        </div>
-
         <ol
           ref={faixa}
+          onScroll={aoRolarFaixa}
           onMouseEnter={() => setPausado(true)}
           onMouseLeave={() => {
             setPausado(false);
             setRodada((r) => r + 1);
           }}
-          className="passos-faixa relative flex gap-4 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0"
+          className="passos-faixa relative flex gap-3.5 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-2 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0"
         >
           {PASSOS.map((p, i) => {
             const aceso = computador && i === ativo;
+            const feito = computador && i < ativo;
             return (
               <li
                 key={p.titulo}
                 onClick={() => escolher(i)}
-                className={`passo-cartao group relative flex w-[min(18.5rem,82vw)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] border p-5 md:p-6 lg:w-auto lg:shrink lg:min-h-[19rem] lg:cursor-pointer ${
+                className={`passo-cartao group relative flex w-[min(19rem,80vw)] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] p-5 md:p-6 transition-[background-color,box-shadow,transform] duration-500 lg:w-auto lg:shrink lg:cursor-pointer ${
                   aceso
-                    ? "border-transparent bg-noite text-white shadow-[0_30px_60px_-36px_rgba(13,35,64,0.65)] lg:-translate-y-1"
-                    : "border-fio bg-white text-navy shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] lg:hover:border-ouro/40"
+                    ? "bg-noite text-white shadow-[0_30px_60px_-34px_rgba(13,35,64,0.7)] ring-1 ring-inset ring-white/10 lg:-translate-y-1.5"
+                    : "bg-white text-navy ring-1 ring-inset ring-fio shadow-[0_24px_50px_-42px_rgba(16,42,74,0.45)] lg:hover:ring-ouro/45 lg:hover:-translate-y-0.5"
                 }`}
               >
                 {/* A atmosfera do cartão aceso: a malha e a luz de ouro, em fade */}
+                <span aria-hidden="true" className={`malha-banner transition-opacity duration-500 ${aceso ? "opacity-100" : "opacity-0"}`} />
                 <span
                   aria-hidden="true"
-                  className={`malha-banner transition-opacity duration-500 ${aceso ? "opacity-100" : "opacity-0"}`}
-                />
-                <span
-                  aria-hidden="true"
-                  className={`pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.32),transparent_62%)] transition-opacity duration-500 ${
+                  className={`pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.34),transparent_62%)] transition-opacity duration-500 ${
                     aceso ? "opacity-100" : "opacity-0"
                   }`}
                 />
+                {/* O número em marca d'água, grande, no canto de cima */}
+                <span
+                  aria-hidden="true"
+                  className={`numero-tinta pointer-events-none absolute right-5 top-2 text-[4.6rem] md:text-[5rem] leading-none transition-opacity duration-500 ${
+                    aceso ? "opacity-40" : "opacity-30"
+                  }`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
 
-                {/* O número grande em ouro e o ícone no quadrado */}
-                <span className="relative flex items-start justify-between gap-3">
-                  <span aria-hidden="true" className="numero-tinta text-[2.4rem] md:text-[2.7rem]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                {/* O ícone e o "Passo 01" */}
+                <span className="relative flex items-center gap-3">
                   <span
-                    className={`flex size-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-500 ${
-                      aceso ? "bg-white/10 text-white ring-1 ring-white/15" : "bg-gelo text-tinta"
+                    className={`flex size-11 shrink-0 items-center justify-center rounded-2xl transition-colors duration-500 ${
+                      aceso ? "bg-white/10 text-[#e1c68f] ring-1 ring-white/15" : "bg-gelo text-tinta"
                     }`}
                   >
                     {p.icone}
                   </span>
+                  <span className={`text-[0.6875rem] font-semibold uppercase tracking-[0.16em] transition-colors duration-500 ${aceso ? "text-white/60" : "text-cinza"}`}>
+                    Passo {String(i + 1).padStart(2, "0")}
+                  </span>
                 </span>
 
-                <h3 className="relative mt-5 text-[1.2rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] leading-snug">
+                <h3 className="relative mt-5 text-[1.2rem] md:text-[1.28rem] font-semibold tracking-[-0.03em] leading-snug">
                   <span className="sr-only">Passo {i + 1}: </span>
                   {p.titulo}
                 </h3>
-                <p className={`relative mt-2.5 text-[0.95rem] leading-relaxed transition-colors duration-500 ${aceso ? "text-white/80" : "text-grafite"}`}>
-                  {p.texto}
-                </p>
-                <p className={`relative mt-1.5 text-sm leading-relaxed transition-colors duration-500 ${aceso ? "text-white/55" : "text-cinza"}`}>
+                <p className={`relative mt-2 text-[0.93rem] leading-relaxed transition-colors duration-500 ${aceso ? "text-white/80" : "text-grafite"}`}>{p.texto}</p>
+
+                {/* O detalhe, com o visto */}
+                <p className={`relative mt-3.5 flex gap-2 text-[0.82rem] leading-snug transition-colors duration-500 ${aceso ? "text-white/60" : "text-cinza"}`}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 mt-px ${aceso ? "text-[#e1c68f]" : "text-ouro-escuro"}`}>
+                    <path d="M5 12.5l4.2 4.2L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                   {p.detalhe}
                 </p>
 
                 {/* Passo 04: as lojas, em chips com o mapa */}
                 {p.lojas && (
-                  <ul className="relative mt-auto flex flex-wrap gap-2 pt-4">
+                  <ul className="relative flex flex-wrap gap-1.5 pt-3.5">
                     {UNIDADES.map((u) => (
                       <li key={u.bairro}>
                         <a
@@ -286,11 +299,11 @@ export function ComoFunciona({
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="chip !min-h-9 !px-3 text-[0.8rem]"
+                          className="chip !min-h-8 !px-3 text-[0.78rem]"
                           title={u.endereco}
                         >
                           <span className="mr-1.5 -ml-0.5 text-ouro">
-                            <IconeLoja tamanho={14} />
+                            <IconeLoja tamanho={13} />
                           </span>
                           {u.bairro}
                         </a>
@@ -298,13 +311,49 @@ export function ComoFunciona({
                     ))}
                   </ul>
                 )}
+
+                {/* A barra do passo (só no computador): cheia nos que já
+                    passaram, enchendo no aceso, vazia nos próximos */}
+                <span aria-hidden="true" className="relative mt-auto hidden lg:block pt-5">
+                <span className={`block h-[3px] w-full overflow-hidden rounded-full ${aceso ? "bg-white/15" : "bg-fio"}`}>
+                  {feito && <span className="block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />}
+                  {aceso && (
+                    <span
+                      key={`${ativo}-${rodada}`}
+                      className="passo-barra-enche block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]"
+                      style={{ animationDuration: `${DURACAO_PASSO}ms`, animationPlayState: pausado ? "paused" : "running" }}
+                    />
+                  )}
+                </span>
+                </span>
               </li>
             );
           })}
         </ol>
-        {/* A barra de ouro que anda com a faixa (só até o tablet) */}
-        <div aria-hidden="true" className="lg:hidden mt-4 mx-auto h-[3px] w-28 rounded-full bg-fio overflow-hidden">
-          <span className="passos-barra block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />
+
+        {/* Até o tablet: os pontos que acompanham o arrasto e levam ao passo */}
+        <div className="lg:hidden mt-4 flex items-center justify-center gap-3">
+          <div className="flex items-center gap-1.5">
+            {PASSOS.map((p, i) => (
+              <button
+                key={p.titulo}
+                type="button"
+                onClick={() => irPara(i)}
+                aria-label={`Ir para o passo ${i + 1}`}
+                aria-current={i === noCelular ? "step" : undefined}
+                className="flex h-6 items-center"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all duration-300 ${
+                    i === noCelular ? "w-7 bg-[image:var(--ouro-degrade)]" : "w-1.5 bg-fio"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          <span className="text-xs font-medium text-cinza tabular-nums">
+            {noCelular + 1}/{PASSOS.length}
+          </span>
         </div>
       </div>
 

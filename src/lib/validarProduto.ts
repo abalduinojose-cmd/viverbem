@@ -13,6 +13,7 @@ import {
   TIPO_PRODUTO,
   VENDA_INDUSTRIALIZADO,
   VENDA_MANIPULADO,
+  capaDaGaleria,
 } from "@/lib/tipos";
 
 function textoOuNulo(valor: unknown): string | null {
@@ -63,8 +64,8 @@ export function validarCorpoProduto(corpo: Record<string, unknown>) {
       precoCentavos,
       tipo,
       venda,
-      // A capa é sempre a primeira foto da galeria
-      fotoUrl: galeria.fotos[0] ?? null,
+      // A capa é sempre a primeira FOTO da galeria (vídeo não vira capa)
+      fotoUrl: capaDaGaleria(galeria.fotos),
       ativo: corpo.ativo !== false,
       novidade: industrializado && corpo.novidade === true,
       destaque: industrializado && corpo.destaque === true,

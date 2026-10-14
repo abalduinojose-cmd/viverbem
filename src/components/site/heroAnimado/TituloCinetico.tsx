@@ -27,6 +27,12 @@
 // cena onde termina: os potes ocupam o resto do cartão.
 // Tudo entra uma vez, quando o banner aparece, e fica. Roda também com
 // "reduzir movimento" ligado, como o resto do site.
+//
+// 14/10/2026, mais tarde ("coloque o Saúde em cada fase da mulher
+// centralizado e maior um pouco"): o bloco do título fica centrado (no
+// celular, na largura do cartão; no computador, na coluna da esquerda, que
+// passou de 54% para 48%) e as três linhas cresceram uns 12%. O rótulo e o
+// letreiro acompanham o centro.
 import { useEffect, useRef } from "react";
 import { CenaAnimada } from "./HeroAnimado";
 import { DURACAO } from "./cena";
@@ -198,7 +204,7 @@ export function CenaMulher() {
       <div
         ref={raiz}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-[1] flex flex-col items-start px-5 pt-5 md:inset-y-0 md:right-auto md:w-[54%] md:justify-center md:px-12 md:pt-0 md:pb-14"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[1] flex flex-col items-center text-center px-5 pt-5 md:inset-y-0 md:right-auto md:w-[48%] md:justify-center md:px-10 md:pt-0 md:pb-14"
       >
         {/* A cápsula do rótulo */}
         <span
@@ -219,7 +225,7 @@ export function CenaMulher() {
 
         {/* "Saúde": cada letra na sua máscara (a folga em cima guarda o acento) */}
         <span
-          className="mt-4 md:mt-5 block overflow-hidden pt-[0.14em] -mb-[0.04em] text-white text-[3.3rem] md:text-[3.9rem] lg:text-[4.4rem] xl:text-[4.9rem] leading-[0.95] tracking-[-0.045em]"
+          className="mt-4 md:mt-5 block overflow-hidden pt-[0.14em] -mb-[0.04em] text-white text-[3.7rem] md:text-[4.3rem] lg:text-[4.9rem] xl:text-[5.5rem] leading-[0.95] tracking-[-0.045em]"
           style={{ fontFamily: FONTES.display, fontWeight: FONTES.pesoDisplay }}
         >
           {[...l1].map((c, i) => (
@@ -231,7 +237,7 @@ export function CenaMulher() {
 
         {/* "em cada fase da": cada palavra na sua máscara */}
         <span
-          className="block overflow-hidden pb-[0.12em] text-white/90 text-[1.75rem] md:text-[2rem] lg:text-[2.25rem] xl:text-[2.5rem] leading-[1.05] tracking-[-0.01em]"
+          className="block overflow-hidden pb-[0.12em] text-white/90 text-[1.95rem] md:text-[2.25rem] lg:text-[2.5rem] xl:text-[2.8rem] leading-[1.05] tracking-[-0.01em]"
           style={{ fontFamily: FONTES.conector, fontWeight: FONTES.pesoConector }}
         >
           {l2.split(" ").map((p, i) => (
@@ -244,7 +250,7 @@ export function CenaMulher() {
         {/* "mulher": o ouro itálico, com a luz que corre */}
         <span
           ref={mulher}
-          className="block -mt-[0.06em] pr-[0.14em] italic leading-[1] text-transparent bg-clip-text text-[3.6rem] md:text-[4.3rem] lg:text-[4.8rem] xl:text-[5.4rem]"
+          className="block -mt-[0.06em] px-[0.07em] italic leading-[1] text-transparent bg-clip-text text-[4rem] md:text-[4.8rem] lg:text-[5.4rem] xl:text-[6rem]"
           style={{ fontFamily: FONTES.destaque, backgroundImage: OURO_COM_LUZ, backgroundSize: "280% 100%", backgroundPosition: "0% 0" }}
         >
           {l3}
@@ -262,7 +268,7 @@ export function CenaMulher() {
                 ref={(e) => {
                   itens.current[k] = e;
                 }}
-                className="absolute inset-x-0 top-0 flex h-[1.6rem] items-center gap-2.5 whitespace-nowrap will-change-transform"
+                className="absolute inset-x-0 top-0 flex h-[1.6rem] items-center justify-center gap-2.5 whitespace-nowrap will-change-transform"
                 style={{ transform: `translateY(${k * 100}%)` }}
               >
                 {numero ? (

@@ -2,7 +2,7 @@
 // recebem. Antes esse mapeamento estava copiado em três arquivos, e cada
 // campo novo precisava ser lembrado nos três.
 import type { Categoria, Produto } from "@prisma/client";
-import { CategoriaDTO, ProdutoDTO, VENDA_MANIPULADO } from "./tipos";
+import { CategoriaDTO, ProdutoDTO, VENDA_MANIPULADO, capaDaGaleria } from "./tipos";
 
 /** O que incluir no findMany/findUnique de produto para montar o DTO. */
 export const INCLUIR_PRODUTO = {
@@ -29,7 +29,7 @@ export function produtoParaDTO(p: ProdutoComRelacoes): ProdutoDTO {
     tipo: p.tipo,
     venda: p.venda || VENDA_MANIPULADO,
     aprovado: p.aprovado,
-    fotoUrl: fotos[0] ?? null,
+    fotoUrl: capaDaGaleria(fotos),
     fotos,
     mostrarPreco: p.mostrarPreco,
     ativo: p.ativo,

@@ -62,8 +62,10 @@ const PAGINAS_DINAMICAS = [
 // ---------------------------------------------------------------- pedidos fictícios
 // Pedidos de demonstração para o painel da prévia: nomes inventados, o
 // WhatsApp mascarado e os itens tirados do catálogo real. Sempre os mesmos
-// (gerador com semente fixa), espalhados pelos últimos 48 dias para os
-// números do mês e os gráficos terem o que mostrar.
+// (gerador com semente fixa). Desde 14/10/2026 espalhados pelos últimos
+// ~22 meses (antes 48 dias), com um pouco de sazonalidade e clientes que
+// voltam, para o filtro de período e a comparação com o mês e o ano
+// passado terem o que mostrar.
 const NOMES_DEMO = [
   "Ana Paula", "Carlos Eduardo", "Fernanda", "João Pedro", "Mariana", "Ricardo", "Luciana",
   "Paulo Henrique", "Beatriz", "Rafael", "Juliana", "Marcelo", "Camila", "André", "Patrícia",
@@ -84,13 +86,30 @@ function gerarPedidosFicticios(produtos) {
     return semente / 2147483648;
   };
   const sorteio = (lista) => lista[Math.floor(rnd() * lista.length)];
-  const comPreco = produtos.filter(
+  // Os itens com preço dos pedidos fictícios: os industrializados no site;
+  // se forem poucos (o retrato tem um só, e em falta), qualquer produto do
+  // site com preço cadastrado, para o faturamento da prévia ter o que somar
+  let comPreco = produtos.filter(
     (p) => p.venda === "INDUSTRIALIZADO" && p.precoCentavos > 0 && p.ativo && p.aprovado
   );
+  if (comPreco.length < 3) comPreco = produtos.filter((p) => p.precoCentavos > 0 && p.ativo && p.aprovado);
   const agora = Date.now();
   const pedidos = [];
-  for (let i = 0; i < NOMES_DEMO.length; i++) {
-    const diasAtras = Math.floor(rnd() * 48);
+  // Um grupo de telefones (mascarados) para alguns clientes voltarem
+  const telefones = Array.from({ length: 90 }, () => `(24) 9****-${String(1000 + Math.floor(rnd() * 9000))}`);
+  const datas = [];
+  // ~22 meses: cobre "este ano" contra o ano passado inteiro
+  const DIAS = 660;
+  for (let diasAtras = 0; diasAtras < DIAS; diasAtras++) {
+    const quando = new Date(agora - diasAtras * 86400000);
+    // Mais movimento no fim do ano e um crescimento leve com o tempo
+    const sazonal = [0.9, 0.8, 0.85, 0.9, 0.95, 0.9, 1, 1, 1.05, 1.1, 1.2, 1.35][quando.getMonth()];
+    const chance = (0.4 + ((DIAS - diasAtras) / DIAS) * 0.3) * sazonal;
+    if (rnd() < chance) datas.push(diasAtras);
+    if (rnd() < chance * 0.25) datas.push(diasAtras);
+  }
+  for (let i = 0; i < datas.length; i++) {
+    const diasAtras = datas[i];
     const data = new Date(agora - diasAtras * 86400000 - Math.floor(rnd() * 36000000));
     const receita = rnd() < 0.55;
     const itens = [];
@@ -105,13 +124,13 @@ function gerarPedidosFicticios(produtos) {
     const retirada = rnd() < 0.5;
     pedidos.push({
       id: i + 1,
-      nome: `${NOMES_DEMO[i]} ${sorteio(SOBRENOMES_DEMO)}`,
-      whatsapp: `(24) 9****-${String(1000 + Math.floor(rnd() * 9000))}`,
+      nome: `${NOMES_DEMO[i % NOMES_DEMO.length]} ${sorteio(SOBRENOMES_DEMO)}`,
+      whatsapp: sorteio(telefones),
       pagamento: "",
       entrega: retirada ? "Retirada na loja" : "Entrega em casa",
       local: retirada ? sorteio(LOJAS_DEMO) : `${sorteio(BAIRROS_DEMO)}, Petrópolis`,
       receita,
-      codigo: `VB-${String(1200 + i * 7).padStart(4, "0")}`,
+      codigo: `VB-${String(1200 + i * 7).padStart(5, "0")}`,
       totalCentavos: total,
       itens: JSON.stringify(itens),
       criadoEm: data.toISOString(),

@@ -15,6 +15,16 @@
 import { db } from "./db";
 import { ENTREGA_RETIRADA, PAPEL_ADMIN, VENDA_INDUSTRIALIZADO } from "./tipos";
 
+/** Um pedido do histórico, do jeito que vai para o filtro de período */
+export interface PedidoHistorico {
+  t: number;
+  total: number;
+  receita: boolean;
+  retirada: boolean | null;
+  cliente: number;
+  itens: [string, number][];
+}
+
 export interface ItemDoPedido {
   nome: string;
   dosagem: string | null;
@@ -98,6 +108,18 @@ export interface DadosMetricas {
   categorias: CategoriaBase[];
   usuarios: UsuarioBase[];
   ultimasAcoes: AcaoBase[];
+  /** Os pedidos da janela longa (filtro de período e comparação com o mês
+   *  ou o ano passado, 14/10/2026) */
+  historico: PedidoBase[];
+}
+
+/** Início da janela do filtro de período: cobre "este ano" contra o ano
+ *  passado e 90 dias contra o mesmo período do ano anterior */
+function inicioDoHistorico() {
+  const hoje = new Date();
+  const janeiroPassado = new Date(hoje.getFullYear() - 1, 0, 1);
+  const quinhentosDias = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - 500);
+  return janeiroPassado < quinhentosDias ? janeiroPassado : quinhentosDias;
 }
 
 /** Lê do banco o que a conta precisa. */
@@ -107,7 +129,7 @@ async function lerDoBanco(): Promise<DadosMetricas> {
   // Janela dos gráficos: 6 meses cheios contando o atual
   const comecoDaJanela = inicioDoMes(-5);
 
-  const [doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes] =
+  const [doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes, historico] =
     await Promise.all([
       db.cliente.findMany({ where: { criadoEm: { gte: comecoDesteMes } } }),
       db.cliente.findMany({
@@ -135,9 +157,10 @@ async function lerDoBanco(): Promise<DadosMetricas> {
       db.categoria.findMany({ select: { id: true, nome: true, visivel: true, vitrineHome: true } }),
       db.usuario.findMany({ select: { id: true, nome: true, papel: true, ativo: true, ultimoAcesso: true } }),
       db.logAlteracao.findMany({ orderBy: { criadoEm: "desc" }, take: 6 }),
+      db.cliente.findMany({ where: { criadoEm: { gte: inicioDoHistorico() } } }),
     ]);
 
-  return { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes };
+  return { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes, historico };
 }
 
 /** A vitrine estática: a mesma conta sobre o retrato, com os pedidos fictícios. */
@@ -160,6 +183,7 @@ async function lerDoRetrato(): Promise<DadosMetricas> {
     categorias: a.categorias,
     usuarios: a.usuarios,
     ultimasAcoes: a.log.slice(0, 6).map((r) => ({ ...r, criadoEm: new Date(r.criadoEm) })),
+    historico: pedidos.filter((p) => p.criadoEm >= inicioDoHistorico()),
   };
 }
 
@@ -168,7 +192,7 @@ export async function obterMetricas() {
 }
 
 export function calcularMetricas(d: DadosMetricas) {
-  const { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes } = d;
+  const { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes, historico } = d;
 
   // Faturamento = só o que tem preço no site (industrializados). Pedido
   // só de receita entra com total zero: o valor do manipulado é passado
@@ -287,7 +311,26 @@ export function calcularMetricas(d: DadosMetricas) {
     receitas: receitasDia.get(d.chave) ?? 0,
   }));
 
+  // O histórico enxuto que o filtro de período usa no navegador: sem nome
+  // nem telefone (o cliente vira um número só para contar os diferentes),
+  // os itens só com nome e quantidade
+  const idDoCliente = new Map<string, number>();
+  const historicoEnxuto: PedidoHistorico[] = historico.map((p) => {
+    const zap = p.whatsapp.replace(/\D/g, "");
+    if (!idDoCliente.has(zap)) idDoCliente.set(zap, idDoCliente.size + 1);
+    return {
+      t: p.criadoEm.getTime(),
+      total: p.totalCentavos,
+      receita: p.receita,
+      retirada: p.entrega ? p.entrega === ENTREGA_RETIRADA : null,
+      cliente: idDoCliente.get(zap) as number,
+      itens: lerItens(p.itens).map((i) => [String(i.nome), Number(i.quantidade) || 0] as [string, number]),
+    };
+  });
+
   return {
+    historico: historicoEnxuto,
+    agora: Date.now(),
     porMes: porMesLista,
     porDia: porDiaLista,
     pedidosMes: doMes.length,

@@ -129,13 +129,15 @@ export function criarVitrine(palco: Palco): Coreografia {
     if (e.modo === "retrato") {
       x0 = 10;
       x1 = e.largura - 10;
-      topo = ((areaDoTexto.base || 252) + 14) / k;
+      topo = ((areaDoTexto.base || 252) + 26) / k;
       // O convite da base fica à esquerda, sob o reflexo
       chaoTela = e.altura - 52 / k;
       vaoMin = -16; // no celular estreito eles podem se encostar
       vaoMax = 24;
     } else {
-      x0 = ((areaDoTexto.direita || e.largura * k * 0.3) + 56) / k;
+      // Folga de 80 px entre o título e o primeiro pote (era 56: com a
+      // câmera respirando o pote chegava a encostar no texto)
+      x0 = ((areaDoTexto.direita || e.largura * k * 0.3) + 80) / k;
       x1 = e.largura - 52 / k;
       // Respiro no alto do tamanho do da cápsula do título (~64 px)
       topo = 64 / k;

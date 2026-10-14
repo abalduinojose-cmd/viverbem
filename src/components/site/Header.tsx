@@ -18,7 +18,7 @@
 // mais estreito de cada lado que o banner nas telas largas. No celular
 // nada muda (o px-5 já era o mesmo).
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import { usePathname } from "next/navigation";
@@ -121,27 +121,49 @@ function IconeLupa() {
 // catálogo lê o termo no endereço; com servidor, a navegação é instantânea
 const EH_DEMO = process.env.NEXT_PUBLIC_DEMO === "1";
 
-// Busca: vai para /produtos?busca=termo, que já abre filtrado
+// Busca: vai para /produtos?busca=termo, que já abre filtrado.
+//
+// 14/10/2026 ("deixe o botão de pesquisa funcionando"): a lupa era só um
+// desenho e não havia botão para clicar; só o Enter buscava. Agora a lupa
+// e o botão "Buscar" (à direita, a partir do tablet) enviam a busca; o
+// campo vazio leva ao catálogo inteiro em vez do aviso de campo
+// obrigatório; e na página de resultados o campo mostra o termo buscado.
+const semAssinatura = () => () => {};
+const lerTermo = () => new URLSearchParams(window.location.search).get("busca") ?? "";
 function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; autoFoco?: boolean }) {
   const Formulario = EH_DEMO ? "form" : Form;
+  const termo = useSyncExternalStore(semAssinatura, lerTermo, () => "");
   return (
     <Formulario
       action={EH_DEMO ? asset("/produtos/") : "/produtos"}
       onSubmit={aoBuscar}
-      className="relative w-full"
+      role="search"
+      className="group/busca relative w-full"
     >
-      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cinza">
+      <button
+        type="submit"
+        aria-label="Buscar"
+        className="absolute left-1.5 top-1/2 -translate-y-1/2 size-9 rounded-full flex items-center justify-center text-cinza transition-colors hover:text-navy hover:bg-white focus-visible:text-navy"
+      >
         <IconeLupa />
-      </span>
+      </button>
       <input
+        key={termo}
         type="search"
         name="busca"
+        defaultValue={termo}
         autoFocus={autoFoco}
-        required
+        maxLength={60}
         placeholder="O que você procura? Nome ou ativo"
         aria-label="Buscar no site"
-        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
+        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 md:pr-28 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
       />
+      <button
+        type="submit"
+        className="hidden md:inline-flex absolute right-1.5 top-1/2 -translate-y-1/2 h-9 items-center gap-1.5 rounded-full bg-navy px-4 text-[0.82rem] font-semibold text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)] transition-colors hover:bg-tinta active:scale-[0.97]"
+      >
+        Buscar
+      </button>
     </Formulario>
   );
 }

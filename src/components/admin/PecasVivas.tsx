@@ -107,7 +107,7 @@ export function DataHoje({ className = "" }: { className?: string }) {
 /** A curva suave que passa pelos pontos (Catmull-Rom virando Bézier), com
  *  os controles presos entre o chão e o teto para a curva não mergulhar
  *  abaixo de zero entre dois dias sem pedido */
-function curvaSuave(pontos: (readonly [number, number])[], chao: number, teto: number) {
+export function curvaSuave(pontos: (readonly [number, number])[], chao: number, teto: number) {
   if (pontos.length < 2) return "";
   const prende = (y: number) => Math.min(chao, Math.max(teto, y));
   let d = `M${pontos[0][0].toFixed(1)},${pontos[0][1].toFixed(1)}`;
