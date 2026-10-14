@@ -695,10 +695,16 @@ export type Palco = {
 
 /** Uma coreografia diferente da dobra, sobre o mesmo palco: a câmera e o
  *  desenho de cada quadro */
-export type Coreografia = { camera: (t: number) => Camera; desenhar: (t: number, cam: Camera) => void };
+export type Coreografia = {
+  camera: (t: number) => Camera;
+  /** laco: quantas voltas inteiras já passaram (0 na primeira), para a
+   *  coreografia fazer a entrada só uma vez */
+  desenhar: (t: number, cam: Camera, laco: number) => void;
+};
 
 export type Cena = {
-  /** Desenha o quadro do instante t (0 a 7 s) no tamanho atual da tela. */
+  /** Desenha o quadro do instante t no tamanho atual da tela. t corre de 0
+   *  a 7 s em cada volta; passar de 7 conta as voltas (7 a 14 é a segunda) */
   desenhar: (t: number) => void;
   /** Ajusta o canvas ao tamanho do banner (em px CSS). */
   medirTela: (largura: number, altura: number) => void;
@@ -1623,6 +1629,7 @@ export async function criarCena(
 
   function desenhar(tBruto: number) {
     const t = ((tBruto % DURACAO) + DURACAO) % DURACAO;
+    const laco = Math.max(0, Math.floor(tBruto / DURACAO));
     ultimoT = t;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1635,7 +1642,7 @@ export async function criarCena(
     ctx.textBaseline = "alphabetic";
 
     if (coreografia) {
-      coreografia.desenhar(t, cam);
+      coreografia.desenhar(t, cam, laco);
       return;
     }
     desenharLuzes(t, cam);

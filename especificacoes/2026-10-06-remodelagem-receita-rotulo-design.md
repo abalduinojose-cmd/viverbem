@@ -1,5 +1,27 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 71 (14/10/2026): Saúde da Mulher sem cartão vazio e lojas com mapa desenhado. IMPLEMENTADO, não publicado.**
+> Pedidos: "na versão mobile melhore essa animação, está um espaço vazio,
+> tire isso e melhore a animação e a entrada das fontes" e "modernize" (o
+> cartão das 3 lojas em Fale com a gente).
+>
+> - **Animação** (`heroAnimado/fases.ts`, `cena.ts`, `HeroAnimado.tsx`): no
+>   fim de cada volta de 11 s as letras tombavam, os potes sumiam e a lua
+>   apagava, e o cartão ficava quase só azul por uns 3 s. Agora a cena sabe
+>   em que volta está (o tempo passado a ela soma 7 por volta): o título
+>   entra só na primeira e fica; os potes voltam a flutuar ao longe e a
+>   apresentação recomeça; a lua mingua até o aro e cresce de novo; o
+>   letreiro desliza do último passo de volta ao primeiro. A entrada mudou:
+>   "Saúde" sobe letra a letra de trás da linha de base, com mola curta, e
+>   "em cada fase da" sobe palavra a palavra (antes placas que viravam e
+>   palavras desfocadas); tudo começa mais cedo (título em ~1,5 s).
+> - **Lojas** (`CartaoLojas.tsx`): mapa desenhado (ilustração, não mapa de
+>   verdade) com o trajeto de ouro Centro, Corrêas e Posse e curvas de nível
+>   da serra; o trajeto se desenha e os pinos caem quando o cartão aparece;
+>   passar o mouse numa loja acende o pino dela com um anel que pulsa;
+>   "Retirada grátis" e o Delivery viraram pílulas. A lista e o "Como
+>   chegar" (Google Maps) seguem iguais.
+>
 > **ADENDO 70 (14/10/2026): rolagem com mais profundidade, potes vivos, Creatina nas linhas e cartão do WhatsApp. IMPLEMENTADO e medido.**
 > Pedidos do dia: "modernize a sessão fale com a gente", "coloque a
 > creatina no lugar do ômega 3 e dê movimentos leves", "não gostei dos

@@ -81,13 +81,19 @@ function curvaDoRitmo(r: Roteiro): Curva | null {
 }
 
 /** Do tempo real (segundos desde o início) para o tempo da coreografia, que
- *  sempre vai de 0 a 7 s: com ritmo, cada trecho corre na sua velocidade */
+ *  vai de 0 a 7 s em cada volta: com ritmo, cada trecho corre na sua
+ *  velocidade. As voltas inteiras somam 7 s cada (14/10/2026): a cena sabe
+ *  em que volta está e só a primeira tem a entrada do título */
 function tempoDaCoreografia(r: Roteiro, segundos: number) {
   const curva = curvaDoRitmo(r);
   if (!curva) return segundos;
-  const { x, y, m } = curva;
+  const { x } = curva;
   const ciclo = x[x.length - 1];
-  const t = ((segundos % ciclo) + ciclo) % ciclo;
+  const voltas = Math.max(0, Math.floor(segundos / ciclo));
+  return voltas * DURACAO + tempoNaVolta(curva, ((segundos % ciclo) + ciclo) % ciclo);
+}
+
+function tempoNaVolta({ x, y, m }: Curva, t: number) {
   let i = 0;
   while (i < x.length - 2 && t > x[i + 1]) i++;
   const h = x[i + 1] - x[i];

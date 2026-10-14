@@ -23,8 +23,19 @@
 //              letreiro acompanha, um passo por pote
 //   5,2 a 6,1  os quatro pousam juntos no horizonte, que se desenha embaixo
 //              deles, em arco diante da lua cheia
-//   6,2 a 7,0  os potes sobem e se afastam até sumir, a lua mingua, as
-//              letras tombam; a câmera volta ao começo e o laço emenda
+//   6,2 a 7,0  os potes voltam para longe, a lua mingua até o aro; a
+//              câmera volta ao começo e o laço emenda
+//
+// 14/10/2026 ("no celular está um espaço vazio, tire isso e melhore a
+// animação e a entrada das fontes"): no fim de cada volta as letras
+// tombavam, os potes sumiam e a lua apagava, e o cartão ficava quase só
+// azul por uns 3 s até tudo voltar. Agora o título entra uma vez só, na
+// primeira volta, e fica; os potes não somem, voltam a flutuar ao longe e
+// a apresentação recomeça; a lua mingua até o aro e cresce de novo, que é a
+// ideia das fases. A entrada também mudou: "Saúde" e "em cada fase da" sobem
+// letra a letra e palavra a palavra de trás de uma linha (antes as letras
+// viravam como placas e as palavras chegavam desfocadas), e tudo começa
+// mais cedo, para o cartão não nascer vazio.
 import type { Camera, Coreografia, Palco } from "./cena";
 import {
   DURACAO,
@@ -44,6 +55,11 @@ import {
   trecho,
 } from "./cena";
 
+/** Em que volta a cena está (0 na primeira): só a primeira tem a entrada */
+let laco = 0;
+/** O texto, depois de entrar, fica: o tempo dele para no 6, antes da saída */
+const tempoDoTexto = (t: number) => (laco > 0 ? 6 : Math.min(t, 6));
+
 /** Profundidade da lua: longe, então quase não se mexe com a câmera */
 const Z_LUA = 500;
 
@@ -59,17 +75,17 @@ function foco(t: number) {
 }
 
 /** Quanto o pote i está na frente da lua: vem em 0,5 s, fica 0,25 s e volta
- *  em 0,5 s, cruzando com o próximo que vem (o último não volta: segue
- *  direto para o pouso) */
+ *  em 0,5 s, cruzando com o próximo que vem (o último segue direto para o
+ *  pouso e volta para longe junto com os outros, no fim) */
 function naFrente(i: number, t: number) {
   const s = VEZ(i);
   const vem = entraSaiCubica(trecho(t, s, s + 0.5));
-  const volta = i === 3 ? 0 : entraSaiCubica(trecho(t, s + 0.75, s + 1.25));
+  const volta = entraSaiCubica(i === 3 ? trecho(t, 6.2, 6.95) : trecho(t, s + 0.75, s + 1.25));
   return vem * (1 - volta);
 }
 
-/** O pouso de todos juntos no fecho */
-const pouso = (t: number) => entraSaiCubica(trecho(t, 5.2, 6.05));
+/** O pouso de todos juntos no fecho, e a volta para longe no fim */
+const pouso = (t: number) => entraSaiCubica(trecho(t, 5.2, 6.05)) * (1 - entraSaiCubica(trecho(t, 6.2, 6.95)));
 
 // Onde cada pote flutua ao longe, em volta da lua (x e altura acima do
 // chão em unidades vezes a escala dos potes; z é a profundidade)
@@ -140,17 +156,13 @@ export function criarFases(palco: Palco): Coreografia {
     x = mix(x, c + POUSO[i].x * ep, p);
     sobe = mix(sobe, 0, p);
     z = mix(z, POUSO[i].z, p);
-    // Saída: sobem e se afastam até sumir, da direita para a esquerda
-    const ini = 6.22 + (3 - i) * 0.05;
-    const vai = entraSaiCubica(trecho(t, ini, ini + 0.55));
-    z += 520 * vai;
-    sobe += 70 * ep * vai;
-    const aparece = saiQuinta(trecho(t, 1.5 + i * 0.12, 2.3 + i * 0.12));
+    // Só na primeira volta eles aparecem ao longe; depois já estão lá
+    const aparece = laco > 0 ? 1 : saiQuinta(trecho(t, 0.9 + i * 0.12, 1.7 + i * 0.12));
     return {
       x,
       sobe,
       z,
-      alfa: aparece * (1 - vai),
+      alfa: aparece,
       // Giro aparente: a largura encolhe no meio de cada deslizamento, como
       // um pote que gira um pouco enquanto anda
       giro: 1 - 0.13 * limitar(Math.sin(Math.PI * w) + 0.7 * Math.sin(Math.PI * p)),
@@ -231,7 +243,8 @@ export function criarFases(palco: Palco): Coreografia {
 
   function desenharLua(t: number, cam: Camera) {
     const e = palco.enq();
-    const visivel = trecho(t, 0.05, 0.5) * (1 - trecho(t, 6.6, 6.98));
+    // Acende na primeira volta e não apaga mais: mingua até o aro e cresce
+    const visivel = laco > 0 ? 1 : trecho(t, 0.02, 0.4);
     if (visivel <= 0.001) return;
     const cresce = entraSaiSeno(trecho(t, 0.2, 1.9));
     const mingua = entraSaiSeno(trecho(t, 6.2, 6.95));
@@ -318,7 +331,8 @@ export function criarFases(palco: Palco): Coreografia {
   /** O rótulo: o ponto de ouro acende, a cápsula se abre dele para a
    *  direita e as palavras entram deslizando de dentro dela; na saída,
    *  deslizam para fora e a cápsula se fecha de volta no ponto */
-  function desenharRotulo(t: number, cam: Camera) {
+  function desenharRotulo(tReal: number, cam: Camera) {
+    const t = tempoDoTexto(tReal);
     const tx = palco.textos();
     const r = tx.rotulo;
     const e = palco.enq();
@@ -375,7 +389,7 @@ export function criarFases(palco: Palco): Coreografia {
     }
     // O ponto de ouro, que respira (três vezes por laço)
     if (ponto > 0.001) {
-      const respira = 0.5 - 0.5 * Math.cos((TAU * 3 * t) / DURACAO);
+      const respira = 0.5 - 0.5 * Math.cos((TAU * 3 * tReal) / DURACAO);
       const halo = r.raioPonto * (2.4 + 1.6 * respira);
       ctx.globalAlpha = (0.4 + 0.2 * respira) * ponto;
       palco.luz(palco.luzOuro, r.pontoX - halo, cy - halo, halo * 2, halo * 2);
@@ -388,49 +402,46 @@ export function criarFases(palco: Palco): Coreografia {
     ctx.restore();
   }
 
-  /** A linha grande: cada letra vira como uma placa (de deitada a de pé,
-   *  em torno do meio da letra), da esquerda para a direita; na saída,
-   *  tombam para trás, da direita para a esquerda */
-  function desenharLinha1(t: number, cam: Camera) {
+  /** A linha grande: cada letra sobe de trás da linha de base, da esquerda
+   *  para a direita, e assenta com uma mola curta (14/10/2026; antes virava
+   *  como uma placa). Só na primeira volta: depois fica */
+  function desenharLinha1(tReal: number, cam: Camera) {
+    const t = tempoDoTexto(tReal);
     const tx = palco.textos();
     const l = tx.l1;
     const e = palco.enq();
     const n = l.texto.length;
-    const entraLetra = (i: number) => trecho(t, 0.55 + i * 0.07, 0.55 + i * 0.07 + 0.65);
-    const saiLetra = (i: number) => trecho(t, 6.2 + (n - 1 - i) * 0.05, 6.2 + (n - 1 - i) * 0.05 + 0.32);
-    if (entraLetra(0) <= 0 || saiLetra(0) >= 1) return;
+    const entraLetra = (i: number) => trecho(t, 0.3 + i * 0.06, 0.3 + i * 0.06 + 0.7);
+    if (entraLetra(0) <= 0) return;
     ctx.save();
     noPlano(cam, e.textoX + l.recuo, tx.base1, 1);
     const prontas = palco.sprites();
-    if (entraLetra(n - 1) >= 1 && saiLetra(n - 1) <= 0 && prontas) {
+    if (entraLetra(n - 1) >= 1 && prontas) {
       palco.pintarSprite(prontas.l1);
       ctx.restore();
       return;
     }
+    // A linha: nada passa abaixo da tinta da base
+    ctx.beginPath();
+    ctx.rect(-l.tamanho, -l.ascent * 2, l.largura + l.tamanho * 2, l.ascent * 2 + l.descent + 1);
+    ctx.clip();
     ctx.font = fonteDe(l);
     ctx.fillStyle = "#ffffff";
-    const meio = -l.ascent * 0.4;
+    const caminho = l.ascent + l.descent + 4;
     for (let i = 0; i < n; i++) {
       const p = entraLetra(i);
-      const q = saiLetra(i);
-      if (p <= 0 || q >= 1) continue;
-      const angulo = mix(Math.PI / 2, 0, mola(p)) + (Math.PI / 2) * entraCubica(q);
-      const sy = Math.cos(angulo);
-      if (Math.abs(sy) < 0.02) continue;
-      ctx.save();
-      ctx.globalAlpha = limitar(p * 2.2) * (1 - limitar(q * 1.2)) * (0.45 + 0.55 * Math.abs(sy));
-      ctx.translate(l.xs[i], meio);
-      ctx.scale(1, sy);
-      ctx.translate(0, -meio);
-      ctx.fillText(l.texto[i], 0, 0);
-      ctx.restore();
+      if (p <= 0) continue;
+      ctx.globalAlpha = limitar(p * 3);
+      ctx.fillText(l.texto[i], l.xs[i], caminho * (1 - mola(p)));
     }
     ctx.restore();
   }
 
-  /** A ligação: palavra por palavra, cada uma chega desfocada (cópias
-   *  abertas que se juntam) e ganha foco; na saída, perde o foco e some */
-  function desenharLinha2(t: number, cam: Camera) {
+  /** A ligação: palavra por palavra, cada uma sobe de trás da linha, logo
+   *  depois de "Saúde" (14/10/2026; antes chegava desfocada). Só na
+   *  primeira volta: depois fica */
+  function desenharLinha2(tReal: number, cam: Camera) {
+    const t = tempoDoTexto(tReal);
     const tx = palco.textos();
     const l = tx.l2;
     const e = palco.enq();
@@ -442,49 +453,42 @@ export function criarFases(palco: Palco): Coreografia {
         comeco = i + 1;
       }
     }
-    const entraPalavra = (k: number) => saiQuinta(trecho(t, 1.05 + k * 0.13, 1.65 + k * 0.13));
-    const saiPalavra = (k: number) => entraCubica(trecho(t, 6.26 + k * 0.04, 6.56 + k * 0.04));
+    const entraPalavra = (k: number) => saiQuinta(trecho(t, 0.72 + k * 0.1, 1.32 + k * 0.1));
     const ultima = palavras.length - 1;
-    if (entraPalavra(0) <= 0 || saiPalavra(ultima) >= 1) return;
+    if (entraPalavra(0) <= 0) return;
     ctx.save();
     noPlano(cam, e.textoX + l.recuo, tx.base2, 1);
     const prontas = palco.sprites();
-    if (entraPalavra(ultima) >= 1 && saiPalavra(0) <= 0 && prontas) {
+    if (entraPalavra(ultima) >= 1 && prontas) {
       palco.pintarSprite(prontas.l2);
       ctx.restore();
       return;
     }
+    ctx.beginPath();
+    ctx.rect(-l.tamanho, -l.ascent * 2, l.largura + l.tamanho * 2, l.ascent * 2 + l.descent + 1);
+    ctx.clip();
     ctx.font = fonteDe(l);
     ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+    const caminho = l.ascent + l.descent + 3;
     palavras.forEach((w, k) => {
       const p = entraPalavra(k);
-      const q = saiPalavra(k);
-      if (p <= 0 || q >= 1) return;
-      const alfa = p * (1 - q);
-      const abertura = (1 - p + q) * l.tamanho * 0.22;
-      const dx = mix(12, 0, p) - 10 * q;
-      for (const [desvio, peso] of [
-        [-abertura, 0.3],
-        [abertura, 0.3],
-        [0, 1],
-      ] as const) {
-        if (desvio !== 0 && abertura < 0.3) continue;
-        ctx.globalAlpha = alfa * peso;
-        for (let i = w.ini; i < w.fim; i++) ctx.fillText(l.texto[i], l.xs[i] + dx + desvio, 0);
-      }
+      if (p <= 0) return;
+      ctx.globalAlpha = limitar(p * 2);
+      for (let i = w.ini; i < w.fim; i++) ctx.fillText(l.texto[i], l.xs[i], caminho * (1 - p));
     });
     ctx.restore();
   }
 
   /** A palavra em ouro: acende do centro para as pontas, numa elipse de
    *  borda macia, com uma luz no meio; na saída, apaga para o centro */
-  function desenharLinha3(t: number, cam: Camera) {
+  function desenharLinha3(tReal: number, cam: Camera) {
+    const t = tempoDoTexto(tReal);
     const tx = palco.textos();
     const l = tx.l3;
     const e = palco.enq();
     const prontas = palco.sprites();
     if (!prontas) return;
-    const abre = saiQuinta(trecho(t, 1.45, 2.45));
+    const abre = saiQuinta(trecho(t, 1.1, 2.05));
     const fecha = entraCubica(trecho(t, 6.3, 6.68));
     const r = abre * (1 - fecha);
     if (r <= 0.001) return;
@@ -517,7 +521,7 @@ export function criarFases(palco: Palco): Coreografia {
       palco.luz(palco.luzOuro, cx - g, cy - g * 0.6, g * 2, g * 1.2);
     }
     // O brilho que corre: agora da direita para a esquerda
-    const corre = t < 4.5 ? trecho(t, 2.85, 3.55) : trecho(t, 5.6, 6.15);
+    const corre = tReal < 4.5 ? trecho(tReal, 2.85, 3.55) : trecho(tReal, 5.6, 6.15);
     if (corre > 0 && corre < 1) {
       const v = prontas.l3Luz;
       palco.faixaDeLuz(v.tela, v.x0, v.y0, v.l, v.a, mix(1.25, -0.25, entraSaiSeno(corre)) * w, w * 0.24, 0.8);
@@ -531,10 +535,19 @@ export function criarFases(palco: Palco): Coreografia {
     const tx = palco.textos();
     const e = palco.enq();
     const tp = e.tamanhoPasso;
-    const entra = entraSaiSeno(trecho(t, 2.5, 2.95));
-    const sai = entraCubica(trecho(t, 6.2, 6.5));
-    if (entra <= 0 || sai >= 1) return;
-    const u = t < 5.3 ? foco(t) : 3 + entraSaiCubica(trecho(t, 5.3, 5.85));
+    // Entra na primeira volta e fica; no fim de cada volta o último passo
+    // sai pela esquerda e o primeiro volta pela direita (u de 4 a 5, que é
+    // o 0 da volta seguinte)
+    const entra = laco > 0 ? 1 : entraSaiSeno(trecho(t, 2.1, 2.55));
+    const sai = 0;
+    if (entra <= 0) return;
+    const u =
+      t < 5.3
+        ? foco(t)
+        : t < 6.4
+          ? 3 + entraSaiCubica(trecho(t, 5.3, 5.85))
+          : 4 + entraSaiCubica(trecho(t, 6.4, 6.98));
+    const n = tx.passos.length;
     const passo = tp * 6.5;
     ctx.save();
     noPlano(cam, e.textoX, tx.basePassos, 1);
@@ -561,8 +574,9 @@ export function criarFases(palco: Palco): Coreografia {
       ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
       ctx.fillText(p.texto.texto, x, 0);
     };
-    for (let k = 0; k < tx.passos.length; k++) {
-      const d = k - u;
+    for (let k = 0; k < n; k++) {
+      // A distância dá a volta: o primeiro vem logo depois do último
+      const d = ((((k - u) % n) + n * 1.5) % n) - n / 2;
       const alfa = limitar(1 - Math.abs(d) * 1.7) * entra * (1 - sai);
       if (alfa <= 0.003) continue;
       const dx = d * passo;
@@ -584,11 +598,13 @@ export function criarFases(palco: Palco): Coreografia {
     ctx.fillRect(0, 0, lf, 1);
     ctx.globalAlpha = entra * (1 - sai);
     ctx.fillStyle = ouro(ctx, 0, lf, -1);
-    ctx.fillRect(0, 0, (lf * Math.min(u + 1, 4)) / 4, 1);
+    // De volta ao primeiro passo, o fio esvazia até a primeira parada
+    ctx.fillRect(0, 0, (lf * (u > 4 ? mix(4, 1, u - 4) : Math.min(u + 1, 4))) / 4, 1);
     ctx.restore();
   }
 
-  function desenhar(t: number, cam: Camera) {
+  function desenhar(t: number, cam: Camera, volta: number) {
+    laco = volta;
     palco.particulas(t, cam, false);
     desenharLua(t, cam);
     desenharHorizonte(t, cam);

@@ -26,10 +26,10 @@
 // diretos ("escrita leve, que converse com todos os públicos").
 import Link from "next/link";
 import { CartaoReceita } from "./CartaoReceita";
+import { CartaoLojas } from "./CartaoLojas";
 import { CartaoWhatsApp } from "./CartaoWhatsApp";
 import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
 import { SetaDireita } from "./icones";
-import { UNIDADES, linkMapaUnidade } from "@/lib/tipos";
 
 // A semana, no índice do getDay() (0 = domingo)
 const DIAS_SEMANA = [
@@ -41,25 +41,6 @@ const DIAS_SEMANA = [
   { curto: "S", nome: "Sexta" },
   { curto: "S", nome: "Sábado" },
 ];
-
-// Pino do mapa (as lojas)
-function IconePino() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      <circle cx="12" cy="11" r="2.3" stroke="currentColor" strokeWidth="1.7" />
-    </svg>
-  );
-}
-
-// Seta de navegação (como chegar)
-function IconeRota() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 3 4.5 20.5l7.5-3.6 7.5 3.6L12 3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 // "Aberto agora · Fecha às 19h", ao vivo (null no servidor: sem horário
 // congelado no HTML)
@@ -125,44 +106,10 @@ export function FaleComAGente() {
               (14/10/2026, ver CartaoWhatsApp) */}
           <CartaoWhatsApp estado={estado} className="sm:col-span-2 lg:col-span-5" />
 
-          {/* As 3 lojas num só cartão (07/10/2026, "modernize as localidades"):
-              número em ouro itálico, bairro e endereço, e a seta do mapa que
-              vira ouro no hover. Sem o telefone fixo aqui (pedido): ele fica
-              na página das lojas. */}
-          <div className="sm:col-span-2 lg:col-span-9 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
-            <span className="rotulo-pilula">{UNIDADES.length} lojas em Petrópolis</span>
-            <ul className="mt-3 lista-fichas">
-              {UNIDADES.map((u) => (
-                <li key={u.bairro}>
-                  <a
-                    href={linkMapaUnidade(u.bairro, u.endereco)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-4 py-4"
-                  >
-                    <span aria-hidden="true" className="shrink-0 flex size-11 items-center justify-center rounded-2xl bg-gelo text-tinta transition-colors group-hover:bg-tinta group-hover:text-white">
-                      <IconePino />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[1.05rem] md:text-[1.15rem] font-semibold text-navy tracking-[-0.02em] leading-tight transition-colors group-hover:text-tinta">
-                        {u.bairro}
-                      </span>
-                      <span className="mt-0.5 block text-sm text-cinza leading-snug">{u.endereco}</span>
-                    </span>
-                    <span className="shrink-0 flex items-center gap-3">
-                      <span className="hidden sm:inline text-sm font-semibold text-navy">Como chegar</span>
-                      <span className="w-10 h-10 rounded-full border border-fio text-navy flex items-center justify-center transition duration-300 group-hover:border-transparent group-hover:bg-[image:var(--ouro-degrade)] group-hover:translate-x-1">
-                        <IconeRota />
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-auto pt-4 text-xs text-cinza leading-relaxed">
-              Retirada grátis em qualquer loja. Delivery em Petrópolis e Região.
-            </p>
-          </div>
+          {/* As 3 lojas (14/10/2026, ver CartaoLojas): o mapa desenhado com o
+              trajeto e os pinos, e a lista com "Como chegar". Sem o telefone
+              fixo aqui (pedido): ele fica na página das lojas. */}
+          <CartaoLojas className="sm:col-span-2 lg:col-span-9" />
 
           {/* O horário (07/10/2026, "modernize"): o estado ao vivo no alto, o
               horário de hoje grande, a régua do dia com a hora de agora, a
