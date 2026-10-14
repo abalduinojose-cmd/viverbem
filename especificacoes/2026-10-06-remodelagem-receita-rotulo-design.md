@@ -1,5 +1,34 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 70 (14/10/2026): rolagem com mais profundidade, potes vivos, Creatina nas linhas e cartão do WhatsApp. IMPLEMENTADO e medido.**
+> Pedidos do dia: "modernize a sessão fale com a gente", "coloque a
+> creatina no lugar do ômega 3 e dê movimentos leves", "não gostei dos
+> movimentos, mude e aumente os potes em 12%" e "melhore os movimentos de
+> scroll da Viver Bem e atualize o github".
+>
+> - **Rolagem** (`globals.css`): as revelações passaram de faixas `entry`
+>   para `cover`. `entry` mede pela altura do próprio bloco, e um título de
+>   40 px aparecia inteiro em 40 px de rolagem (menos que um clique da
+>   roda); agora cada bloco entra ao longo de ~140 px e termina com o topo a
+>   85% da tela. Por cima disso, camadas em tempos diferentes: o título de
+>   seção se escreve da esquerda para a direita (recorte com folga para o
+>   itálico) logo depois do bloco aparecer, o traço de ouro sob o título
+>   cresce depois dele, o fio de ouro das vitrines se desenha e as fotos do
+>   banner das vitrines e da fachada (Lojas) andam ±5% mais devagar que a
+>   página (a da vitrine lê a linha do tempo nomeada `--vitrine`, porque a
+>   faixa que arrasta para o lado seria a rolagem mais próxima). Tudo roda
+>   com "reduzir movimento". Medido a 1440 e 390: nenhum bloco ou título
+>   fica preso depois de rolar até o pé.
+> - **Tirado no mesmo dia**: a linha de ouro de progresso sob o cabeçalho
+>   ("não gosto dela").
+> - **Potes das linhas** (`PoteVivo.tsx`): respiram (escala 1 a 1,03 em
+>   4,8 s) e um brilho recortado no formato do pote passa de tempos em
+>   tempos, em onda; param fora da tela. Potes 12% maiores (de 72% para
+>   80,6% do círculo). Vitaminas & Suplementos mostra a Creatina Gummy.
+> - **Fale com a gente** (`CartaoWhatsApp.tsx`): a prévia virou conversa do
+>   WhatsApp (barra do contato, fundo bege, vistos); com a loja aberta a
+>   farmácia "digita" e responde, fechada a mensagem fica só entregue.
+
 > **ADENDO 69 (13/10/2026): segurar para ver (produto e reel) e reels em tela cheia. IMPLEMENTADO e testado.**
 > Feito em `SegurarParaVer.tsx` (o gesto e a ampliação), `VisorReels.tsx`
 > (a tela cheia), `ProdutoCard.tsx` e `ReelsInstagram.tsx`. Testado com

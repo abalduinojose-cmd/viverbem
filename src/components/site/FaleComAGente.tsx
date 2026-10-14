@@ -26,11 +26,11 @@
 // diretos ("escrita leve, que converse com todos os públicos").
 import Link from "next/link";
 import { CartaoReceita } from "./CartaoReceita";
+import { CartaoWhatsApp } from "./CartaoWhatsApp";
 import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
-import { IconeWhatsApp, SetaDireita } from "./icones";
-import { UNIDADES, WHATSAPP_LOJA, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
+import { SetaDireita } from "./icones";
+import { UNIDADES, linkMapaUnidade } from "@/lib/tipos";
 
-// A mensagem que já vai pronta no WhatsApp: a pessoa só aperta enviar
 // A semana, no índice do getDay() (0 = domingo)
 const DIAS_SEMANA = [
   { curto: "D", nome: "Domingo" },
@@ -41,9 +41,6 @@ const DIAS_SEMANA = [
   { curto: "S", nome: "Sexta" },
   { curto: "S", nome: "Sábado" },
 ];
-
-const MENSAGEM_WHATSAPP = "Olá! Vim pelo site e gostaria de tirar uma dúvida.";
-const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAGEM_WHATSAPP)}`;
 
 // Pino do mapa (as lojas)
 function IconePino() {
@@ -92,10 +89,6 @@ function SeloAberto({ estado }: { estado: EstadoLoja }) {
 // do horário". O estado ao vivo, a hora de hoje grande, a semana e as
 // linhas já dizem tudo; a régua só pesava.)
 
-// Cartão branco da grade (WhatsApp, lojas): mesma elevação e o mesmo hover
-const classeCartao =
-  "group h-full w-full flex flex-col text-left rounded-[1.75rem] border border-fio bg-white shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] transition duration-300 hover:-translate-y-1 hover:border-ouro/40 hover:shadow-[0_26px_40px_-30px_rgba(16,42,74,0.45)] active:scale-[0.99]";
-
 export function FaleComAGente() {
   const estado = useEstadoLoja();
   // A linha de horário de hoje e o detalhe ("fecha às 19h") em minúscula
@@ -128,51 +121,9 @@ export function FaleComAGente() {
               ver CartaoReceita) */}
           <CartaoReceita />
 
-          {/* WhatsApp: o número grande e a mensagem que já vai pronta */}
-          <a
-            href={LINK_WHATSAPP}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${classeCartao} sm:col-span-2 lg:col-span-5 p-6 md:p-7`}
-          >
-            <span className="flex items-center justify-between gap-3">
-              <span className="rotulo-pilula">whatsapp</span>
-              {estado && (
-                <span className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold">
-                  <span aria-hidden="true" className={`size-1.5 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
-                  <span className={estado.aberto ? "text-green-700" : "text-cinza"}>
-                    {estado.aberto ? "Online agora" : "Responde no horário"}
-                  </span>
-                </span>
-              )}
-            </span>
-            <span className="mt-5 block text-[1.6rem] md:text-[1.8rem] font-semibold text-navy tracking-[-0.03em] tabular-nums leading-none">
-              {WHATSAPP_LOJA}
-            </span>
-            <span className="mt-2 block text-sm text-cinza leading-snug">Dúvidas, pedidos e retirada.</span>
-            {/* A conversa como ela é: a mensagem pronta num balão de "enviada" */}
-            <span className="mt-5 block rounded-2xl bg-gelo/70 p-3">
-              <span className="flex items-center gap-2 text-[0.7rem] font-medium text-cinza">
-                <span className="flex size-5 items-center justify-center rounded-full bg-white text-[#25D366] ring-1 ring-fio">
-                  <IconeWhatsApp tamanho={11} />
-                </span>
-                Viver Bem · mensagem pronta
-              </span>
-              <span className="mt-2 ml-auto block w-fit max-w-[28ch] rounded-2xl rounded-br-md bg-[#dcf8c6] px-3.5 py-2.5 text-[0.9rem] text-grafite leading-snug shadow-sm">
-                {MENSAGEM_WHATSAPP}
-              </span>
-            </span>
-            <span className="mt-2 block text-xs text-cinza">Basta enviar.</span>
-            <span className="mt-auto pt-6 block">
-              <span className="inline-flex items-center gap-2.5 h-12 px-5 rounded-full bg-[#1DA851] text-white text-[0.95rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors group-hover:bg-[#178a43]">
-                <IconeWhatsApp tamanho={18} />
-                Chamar no WhatsApp
-                <span className="transition-transform duration-300 group-hover:translate-x-1">
-                  <SetaDireita tamanho={15} />
-                </span>
-              </span>
-            </span>
-          </a>
+          {/* WhatsApp: o número grande e a conversa que já vai pronta
+              (14/10/2026, ver CartaoWhatsApp) */}
+          <CartaoWhatsApp estado={estado} className="sm:col-span-2 lg:col-span-5" />
 
           {/* As 3 lojas num só cartão (07/10/2026, "modernize as localidades"):
               número em ouro itálico, bairro e endereço, e a seta do mapa que

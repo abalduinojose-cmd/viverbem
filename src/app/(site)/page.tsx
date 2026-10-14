@@ -60,8 +60,10 @@ function imagemSeExistir(caminho: string): string | null {
 // apresentável, mas isso vai mudar depois") entram, PROVISÓRIOS, o frasco
 // de loção do ZincBlock e o conta-gotas do Firm Defense, até chegar a foto
 // da área (o rótulo deles mal se lê no círculo).
+// Vitaminas & Suplementos: a Creatina Gummy no lugar do Ômega 3 (pedido
+// de 14/10/2026).
 const FOTO_REPRESENTATIVA: Record<string, string> = {
-  "vitaminas-suplementos": "/uploads/omega3.png",
+  "vitaminas-suplementos": "/uploads/creatina-gummy.png",
   "saude-da-mulher": "/uploads/citorepair.png",
   "saude-do-homem": "/uploads/vitaflex.png",
   "cabelos-unhas": "/uploads/zincblock-fps.png",

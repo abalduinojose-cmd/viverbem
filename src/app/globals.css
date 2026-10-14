@@ -691,6 +691,11 @@ body {
    rápido e assenta devagar (ease-out), em vez de chegar "seco" no fim; a
    revelação termina um pouco antes (entry 40%), para nada aparecer tarde
    na base da tela. */
+/* 14/10/2026 (adendo 70): as faixas passaram de "entry" para "cover".
+   "entry" mede pela altura do próprio bloco: um título de 40px aparecia
+   inteiro em 40px de rolagem, menos que um clique da roda (~100px), e a
+   entrada saltava. "cover" mede pela tela: cada bloco entra ao longo de uns
+   140px, um clique e meio, e termina com o topo a 85% da tela. */
 @keyframes revelar-rolagem {
   from {
     opacity: 0;
@@ -712,18 +717,18 @@ body {
   .revelar {
     animation: revelar-rolagem cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 40%;
+    animation-range: cover 0% cover 14%;
   }
   .escalonado > * {
     animation: revelar-rolagem cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 32%;
+    animation-range: cover 0% cover 13%;
   }
-  .escalonado > *:nth-child(2) { animation-range: entry 7% entry 39%; }
-  .escalonado > *:nth-child(3) { animation-range: entry 14% entry 46%; }
-  .escalonado > *:nth-child(4) { animation-range: entry 21% entry 53%; }
-  .escalonado > *:nth-child(5) { animation-range: entry 27% entry 59%; }
-  .escalonado > *:nth-child(n + 6) { animation-range: entry 31% entry 63%; }
+  .escalonado > *:nth-child(2) { animation-range: cover 2.5% cover 15.5%; }
+  .escalonado > *:nth-child(3) { animation-range: cover 5% cover 18%; }
+  .escalonado > *:nth-child(4) { animation-range: cover 7.5% cover 20.5%; }
+  .escalonado > *:nth-child(5) { animation-range: cover 10% cover 23%; }
+  .escalonado > *:nth-child(n + 6) { animation-range: cover 12% cover 25%; }
 
   .folha {
     animation: folha-recua linear both;
@@ -731,12 +736,95 @@ body {
     animation-range: exit 55% exit 100%;
   }
 }
+/* 14/10/2026 ("melhore os movimentos de scroll", adendo 70): camadas que
+   andam em tempos diferentes, para a rolagem ter profundidade. Tudo anda
+   com a rolagem da pessoa (roda também com "reduzir movimento") e mexe só
+   em recorte, posição e escala, sem desfoque.
+   - o título de seção se escreve da esquerda para a direita, um pouco
+     depois do bloco aparecer, e sobe de leve; o recorte tem folga (valores
+     negativos) para o itálico e as descidas das letras não cortarem;
+   - o traço de ouro embaixo do título cresce depois dele;
+   - o fio de ouro ao lado do título das vitrines se desenha;
+   - as fotos dos banners andam um pouco mais devagar que a página.
+   (A linha de ouro de progresso sob o cabeçalho foi tirada no mesmo dia:
+   "não gosto dela".) */
+@keyframes titulo-escreve {
+  from {
+    clip-path: inset(-0.25em 100% -0.35em -0.25em);
+    transform: translateY(0.3em);
+  }
+  to {
+    clip-path: inset(-0.25em -0.4em -0.35em -0.25em);
+    transform: none;
+  }
+}
+@keyframes cresce-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes foto-profunda {
+  from {
+    translate: 0 -5%;
+  }
+  to {
+    translate: 0 5%;
+  }
+}
+/* A foto tem 7% de sobra em cima e embaixo para andar sem mostrar a borda */
+.foto-profunda {
+  top: -7% !important;
+  height: 114% !important;
+}
+.vitrine-linha {
+  view-timeline: --vitrine block;
+}
+@supports (animation-timeline: view()) {
+  .revelar :is(.titulo-secao, .titulo-bloco) {
+    animation: titulo-escreve cubic-bezier(0.25, 0.5, 0.4, 1) both;
+    animation-timeline: view();
+    animation-range: cover 2% cover 18%;
+  }
+  .revelar .rotulo-pilula + .titulo-secao::after {
+    transform-origin: 0% 50%;
+    animation: cresce-x cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-timeline: view();
+    animation-range: cover 3% cover 15%;
+  }
+  .revelar.text-center .rotulo-pilula + .titulo-secao::after,
+  .text-center .revelar .rotulo-pilula + .titulo-secao::after {
+    transform-origin: 50% 50%;
+  }
+  .fio-desenha {
+    transform-origin: 0% 50%;
+    animation: cresce-x cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-timeline: view();
+    animation-range: cover 4% cover 22%;
+  }
+  .foto-profunda {
+    animation: foto-profunda linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+  /* Dentro da faixa que arrasta para o lado, a faixa seria a rolagem mais
+     próxima: a foto lê a linha do tempo da vitrine inteira */
+  .vitrine-linha .foto-profunda {
+    animation-timeline: --vitrine;
+  }
+}
 /* Na impressão não há rolagem: tudo visível */
 @media print {
   .revelar,
   .escalonado > *,
   .folha,
-  .cascata > * {
+  .cascata > *,
+  .revelar :is(.titulo-secao, .titulo-bloco),
+  .revelar .titulo-secao::after,
+  .fio-desenha,
+  .foto-profunda {
     animation: none !important;
   }
 }

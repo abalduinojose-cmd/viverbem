@@ -77,7 +77,7 @@ function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string })
             height={1000}
             loading="lazy"
             decoding="async"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            className="foto-profunda absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
           {/* Véu: a imagem some para o azul-noite, para o texto ler bem */}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 to-navy/35" />
@@ -132,13 +132,13 @@ export function VitrineCategoria({
   if (produtos.length === 0) return null;
 
   return (
-    <section aria-labelledby={id} className="secao-vitrine max-w-7xl mx-auto px-5 md:px-8">
+    <section aria-labelledby={id} className="secao-vitrine vitrine-linha max-w-7xl mx-auto px-5 md:px-8">
       {/* Cabeçalho: título, fio e "ver mais" na mesma linha */}
       <div className="revelar flex items-center gap-4 md:gap-6">
         <h2 id={id} className="titulo-bloco">
           {titulo}
         </h2>
-        <span aria-hidden="true" className="hidden sm:block h-px flex-1 bg-gradient-to-r from-ouro/50 via-fio to-fio" />
+        <span aria-hidden="true" className="fio-desenha hidden sm:block h-px flex-1 bg-gradient-to-r from-ouro/50 via-fio to-fio" />
         <BotaoVerMais href={href} className="shrink-0 ml-auto sm:ml-0" />
       </div>
 

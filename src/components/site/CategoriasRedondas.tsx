@@ -7,9 +7,11 @@
 // usuário em 06/10/2026, "tire a parte em branco").
 // 08/10/2026 ("diminua o tamanho em 10%"): o título sai a 90% do tamanho
 // de título de seção e a grade dos círculos ocupa 90% da largura.
+// 14/10/2026: os potes respiram e um brilho passa por eles (PoteVivo).
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
+import { PoteVivo } from "./PoteVivo";
 
 export type ImagemCategoria = { tipo: "foto" | "produto"; src: string };
 
@@ -39,7 +41,7 @@ export function CategoriasRedondas({
       </div>
 
       <ul className="escalonado vao-titulo mx-auto w-[90%] grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-7 md:gap-6">
-        {categorias.map((c) => {
+        {categorias.map((c, i) => {
           const img = imagens[c.id];
           return (
             <li key={c.id}>
@@ -57,17 +59,21 @@ export function CategoriasRedondas({
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : img?.tipo === "produto" ? (
-                    <span className="flex w-full h-full items-center justify-center bg-gelo p-[14%]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={asset(img.src)}
-                        alt=""
-                        width={400}
-                        height={400}
-                        loading="lazy"
-                        decoding="async"
-                        className="max-w-full max-h-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.28)] transition-transform duration-500 group-hover:-translate-y-1"
-                      />
+                    // p-[9.7%]: os potes 12% maiores (14/10/2026; era p-[14%],
+                    // 72% do círculo, agora 80,6%)
+                    <span className="flex w-full h-full items-center justify-center bg-gelo p-[9.7%]">
+                      <PoteVivo indice={i} src={asset(img.src)}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={asset(img.src)}
+                          alt=""
+                          width={400}
+                          height={400}
+                          loading="lazy"
+                          decoding="async"
+                          className="max-w-full max-h-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.28)] transition-transform duration-500 group-hover:-translate-y-1"
+                        />
+                      </PoteVivo>
                     </span>
                   ) : (
                     <span className="banner-noite flex w-full h-full items-center justify-center text-ouro-claro text-[3.5rem] font-[family-name:var(--font-destaque)] italic">
