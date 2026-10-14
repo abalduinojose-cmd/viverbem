@@ -115,6 +115,7 @@ export function CartaoNumero({
   tom = "navy",
   extra,
   icone,
+  visual,
 }: {
   rotulo: string;
   valor: string | number;
@@ -124,6 +125,8 @@ export function CartaoNumero({
   extra?: React.ReactNode;
   /** O desenho do ícone (os <path> de 24x24 de ICONES) */
   icone?: React.ReactNode;
+  /** Um mini-gráfico embaixo, à direita do apoio (Faisca, Anel) */
+  visual?: React.ReactNode;
 }) {
   const noite = tom === "noite";
   const cor = {
@@ -136,10 +139,10 @@ export function CartaoNumero({
   }[tom];
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.5rem] px-5 py-5 transition-colors ${
+      className={`relative overflow-hidden rounded-[1.5rem] px-5 py-5 transition duration-300 hover:-translate-y-0.5 ${
         noite
           ? "banner-noite em-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)]"
-          : "bg-white ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:ring-tinta/30"
+          : "bg-white ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] hover:ring-tinta/30 hover:shadow-[0_24px_44px_-30px_rgba(16,42,74,0.45)]"
       }`}
     >
       {noite && <span aria-hidden="true" className="malha-banner" />}
@@ -159,7 +162,12 @@ export function CartaoNumero({
       <p className={`relative text-[2rem] md:text-[2.5rem] font-semibold tracking-[-0.04em] leading-none mt-4 tabular-nums ${cor}`}>
         <NumeroAnimado texto={String(valor)} />
       </p>
-      {apoio && <p className={`relative text-xs mt-2.5 ${noite ? "text-white/55" : "text-grafite-claro"}`}>{apoio}</p>}
+      {(apoio || visual) && (
+        <div className="relative mt-2.5 flex items-end justify-between gap-3">
+          {apoio && <p className={`text-xs leading-snug ${noite ? "text-white/55" : "text-grafite-claro"}`}>{apoio}</p>}
+          {visual && <span className={`shrink-0 ${noite ? "text-white" : "text-navy"}`}>{visual}</span>}
+        </div>
+      )}
     </div>
   );
 }

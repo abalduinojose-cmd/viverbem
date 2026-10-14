@@ -13,15 +13,59 @@
 // está logado aparece embaixo com a inicial no círculo de ouro. No celular
 // a barra do topo e a gaveta são a mesma folha escura.
 
-import { useEffect, useState } from "react";
+//
+// Mesmo dia, segunda volta ("quero mais moderno"): a barra do topo em vidro
+// no computador, com a trilha "Gestão › Visão geral", a data, a hora e o
+// atalho para o site; e a pílula da página ativa desliza entre os itens ao
+// navegar (uma só pílula, movida com a Web Animations API pela posição do
+// item ativo), em vez de acender num e apagar no outro.
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
 import { PAPEL_ADMIN, nomePapel } from "@/lib/tipos";
 import { BotaoSair } from "./BotaoSair";
 import { Inicial } from "./PecasAdmin";
+import { DataHoje, RelogioAgora } from "./PecasVivas";
 import { ICONES } from "./iconesAdmin";
 import { useSessaoDemo } from "./ModoDemo";
+
+/** A pílula que marca a página ativa e desliza até ela quando a rota muda */
+function PilulaAtiva({ nav, pathname }: { nav: React.RefObject<HTMLElement | null>; pathname: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const primeira = useRef(true);
+  useEffect(() => {
+    const pilula = ref.current;
+    const caixa = nav.current;
+    if (!pilula || !caixa) return;
+    const ativo = caixa.querySelector<HTMLElement>("[aria-current='page']");
+    if (!ativo) {
+      pilula.style.opacity = "0";
+      return;
+    }
+    const destino = { top: `${ativo.offsetTop}px`, height: `${ativo.offsetHeight}px`, opacity: "1" };
+    if (primeira.current) {
+      primeira.current = false;
+      Object.assign(pilula.style, destino);
+      return;
+    }
+    const origem = { top: pilula.style.top || destino.top, height: pilula.style.height || destino.height, opacity: pilula.style.opacity || "0" };
+    Object.assign(pilula.style, destino);
+    pilula.animate([origem, destino], { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+  }, [nav, pathname]);
+  return (
+    <span
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none absolute left-3 right-3 rounded-xl bg-white/[0.1] ring-1 ring-inset ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+      style={{ top: 0, height: 0, opacity: 0 }}
+    >
+      {/* A marca de ouro da página ativa */}
+      <span className="absolute -left-3 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-[image:var(--ouro-degrade)]" />
+    </span>
+  );
+}
 
 export interface ItemNav {
   href: string;
@@ -86,9 +130,12 @@ export function CascaAdmin({
   }, {});
 
   const ativoEm = (i: ItemNav) => !i.externo && pathname.startsWith(i.href);
-  const tituloAtual = itens.find(ativoEm)?.rotulo ?? "Painel";
+  const itemAtual = itens.find(ativoEm);
+  const tituloAtual = itemAtual?.rotulo ?? "Painel";
+  const navLateral = useRef<HTMLElement>(null);
+  const navGaveta = useRef<HTMLElement>(null);
 
-  const menu = (
+  const menu = (navRef: React.RefObject<HTMLElement | null>) => (
     <>
       {/* A malha fina e a luz, como nos banners do site */}
       <span aria-hidden="true" className="malha-banner" />
@@ -103,23 +150,18 @@ export function CascaAdmin({
         <p className="rotulo-pilula mt-4 !text-[0.6875rem]">{ehGestor ? "Painel do gestor" : "Painel da equipe"}</p>
       </div>
 
-      <nav className="relative flex-1 px-3 pb-2 overflow-y-auto" aria-label="Páginas do painel">
+      <nav ref={navRef} className="relative flex-1 px-3 pb-2 overflow-y-auto" aria-label="Páginas do painel">
+        <PilulaAtiva nav={navRef} pathname={pathname} />
         {Object.entries(grupos).map(([grupo, lista]) => (
           <div key={grupo} className="mb-1">
             <p className="px-3 pt-4 pb-2 text-[0.6875rem] font-semibold tracking-[0.2em] uppercase text-white/45">{grupo}</p>
             {lista.map((i) => {
               const ativo = ativoEm(i);
-              const classe = `group relative flex items-center gap-3 rounded-xl px-3 py-2.5 mb-0.5 text-[0.92rem] font-medium transition-colors ${
-                ativo
-                  ? "bg-white/[0.1] text-white ring-1 ring-inset ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                  : "text-white/70 hover:text-white hover:bg-white/[0.06]"
+              const classe = `group relative z-[1] flex items-center gap-3 rounded-xl px-3 py-2.5 mb-0.5 text-[0.92rem] font-medium transition-colors ${
+                ativo ? "text-white" : "text-white/70 hover:text-white hover:bg-white/[0.06]"
               }`;
               const conteudo = (
                 <>
-                  {/* A marca de ouro da página ativa */}
-                  {ativo && (
-                    <span aria-hidden="true" className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-[image:var(--ouro-degrade)]" />
-                  )}
                   <svg
                     width="19"
                     height="19"
@@ -171,7 +213,7 @@ export function CascaAdmin({
     <div className="flex-1 flex min-h-screen bg-nevoa text-grafite">
       {/* Lateral fixa (desktop): a folha escura do painel */}
       <aside className="hidden lg:flex w-[17rem] shrink-0 flex-col sticky top-0 h-screen overflow-hidden banner-noite em-noite text-white">
-        {menu}
+        {menu(navLateral)}
       </aside>
 
       {/* Gaveta (celular e tablet) */}
@@ -181,7 +223,7 @@ export function CascaAdmin({
             className="relative w-[17rem] max-w-[85vw] h-full flex flex-col overflow-hidden banner-noite em-noite text-white animar-surgir shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {menu}
+            {menu(navGaveta)}
           </div>
         </div>
       )}
@@ -202,6 +244,44 @@ export function CascaAdmin({
           <p className="font-semibold truncate">{tituloAtual}</p>
           <Marca className="ml-auto !px-2.5 !py-1.5 [&>img]:h-6" />
         </header>
+
+        {/* A barra do topo do computador, em vidro: a trilha, a data, a hora e o site */}
+        <div className="hidden lg:flex sticky top-0 z-30 items-center gap-4 h-14 px-8 bg-nevoa/75 backdrop-blur-md border-b border-fio/70">
+          <p className="flex items-center gap-2 text-sm min-w-0">
+            <span className="text-cinza">{itemAtual?.grupo ?? "Painel"}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-grafite-claro shrink-0">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="font-semibold text-navy truncate">{tituloAtual}</span>
+          </p>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 h-8 rounded-full bg-white ring-1 ring-fio px-3 text-[0.78rem] text-cinza">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3.5" y="5" width="17" height="15" rx="3" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <DataHoje />
+            </span>
+            <span className="inline-flex items-center gap-1.5 h-8 rounded-full bg-white ring-1 ring-fio px-3 text-[0.78rem] text-cinza tabular-nums">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <RelogioAgora />
+            </span>
+            <a
+              href={asset("/")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/site inline-flex items-center gap-1.5 h-8 rounded-full bg-navy text-white px-3.5 text-[0.78rem] font-semibold transition-colors hover:bg-tinta"
+            >
+              Ver o site
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="transition-transform group-hover/site:translate-x-0.5 group-hover/site:-translate-y-0.5">
+                <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </div>
 
         {/* Um sopro de azul no alto do conteúdo, para o claro não ser chapado */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 bg-[radial-gradient(70%_40%_at_100%_0%,rgba(28,105,181,0.07),transparent_60%)]">{children}</main>

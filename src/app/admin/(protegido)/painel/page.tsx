@@ -22,7 +22,7 @@ import { obterMetricas } from "@/lib/metricas";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { CabecalhoAdmin, CartaoAdmin, CartaoNumero, ChipAdmin, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
-import { BarraViva, RelogioAgora } from "@/components/admin/PecasVivas";
+import { Anel, BarraViva, Faisca } from "@/components/admin/PecasVivas";
 import { ICONES } from "@/components/admin/iconesAdmin";
 import { GraficoCatalogo, GraficoFaturamento, GraficoPedidosDia, GraficoEntregas } from "@/components/admin/Graficos";
 
@@ -124,9 +124,12 @@ export default async function PaginaPainel() {
   const m = await obterMetricas();
   // Sem pedido nenhum, as setas de "em relação ao mês passado" não dizem nada
   const semPedidos = m.totalPedidos === 0;
-  const agora = new Date();
-  const mes = agora.toLocaleDateString("pt-BR", { month: "long" });
-  const hoje = agora.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+  const mes = new Date().toLocaleDateString("pt-BR", { month: "long" });
+  // Os mini-gráficos dos números: só quando há o que desenhar
+  const faiscaPedidos = m.porDia.some((x) => x.pedidos > 0) ? m.porDia.map((x) => x.pedidos) : null;
+  const faiscaFaturamento = m.porMes.some((x) => x.faturamento > 0) ? m.porMes.map((x) => x.faturamento) : null;
+  const parteReceitas = m.pedidosMes > 0 ? (m.receitasMes / m.pedidosMes) * 100 : null;
+  const parteClientes = m.pedidosMes > 0 ? (m.clientesUnicos / m.pedidosMes) * 100 : null;
   const alertas = [
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
     { n: m.alertas.semPreco, r: "industrializados sem preço", href: "/admin/produtos", grave: true },
@@ -145,22 +148,15 @@ export default async function PaginaPainel() {
         descricao={`Como está o mês de ${mes} na Viver Bem.`}
         chips={
           <>
-            <ChipAdmin>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="3.5" y="5" width="17" height="15" rx="3" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-              {hoje.charAt(0).toUpperCase() + hoje.slice(1)}
-            </ChipAdmin>
-            <ChipAdmin>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <RelogioAgora />
-            </ChipAdmin>
             <ChipAdmin tom={alertas.some((a) => a.grave) ? "ouro" : "verde"}>
+              <span aria-hidden="true" className={`size-1.5 rounded-full ${alertas.some((a) => a.grave) ? "bg-ouro-escuro" : "bg-green-600"}`} />
               {alertas.some((a) => a.grave) ? `${alertas.filter((a) => a.grave).reduce((s, a) => s + a.n, 0)} pendências no catálogo` : "Catálogo em dia"}
+            </ChipAdmin>
+            <ChipAdmin>
+              {m.catalogo.noSite} de {m.catalogo.total} produtos no site
+            </ChipAdmin>
+            <ChipAdmin>
+              {m.equipe.ativos} {m.equipe.ativos === 1 ? "acesso ativo" : "acessos ativos"}
             </ChipAdmin>
           </>
         }
@@ -188,6 +184,7 @@ export default async function PaginaPainel() {
           valor={String(m.pedidosMes)}
           extra={<Variacao noite valor={semPedidos ? null : m.pedidosVariacao} />}
           apoio={`${m.totalPedidos} desde o início`}
+          visual={faiscaPedidos && <Faisca valores={faiscaPedidos} cor="ouro" className="h-9 w-28" />}
         />
         <CartaoNumero
           icone={ICONES.receita}
@@ -195,6 +192,7 @@ export default async function PaginaPainel() {
           valor={String(m.receitasMes)}
           extra={<Variacao valor={semPedidos ? null : m.receitasVariacao} />}
           apoio="pedidos com foto de receita"
+          visual={parteReceitas !== null && <Anel pct={parteReceitas} rotulo="dos pedidos" />}
         />
         <CartaoNumero
           icone={ICONES.faturamento}
@@ -202,8 +200,15 @@ export default async function PaginaPainel() {
           valor={formatarPreco(m.faturamentoMes)}
           extra={<Variacao valor={semPedidos ? null : m.faturamentoVariacao} />}
           apoio="só produtos com preço no site"
+          visual={faiscaFaturamento && <Faisca valores={faiscaFaturamento} className="h-9 w-28" />}
         />
-        <CartaoNumero icone={ICONES.clientes} rotulo="Clientes no mês" valor={String(m.clientesUnicos)} apoio="WhatsApps diferentes" />
+        <CartaoNumero
+          icone={ICONES.clientes}
+          rotulo="Clientes no mês"
+          valor={String(m.clientesUnicos)}
+          apoio="WhatsApps diferentes"
+          visual={parteClientes !== null && <Anel pct={parteClientes} rotulo="por pedido" cor="ouro" />}
+        />
       </div>
 
       {/* ---------- Gráficos ---------- */}
@@ -297,20 +302,26 @@ export default async function PaginaPainel() {
                 Catálogo em ordem: nada esperando publicação, e todos os produtos têm foto e categoria.
               </p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+              /* Uma linha por item, com a seta: um ladrilho solto num cartão
+                 vazio parecia erro (14/10/2026) */
+              <ul className="mt-3 flex flex-col gap-2">
                 {alertas.map((a) => (
-                  <Link
-                    key={a.r}
-                    href={a.href}
-                    className={`group rounded-2xl px-4 py-3.5 ring-1 ring-inset transition-colors ${
-                      a.grave ? "ring-carimbo/30 bg-carimbo/5 hover:ring-carimbo/60" : "ring-fio bg-nevoa/60 hover:ring-tinta/40"
-                    }`}
-                  >
-                    <p className={`text-2xl font-semibold tabular-nums tracking-tight ${a.grave ? "text-carimbo" : "text-navy"}`}>{a.n}</p>
-                    <p className="text-cinza text-xs mt-0.5 group-hover:text-navy transition-colors">{a.r}</p>
-                  </Link>
+                  <li key={a.r}>
+                    <Link
+                      href={a.href}
+                      className={`group flex items-center gap-3 rounded-2xl px-3.5 py-3 ring-1 ring-inset transition-colors ${
+                        a.grave ? "ring-carimbo/25 bg-carimbo/5 hover:ring-carimbo/60" : "ring-fio bg-nevoa/60 hover:ring-tinta/40"
+                      }`}
+                    >
+                      <span className={`w-12 shrink-0 text-2xl font-semibold tabular-nums tracking-tight ${a.grave ? "text-carimbo" : "text-navy"}`}>{a.n}</span>
+                      <span className="min-w-0 flex-1 text-sm text-navy">{a.r}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 text-grafite-claro transition-transform group-hover:translate-x-0.5 group-hover:text-navy">
+                        <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         </CartaoAdmin>

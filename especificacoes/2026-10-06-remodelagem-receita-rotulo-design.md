@@ -31,7 +31,31 @@
 > volta, e o último quadro guardado leva as voltas. Medido: 2 a 4 ms por
 > quadro, 60 fps no desktop e no celular.
 
-> **ADENDO 74 (14/10/2026): painel do gestor premium. IMPLEMENTADO e testado no localhost (1366, 1070 e celular), NÃO publicado.**
+> **ADENDO 74 (14/10/2026): painel do gestor premium. IMPLEMENTADO e testado no localhost (1366, 1070 e celular); publicado no 31º push depois da segunda volta.**
+> **Segunda volta no mesmo dia ("quero mais moderno e atualize no github"):**
+> - **Barra do topo em vidro** no computador (`CascaAdmin`, `bg-nevoa/75` +
+>   `backdrop-blur`): a trilha "Gestão › Visão geral", a data por extenso
+>   e a hora (`DataHoje` e `RelogioAgora`, preenchidas no navegador para o
+>   HTML gerado não discordar do relógio de quem abre) e "Ver o site" em
+>   navy. A data e a hora saíram dos chips do cabeçalho da visão geral,
+>   que ficou com o estado do catálogo, "N de M produtos no site" e os
+>   acessos ativos.
+> - **Pílula deslizante** na lateral (`PilulaAtiva`): uma só pílula de
+>   vidro, posicionada pelo `offsetTop` do item com `aria-current`, anda até
+>   a página nova com a Web Animations API (420 ms, saída suave) quando a
+>   rota muda; na primeira pintura só se posiciona. Medido: topo 41 → 85
+>   ao ir de Visão geral para Clientes captados, igual ao item.
+> - **Faíscas e anéis** nos números (`PecasVivas`: `Faisca`, `Anel`;
+>   `CartaoNumero` ganhou `visual`): pedidos no mês com a linha dos 14 dias
+>   em ouro no cartão escuro, faturamento com a dos 6 meses em azul,
+>   receitas com o anel "dos pedidos" e clientes com o anel "por pedido";
+>   a linha se desenha e o anel se fecha ao aparecer. Só com dados (no
+>   localhost, com zero pedidos, não aparecem; na prévia aparecem).
+> - "O que precisa de atenção" em linhas com a seta (um ladrilho solto num
+>   cartão vazio parecia erro); cartões de número sobem de leve no hover.
+> - Erro corrigido no caminho: `visual` entrou no tipo das props antes de
+>   entrar na desestruturação e a página caiu com 500 ("visual is not
+>   defined"); o log do servidor de dev (`preview_logs`) apontou na hora.
 > Pedido, com a casca, a visão geral, o menu, os atalhos e o rodapé do
 > usuário selecionados: "modernize e melhore todos, quero um dashboard de
 > alta qualidade e premium". Feito no Fable 5.1.
