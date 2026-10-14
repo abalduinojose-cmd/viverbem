@@ -11,25 +11,24 @@
 // num círculo branco. A etiqueta "desde 2006" segue no alto. Sem desfoque
 // de fundo, que custa caro no celular.
 import Link from "next/link";
-import { asset } from "@/lib/asset";
 import { ANOS_TRADICAO } from "@/lib/tipos";
 import { SetaDireita } from "./icones";
+import { MidiaBanner } from "./MidiaBanner";
+import type { Midia } from "@/lib/banners";
 
-export function BannerHistoria() {
+export function BannerHistoria({ midia = null }: { midia?: Midia | null }) {
+  // A foto do painel (14/10/2026) ou a da equipe na loja
+  const foto: Midia = midia ?? { url: "/fotos/sobre/equipe-loja.webp", tipo: "imagem" };
   return (
     <section aria-label="A nossa história" className="md:hidden max-w-7xl mx-auto px-5 pt-3">
       <Link
         href="/sobre"
         className="group relative block overflow-hidden rounded-[2rem] aspect-[4/5] bg-navy shadow-[0_30px_60px_-36px_rgba(13,35,64,0.55)] transition-transform duration-300 active:scale-[0.99]"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={asset("/fotos/sobre/equipe-loja.webp")}
-          alt=""
-          width={1200}
-          height={749}
-          loading="lazy"
-          decoding="async"
+        <MidiaBanner
+          desktop={foto}
+          largura={1200}
+          altura={749}
           className="absolute inset-0 h-full w-full object-cover object-[50%_30%] transition-transform duration-700 group-hover:scale-[1.03]"
         />
         {/* O véu: escuro na base, para o texto, e um fio de luz no alto */}

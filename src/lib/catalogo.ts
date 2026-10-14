@@ -35,6 +35,9 @@ export interface RetratoDemo {
     heroCelular?: string | null;
     heroDesktop2?: string | null;
     heroCelular2?: string | null;
+    // 14/10/2026: o gerador copia TODAS as chaves da Configuracao (ordem
+    // das seções, fotos das linhas, banners)
+    [chave: string]: unknown;
   };
   /** O que o painel mostra na prévia (10/10/2026, ver lib/adminDemo.ts) */
   admin?: AdminDemo;

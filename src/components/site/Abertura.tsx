@@ -15,10 +15,10 @@
 // na frente no fecho da animação são industrializados com registro
 // (creatina).
 import Link from "next/link";
-import { asset } from "@/lib/asset";
 import { UNIDADES } from "@/lib/tipos";
 import type { ArteHero } from "@/lib/hero";
 import { CarrosselArte } from "./CarrosselArte";
+import { MidiaBanner } from "./MidiaBanner";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 import { HeroAnimado } from "./heroAnimado/HeroAnimado";
 
@@ -109,18 +109,15 @@ export function Abertura({ artes = [] }: { artes?: ArteHero[] }) {
         <div className="em-noite relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] bg-navy ring-1 ring-inset ring-white/10 text-white">
           {artes.length === 1 ? (
             <>
-              <picture>
-                {artes[0].celular && <source media="(max-width: 767px)" srcSet={asset(artes[0].celular)} />}
-                <img
-                  src={asset(artes[0].desktop)}
-                  alt=""
-                  width={1920}
-                  height={760}
-                  decoding="async"
-                  fetchPriority="high"
-                  className="block w-full h-auto min-h-[26rem] md:min-h-[22rem] md:max-h-[34rem] object-cover"
-                />
-              </picture>
+              {/* Foto, GIF ou vídeo (14/10/2026, ver MidiaBanner) */}
+              <MidiaBanner
+                desktop={artes[0].desktop}
+                celular={artes[0].celular}
+                prioridade
+                largura={1920}
+                altura={760}
+                className="block w-full h-auto min-h-[26rem] md:min-h-[22rem] md:max-h-[34rem] object-cover"
+              />
               {sobreposicao}
             </>
           ) : (

@@ -27,11 +27,12 @@
 // a área, nunca um efeito: manipulado não pode ter promessa (RDC 67/2007).
 import { Fragment } from "react";
 import Link from "next/link";
-import { asset } from "@/lib/asset";
 import { ProdutoDTO } from "@/lib/tipos";
 import { FaixaProdutos } from "./FaixaProdutos";
 import { BotaoVerMais } from "./BotaoVerMais";
 import { SetaDireita } from "./icones";
+import { MidiaBanner } from "./MidiaBanner";
+import type { Midia } from "@/lib/banners";
 
 export type BannerVitrine = {
   /** Título do banner; a parte entre *asteriscos* sai em itálico ouro */
@@ -39,6 +40,8 @@ export type BannerVitrine = {
   texto?: string;
   /** Imagem em public/fotos/banners/*.jpg; sem ela o banner é a peça em azul-noite */
   imagem?: string | null;
+  /** A mídia enviada pelo painel (foto, GIF; 14/10/2026), por cima da imagem fixa */
+  midia?: Midia | null;
 };
 
 // Título em duas vozes: a sans branca e, entre *asteriscos*, o itálico
@@ -62,21 +65,18 @@ function TituloDuasVozes({ texto }: { texto: string }) {
 
 // O banner da área, o último cartão da faixa
 function BannerCartao({ banner, href }: { banner: BannerVitrine; href: string }) {
+  const midia: Midia | null = banner.midia ?? (banner.imagem ? { url: banner.imagem, tipo: "imagem" } : null);
   return (
     <Link
       href={href}
       className={`group banner-noite em-noite relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 text-center transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)] w-44 md:w-48 p-5`}
     >
-      {banner.imagem ? (
+      {midia ? (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={asset(banner.imagem)}
-            alt=""
-            width={800}
-            height={1000}
-            loading="lazy"
-            decoding="async"
+          <MidiaBanner
+            desktop={midia}
+            largura={800}
+            altura={1000}
             className="foto-profunda absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
           {/* Véu: a imagem some para o azul-noite, para o texto ler bem */}

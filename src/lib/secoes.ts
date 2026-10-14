@@ -62,6 +62,24 @@ export const SECOES_PADRAO: SecoesHome = Object.fromEntries(
   SECOES_HOME.map((s) => [s.chave, true])
 ) as SecoesHome;
 
+/** A ordem padrão: a da lista acima. */
+export const ORDEM_PADRAO: ChaveSecao[] = SECOES_HOME.map((s) => s.chave);
+
+/** A ordem das seções que veio do banco (14/10/2026, "a pessoa pode
+ *  controlar qual vem primeiro"): só chaves conhecidas, sem repetição; as
+ *  que faltarem entram no fim, na ordem padrão. */
+export function normalizarOrdem(valor: unknown): ChaveSecao[] {
+  const conhecidas = new Set<string>(ORDEM_PADRAO);
+  const resultado: ChaveSecao[] = [];
+  if (Array.isArray(valor)) {
+    for (const v of valor) {
+      if (typeof v === "string" && conhecidas.has(v) && !resultado.includes(v as ChaveSecao)) resultado.push(v as ChaveSecao);
+    }
+  }
+  for (const chave of ORDEM_PADRAO) if (!resultado.includes(chave)) resultado.push(chave);
+  return resultado;
+}
+
 /** Completa o que veio do banco com o padrão (chave nova entra ligada). */
 export function normalizarSecoes(valor: unknown): SecoesHome {
   const lido = (valor && typeof valor === "object" ? valor : {}) as Record<string, unknown>;

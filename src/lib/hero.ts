@@ -4,9 +4,11 @@
 // painel; na dobra ficam só os botões, por cima da arte. Pode haver até
 // duas artes (cada uma com a versão do computador e a do celular): com
 // duas, a dobra alterna entre elas. Fontes, nesta ordem:
-//   1. o que foi enviado pelo painel (Painel > Site > Arte da dobra), que
-//      fica na tabela Configuracao com a URL de cada imagem;
-//   2. para a primeira arte, os arquivos soltos em public/uploads/hero/
+//   1. os banners "dobra-1" e "dobra-2" do painel (14/10/2026: foto, GIF
+//      ou vídeo, ver lib/banners.ts);
+//   2. as chaves antigas heroDesktop/heroCelular da Configuracao (as artes
+//      enviadas antes dos banners);
+//   3. para a primeira arte, os arquivos soltos em public/uploads/hero/
 //      (para quem prefere copiar a imagem direto no servidor):
 //        desktop.(jpg|png|webp)  ~1920x760 (a dobra do computador)
 //        celular.(jpg|png|webp)  ~1080x1350 (a dobra do celular), opcional
@@ -14,13 +16,14 @@
 // no servidor (ou no build da vitrine estática).
 import fs from "fs";
 import path from "path";
-import { obterArtesHeroConfiguradas } from "@/lib/configuracao";
+import { obterArtesHeroConfiguradas, obterBanners } from "@/lib/configuracao";
+import type { Midia } from "@/lib/banners";
 
 export type ArteHero = {
-  /** Caminho público da arte do computador, ex.: /uploads/hero/desktop.jpg */
-  desktop: string;
-  /** Caminho público da arte do celular, ou null para reaproveitar a do computador */
-  celular: string | null;
+  /** A arte do computador (imagem, GIF ou vídeo) */
+  desktop: Midia;
+  /** A arte do celular, ou null para reaproveitar a do computador */
+  celular: Midia | null;
 };
 
 const EXTENSOES = ["jpg", "jpeg", "png", "webp"];
@@ -33,15 +36,19 @@ function acharArquivo(nome: string): string | null {
   return null;
 }
 
+const imagem = (url: string | null): Midia | null => (url ? { url, tipo: "imagem" } : null);
+
 /** As artes prontas para a dobra (só as que têm a versão do computador);
  *  lista vazia = dobra padrão. */
 export async function obterArtesHero(): Promise<ArteHero[]> {
-  const configuradas = await obterArtesHeroConfiguradas();
+  const [configuradas, banners] = await Promise.all([obterArtesHeroConfiguradas(), obterBanners()]);
   const artes: ArteHero[] = [];
   configuradas.forEach((c, i) => {
-    const desktop = c.desktop ?? (i === 0 ? acharArquivo("desktop") : null);
+    const banner = banners[`dobra-${i + 1}`];
+    const desktop = banner?.desktop ?? imagem(c.desktop) ?? (i === 0 ? imagem(acharArquivo("desktop")) : null);
     if (!desktop) return;
-    artes.push({ desktop, celular: c.celular ?? (i === 0 ? acharArquivo("celular") : null) });
+    const celular = banner?.celular ?? imagem(c.celular) ?? (i === 0 ? imagem(acharArquivo("celular")) : null);
+    artes.push({ desktop, celular });
   });
   return artes;
 }

@@ -235,13 +235,9 @@ async function gerarRetrato() {
           ativo: a.ativo,
           ordem: a.ordem,
         })),
-      configuracao: {
-        secoesHome: configuracao.secoesHome ?? null,
-        heroDesktop: configuracao.heroDesktop ?? null,
-        heroCelular: configuracao.heroCelular ?? null,
-        heroDesktop2: configuracao.heroDesktop2 ?? null,
-        heroCelular2: configuracao.heroCelular2 ?? null,
-      },
+      // Todas as chaves da Configuracao (14/10/2026: além das seções e da
+      // dobra, a ordem das seções, as fotos das linhas e os banners)
+      configuracao: { ...configuracao },
     };
 
     fs.writeFileSync(

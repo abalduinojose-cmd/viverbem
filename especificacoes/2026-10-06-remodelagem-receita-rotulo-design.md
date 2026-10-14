@@ -31,6 +31,59 @@
 > volta, e o último quadro guardado leva as voltas. Medido: 2 a 4 ms por
 > quadro, 60 fps no desktop e no celular.
 
+> **ADENDO 76 (14/10/2026): a home pelo painel: ordem das seções, foto e ordem das linhas, e todos os banners por foto, GIF ou vídeo. IMPLEMENTADO, testado de ponta a ponta no localhost, publicado no 33º push.**
+> Pedido: "quero a opção para subir as categorias no site, a pessoa pode
+> controlar qual categoria vem primeiro; em Conheça nossas linhas de
+> produtos, a opção de poder mudar as fotos e ícones dali e mudar a
+> posição no site; na arte da dobra coloque banners, a pessoa pode alterar
+> os banners por fotos ou vídeos ou GIFs, e quero isso para todos os
+> banners do site".
+>
+> - **Onde fica:** tudo na tabela `Configuracao` (JSON), sem migração:
+>   `secoesOrdem` (a ordem das seções), `linhasFotos` (a foto de cada linha,
+>   por slug) e `banners` (por chave: `dobra-1`, `dobra-2`, `saude-mulher`,
+>   `mais-procurados`, `historia` e `vitrine-<slug>` por área; cada um com
+>   `desktop` e, quando faz sentido, `celular`, cada mídia `{ url, tipo:
+>   imagem | video }`). O registro dos banners, com proporções, medidas e
+>   se aceita vídeo, é `src/lib/banners.ts`; as leituras (com o retrato
+>   da prévia estática) estão em `configuracao.ts`; `scripts/gerar-demo.js`
+>   passou a copiar TODAS as chaves da Configuracao para o retrato.
+> - **API:** `POST/DELETE /api/admin/midia` (multipart `arquivo` + `alvo`:
+>   `banner:<chave>:<desktop|celular>` ou `linha:<slug>`; qualquer usuário
+>   logado). Imagem JPG/PNG/WEBP/GIF até 8 MB; vídeo MP4/WEBM até 40 MB só
+>   nos banners grandes (`validarMidia` em `imagens.ts`). A dobra por aqui
+>   apaga as chaves antigas `heroDesktop/heroCelular` para não voltarem por
+>   baixo (a rota antiga `/api/admin/hero` continua existindo). `PATCH
+>   /api/admin/site` aceita `secoesOrdem` (permutação das chaves; as que
+>   faltarem entram no fim). A ordem das linhas usa o `/api/admin/ordenar`
+>   de categorias que já existia (só o gestor).
+> - **Site:** `MidiaBanner` (img/picture ou `<video>` sem som em laço;
+>   tipos diferentes por largura viram dois elementos com `md:hidden` /
+>   `hidden md:block`). A dobra (`hero.ts`: banner → chave antiga →
+>   arquivo solto), o carrossel, o cartão das vitrines (`midia` sobre
+>   `imagem`), a Saúde da Mulher (mídia no lugar da animação, com o convite
+>   por cima) e o banner da história leem o painel. A home monta as folhas
+>   na ordem gravada; as seções de produtos em sequência dividem uma folha
+>   como antes. A conta das imagens dos círculos foi para `lib/linhas.ts`
+>   (painel e home usam a mesma): foto do painel → `/fotos/categorias/` →
+>   pote representativo → primeiro produto com foto.
+> - **Painel** (`ConfiguracaoSite.tsx`, `site/page.tsx`): três blocos.
+>   Banners do site (os grandes com computador num quadro de navegador e
+>   celular num aparelho; os cartões das faixas e da história em retrato),
+>   cada palco é zona de soltar o arquivo ou clique, com "Trocar" e
+>   "Remover" por cima no hover, selo "vídeo" quando é vídeo. Conheça
+>   nossas linhas: a miniatura do círculo, "Enviar foto"/"Trocar"/"Remover"
+>   e a ordem (alça e setas, só o gestor). Seções: alça, setas, chave e
+>   estado. Chips no cabeçalho: seções no ar, modo da dobra, banners
+>   enviados.
+> - **Teste de ponta a ponta** (scratchpad `painel5.cjs`): envio de uma
+>   imagem gerada para `linha:dermatologia-estetica`,
+>   `banner:dobra-1:desktop` e `banner:vitrine-dermatologia-estetica:desktop`
+>   (201), `secoesOrdem` com Como funciona primeiro (200); a home mostrou o
+>   círculo, a dobra e o cartão novos e a folha nova no alto; os três
+>   DELETE e a ordem de volta (200) devolveram o padrão (a dobra voltou ao
+>   canvas). Os PNGs de teste foram apagados de `public/uploads`.
+>
 > **ADENDO 75 (14/10/2026): preço opcional em todos os produtos, Produtos e preços e Home e arte da dobra mais limpos, faíscas suaves. IMPLEMENTADO, testado no localhost, publicado no 32º push.**
 > Pedido: "melhore a parte de produtos e preços, deixe mais clean e moderna
 > e fácil, coloque a opção de preço em todos, mas o gestor escolhe se quer

@@ -4,9 +4,10 @@
 // está escondida), com as bolinhas no alto para trocar na mão. A primeira
 // arte fica no fluxo e dá a altura; as outras ficam por cima, absolutas.
 // Os botões da dobra vêm por cima de tudo (children).
+// 14/10/2026: cada arte pode ser foto, GIF ou vídeo (MidiaBanner).
 import { useEffect, useRef, useState } from "react";
-import { asset } from "@/lib/asset";
 import type { ArteHero } from "@/lib/hero";
+import { MidiaBanner } from "./MidiaBanner";
 
 const INTERVALO_MS = 7000;
 
@@ -32,25 +33,20 @@ export function CarrosselArte({ artes, children }: { artes: ArteHero[]; children
       onBlurCapture={() => (pausado.current = false)}
     >
       {artes.map((arte, i) => (
-        <picture
-          key={arte.desktop}
-          className={`${i === 0 ? "relative" : "absolute inset-0"} block transition-opacity duration-700 ${
-            i === ativa ? "opacity-100" : "opacity-0"
-          }`}
+        <div
+          key={arte.desktop.url}
+          aria-hidden={i !== ativa}
+          className={`${i === 0 ? "relative" : "absolute inset-0"} block transition-opacity duration-700 ${i === ativa ? "opacity-100" : "opacity-0"}`}
         >
-          {arte.celular && <source media="(max-width: 767px)" srcSet={asset(arte.celular)} />}
-          <img
-            src={asset(arte.desktop)}
-            alt=""
-            aria-hidden={i !== ativa}
-            width={1920}
-            height={760}
-            decoding="async"
-            loading={i === 0 ? "eager" : "lazy"}
-            {...(i === 0 ? { fetchPriority: "high" as const } : {})}
+          <MidiaBanner
+            desktop={arte.desktop}
+            celular={arte.celular}
+            prioridade={i === 0}
+            largura={1920}
+            altura={760}
             className="block w-full h-full min-h-[26rem] md:min-h-[22rem] md:max-h-[34rem] object-cover"
           />
-        </picture>
+        </div>
       ))}
 
       {children}
@@ -59,7 +55,7 @@ export function CarrosselArte({ artes, children }: { artes: ArteHero[]; children
         <div className="absolute top-4 inset-x-0 flex justify-center gap-1" role="tablist" aria-label="Qual arte mostrar">
           {artes.map((arte, i) => (
             <button
-              key={arte.desktop}
+              key={arte.desktop.url}
               type="button"
               role="tab"
               aria-selected={i === ativa}

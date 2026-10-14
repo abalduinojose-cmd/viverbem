@@ -16,10 +16,12 @@ import { CenaMulher } from "./heroAnimado/TituloCinetico";
 import { FaixaProdutos } from "./FaixaProdutos";
 import { BotaoVerMais } from "./BotaoVerMais";
 import { SetaDireita } from "./icones";
+import { MidiaBanner } from "./MidiaBanner";
+import type { BannerMidia } from "@/lib/banners";
 
 const LINK_LINHA = "/produtos/saude-da-mulher";
 
-export function SecaoSaudeMulher({ produtos }: { produtos: ProdutoDTO[] }) {
+export function SecaoSaudeMulher({ produtos, midia = null }: { produtos: ProdutoDTO[]; midia?: BannerMidia | null }) {
   return (
     <section
       id="saude-da-mulher"
@@ -50,7 +52,13 @@ export function SecaoSaudeMulher({ produtos }: { produtos: ProdutoDTO[] }) {
       >
         {/* A cena no canvas e, por cima, o título em tipografia cinética
             (HTML vetorial, 14/10/2026) */}
-        <CenaMulher />
+        {midia?.desktop ? (
+          // O banner enviado pelo painel (foto, GIF ou vídeo; 14/10/2026) no
+          // lugar da animação dos potes
+          <MidiaBanner desktop={midia.desktop} celular={midia.celular} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <CenaMulher />
+        )}
         <span className="sr-only">Saúde em cada fase da mulher. Beleza e autoestima.</span>
         {/* Véu na base, só do lado do convite: ele lê sobre o reflexo, e os
             potes da vitrine (à direita no computador, na faixa toda no

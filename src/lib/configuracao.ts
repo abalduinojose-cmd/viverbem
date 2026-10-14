@@ -4,13 +4,53 @@
 // com duas, a dobra alterna entre elas). Em modo DEMO (vitrine estática)
 // tudo vem do retrato em src/lib/dados-demo.json, gerado por
 // scripts/gerar-demo.js.
+//
+// 14/10/2026: entraram a ordem das seções (secoesOrdem), a foto de cada
+// linha dos círculos (linhasFotos) e os banners trocáveis por foto, GIF
+// ou vídeo (banners, ver src/lib/banners.ts). Tudo JSON na mesma tabela,
+// sem migração.
 import { db } from "@/lib/db";
 import { lerRetratoDemo } from "@/lib/catalogo";
-import { normalizarSecoes, type SecoesHome } from "@/lib/secoes";
+import { normalizarSecoes, normalizarOrdem, type ChaveSecao, type SecoesHome } from "@/lib/secoes";
+import { normalizarBanners, type Banners } from "@/lib/banners";
 
 const EH_DEMO = process.env.DEMO === "1";
 
 export const CHAVE_SECOES = "secoesHome";
+export const CHAVE_ORDEM = "secoesOrdem";
+export const CHAVE_LINHAS = "linhasFotos";
+export const CHAVE_BANNERS = "banners";
+
+/** Lê uma chave do site: no banco, ou, na vitrine estática, no retrato. */
+export async function lerConfiguracaoSite<T>(chave: string, padrao: T): Promise<T> {
+  if (EH_DEMO) {
+    const c = ((await lerRetratoDemo()).configuracao ?? {}) as Record<string, unknown>;
+    return (c[chave] ?? padrao) as T;
+  }
+  return lerConfiguracao(chave, padrao);
+}
+
+/** A ordem das seções da home (as que faltarem entram no fim, na ordem padrão). */
+export async function obterSecoesOrdem(): Promise<ChaveSecao[]> {
+  return normalizarOrdem(await lerConfiguracaoSite<unknown>(CHAVE_ORDEM, null));
+}
+
+/** A foto de cada linha dos círculos, por slug da categoria. */
+export async function obterLinhasFotos(): Promise<Record<string, string>> {
+  const lido = await lerConfiguracaoSite<unknown>(CHAVE_LINHAS, null);
+  const resultado: Record<string, string> = {};
+  if (lido && typeof lido === "object") {
+    for (const [slug, url] of Object.entries(lido as Record<string, unknown>)) {
+      if (typeof url === "string" && url) resultado[slug] = url;
+    }
+  }
+  return resultado;
+}
+
+/** Os banners enviados pelo painel (só os que têm alguma mídia). */
+export async function obterBanners(): Promise<Banners> {
+  return normalizarBanners(await lerConfiguracaoSite<unknown>(CHAVE_BANNERS, null));
+}
 
 /** Quantas artes a dobra aceita (07/10/2026: "duas fotos na home"). */
 export const MAX_ARTES_HERO = 2;

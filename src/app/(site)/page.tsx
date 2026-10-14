@@ -1,36 +1,35 @@
-// HOME no modelo de loja (referência biovittare.com.br, pedida pelo
-// usuário em 06/10/2026), com o conteúdo da Viver Bem:
-//   banner > vantagens > categorias em círculos > vitrines de produtos
-//   (mais procurados e cada área com fotos, com um banner na faixa) >
-//   como funciona > catálogo em grade > reels > avaliações > banner da
-//   história (só no celular) > (rodapé com "fale com a gente")
+// A página inicial.
 //
-// Em 23/09 a vitrine promocional tinha saído pela RDC 67/2007 (item 5.14).
-// Em 05/10/2026 o cliente pediu de volta o "mais procurados", com os
-// produtos que têm foto, sem preço e com carrinho, ciente do risco.
-// Novidades e combos continuam fora.
+// Modelo de loja (06/10/2026): a abertura em azul-noite, as vantagens, as
+// categorias em círculos, as faixas de produtos (mais procurados, por
+// área, pronta entrega), o Como funciona, a Saúde da Mulher, os reels, as
+// avaliações e, no celular, o banner da história. Cada seção é uma folha
+// que desliza por cima da anterior (ver Folha).
 //
-// Desde 07/10/2026 cada seção tem a sua chave no painel (Home e arte da
-// dobra), e a faixa de cada área tem a chave "Vitrine na home" em
-// Categorias. A dobra e as vantagens ficam sempre.
-//
-// 08/10/2026: a grade "Explore o catálogo" entre o Como funciona e os
-// reels, e o banner da história depois das avaliações, só no celular.
-//
-// As fotos das áreas (public/fotos/categorias/<slug>.jpg) e dos banners
-// (public/fotos/banners/<nome>.jpg) são opcionais: sem o arquivo, a
-// categoria mostra o pote de um produto dela e o banner fica no degradê.
-import fs from "fs";
-import path from "path";
+// 14/10/2026 ("a pessoa pode controlar qual vem primeiro", "mudar as fotos
+// e ícones dali", "alterar os banners por fotos, vídeos ou GIFs"): a ordem
+// das seções, a foto de cada linha dos círculos e os banners vêm do
+// painel (Configuracao), com os padrões de antes quando não há nada:
+//   - as seções entram na ordem gravada; as de produtos (categorias, mais
+//     procurados, faixas por área e pronta entrega) que ficarem em sequência
+//     dividem uma folha só, como sempre foi;
+//   - os círculos usam a foto enviada pelo painel, senão a conta de antes
+//     (lib/linhas.ts);
+//   - a dobra, a Saúde da Mulher, o banner de cada faixa e o da história
+//     usam a mídia enviada pelo painel (lib/banners.ts), senão o padrão.
+import type { ReactNode } from "react";
 import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
-import { obterSecoesHome } from "@/lib/configuracao";
+import { obterBanners, obterLinhasFotos, obterSecoesHome, obterSecoesOrdem } from "@/lib/configuracao";
+import { chaveBannerVitrine } from "@/lib/banners";
+import { imagemSeExistir, imagensDasLinhas, temFoto } from "@/lib/linhas";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
+import type { ChaveSecao } from "@/lib/secoes";
 import { Abertura } from "@/components/site/Abertura";
 import { obterArtesHero } from "@/lib/hero";
 import { Beneficios } from "@/components/site/Beneficios";
 import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
-import { CategoriasRedondas, ImagemCategoria } from "@/components/site/CategoriasRedondas";
+import { CategoriasRedondas } from "@/components/site/CategoriasRedondas";
 import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
@@ -40,39 +39,12 @@ import { ROTEIROS } from "@/components/site/heroAnimado/roteiros";
 
 export const dynamic = "force-dynamic";
 
-// Foto de verdade é a que não é um dos desenhos neutros (.svg)
-const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerCase().endsWith(".svg"));
-
 // Quantas fotos reais uma área precisa ter para ganhar vitrine própria
 const MINIMO_PARA_VITRINE = 3;
 
-/** Caminho público da imagem, se o arquivo existir em public/ */
-function imagemSeExistir(caminho: string): string | null {
-  return fs.existsSync(path.join(process.cwd(), "public", caminho)) ? caminho : null;
-}
-
-// Fotos que já temos, para os círculos das áreas sem foto própria, só
-// onde o frasco combina com o nome da área (pedido do usuário em
-// 06/10/2026). A foto da área em public/fotos/categorias/<slug>.jpg,
-// quando existir, tem prioridade sobre tudo isto.
-// Cabelos & Unhas e Homeopatia & Florais ainda não têm produto com foto: a
-// pedido (08/10/2026, "coloque fotos de produtos também, pra ficar
-// apresentável, mas isso vai mudar depois") entram, PROVISÓRIOS, o frasco
-// de loção do ZincBlock e o conta-gotas do Firm Defense, até chegar a foto
-// da área (o rótulo deles mal se lê no círculo).
-// Vitaminas & Suplementos: a Creatina Gummy no lugar do Ômega 3 (pedido
-// de 14/10/2026).
-const FOTO_REPRESENTATIVA: Record<string, string> = {
-  "vitaminas-suplementos": "/uploads/creatina-gummy.png",
-  "saude-da-mulher": "/uploads/citorepair.png",
-  "saude-do-homem": "/uploads/vitaflex.png",
-  "cabelos-unhas": "/uploads/zincblock-fps.png",
-  "homeopatia-florais": "/uploads/firm-defense-serum.png",
-};
-
 // Texto do banner de cada área: descreve o que se prepara, nunca um efeito.
 // A parte entre *asteriscos* sai em itálico ouro (a segunda voz).
-const BANNERS_POR_SLUG: Record<string, Omit<BannerVitrine, "imagem">> = {
+const BANNERS_POR_SLUG: Record<string, Omit<BannerVitrine, "imagem" | "midia">> = {
   "dermatologia-estetica": {
     titulo: "Cuidados com a pele, *conforme a prescrição.*",
     texto: "Cremes, séruns e loções preparados a partir da receita.",
@@ -90,6 +62,11 @@ const BANNERS_POR_SLUG: Record<string, Omit<BannerVitrine, "imagem">> = {
   "homeopatia-florais": { titulo: "Homeopatia e florais, *preparados aqui.*" },
 };
 
+// As seções de produtos dividem uma folha quando vêm em sequência
+const GRUPO_PRODUTOS = new Set<ChaveSecao>(["categorias", "maisProcurados", "vitrinesAreas", "prontaEntrega"]);
+// As folhas em gelo (as outras são em papel)
+const TEMA_GELO = new Set<ChaveSecao>(["comoFunciona", "avaliacoes"]);
+
 // O nome da área inteiro na sans; só o "&" em itálico ouro (dividir o nome
 // ao meio ficava estranho, pedido de 06/10)
 function TituloComItalico({ nome }: { nome: string }) {
@@ -105,35 +82,27 @@ function TituloComItalico({ nome }: { nome: string }) {
 }
 
 export default async function Home() {
-  const [{ categorias, produtos }, avaliacoes, artes, secoes] = await Promise.all([
+  const [{ categorias, produtos }, avaliacoes, artes, secoes, ordem, banners, linhasFotos] = await Promise.all([
     obterCatalogo(),
     obterAvaliacoes(),
     obterArtesHero(),
     obterSecoesHome(),
+    obterSecoesOrdem(),
+    obterBanners(),
+    obterLinhasFotos(),
   ]);
 
   const comFoto = produtos.filter((p) => temFoto(p.fotoUrl));
 
   // Industrializados com registro, numa vitrine própria (sem preço, salvo
   // os que o painel liberou). Os marcados como destaque vêm primeiro.
-  const prontaEntrega = produtos
-    .filter(ehIndustrializado)
-    .sort((a, b) => Number(b.destaque) - Number(a.destaque));
+  const prontaEntrega = produtos.filter(ehIndustrializado).sort((a, b) => Number(b.destaque) - Number(a.destaque));
 
   // Só as categorias que têm algo no site
   const categoriasComItens = categorias.filter((c) => produtos.some((p) => p.categoriaId === c.id));
 
-  // Imagem de cada área para os círculos: a foto da área, senão o pote
-  // de um produto dela
-  const imagensCategorias: Record<number, ImagemCategoria> = {};
-  for (const c of categoriasComItens) {
-    const foto = imagemSeExistir(`/fotos/categorias/${c.slug}.jpg`);
-    const produto = comFoto.find((p) => p.categoriaId === c.id);
-    const representativa = FOTO_REPRESENTATIVA[c.slug];
-    if (foto) imagensCategorias[c.id] = { tipo: "foto", src: foto };
-    else if (representativa) imagensCategorias[c.id] = { tipo: "produto", src: representativa };
-    else if (produto?.fotoUrl) imagensCategorias[c.id] = { tipo: "produto", src: produto.fotoUrl };
-  }
+  // Imagem de cada área para os círculos
+  const imagensCategorias = imagensDasLinhas(categoriasComItens, comFoto, linhasFotos);
 
   // Vitrines por área: só as que têm fotos reais suficientes e a chave
   // "Vitrine na home" ligada no painel
@@ -149,6 +118,7 @@ export default async function Home() {
       banner: {
         ...texto,
         imagem: imagemSeExistir(`/fotos/banners/${c.slug}.jpg`),
+        midia: banners[chaveBannerVitrine(c.slug)]?.desktop ?? null,
       },
     });
   }
@@ -157,6 +127,7 @@ export default async function Home() {
     titulo: "Cada fórmula sai *com o seu nome no rótulo.*",
     texto: "Preparada depois do pedido, conforme a receita.",
     imagem: imagemSeExistir("/fotos/banners/mais-procurados.jpg"),
+    midia: banners["mais-procurados"]?.desktop ?? null,
   };
 
   // A linha da Saúde da Mulher: os potes da animação que estão no catálogo
@@ -167,12 +138,82 @@ export default async function Home() {
     .filter((p) => (p.fotoUrl && potesDaMulher.has(p.fotoUrl)) || p.categoriaId === idMulher)
     .sort((a, b) => Number(temFoto(b.fotoUrl)) - Number(temFoto(a.fotoUrl)));
 
-  // A primeira folha só existe se alguma das suas seções estiver ligada
-  const mostraFolhaProdutos =
-    secoes.categorias ||
-    secoes.maisProcurados ||
-    (secoes.vitrinesAreas && vitrines.length > 0) ||
-    (secoes.prontaEntrega && prontaEntrega.length > 0);
+  // O que cada seção desenha (null = desligada ou sem conteúdo)
+  const bloco = (chave: ChaveSecao): ReactNode | null => {
+    if (!secoes[chave]) return null;
+    switch (chave) {
+      case "categorias":
+        return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} />;
+      case "maisProcurados":
+        return (
+          <VitrineCategoria
+            key={chave}
+            id="titulo-mais-procurados"
+            titulo={
+              <>
+                Mais <span className="italic">procurados</span>
+              </>
+            }
+            href="/produtos"
+            produtos={comFoto}
+            banner={bannerMaisProcurados}
+          />
+        );
+      case "vitrinesAreas":
+        // Nas áreas o banner abre a faixa, um pouco menor (08/10/2026)
+        return vitrines.length === 0
+          ? null
+          : vitrines.map((v) => (
+              <VitrineCategoria
+                key={v.categoria.id}
+                id={`titulo-vitrine-${v.categoria.slug}`}
+                titulo={<TituloComItalico nome={v.categoria.nome} />}
+                href={`/produtos/${v.categoria.slug}`}
+                produtos={v.produtos}
+                banner={v.banner}
+              />
+            ));
+      case "prontaEntrega":
+        // Só aparece quando houver industrializado
+        return prontaEntrega.length === 0 ? null : (
+          <VitrineCategoria
+            key={chave}
+            id="titulo-pronta-entrega"
+            titulo={
+              <>
+                Pronta <span className="italic">entrega</span>
+              </>
+            }
+            href="/produtos"
+            produtos={prontaEntrega}
+          />
+        );
+      case "comoFunciona":
+        return <ComoFunciona key={chave} />;
+      case "bannerMulher":
+        return <SecaoSaudeMulher key={chave} produtos={linhaMulher} midia={banners["saude-mulher"] ?? null} />;
+      case "reels":
+        return <ReelsInstagram key={chave} />;
+      case "avaliacoes":
+        return avaliacoes.length === 0 ? null : <CarrosselAvaliacoes key={chave} avaliacoes={avaliacoes} />;
+      case "bannerHistoria":
+        return <BannerHistoria key={chave} midia={banners["historia"]?.desktop ?? null} />;
+      default:
+        return null;
+    }
+  };
+
+  // As folhas, na ordem do painel: seções de produtos em sequência dividem
+  // uma folha; as outras têm a própria
+  const folhas: { chave: ChaveSecao; grupo: boolean; conteudo: ReactNode[] }[] = [];
+  for (const chave of ordem) {
+    const c = bloco(chave);
+    if (c === null) continue;
+    const doGrupo = GRUPO_PRODUTOS.has(chave);
+    const ultima = folhas[folhas.length - 1];
+    if (doGrupo && ultima?.grupo) ultima.conteudo.push(c);
+    else folhas.push({ chave, grupo: doGrupo, conteudo: [c] });
+  }
 
   return (
     <main className="flex-1">
@@ -181,95 +222,12 @@ export default async function Home() {
       <Beneficios />
 
       <div className="folhas">
-        {/* 3 ─ Categorias em círculos + 4 ─ vitrines de produtos */}
-        {mostraFolhaProdutos && (
-          <Folha>
-            {secoes.categorias && <CategoriasRedondas categorias={categoriasComItens} imagens={imagensCategorias} />}
-
-            {secoes.maisProcurados && (
-              <VitrineCategoria
-                id="titulo-mais-procurados"
-                titulo={
-                  <>
-                    Mais <span className="italic">procurados</span>
-                  </>
-                }
-                href="/produtos"
-                produtos={comFoto}
-                banner={bannerMaisProcurados}
-              />
-            )}
-
-            {/* Nas áreas o banner abre a faixa, um pouco menor (08/10/2026) */}
-            {secoes.vitrinesAreas &&
-              vitrines.map((v) => (
-                <VitrineCategoria
-                  key={v.categoria.id}
-                  id={`titulo-vitrine-${v.categoria.slug}`}
-                  titulo={<TituloComItalico nome={v.categoria.nome} />}
-                  href={`/produtos/${v.categoria.slug}`}
-                  produtos={v.produtos}
-                  banner={v.banner}
-                />
-              ))}
-
-            {/* Pronta entrega: só aparece quando houver industrializado */}
-            {secoes.prontaEntrega && prontaEntrega.length > 0 && (
-              <VitrineCategoria
-                id="titulo-pronta-entrega"
-                titulo={
-                  <>
-                    Pronta <span className="italic">entrega</span>
-                  </>
-                }
-                href="/produtos"
-                produtos={prontaEntrega}
-              />
-            )}
+        {folhas.map((f) => (
+          <Folha key={f.chave} tema={TEMA_GELO.has(f.chave) ? "gelo" : "papel"} className={f.chave === "bannerHistoria" ? "md:hidden" : ""}>
+            {f.conteudo}
             <div className="secao-fecho" aria-hidden="true" />
           </Folha>
-        )}
-
-        {/* 5 ─ Como funciona: a trilha única do pedido, em 4 passos */}
-        {secoes.comoFunciona && (
-          <Folha tema="gelo">
-            <ComoFunciona />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
-
-        {/* 6 ─ Saúde da Mulher: a animação da linha e os produtos (08/10/2026,
-            no lugar da grade "Explore o catálogo") */}
-        {secoes.bannerMulher && (
-          <Folha>
-            <SecaoSaudeMulher produtos={linhaMulher} />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
-
-        {/* 7 ─ Por dentro da Viver Bem (reels) */}
-        {secoes.reels && (
-          <Folha>
-            <ReelsInstagram />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
-
-        {/* 8 ─ Avaliações do Google */}
-        {secoes.avaliacoes && avaliacoes.length > 0 && (
-          <Folha tema="gelo">
-            <CarrosselAvaliacoes avaliacoes={avaliacoes} />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
-
-        {/* 10 ─ Banner da história, só no celular (o "Fale com a gente" vem no rodapé) */}
-        {secoes.bannerHistoria && (
-          <Folha className="md:hidden">
-            <BannerHistoria />
-            <div className="secao-fecho" aria-hidden="true" />
-          </Folha>
-        )}
+        ))}
       </div>
     </main>
   );
