@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import { exigirSessaoApi } from "@/lib/sessao";
 import { salvarImagem } from "@/lib/armazenamento";
+import { otimizarImagem } from "@/lib/otimizarImagem";
 import { validarMidia } from "@/lib/imagens";
 
 export async function POST(req: Request) {
@@ -22,6 +23,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ erro: conferido.erro }, { status: 400 });
   }
 
-  const url = await salvarImagem(arquivo as File, conferido.extensao);
+  // Foto vira WebP (menor); vídeo e GIF seguem como vieram
+  const pronto = conferido.tipo === "imagem" ? await otimizarImagem(arquivo as File, conferido.extensao) : { arquivo: arquivo as File, extensao: conferido.extensao };
+  const url = await salvarImagem(pronto.arquivo, pronto.extensao);
   return NextResponse.json({ url, tipo: conferido.tipo }, { status: 201 });
 }

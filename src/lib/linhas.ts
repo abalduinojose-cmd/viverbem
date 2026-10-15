@@ -24,11 +24,11 @@ export function imagemSeExistir(caminho: string): string | null {
 // o conta-gotas do Firm Defense. Vitaminas & Suplementos: a Creatina Gummy
 // no lugar do Ômega 3 (pedido de 14/10/2026).
 export const FOTO_REPRESENTATIVA: Record<string, string> = {
-  "vitaminas-suplementos": "/uploads/creatina-gummy.png",
-  "saude-da-mulher": "/uploads/citorepair.png",
-  "saude-do-homem": "/uploads/vitaflex.png",
-  "cabelos-unhas": "/uploads/zincblock-fps.png",
-  "homeopatia-florais": "/uploads/firm-defense-serum.png",
+  "vitaminas-suplementos": "/uploads/creatina-gummy.webp",
+  "saude-da-mulher": "/uploads/citorepair.webp",
+  "saude-do-homem": "/uploads/vitaflex.webp",
+  "cabelos-unhas": "/uploads/zincblock-fps.webp",
+  "homeopatia-florais": "/uploads/firm-defense-serum.webp",
 };
 
 // Foto de verdade é a que não é um dos desenhos neutros (.svg)

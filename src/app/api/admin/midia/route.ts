@@ -16,6 +16,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { exigirSessaoApi } from "@/lib/sessao";
 import { salvarImagem } from "@/lib/armazenamento";
+import { otimizarImagem } from "@/lib/otimizarImagem";
 import { validarMidia } from "@/lib/imagens";
 import {
   CHAVE_BANNERS,
@@ -72,7 +73,9 @@ export async function POST(req: Request) {
   const conferido = validarMidia(arquivo, alvo.tipo === "banner" && alvo.video);
   if ("erro" in conferido) return NextResponse.json({ erro: conferido.erro }, { status: 400 });
 
-  const url = await salvarImagem(arquivo as File, conferido.extensao);
+  // Foto vira WebP (menor); vídeo e GIF seguem como vieram
+  const pronto = conferido.tipo === "imagem" ? await otimizarImagem(arquivo as File, conferido.extensao) : { arquivo: arquivo as File, extensao: conferido.extensao };
+  const url = await salvarImagem(pronto.arquivo, pronto.extensao);
 
   if (alvo.tipo === "linha") {
     const fotos = (await lerConfiguracao<Record<string, string>>(CHAVE_LINHAS, {})) ?? {};

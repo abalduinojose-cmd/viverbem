@@ -31,7 +31,7 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
   if (ehGestor) {
     itens.push(
       { href: "/admin/painel", rotulo: "Visão geral", icone: "painel", grupo: "Gestão" },
-      { href: "/admin/clientes", rotulo: "Clientes captados", icone: "clientes", grupo: "Gestão" },
+      { href: "/admin/clientes", rotulo: "Pedidos", icone: "pedidos", grupo: "Gestão" },
       { href: "/admin/log", rotulo: "Log de alterações", icone: "log", grupo: "Gestão" },
       { href: "/admin/usuarios", rotulo: "Acessos ao painel", icone: "acessos", grupo: "Gestão" }
     );

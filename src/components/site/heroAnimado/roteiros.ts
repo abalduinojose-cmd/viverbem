@@ -49,10 +49,10 @@ export const ROTEIROS = {
     formato: "dobra",
     coreografia: "orbita",
     potes: [
-      { src: "/uploads/caramelo-creatina.png", altura: 174 },
-      { src: "/uploads/creatina-gummy.png", altura: 188 },
-      { src: "/uploads/glow-cream.png", altura: 146 },
-      { src: "/uploads/citorepair.png", altura: 194 },
+      { src: "/uploads/caramelo-creatina.webp", altura: 174 },
+      { src: "/uploads/creatina-gummy.webp", altura: 188 },
+      { src: "/uploads/glow-cream.webp", altura: 146 },
+      { src: "/uploads/citorepair.webp", altura: 194 },
     ],
     linhas: ["Especialistas", "em saúde", "personalizada"],
     rotulo: ["MANIPULAÇÃO", "e", "HOMEOPATIA"],
@@ -95,10 +95,10 @@ export const ROTEIROS = {
     // (ZincBlock e Composto), os dois baixos no meio; a mesma ordem do
     // letreiro
     potes: [
-      { src: "/uploads/zincblock-fps.png", altura: 196 },
-      { src: "/uploads/po-finalizador.png", altura: 150 },
-      { src: "/uploads/bastao-clareador.png", altura: 140 },
-      { src: "/uploads/composto-emagrecedor.png", altura: 186 },
+      { src: "/uploads/zincblock-fps.webp", altura: 196 },
+      { src: "/uploads/po-finalizador.webp", altura: 150 },
+      { src: "/uploads/bastao-clareador.webp", altura: 140 },
+      { src: "/uploads/composto-emagrecedor.webp", altura: 186 },
     ],
     linhas: ["Saúde", "em cada fase da", "mulher"],
     rotulo: ["BELEZA", "e", "AUTOESTIMA"],

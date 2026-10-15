@@ -81,6 +81,7 @@ export default async function PaginaPainel() {
 
   const m = await obterMetricas();
   const alertas = [
+    { n: m.pedidosNovos, r: m.pedidosNovos === 1 ? "pedido novo esperando você" : "pedidos novos esperando você", href: "/admin/clientes?status=NOVO", grave: true },
     { n: m.alertas.aguardando, r: "aguardando você publicar", href: "/admin/produtos", grave: true },
     { n: m.alertas.semPreco, r: "industrializados sem preço", href: "/admin/produtos", grave: true },
     { n: m.alertas.semFoto, r: "sem foto", href: "/admin/produtos", grave: false },
@@ -88,6 +89,8 @@ export default async function PaginaPainel() {
     { n: m.alertas.inativos, r: "escondidos do site", href: "/admin/produtos", grave: false },
     { n: m.alertas.categoriasForaDoSite, r: "categorias fora do site", href: "/admin/categorias", grave: false },
   ].filter((a) => a.n > 0);
+  // O chip do catálogo conta só o que é do catálogo (não os pedidos)
+  const pendenciasCatalogo = alertas.filter((a) => a.grave && !a.href.startsWith("/admin/clientes")).reduce((s, a) => s + a.n, 0);
 
   return (
     <div className="max-w-6xl">
@@ -98,9 +101,17 @@ export default async function PaginaPainel() {
         descricao="Como anda a Viver Bem. Escolha o período e compare com o mês ou o ano passado."
         chips={
           <>
-            <ChipAdmin tom={alertas.some((a) => a.grave) ? "ouro" : "verde"}>
-              <span aria-hidden="true" className={`size-1.5 rounded-full ${alertas.some((a) => a.grave) ? "bg-ouro-escuro" : "bg-green-600"}`} />
-              {alertas.some((a) => a.grave) ? `${alertas.filter((a) => a.grave).reduce((s, a) => s + a.n, 0)} pendências no catálogo` : "Catálogo em dia"}
+            {m.pedidosNovos > 0 && (
+              <Link href="/admin/clientes?status=NOVO">
+                <ChipAdmin tom="ouro">
+                  <span aria-hidden="true" className="size-1.5 rounded-full bg-ouro-escuro animate-pulse" />
+                  {m.pedidosNovos} {m.pedidosNovos === 1 ? "pedido novo" : "pedidos novos"}
+                </ChipAdmin>
+              </Link>
+            )}
+            <ChipAdmin tom={pendenciasCatalogo > 0 ? "ouro" : "verde"}>
+              <span aria-hidden="true" className={`size-1.5 rounded-full ${pendenciasCatalogo > 0 ? "bg-ouro-escuro" : "bg-green-600"}`} />
+              {pendenciasCatalogo > 0 ? `${pendenciasCatalogo} pendências no catálogo` : "Catálogo em dia"}
             </ChipAdmin>
             <ChipAdmin>
               {m.catalogo.noSite} de {m.catalogo.total} produtos no site
@@ -113,7 +124,7 @@ export default async function PaginaPainel() {
         acao={
           <>
             <Link href="/admin/clientes" className={classeBotaoAdmin("secundario")}>
-              Clientes captados
+              Pedidos
             </Link>
             <Link href="/admin/log" className={classeBotaoAdmin("secundario")}>
               Ver o log

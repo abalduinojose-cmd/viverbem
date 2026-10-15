@@ -32,6 +32,7 @@ export interface PedidoDemo {
   totalCentavos: number;
   itens: string;
   criadoEm: string;
+  status?: string;
 }
 
 export interface UsuarioDemo {

@@ -303,7 +303,9 @@ export function CarrinhoDrawer() {
         local,
         codigo,
         receita,
+        // O código do produto vai junto: o preço é o servidor quem busca
         itens: itens.map((i) => ({
+          produtoId: i.produtoId,
           nome: i.nome,
           dosagem: i.dosagem,
           quantidade: i.quantidade,

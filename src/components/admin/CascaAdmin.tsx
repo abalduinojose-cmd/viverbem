@@ -30,6 +30,7 @@ import { Inicial } from "./PecasAdmin";
 import { DataHoje, RelogioAgora } from "./PecasVivas";
 import { ICONES } from "./iconesAdmin";
 import { useSessaoDemo } from "./ModoDemo";
+import { AvisoPedidoNovo, usePedidosNovos } from "./AvisoPedidos";
 
 /** A pílula que marca a página ativa e desliza até ela quando a rota muda */
 function PilulaAtiva({ nav, pathname }: { nav: React.RefObject<HTMLElement | null>; pathname: string }) {
@@ -107,6 +108,8 @@ export function CascaAdmin({
   const papel = demo?.papel ?? papelSessao;
   const ehGestor = papel === PAPEL_ADMIN;
   const itens = ehGestor ? todosItens : todosItens.filter((i) => i.grupo !== "Gestão");
+  // Pedidos novos: a contagem no menu e o aviso quando chega um (gestor)
+  const { novos, aviso, fecharAviso } = usePedidosNovos(ehGestor);
 
   // Trocar de página fecha a gaveta. Feito durante a renderização, ao
   // notar que o endereço mudou (um efeito com setState renderizaria duas vezes).
@@ -173,6 +176,11 @@ export function CascaAdmin({
                     {ICONES[i.icone]}
                   </svg>
                   <span className="flex-1">{i.rotulo}</span>
+                  {i.href === "/admin/clientes" && novos > 0 && (
+                    <span className="min-w-5 h-5 rounded-full bg-[image:var(--ouro-degrade)] px-1.5 text-[0.6875rem] font-bold text-navy tabular-nums flex items-center justify-center" aria-label={`${novos} novos`}>
+                      {novos}
+                    </span>
+                  )}
                   {i.externo && (
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-white/40 group-hover:text-white/80 transition-colors">
                       <path d="M7 17 17 7m0 0H8m9 0v9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -285,6 +293,7 @@ export function CascaAdmin({
 
         {/* Um sopro de azul no alto do conteúdo, para o claro não ser chapado */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 bg-[radial-gradient(70%_40%_at_100%_0%,rgba(28,105,181,0.07),transparent_60%)]">{children}</main>
+        <AvisoPedidoNovo aviso={aviso} aoFechar={fecharAviso} />
       </div>
     </div>
   );

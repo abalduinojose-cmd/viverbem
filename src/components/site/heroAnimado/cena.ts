@@ -781,7 +781,11 @@ export async function criarCena(
     oy = r.oy;
     // No desktop o banner é grande: 1,5 de densidade já fica nítido e
     // poupa quase metade dos pixels de uma tela 2x
-    dpr = Math.min(window.devicePixelRatio || 1, enq.modo === "paisagem" ? 1.5 : 2);
+    // Aparelho fraco (até 4 núcleos ou até 4 GB): no máximo 1,5x, cerca de
+    // 40% menos pixels por quadro, quase igual a olho nu (15/10/2026)
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const fraco = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4;
+    dpr = Math.min(window.devicePixelRatio || 1, enq.modo === "paisagem" || fraco ? 1.5 : 2);
     larguraCss = l;
     canvas.width = Math.round(l * dpr);
     canvas.height = Math.round(a * dpr);

@@ -172,6 +172,11 @@ model Cliente {
   // si nunca passa pelo site (dado de saúde): aqui fica só o aviso.
   receita       Boolean  @default(false)
   codigo        String // código do pedido (ex.: VB-8F3A)
+  // Situação do pedido no painel (15/10/2026): NOVO, EM_PREPARO, PRONTO,
+  // CONCLUIDO (entregue ou retirado) ou CANCELADO. Ver STATUS_PEDIDO em
+  // src/lib/tipos.ts. statusEm = quando mudou pela última vez.
+  status        String   @default("NOVO")
+  statusEm      DateTime?
   criadoEm      DateTime @default(now())
 }
 

@@ -13,16 +13,16 @@ const db = new PrismaClient();
 
 // nome do pote -> nome genérico que ele recebeu em 23/09 e a foto
 const COM_FOTO = {
-  "CitoRepair™ 2.0": ["Fórmula com espermidina e resveratrol", "/uploads/citorepair.png"],
-  "Ômega 3 Viver Bem": ["Ômega 3 com EPA e DHA", "/uploads/omega3.png"],
-  VitaFlex: ["Fórmula com curcumina e colágeno tipo II", "/uploads/vitaflex.png"],
-  "Creatina Gummy": ["Creatina em gomas", "/uploads/creatina-gummy.png"],
-  "Caramelo de Creatina": ["Caramelo de creatina", "/uploads/caramelo-creatina.png"],
-  "Glow Cream": ["Creme facial com ceramida e niacinamida", "/uploads/glow-cream.png"],
-  "Firm Defense Serum": ["Sérum com ceramidas e centella", "/uploads/firm-defense-serum.png"],
-  "ZincBlock FPS": ["Protetor solar com óxido de zinco", "/uploads/zincblock-fps.png"],
-  "Bastão Clareador": ["Bastão com vitamina C", "/uploads/bastao-clareador.png"],
-  "Pó Finalizador FPB 20": ["Pó facial finalizador", "/uploads/po-finalizador.png"],
+  "CitoRepair™ 2.0": ["Fórmula com espermidina e resveratrol", "/uploads/citorepair.webp"],
+  "Ômega 3 Viver Bem": ["Ômega 3 com EPA e DHA", "/uploads/omega3.webp"],
+  VitaFlex: ["Fórmula com curcumina e colágeno tipo II", "/uploads/vitaflex.webp"],
+  "Creatina Gummy": ["Creatina em gomas", "/uploads/creatina-gummy.webp"],
+  "Caramelo de Creatina": ["Caramelo de creatina", "/uploads/caramelo-creatina.webp"],
+  "Glow Cream": ["Creme facial com ceramida e niacinamida", "/uploads/glow-cream.webp"],
+  "Firm Defense Serum": ["Sérum com ceramidas e centella", "/uploads/firm-defense-serum.webp"],
+  "ZincBlock FPS": ["Protetor solar com óxido de zinco", "/uploads/zincblock-fps.webp"],
+  "Bastão Clareador": ["Bastão com vitamina C", "/uploads/bastao-clareador.webp"],
+  "Pó Finalizador FPB 20": ["Pó facial finalizador", "/uploads/po-finalizador.webp"],
 };
 
 // Mesma regra de src/lib/slug.ts

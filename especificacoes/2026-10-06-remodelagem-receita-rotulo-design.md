@@ -1,5 +1,45 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 79 (15/10/2026): segurança da rota de pedidos, home mais leve no celular e o fluxo de pedidos no painel. IMPLEMENTADO, testado no localhost e publicado no 36º push.**
+> Da análise geral do projeto (pedido "analise o projeto como um todo,
+> site e painel adm"), o usuário escolheu: "faça o 1, 2 e 4 e atualize o
+> github".
+> - 1, rota de pedidos (/api/pedidos): o preço vinha do navegador (dava
+>   para forjar o faturamento do painel). Agora o carrinho manda o
+>   produtoId e o servidor busca nome e preço no banco; só conta preço de
+>   produto ativo, aprovado e com o preço no site (precoVisivel).
+>   Quantidade de 1 a 20, até 30 itens, WhatsApp de 10 a 13 dígitos.
+>   Freio de envios em lib/limiteDeEnvios.ts (tabela TentativaLogin com
+>   chaves "pedido:ip:" e "pedido:zap:"): 6 por IP e 4 por WhatsApp a
+>   cada 10 min, acima disso 429 (o site abre o WhatsApp mesmo assim).
+>   Testado: preço falso de R$ 0,01 x 999 virou R$ 89,90 x 20; produto
+>   inventado ficou em zero; o 7º envio seguido foi recusado.
+> - 2, velocidade: as 11 fotos de produto em PNG (1,3 MB) viraram WebP
+>   (149 KB, sem diferença visível ampliada), com as referências trocadas
+>   no código (roteiros, linhas, seed, scripts) e no banco; os PNGs saíram.
+>   Fotos enviadas pelo painel viram WebP no servidor (lib/otimizarImagem
+>   com sharp, lado máximo 1600 px; GIF e vídeo seguem como vieram; sharp
+>   entrou no package.json). A cena da dobra só se prepara quando o
+>   navegador fica livre (requestIdleCallback, até 1,2 s) e, em aparelho
+>   com até 4 núcleos ou 4 GB, desenha a no máximo 1,5x.
+> - 4, pedidos no painel: Cliente ganhou `status` (NOVO, EM_PREPARO,
+>   PRONTO, CONCLUIDO, CANCELADO) e `statusEm` (migração
+>   situacao_do_pedido). lib/pedidos.ts: rótulos, próximo passo e as
+>   mensagens prontas do WhatsApp por situação (retirada ou entrega, com
+>   ou sem receita, sem promessa de efeito). "Clientes captados" virou
+>   "Pedidos": números (novos, em preparo, prontos, clientes), busca e
+>   filtro por situação com contagem, cada linha com a situação (seletor),
+>   o botão de avançar ("Iniciar preparo", "Marcar pronto", "Concluir"), o
+>   "Responder" que abre o WhatsApp com a mensagem da situação, e o
+>   detalhe com "Cancelar pedido"; a planilha leva a situação. PATCH
+>   /api/admin/pedidos/[id] (gestor, vai ao log). Aviso de pedido novo:
+>   GET /api/admin/pedidos/novos consultado a cada 30 s (aba à vista) pela
+>   casca do gestor: a contagem no item Pedidos do menu e no título da
+>   aba, e um aviso no canto com nome, código e "Ver os pedidos novos"
+>   (?status=NOVO). Visão geral: chip "N pedidos novos" e a linha na
+>   atenção; pedido cancelado sai dos números. Na prévia os pedidos
+>   fictícios ganham situação pela idade e o aviso fica desligado.
+
 > **ADENDO 78 (14/10/2026): editar produto com vídeo e botão Salvar, categorias novas, filtro de período com comparação na visão geral, Como funciona v9, título da Saúde da Mulher centrado e busca com botão. IMPLEMENTADO, conferido no localhost e publicado no 35º push.**
 > Pedidos, na ordem: "melhore a parte de editar produtos, deixe mais clean
 > e moderna; na opção de botar foto também pode colocar vídeo e coloque um

@@ -66,6 +66,7 @@ interface PedidoBase {
   receita: boolean;
   itens: string;
   criadoEm: Date;
+  status?: string;
 }
 interface ProdutoBase {
   id: number;
@@ -131,11 +132,12 @@ async function lerDoBanco(): Promise<DadosMetricas> {
 
   const [doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes, historico] =
     await Promise.all([
-      db.cliente.findMany({ where: { criadoEm: { gte: comecoDesteMes } } }),
+      // Pedido cancelado não conta nos números (15/10/2026)
+      db.cliente.findMany({ where: { criadoEm: { gte: comecoDesteMes }, status: { not: "CANCELADO" } } }),
       db.cliente.findMany({
-        where: { criadoEm: { gte: comecoDoMesPassado, lt: comecoDesteMes } },
+        where: { criadoEm: { gte: comecoDoMesPassado, lt: comecoDesteMes }, status: { not: "CANCELADO" } },
       }),
-      db.cliente.count(),
+      db.cliente.count({ where: { status: { not: "CANCELADO" } } }),
       db.produto.findMany({
         select: {
           id: true,
@@ -151,13 +153,13 @@ async function lerDoBanco(): Promise<DadosMetricas> {
       }),
       db.cliente.findMany({ orderBy: { criadoEm: "desc" }, take: 5 }),
       db.cliente.findMany({
-        where: { criadoEm: { gte: comecoDaJanela } },
+        where: { criadoEm: { gte: comecoDaJanela }, status: { not: "CANCELADO" } },
         select: { criadoEm: true, totalCentavos: true },
       }),
       db.categoria.findMany({ select: { id: true, nome: true, visivel: true, vitrineHome: true } }),
       db.usuario.findMany({ select: { id: true, nome: true, papel: true, ativo: true, ultimoAcesso: true } }),
       db.logAlteracao.findMany({ orderBy: { criadoEm: "desc" }, take: 6 }),
-      db.cliente.findMany({ where: { criadoEm: { gte: inicioDoHistorico() } } }),
+      db.cliente.findMany({ where: { criadoEm: { gte: inicioDoHistorico() }, status: { not: "CANCELADO" } } }),
     ]);
 
   return { doMes, doMesPassado, totalPedidos, produtos, ultimos, daJanela, categorias, usuarios, ultimasAcoes, historico };
@@ -167,9 +169,11 @@ async function lerDoBanco(): Promise<DadosMetricas> {
 async function lerDoRetrato(): Promise<DadosMetricas> {
   const { lerAdminDemo } = await import("./adminDemo");
   const a = await lerAdminDemo();
-  const pedidos: PedidoBase[] = a.pedidos
+  const todos: PedidoBase[] = a.pedidos
     .map((p) => ({ ...p, criadoEm: new Date(p.criadoEm) }))
     .sort((x, y) => y.criadoEm.getTime() - x.criadoEm.getTime());
+  // Pedido cancelado não conta nos números; os últimos mostram todos
+  const pedidos = todos.filter((p) => p.status !== "CANCELADO");
   const comecoDesteMes = inicioDoMes();
   const comecoDoMesPassado = inicioDoMes(-1);
   const comecoDaJanela = inicioDoMes(-5);
@@ -178,7 +182,7 @@ async function lerDoRetrato(): Promise<DadosMetricas> {
     doMesPassado: pedidos.filter((p) => p.criadoEm >= comecoDoMesPassado && p.criadoEm < comecoDesteMes),
     totalPedidos: pedidos.length,
     produtos: a.produtos,
-    ultimos: pedidos.slice(0, 5),
+    ultimos: todos.slice(0, 5),
     daJanela: pedidos.filter((p) => p.criadoEm >= comecoDaJanela),
     categorias: a.categorias,
     usuarios: a.usuarios,
@@ -311,6 +315,8 @@ export function calcularMetricas(d: DadosMetricas) {
     receitas: receitasDia.get(d.chave) ?? 0,
   }));
 
+  const ultimosNovos = historico.filter((p) => (p.status ?? "NOVO") === "NOVO").length;
+
   // O histórico enxuto que o filtro de período usa no navegador: sem nome
   // nem telefone (o cliente vira um número só para contar os diferentes),
   // os itens só com nome e quantidade
@@ -329,6 +335,8 @@ export function calcularMetricas(d: DadosMetricas) {
   });
 
   return {
+    // Pedidos esperando o gestor (situação "Novo"), para o aviso da visão geral
+    pedidosNovos: ultimosNovos,
     historico: historicoEnxuto,
     agora: Date.now(),
     porMes: porMesLista,

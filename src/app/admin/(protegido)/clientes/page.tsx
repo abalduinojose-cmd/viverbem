@@ -1,4 +1,6 @@
-// Clientes captados pelo site (base para marketing e recompra).
+// Pedidos feitos pelo site e a base de clientes (marketing e recompra).
+// Desde 15/10/2026 com a situação de cada pedido (ver lib/pedidos.ts) e o
+// filtro inicial por ?status= (o aviso de pedido novo leva para os novos).
 // SOMENTE ADMIN (painel do gestor).
 // Na vitrine estática (DEMO=1) os pedidos são FICTÍCIOS, gerados no build
 // (dado de cliente de verdade não vai para um site público).
@@ -11,7 +13,7 @@ import { ListaClientes } from "@/components/admin/ListaClientes";
 
 export const dynamic = "force-dynamic";
 
-export default async function PaginaClientes() {
+export default async function PaginaClientes({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   if (EH_DEMO) {
     const a = await lerAdminDemo();
     return <ListaClientes clientes={a.pedidos} />;
@@ -22,6 +24,7 @@ export default async function PaginaClientes() {
     redirect("/admin/produtos");
   }
 
+  const { status } = await searchParams;
   const clientes = await db.cliente.findMany({
     orderBy: { criadoEm: "desc" },
     take: 500,
@@ -29,6 +32,7 @@ export default async function PaginaClientes() {
 
   return (
     <ListaClientes
+      statusInicial={status}
       clientes={clientes.map((c) => ({
         id: c.id,
         nome: c.nome,
@@ -41,6 +45,8 @@ export default async function PaginaClientes() {
         totalCentavos: c.totalCentavos,
         itens: c.itens,
         criadoEm: c.criadoEm.toISOString(),
+        status: c.status,
+        statusEm: c.statusEm?.toISOString() ?? null,
       }))}
     />
   );

@@ -277,11 +277,21 @@ export function CenaAnimada({
     // distância (a dobra já nasce à vista, então começa na hora). Em dev,
     // ?agora começa sem esperar (para medir com a página escondida, quando
     // o IntersectionObserver não dispara)
+    //
+    // 15/10/2026 (revisão de velocidade: num celular simples a dobra
+    // travava a página por uns 3,6 s): a preparação espera o navegador
+    // ficar livre (requestIdleCallback, no máximo 1,2 s), para a página
+    // aparecer e responder ao toque antes de a cena começar a trabalhar.
+    let espera = 0;
+    const quandoLivre = (fn: () => void) => {
+      if (typeof window.requestIdleCallback === "function") espera = window.requestIdleCallback(() => vivo && fn(), { timeout: 1200 });
+      else espera = window.setTimeout(() => vivo && fn(), 250);
+    };
     const aproximacao = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         aproximacao.disconnect();
-        preparar();
+        quandoLivre(preparar);
       },
       { rootMargin: "100% 0px" },
     );
@@ -291,6 +301,8 @@ export function CenaAnimada({
     return () => {
       vivo = false;
       cancelAnimationFrame(quadro);
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(espera);
+      window.clearTimeout(espera);
       aproximacao.disconnect();
       observadorTamanho.disconnect();
       observadorTela.disconnect();

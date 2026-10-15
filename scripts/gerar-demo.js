@@ -134,6 +134,19 @@ function gerarPedidosFicticios(produtos) {
       totalCentavos: total,
       itens: JSON.stringify(itens),
       criadoEm: data.toISOString(),
+      // A situação pela idade do pedido (15/10/2026): os de hoje novos, os
+      // de ontem em preparo ou prontos, os antigos concluídos; uns poucos
+      // cancelados
+      status:
+        rnd() < 0.04
+          ? "CANCELADO"
+          : diasAtras === 0
+            ? "NOVO"
+            : diasAtras === 1
+              ? rnd() < 0.5 ? "EM_PREPARO" : "PRONTO"
+              : diasAtras === 2 && rnd() < 0.4
+                ? "PRONTO"
+                : "CONCLUIDO",
     });
   }
   return pedidos.sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
