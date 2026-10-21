@@ -78,7 +78,8 @@ const ROTAS_SEM_O_BLOCO = ["/lojas", "/contato"];
 
 export function FaleComAGente() {
   const estado = useEstadoLoja();
-  const rota = usePathname();
+  // (na prévia estática a rota vem com a barra no fim, "/lojas/")
+  const rota = (usePathname() ?? "").replace(/\/+$/, "") || "/";
   if (ROTAS_SEM_O_BLOCO.includes(rota)) return null;
   // A linha de horário de hoje e o detalhe ("fecha às 19h") em minúscula
   const linhaHoje = estado ? HORARIOS.find((l) => l.dias.includes(estado.dia)) : undefined;
