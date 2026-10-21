@@ -21,6 +21,14 @@
 // a frase da segunda voz é "Pronta entrega nas lojas" para todos; saíram o
 // selo "Receita conferida", o link "Tenho receita" e o parágrafo sobre a
 // receita no fim: isso fica na seção Como funciona. "Como pedir" em gelo.
+//
+// 21/10/2026 ("tire a localização e horários, deixe com menos coisas";
+// "os mais pedidos e você viu recentemente maior e um do lado do outro"):
+// saíram os selos Delivery/Retirada sob a foto (o terceiro passo do "Como
+// pedir" já diz isso), a coluna presa ao lado do produto e o "Fale com a
+// gente" do pé (as lojas com mapa e o horário, que não são desta página).
+// "Mais procurados" e "Você viu recentemente" ficam lado a lado, maiores,
+// logo embaixo do produto, em todas as telas.
 import { notFound } from "next/navigation";
 import { dadosDeMigalhas, dadosDoProduto } from "@/lib/seo";
 import { DadosEstruturados } from "@/components/site/DadosEstruturados";
@@ -34,8 +42,6 @@ import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
 import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
-import { IconeMoto } from "@/components/site/IconeMoto";
-import { IconeLoja } from "@/components/site/IconesVantagens";
 
 export const dynamic = "force-dynamic";
 
@@ -129,36 +135,6 @@ const PASSOS_PEDIDO = [
   { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, pelo Delivery.` },
 ];
 
-// Selos de logística, embaixo da foto: só o que dá para comprovar
-const SELOS = [
-  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "Petrópolis e Região" },
-  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
-];
-
-// Os selos, em linha de três. Quem chama diz onde aparecem (display):
-// "hidden lg:grid" sob a foto no computador, "grid lg:hidden" depois do
-// cartão de compra no celular.
-function Selos({ className = "" }: { className?: string }) {
-  return (
-    <ul className={`grid-cols-1 sm:grid-cols-2 gap-2 ${className}`}>
-      {SELOS.map((s) => (
-        <li
-          key={s.titulo}
-          className="flex items-center gap-2 rounded-2xl border border-fio bg-white px-3 py-2.5 text-[0.78rem] text-cinza whitespace-nowrap"
-        >
-          <span className="shrink-0 w-7 h-7 rounded-full bg-ouro/10 text-ouro-escuro flex items-center justify-center">
-            {s.icone}
-          </span>
-          <span className="leading-tight">
-            <b className="block font-semibold text-navy text-[0.82rem]">{s.titulo}</b>
-            {s.texto}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 export default async function PaginaProduto({ params }: Props) {
   const { slug } = await params;
   const { produtos, categorias } = await obterCatalogo();
@@ -175,10 +151,10 @@ export default async function PaginaProduto({ params }: Props) {
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id)
     .slice(0, 8);
 
-  // Para a coluna lateral: os primeiros do catálogo com foto real, sem este
+  // Para os blocos de baixo: os primeiros do catálogo com foto real, sem este
   const maisProcurados = produtos
     .filter((p) => p.id !== produto.id && p.fotoUrl && !p.fotoUrl.toLowerCase().endsWith(".svg"))
-    .slice(0, 4);
+    .slice(0, 10);
 
   return (
     <main className="flex-1">
@@ -192,7 +168,7 @@ export default async function PaginaProduto({ params }: Props) {
         ])}
       />
       {/* Trilha de navegação */}
-      <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-6">
+      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-6">
         <nav className="flex items-center gap-1.5 text-sm text-cinza min-h-10" aria-label="Você está em">
           <Link href="/" className="inline-flex items-center min-h-11 hover:text-tinta transition-colors">
             Início
@@ -210,14 +186,12 @@ export default async function PaginaProduto({ params }: Props) {
       </div>
 
       {/* Produto */}
-      <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-10 md:pb-14">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] xl:grid-cols-[1fr_1fr_18rem] gap-8 lg:gap-10 items-start">
+      <section className="max-w-6xl mx-auto px-5 md:px-8 pt-4 pb-10 md:pb-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-10 items-start">
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
             {/* A galeria: até 5 fotos, a primeira com prioridade */}
             <GaleriaProduto fotos={produto.fotos} nome={produto.nome} novidade={industrializado && produto.novidade} />
-
-            <Selos className="hidden lg:grid mt-4" />
           </div>
 
           {/* ---------- Texto e ação ---------- */}
@@ -252,7 +226,6 @@ export default async function PaginaProduto({ params }: Props) {
             <p className="texto-apoio mt-5 max-w-[34rem]">{produto.descricao}</p>
 
             <AcoesProduto produto={produto} />
-            <Selos className="grid lg:hidden mt-5" />
 
             {industrializado && (
               <div className="mt-6 flex flex-col gap-2.5">
@@ -282,30 +255,17 @@ export default async function PaginaProduto({ params }: Props) {
               </ol>
             </div>
           </div>
-
-          {/* Coluna lateral (computador largo): mais procurados e o que a pessoa já viu */}
-          <ColunaLateralProduto
-            slugAtual={produto.slug}
-            catalogo={produtos}
-            maisProcurados={maisProcurados}
-            className="hidden xl:flex xl:flex-col xl:gap-5 xl:sticky xl:top-[calc(var(--altura-cabecalho)+1.5rem)]"
-          />
         </div>
       </section>
 
-      {/* Abaixo do xl, os mesmos dois blocos, lado a lado */}
-      <section className="xl:hidden max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pb-6">
-        <ColunaLateralProduto
-          slugAtual={produto.slug}
-          catalogo={produtos}
-          maisProcurados={maisProcurados}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-        />
+      {/* Mais procurados e o que a pessoa já viu, em faixas que arrastam, embaixo do produto */}
+      <section className="max-w-6xl mx-auto px-5 md:px-8 pb-8 md:pb-10">
+        <ColunaLateralProduto slugAtual={produto.slug} catalogo={produtos} maisProcurados={maisProcurados} />
       </section>
 
       {/* Da mesma área */}
       {relacionados.length > 0 && (
-        <section className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-4 pb-12 border-t border-fio">
+        <section className="max-w-6xl mx-auto px-5 md:px-8 pt-4 pb-12 border-t border-fio">
           <div className="flex items-end justify-between gap-4 mt-10 mb-6">
             <div>
               <p className="rotulo">da mesma área</p>

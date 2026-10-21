@@ -1,5 +1,30 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 85 (21/10/2026): página do produto com menos coisas e as duas faixas que arrastam. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
+> Pedido: "o upsell os mais pedidos e você viu recentemente maior e não
+> embaixo um do outro" e, em seguida, "os mais procurados nesse mesmo
+> tamanho mas arrastando para o lado; embaixo, continue de onde parou
+> arrastando para o lado também"; "tire a localização e horários, deixe
+> a página com menos coisas".
+> - Saíram da página do produto: os selos Delivery/Retirada sob a foto (o
+>   terceiro passo do "Como pedir" já diz isso), a coluna presa ao lado do
+>   produto no computador largo e o "Fale com a gente" do pé (as lojas com
+>   o mapa e o horário; FaleComAGente também devolve nulo em /produto/*).
+>   A largura da página voltou a 6xl em todas as telas (a 7xl só existia
+>   por causa da coluna).
+> - "Mais procurados" e "Você viu recentemente" (ColunaLateralProduto,
+>   quarta versão) ficam embaixo do produto, um sobre o outro, cada um
+>   num cartão branco com a FaixaProdutos (largura "estreita": 13rem no
+>   celular, 16rem no computador; toque, clique e arraste, setas nas
+>   bordas) e até dez produtos. Cada produto é um cartão em pé: foto
+>   grande no ladrilho de gelo com a luz dourada, "adicionar" em contorno
+>   no canto da foto (para o nome ter a largura toda), nome e área. A
+>   primeira tentativa foi dois blocos lado a lado em grade, mas ele
+>   pediu as faixas no meio do caminho.
+> - Conferido com puppeteer: sem o bloco do pé, dois blocos com faixa,
+>   sem erros; tsc e eslint limpos.
+
+
 > **ADENDO 84 (21/10/2026): páginas Lojas e Contato mais modernas e clean, cada coisa uma vez só. IMPLEMENTADO, conferido no localhost (1366 e 390) e PUBLICADO no 38º push a pedido ("atualize o github").**
 > Pedido: "melhore a parte das lojas, deixe mais moderna e clean; melhore
 > a parte dos contatos; atualize o github".

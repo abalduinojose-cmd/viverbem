@@ -74,13 +74,16 @@ function SeloAberto({ estado }: { estado: EstadoLoja }) {
 // 21/10/2026: nas páginas de lojas e de contato o bloco não aparece (elas
 // já mostram as lojas, o WhatsApp e o horário; repetir tudo no pé era o
 // que deixava as duas páginas carregadas)
+// 21/10/2026: também não aparece na página do produto ("tire a localização
+// e horários, deixe com menos coisas")
 const ROTAS_SEM_O_BLOCO = ["/lojas", "/contato"];
+const PREFIXOS_SEM_O_BLOCO = ["/produto/"];
 
 export function FaleComAGente() {
   const estado = useEstadoLoja();
   // (na prévia estática a rota vem com a barra no fim, "/lojas/")
   const rota = (usePathname() ?? "").replace(/\/+$/, "") || "/";
-  if (ROTAS_SEM_O_BLOCO.includes(rota)) return null;
+  if (ROTAS_SEM_O_BLOCO.includes(rota) || PREFIXOS_SEM_O_BLOCO.some((p) => rota.startsWith(p))) return null;
   // A linha de horário de hoje e o detalhe ("fecha às 19h") em minúscula
   const linhaHoje = estado ? HORARIOS.find((l) => l.dias.includes(estado.dia)) : undefined;
   const detalheHoje = estado ? estado.detalhe.charAt(0).toLowerCase() + estado.detalhe.slice(1) : "";
