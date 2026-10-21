@@ -1,5 +1,45 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 82 (21/10/2026): Como funciona v10, "a trilha e o palco", pela doutrina de movimento; rodapé com a navegação em pílula e as páginas legais centradas. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
+> Pedido (com o rodapé e a seção selecionados): "modernize essa parte e
+> quero centralizado na versão mobile e desktop; modernize levemente esses
+> botões; eu quero o Como funciona muito melhor, é uma parte muito
+> importante do projeto, use as melhores skills". Skill usada:
+> movimento-premium (doutrina do HyperFrames).
+> - Como funciona v10 (ComoFunciona.tsx, sem mexer no globals.css): em
+>   vez de quatro cartões iguais, a TRILHA (quatro nós numerados ligados
+>   por um fio que se enche de ouro até o passo da vez; os passados viram
+>   um visto em ouro; no computador o fio do passo da vez enche em 5,6 s)
+>   e o PALCO em azul-noite (malha + duas luzes) que mostra um passo por
+>   vez, 60/40: à esquerda "Passo 01 de 04", título, texto e o detalhe
+>   com visto; à direita a CENA do passo numa tela branca, o movimento
+>   sendo a informação ("vida sequenciada"): 01 a foto da receita sobe na
+>   conversa, "digitando" (diegético, morre quando a resposta chega), a
+>   resposta, os vistos azulam; 02 a prancheta com a receita, três vistos
+>   com vãos que encolhem, 0,6 s de pausa e "valor e prazo" pousa; 03 o
+>   frasco enche (scaleY 2,3 s), o rótulo se escreve (clip-path), o selo
+>   pousa; 04 as lojas pousam no mapa (spring-pop com vãos que encolhem),
+>   retirada e Delivery entram pela direita. Chegadas com opacidade
+>   binária (acende em 12%), uma propriedade só por história, curvas
+>   expo/quint/suave, nada em t=0. Troca de passo no computador: cut the
+>   curve para a esquerda (sai em 320 ms power4.in sumindo em 30% do
+>   caminho; entra da direita já a 35%, quint 500 ms, começando 150 ms
+>   depois), por transições CSS inline (um dono só por propriedade). Até o
+>   tablet os palcos ficam numa faixa que arrasta (pedido de 10/10) e a
+>   trilha acompanha; cada cena toca quando o palco está 35% à vista
+>   (IntersectionObserver) e é cancelada ao sair. Antes da hidratação, no
+>   computador, só o palco ativo aparece (`lg:invisible` +
+>   `data-ativo`). O convite da receita continua igual.
+>   Lição de captura: screenshot DE ELEMENTO no puppeteer mexe no
+>   viewport, o IntersectionObserver reinicia a cena e a captura sai em
+>   branco; fotografar a janela inteira (captureBeyondViewport false).
+> - Rodapé: a navegação virou uma pílula de vidro centrada (links
+>   acendem em branco com o texto navy); as páginas legais e o botão
+>   Cookies numa linha centrada separada por pontos de ouro, sem o
+>   "Cookies" órfão numa segunda linha no celular.
+> - A seção CSS .passos-escopo/.passos-faixa ficou sem uso (está no
+>   globals.css da outra sessão; apagar quando ela commitar).
+
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
 > privacidade, termos de serviço, política de reembolso, revise o Google

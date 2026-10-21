@@ -150,14 +150,16 @@ export function Footer() {
           })}
         </ul>
 
-        {/* Navegação numa fileira só, em caixa alta discreta */}
-        <nav aria-label="Links do rodapé" className="mt-10 w-full">
-          <ul className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
+        {/* Navegação numa pílula de vidro, centrada (21/10/2026, "modernize
+            levemente esses botões"): cada link acende em branco ao passar o
+            mouse, e no celular a pílula quebra em duas linhas */}
+        <nav aria-label="Links do rodapé" className="mt-10 w-full flex justify-center">
+          <ul className="inline-flex flex-wrap items-center justify-center gap-1 rounded-[1.5rem] sm:rounded-full bg-white/[0.05] p-1.5 ring-1 ring-inset ring-white/10 backdrop-blur-sm">
             {NAVEGACAO.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex items-center min-h-11 rounded-full px-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-white/65 transition-colors duration-300 hover:bg-white/[0.07] hover:text-white"
+                  className="inline-flex items-center h-10 rounded-full px-4 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-white/70 transition-colors duration-300 hover:bg-white hover:text-navy"
                 >
                   {l.rotulo}
                 </Link>
@@ -166,20 +168,19 @@ export function Footer() {
           </ul>
         </nav>
 
-        {/* (O aviso legal em parágrafo saiu em 11/10/2026, a pedido, "por
-            enquanto"; a linha de confiança do Como funciona segue no site) */}
-
-        {/* As páginas legais e os cookies, discretos */}
-        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-1 text-[0.74rem] text-white/50">
-          {LEGAIS.map((l) => (
-            <li key={l.href}>
-              <Link href={l.href} className="inline-flex items-center min-h-10 rounded-full px-3 transition-colors hover:text-white">
+        {/* As páginas legais e os cookies, centrados e separados por pontos de ouro */}
+        <ul className="mt-5 flex flex-wrap items-center justify-center text-[0.76rem] text-white/55">
+          {LEGAIS.map((l, i) => (
+            <li key={l.href} className="flex items-center">
+              {i > 0 && <Ponto />}
+              <Link href={l.href} className="inline-flex items-center min-h-10 transition-colors hover:text-white">
                 {l.rotulo}
               </Link>
             </li>
           ))}
-          <li>
-            <BotaoCookies className="inline-flex items-center min-h-10 rounded-full px-3 transition-colors hover:text-white" />
+          <li className="flex items-center">
+            <Ponto />
+            <BotaoCookies className="inline-flex items-center min-h-10 transition-colors hover:text-white" />
           </li>
         </ul>
 
