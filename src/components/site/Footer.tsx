@@ -100,7 +100,7 @@ export function Footer() {
         {/* O logo é colorido, então some no escuro: viramos ele em branco */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={asset("/logo.png")}
+          src={asset("/logo.webp")}
           alt="Manipulação Viver Bem"
           draggable={false}
           loading="lazy"

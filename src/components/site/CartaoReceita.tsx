@@ -279,7 +279,9 @@ export function CartaoReceita() {
                         key={k}
                         data-letra=""
                         className="inline-block origin-bottom-left tracking-[-0.04em]"
-                        style={{ fontFamily: FONTES.display, fontWeight: FONTES.pesoDisplay }}
+                        // A voz do próprio site (21/10/2026): a Bricolage da dobra
+                        // custava 75 KB em TODAS as páginas só por este título
+                        style={{ fontFamily: FONTES.apoio, fontWeight: 700 }}
                       >
                         {c}
                       </span>

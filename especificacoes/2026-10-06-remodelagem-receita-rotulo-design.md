@@ -1,5 +1,40 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 86 (21/10/2026): selos de volta na página do produto (três) e o site mais leve, medido. IMPLEMENTADO e PUBLICADO no 39º push a pedido ("atualize o github"), junto com o adendo 85.**
+> Pedido: "volte com o delivery e retirada na loja na página do produto e
+> coloque mais informações perto do produto se for necessário; otimize o
+> site para ele carregar rápido; atualize o github".
+> - Produto: os selos voltaram logo embaixo do cartão de compra, em todas
+>   as telas, agora TRÊS: Delivery (Petrópolis e Região), Retirada grátis
+>   (em 3 lojas) e "Valor pelo WhatsApp, em minutos, no horário das lojas".
+>   Três numa linha do tablet em diante, empilhados no celular.
+> - Peso: medido num celular simulado (1,6 Mbps, 150 ms de latência),
+>   servindo a prévia estática com gzip como o GitHub Pages faz.
+>   | página | antes | depois |
+>   | home | 858 KB, 1º conteúdo 4,4 s, carga 6,8 s | 747 KB, 2,4 s, 3,8 s |
+>   | produto | 610 KB, maior elemento 3,0 s | 503 KB, 1,5 s |
+>   | catálogo | 646 KB | 526 KB |
+>   O que mudou: (1) logo do cabeçalho e do rodapé em WebP de 440 px
+>   (32 KB; o PNG de 76 KB era a maior imagem de toda página e o maior
+>   elemento da dobra no celular), com fetchPriority alto no cabeçalho;
+>   (2) a Bricolage Grotesque (fonte variável de 75 KB da dobra animada)
+>   deixou de ser baixada em TODAS as páginas: só o título do cartão da
+>   receita a usava fora da home, e passou para a Instrument Sans 700 do
+>   próprio site; (3) capas dos reels em WebP (174 KB -> 105 KB; o poster
+>   do vídeo não é preguiçoso, carrega com a página); (4) ícone do
+>   WhatsApp no cartão em 96 px (5 KB, era o de 512 px com 54 KB);
+>   (5) foto da equipe do banner da história em 800 px (27 KB, era 60).
+>   Nada de estrutura ou de visual mudou.
+> - Lição de medição: no puppeteer a PRIMEIRA navegação do navegador paga
+>   uns 3 s de conexão (localhost em IPv6 caindo para IPv4 sob a rede
+>   emulada); medir a home sempre em primeiro fazia ela parecer 3 a 6 s
+>   mais lenta e errática. Aquecer a conexão com uma página mínima antes.
+>   O profiler de CPU a 4x também não representa o canvas da dobra
+>   (SwiftShader sem GPU): comparar sempre a 1x.
+> - Ainda pesam, por escolha: a Bricolage na home (dobra animada),
+>   as fontes do site (76 KB), o JavaScript do App Router (~220 KB gz).
+
+
 > **ADENDO 85 (21/10/2026): página do produto com menos coisas e as duas faixas que arrastam. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
 > Pedido: "o upsell os mais pedidos e você viu recentemente maior e não
 > embaixo um do outro" e, em seguida, "os mais procurados nesse mesmo

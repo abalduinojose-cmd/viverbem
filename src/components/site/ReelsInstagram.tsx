@@ -44,10 +44,10 @@ import { SegurarParaVer } from "./SegurarParaVer";
 import { VisorReels, type ControleVisor } from "./VisorReels";
 
 const REELS = [
-  { arquivo: "/videos/reel-1.mp4", capa: "/videos/reel-1.jpg", titulo: "Curiosidades da manipulação" },
-  { arquivo: "/videos/reel-2.mp4", capa: "/videos/reel-2.jpg", titulo: "Quem faz a Viver Bem" },
-  { arquivo: "/videos/reel-3.mp4", capa: "/videos/reel-3.jpg", titulo: "Área dos olhos" },
-  { arquivo: "/videos/reel-4.mp4", capa: "/videos/reel-4.jpg", titulo: "Pads faciais" },
+  { arquivo: "/videos/reel-1.mp4", capa: "/videos/reel-1.webp", titulo: "Curiosidades da manipulação" },
+  { arquivo: "/videos/reel-2.mp4", capa: "/videos/reel-2.webp", titulo: "Quem faz a Viver Bem" },
+  { arquivo: "/videos/reel-3.mp4", capa: "/videos/reel-3.webp", titulo: "Área dos olhos" },
+  { arquivo: "/videos/reel-4.mp4", capa: "/videos/reel-4.webp", titulo: "Pads faciais" },
 ];
 
 // O que aparece no centro quando a pessoa segura um reel no celular

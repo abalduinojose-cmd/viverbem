@@ -24,9 +24,11 @@
 //
 // 21/10/2026 ("tire a localização e horários, deixe com menos coisas";
 // "os mais pedidos e você viu recentemente maior e um do lado do outro"):
-// saíram os selos Delivery/Retirada sob a foto (o terceiro passo do "Como
-// pedir" já diz isso), a coluna presa ao lado do produto e o "Fale com a
-// gente" do pé (as lojas com mapa e o horário, que não são desta página).
+// saíram a coluna presa ao lado do produto e o "Fale com a gente" do pé
+// (as lojas com mapa e o horário, que não são desta página). Os selos
+// Delivery/Retirada saíram e VOLTARAM no mesmo dia ("volte com o delivery
+// e retirada na loja"), agora três, com "valor pelo WhatsApp", logo
+// embaixo do cartão de compra em todas as telas.
 // "Mais procurados" e "Você viu recentemente" ficam lado a lado, maiores,
 // logo embaixo do produto, em todas as telas.
 import { notFound } from "next/navigation";
@@ -42,6 +44,9 @@ import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
 import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
+import { IconeMoto } from "@/components/site/IconeMoto";
+import { IconeLoja } from "@/components/site/IconesVantagens";
+import { IconeWhatsApp } from "@/components/site/icones";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +140,30 @@ const PASSOS_PEDIDO = [
   { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, pelo Delivery.` },
 ];
 
+// Selos de logística, logo embaixo do cartão de compra: só o que dá para
+// comprovar (voltaram em 21/10/2026, com o terceiro)
+const SELOS = [
+  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "Petrópolis e Região" },
+  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeWhatsApp tamanho={15} />, titulo: "Valor pelo WhatsApp", texto: "em minutos, no horário das lojas" },
+];
+
+function Selos() {
+  return (
+    <ul className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
+      {SELOS.map((s) => (
+        <li key={s.titulo} className="flex items-center gap-2.5 rounded-2xl border border-fio bg-white px-3 py-2.5 text-[0.78rem] text-cinza">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ouro/10 text-ouro-escuro">{s.icone}</span>
+          <span className="min-w-0 leading-tight">
+            <b className="block text-[0.82rem] font-semibold text-navy">{s.titulo}</b>
+            {s.texto}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default async function PaginaProduto({ params }: Props) {
   const { slug } = await params;
   const { produtos, categorias } = await obterCatalogo();
@@ -226,6 +255,7 @@ export default async function PaginaProduto({ params }: Props) {
             <p className="texto-apoio mt-5 max-w-[34rem]">{produto.descricao}</p>
 
             <AcoesProduto produto={produto} />
+            <Selos />
 
             {industrializado && (
               <div className="mt-6 flex flex-col gap-2.5">

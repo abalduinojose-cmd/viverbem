@@ -202,7 +202,7 @@ export function CartaoWhatsApp({ estado, className = "" }: { estado: EstadoLoja;
           {/* A marca inteira, pequena, no círculo branco */}
           <span className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-black/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset("/icone-512.png")} alt="" width={30} height={30} loading="lazy" decoding="async" className="size-[1.9rem] object-contain" />
+            <img src={asset("/icone-96.png")} alt="" width={30} height={30} loading="lazy" decoding="async" className="size-[1.9rem] object-contain" />
           </span>
           <span className="min-w-0 leading-tight">
             <span className="block text-[0.85rem] font-semibold text-[#111b21]">Viver Bem</span>

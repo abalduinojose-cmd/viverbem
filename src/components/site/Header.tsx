@@ -292,11 +292,13 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
               (pedido de 13/10). O celular não muda. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={asset("/logo.png")}
+            src={asset("/logo.webp")}
             alt="Manipulação Viver Bem"
             draggable={false}
             width={220}
             height={97}
+            fetchPriority="high"
+            decoding="async"
             className="h-[2.85rem] md:h-[3.36rem] w-auto object-contain"
           />
         </Link>

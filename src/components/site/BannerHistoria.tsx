@@ -18,7 +18,7 @@ import type { Midia } from "@/lib/banners";
 
 export function BannerHistoria({ midia = null }: { midia?: Midia | null }) {
   // A foto do painel (14/10/2026) ou a da equipe na loja
-  const foto: Midia = midia ?? { url: "/fotos/sobre/equipe-loja.webp", tipo: "imagem" };
+  const foto: Midia = midia ?? { url: "/fotos/sobre/equipe-loja-800.webp", tipo: "imagem" };
   return (
     <section aria-label="A nossa história" className="md:hidden max-w-7xl mx-auto px-5 pt-3">
       <Link
