@@ -48,6 +48,13 @@
 >   pílula de vidro também foi rejeitada: "mais clean"), as páginas
 >   legais numa linha, com pontos de ouro só a partir do tablet. A seção
 >   CSS .passos-escopo/.passos-faixa voltou a ser usada.
+> - Depois, "melhore o Como funciona mas use a estrutura que já está, só
+>   aperfeiçoe": cinco retoques na nona versão, nada entrou nem saiu. A
+>   fileira dos cartões entra ao rolar (revelar); a marca d'água dos
+>   cartões claros de 30% para 18%; o rótulo "Passo 01" do cartão aceso em
+>   ouro; o azulejo do ícone com um fio fino; o título de 1,28 para 1,38
+>   rem; a barra do pé de 3 para 2 px e mais clara nos apagados (parecia
+>   uma barra de progresso vazia). Conferido em 1366 e 390.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de

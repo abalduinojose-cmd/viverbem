@@ -23,6 +23,14 @@
 // o tablet a faixa continua arrastando para o lado, agora com pontos que
 // acompanham o cartão à vista e levam a cada passo.
 //
+// Lapidação (21/10/2026, "melhore, mas use a estrutura que já está, só
+// aperfeiçoe"): a mesma estrutura, com cinco retoques: a fileira entra ao
+// rolar como as outras seções (revelar); o número em marca d'água ficou
+// mais discreto nos cartões claros; o rótulo "Passo 01" do cartão aceso em
+// ouro; o azulejo do ícone com um fio fino; o título um pouco maior e a
+// barra do pé mais fina e mais clara nos cartões apagados (antes parecia
+// uma barra de progresso vazia). Nada entrou, nada saiu.
+//
 // Versões anteriores: 11/10 stepper com a linha de ouro e nós (sétima);
 // 10/10 lista num cartão com o convite preso ao lado (sexta); 08/10 quatro
 // cartões com traço e faixa (quinta); 07/10 um cartão dividido por fios
@@ -219,7 +227,7 @@ export function ComoFunciona({
       )}
 
       {/* ---------- Os quatro passos: stories no computador, faixa arrastável até o tablet ---------- */}
-      <div className={`passos-escopo ${cabecalho ? "vao-titulo" : ""}`}>
+      <div className={`passos-escopo revelar ${cabecalho ? "vao-titulo" : ""}`}>
         <ol
           ref={faixa}
           onScroll={aoRolarFaixa}
@@ -255,7 +263,7 @@ export function ComoFunciona({
                 <span
                   aria-hidden="true"
                   className={`numero-tinta pointer-events-none absolute right-5 top-2 text-[4.6rem] md:text-[5rem] leading-none transition-opacity duration-500 ${
-                    aceso ? "opacity-40" : "opacity-30"
+                    aceso ? "opacity-40" : "opacity-[0.18]"
                   }`}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -265,17 +273,17 @@ export function ComoFunciona({
                 <span className="relative flex items-center gap-3">
                   <span
                     className={`flex size-11 shrink-0 items-center justify-center rounded-2xl transition-colors duration-500 ${
-                      aceso ? "bg-white/10 text-[#e1c68f] ring-1 ring-white/15" : "bg-gelo text-tinta"
+                      aceso ? "bg-white/10 text-[#e1c68f] ring-1 ring-white/15" : "bg-gelo text-tinta ring-1 ring-tinta/10"
                     }`}
                   >
                     {p.icone}
                   </span>
-                  <span className={`text-[0.6875rem] font-semibold uppercase tracking-[0.16em] transition-colors duration-500 ${aceso ? "text-white/60" : "text-cinza"}`}>
+                  <span className={`text-[0.6875rem] font-semibold uppercase tracking-[0.16em] transition-colors duration-500 ${aceso ? "text-[#e1c68f]/85" : "text-cinza"}`}>
                     Passo {String(i + 1).padStart(2, "0")}
                   </span>
                 </span>
 
-                <h3 className="relative mt-5 text-[1.2rem] md:text-[1.28rem] font-semibold tracking-[-0.03em] leading-snug">
+                <h3 className="relative mt-5 text-[1.25rem] md:text-[1.38rem] font-semibold tracking-[-0.03em] leading-[1.2]">
                   <span className="sr-only">Passo {i + 1}: </span>
                   {p.titulo}
                 </h3>
@@ -315,7 +323,7 @@ export function ComoFunciona({
                 {/* A barra do passo (só no computador): cheia nos que já
                     passaram, enchendo no aceso, vazia nos próximos */}
                 <span aria-hidden="true" className="relative mt-auto hidden lg:block pt-5">
-                <span className={`block h-[3px] w-full overflow-hidden rounded-full ${aceso ? "bg-white/15" : "bg-fio"}`}>
+                <span className={`block h-[2px] w-full overflow-hidden rounded-full ${aceso ? "bg-white/15" : "bg-fio/60"}`}>
                   {feito && <span className="block h-full w-full rounded-full bg-[image:var(--ouro-degrade)]" />}
                   {aceso && (
                     <span
