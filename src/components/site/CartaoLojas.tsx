@@ -36,7 +36,8 @@ const LADO_DO_NOME: Record<string, "esquerda" | "direita"> = {
   Posse: "direita",
 };
 const PECA = 256;
-const MOLA = "cubic-bezier(0.34, 1.5, 0.64, 1)";
+// 21/10/2026: o pino tem massa e quica um pouco ao cair, mas pouco (era 1,5)
+const MOLA = "cubic-bezier(0.34, 1.25, 0.64, 1)";
 
 /** Latitude e longitude para pixels do mundo no zoom z (Web Mercator) */
 function projetar(lat: number, lon: number, z: number) {

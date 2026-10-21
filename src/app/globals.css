@@ -416,8 +416,10 @@ body {
     background: rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.45);
   }
+  /* 21/10/2026: em vez de balançar sem parar, a seta dá dois toques e
+     descansa 4,5 s (um gesto de "olha aqui embaixo", não um tique) */
   .acenar-baixo {
-    animation: acenar-baixo 2.4s ease-in-out infinite;
+    animation: acenar-baixo 6s cubic-bezier(0.45, 0, 0.55, 1) 2.2s infinite;
   }
 
   /* 3. Link com seta, fio de ouro */
@@ -494,25 +496,46 @@ body {
     /* 13/10/2026: o branco sobre o ouro #c9a56b rendia 2,3:1. O texto
        branco foi pedido (10/10), então quem escurece é o fundo: o ouro
        escuro rende 5,4:1 com o branco. */
-    background: var(--color-ouro-escuro);
+    /* 21/10/2026 ("quero dourado mas com um degradê mais leve, mais clean"):
+       o ouro da marca num degradê suave de cima para baixo, sem sombra nem
+       brilho; o texto segue branco (pedido de 10/10). Atenção: branco sobre
+       este ouro rende ~2,5:1; é escolha dele. No hover o degradê escurece
+       um passo. */
+    background: linear-gradient(180deg, #d2b27a 0%, #c9a56b 55%, #bb975a 100%);
     color: #fff;
     font-weight: 600;
     font-size: 0.92rem;
     letter-spacing: -0.01em;
     line-height: 1;
     white-space: nowrap;
-    transition: background-color 0.25s, color 0.25s, transform 0.25s;
+    text-shadow: 0 1px 1px rgba(90, 64, 20, 0.18);
+    transition: filter 0.25s, color 0.25s, transform 0.25s;
   }
   .botao-carrinho:hover {
-    background: #6e5427;
+    filter: brightness(0.93) saturate(1.05);
   }
   .botao-carrinho:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
   .botao-carrinho-feito,
   .botao-carrinho-feito:hover {
     background: #15803d;
     color: #fff;
+    filter: none;
+    text-shadow: none;
+  }
+  /* O ícone nasce num pop quando troca (sacola ↔ visto): escala 0 → 1 numa
+     curva longa, sem rebote (doutrina de movimento) */
+  .botao-carrinho-icone {
+    animation: pop-icone 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes pop-icone {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 
   /* ---------- Superfícies ---------- */
@@ -670,17 +693,20 @@ body {
   border-color: var(--color-tinta);
   box-shadow: 0 0 0 4px rgba(28, 105, 181, 0.1);
 }
+/* 21/10/2026 (doutrina de movimento): os vãos da cascata ENCOLHEM (x0,84)
+   em vez de serem iguais: a onda acelera e o último estala; o conjunto
+   fecha em ~0,35 s de escalonamento, não em 0,63 */
 .cascata > * {
-  animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: surgir 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .cascata > *:nth-child(1) { animation-delay: 0ms; }
-.cascata > *:nth-child(2) { animation-delay: 90ms; }
-.cascata > *:nth-child(3) { animation-delay: 180ms; }
-.cascata > *:nth-child(4) { animation-delay: 270ms; }
-.cascata > *:nth-child(5) { animation-delay: 360ms; }
-.cascata > *:nth-child(6) { animation-delay: 450ms; }
-.cascata > *:nth-child(7) { animation-delay: 540ms; }
-.cascata > *:nth-child(n + 8) { animation-delay: 630ms; }
+.cascata > *:nth-child(2) { animation-delay: 80ms; }
+.cascata > *:nth-child(3) { animation-delay: 147ms; }
+.cascata > *:nth-child(4) { animation-delay: 203ms; }
+.cascata > *:nth-child(5) { animation-delay: 250ms; }
+.cascata > *:nth-child(6) { animation-delay: 290ms; }
+.cascata > *:nth-child(7) { animation-delay: 323ms; }
+.cascata > *:nth-child(n + 8) { animation-delay: 351ms; }
 
 /* Revelação ao rolar: anda com a rolagem da própria pessoa (scroll-driven),
    por isso roda também com "reduzir movimento". Navegador sem suporte
@@ -696,10 +722,12 @@ body {
    inteiro em 40px de rolagem, menos que um clique da roda (~100px), e a
    entrada saltava. "cover" mede pela tela: cada bloco entra ao longo de uns
    140px, um clique e meio, e termina com o topo a 85% da tela. */
+/* 21/10/2026 (doutrina de movimento): só subir + aparecer, uma história
+   ("está chegando"); a escala junto fazia uma segunda afirmação */
 @keyframes revelar-rolagem {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.985);
+    transform: translateY(36px);
   }
   to {
     opacity: 1;
@@ -707,10 +735,11 @@ body {
   }
 }
 /* A folha que sai recua e escurece de leve enquanto a próxima cobre */
+/* 21/10/2026: recua menos; a folha que sai é fundo, não protagonista */
 @keyframes folha-recua {
   to {
-    transform: scale(0.92) translateY(-3rem);
-    opacity: 0.25;
+    transform: scale(0.94) translateY(-2rem);
+    opacity: 0.35;
   }
 }
 @supports (animation-timeline: view()) {
@@ -724,11 +753,12 @@ body {
     animation-timeline: view();
     animation-range: cover 0% cover 13%;
   }
+  /* 21/10/2026: vãos que encolhem (x0,84), como numa cascata de verdade */
   .escalonado > *:nth-child(2) { animation-range: cover 2.5% cover 15.5%; }
-  .escalonado > *:nth-child(3) { animation-range: cover 5% cover 18%; }
-  .escalonado > *:nth-child(4) { animation-range: cover 7.5% cover 20.5%; }
-  .escalonado > *:nth-child(5) { animation-range: cover 10% cover 23%; }
-  .escalonado > *:nth-child(n + 6) { animation-range: cover 12% cover 25%; }
+  .escalonado > *:nth-child(3) { animation-range: cover 4.6% cover 17.6%; }
+  .escalonado > *:nth-child(4) { animation-range: cover 6.4% cover 19.4%; }
+  .escalonado > *:nth-child(5) { animation-range: cover 7.9% cover 20.9%; }
+  .escalonado > *:nth-child(n + 6) { animation-range: cover 9.2% cover 22.2%; }
 
   .folha {
     animation: folha-recua linear both;
@@ -748,14 +778,14 @@ body {
    - as fotos dos banners andam um pouco mais devagar que a página.
    (A linha de ouro de progresso sob o cabeçalho foi tirada no mesmo dia:
    "não gosto dela".) */
+/* 21/10/2026: só o recorte (o título "se escreve"); o subir junto contava
+   uma segunda história */
 @keyframes titulo-escreve {
   from {
     clip-path: inset(-0.25em 100% -0.35em -0.25em);
-    transform: translateY(0.3em);
   }
   to {
     clip-path: inset(-0.25em -0.4em -0.35em -0.25em);
-    transform: none;
   }
 }
 @keyframes cresce-x {
@@ -1005,16 +1035,21 @@ summary::-webkit-details-marker {
 }
 @keyframes acenar-baixo {
   0%,
+  24%,
   100% {
     transform: translateY(0);
   }
-  50% {
+  6%,
+  18% {
     transform: translateY(3px);
+  }
+  12% {
+    transform: translateY(0);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .acenar-baixo {
-    animation-duration: 3.6s;
+    animation-duration: 9s;
   }
 }
 
@@ -1073,7 +1108,8 @@ summary::-webkit-details-marker {
 .palavra {
   display: inline-block;
   animation: palavra-sobe 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--i, 0) * 85ms + 150ms);
+  /* 21/10/2026: vãos que encolhem (85, 73, 61, 49...): a cascata acelera */
+  animation-delay: calc(150ms + var(--i, 0) * 85ms - var(--i, 0) * var(--i, 0) * 6ms);
 }
 @keyframes palavra-sobe {
   from {
@@ -1438,12 +1474,18 @@ summary::-webkit-details-marker {
    carga de página bem coreografada vale mais que microinterações soltas):
    as três faixas descem em cascata, uma vez, na primeira carga. Roda também
    com "reduzir movimento" (pedido do usuário). */
+/* 21/10/2026: nada começa em t = 0 (um respiro de 90 ms) e os vãos encolhem */
 .entrada-topo {
-  animation: surgir 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: surgir 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.entrada-topo-1 { animation-delay: 0ms; }
-.entrada-topo-2 { animation-delay: 110ms; }
-.entrada-topo-3 { animation-delay: 220ms; }
+.entrada-topo-1 { animation-delay: 90ms; }
+.entrada-topo-2 { animation-delay: 185ms; }
+.entrada-topo-3 { animation-delay: 265ms; }
+/* As vantagens entram depois da dobra começar (apoio chega depois do foco;
+   21/10/2026): um só fade, sem escalonar, porque elas já existiam */
+.entrada-vantagens {
+  animation: surgir 0.6s cubic-bezier(0.22, 1, 0.36, 1) 420ms both;
+}
 
 /* Segurar para ver (adendo 69): no toque, segurar o cartão não seleciona
    texto nem abre o menu do sistema ("salvar imagem", a prévia de link do

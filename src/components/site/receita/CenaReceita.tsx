@@ -48,8 +48,10 @@ const OURO = "#c9a56b";
 const OURO_CLARO = "#e0c48f";
 
 /** Saída com um passo além do alvo (a mola de quem pousa) */
+// 21/10/2026 (doutrina de movimento): passa só ~2% do alvo (era 1,4, uns
+// 8%, que lia como rebote de desenho animado); o pouso continua com peso
 const saiVolta = (p: number) => {
-  const c1 = 1.4;
+  const c1 = 0.5;
   const c3 = c1 + 1;
   return 1 + c3 * (p - 1) ** 3 + c1 * (p - 1) ** 2;
 };
@@ -79,24 +81,29 @@ const TEXTO_2 = "Já te mando o valor.";
 
 // ---------------------------------------------------------------- estados
 
-/** A receita: entra girando do fundo e sai para o fundo no fim */
+/** A receita: chega GRANDE, de perto da câmera, e recua até o lugar; no fim
+ *  recua para o fundo. 21/10/2026 (doutrina de movimento, lei do vetor): a
+ *  saída encolhe (pull), então a entrada também encolhe (inverse
+ *  zoom-through, "algo maior pousa"); antes ela crescia do fundo, o
+ *  espelho proibido da saída, e a emenda do laço dava um tranco de sentido */
 function estadoPapel(t: number) {
   const pe = saiCubica(trecho(t, 0.05, 1.0));
   const sai = entraCubica(trecho(t, 8.6, 9.5));
   const pose = entraSaiSeno(trecho(t, 7.3, 8.4)) * (1 - sai);
   const boia = 3 * Math.sin((2 * TAU * t) / CICLO);
   return {
-    x: mix(-80, 0, pe) - 6 * pose,
-    y: mix(80, 0, pe) + boia - 28 * sai,
-    z: mix(-260, 0, pe) - 220 * sai + 10 * pose,
-    rx: mix(64, 0, pe),
-    rz: mix(-30, -8, pe) + 2 * pose,
+    x: mix(-120, 0, pe) - 6 * pose,
+    y: mix(-70, 0, pe) + boia - 28 * sai,
+    z: mix(300, 0, pe) - 220 * sai + 10 * pose,
+    rx: mix(38, 0, pe),
+    rz: mix(-24, -8, pe) + 2 * pose,
     alfa: limitar(pe * 3) * (1 - sai),
     boia,
   };
 }
 
-/** O celular: chega girando em Y com a mola de quem pousa */
+/** O celular: chega grande pela direita, de perto da câmera, girando em Y,
+ *  e recua até o lugar com um pouso com peso (mesma lei do vetor da receita) */
 function estadoCelular(t: number) {
   const pc = saiVolta(trecho(t, 0.6, 1.65));
   const vai = entraCubica(trecho(t, 8.55, 9.45));
@@ -104,10 +111,10 @@ function estadoCelular(t: number) {
   const boia = -4 * Math.sin((2 * TAU * t) / CICLO + 1.2);
   const recuo = pulso(t, 2.38, 2.62);
   return {
-    x: mix(160, 0, pc) + 80 * vai - 4 * pose,
-    y: mix(56, 0, pc) + boia - 16 * vai,
-    z: mix(-180, 60, pc) - 10 * recuo - 240 * vai + 8 * pose,
-    ry: mix(80, -12, pc) + 50 * vai + 6 * pose,
+    x: mix(240, 0, pc) + 80 * vai - 4 * pose,
+    y: mix(-30, 0, pc) + boia - 16 * vai,
+    z: mix(320, 60, pc) - 10 * recuo - 240 * vai + 8 * pose,
+    ry: mix(55, -12, pc) + 50 * vai + 6 * pose,
     rz: mix(14, 4, pc) - 2 * pose,
     alfa: limitar(trecho(t, 0.6, 0.85)) * (1 - vai),
     boia,
@@ -269,7 +276,8 @@ export function CenaReceita({ className = "" }: { className?: string }) {
       const clarao = pulso(t, 2.38, 2.7);
       if (E.papel) {
         E.papel.style.opacity = String(pp.alfa);
-        const blur = Math.min(4, velPapel * 0.16) + foco;
+        // Desfoque pela velocidade, até 10 px (superfície inteira; antes 4)
+        const blur = Math.min(10, velPapel * 0.22) + foco;
         E.papel.style.filter = `${blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : ""} ${clarao > 0.01 ? `brightness(${(1 + 0.6 * clarao).toFixed(2)})` : ""}`.trim();
       }
       s(E.sombraPapel, `translateY(${-pp.boia * 0.5}px) scale(${1 - pp.boia * 0.02})`, 0.55 * pp.alfa);
@@ -286,7 +294,7 @@ export function CenaReceita({ className = "" }: { className?: string }) {
       const ac = estadoCelular(Math.max(0, t - 0.03));
       const velCel = Math.hypot(pc.x - ac.x, pc.y - ac.y, (pc.z - ac.z) * 0.4) + Math.abs(pc.ry - ac.ry) * 0.6;
       s(E.celular, `translate3d(${pc.x}px, ${pc.y}px, ${pc.z}px) rotateY(${pc.ry}deg) rotateZ(${pc.rz}deg)`);
-      em3D(E.celular, pc.alfa, Math.min(4.5, velCel * 0.14));
+      em3D(E.celular, pc.alfa, Math.min(10, velCel * 0.2));
       s(E.sombraCelular, `translateY(${-pc.boia * 0.5}px) scale(${1 + pc.boia * 0.015})`, 0.5 * limitar(trecho(t, 0.7, 1.4)) * (1 - entraCubica(trecho(t, 8.55, 9.45))));
 
       // Na tela, a câmera: a mira fecha, a receita entra em foco, o obturador aperta

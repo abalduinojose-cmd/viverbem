@@ -43,7 +43,8 @@ const ASSUNTOS = [
 const PADRAO = 2;
 const RESPOSTA = "Oi! Como podemos ajudar?";
 const linkDe = (mensagem: string) => `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagem)}`;
-const MOLA = "cubic-bezier(0.34, 1.4, 0.64, 1)";
+// 21/10/2026: o balão passa só ~2% do lugar (era 1,4: rebote de desenho animado)
+const MOLA = "cubic-bezier(0.34, 1.12, 0.64, 1)";
 
 function Vistos() {
   return (

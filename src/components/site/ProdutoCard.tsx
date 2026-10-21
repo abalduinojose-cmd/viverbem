@@ -15,6 +15,14 @@
 // clean"): "cartao" é a caixa branca com fio, usada nas vitrines da home;
 // "limpa" tira a caixa: só o ladrilho da foto em gelo (que acende no
 // hover), o nome e o botão embaixo, sem borda. O catálogo usa a limpa.
+//
+// 21/10/2026 ("melhore a apresentação dos produtos, modernize os botões de
+// adicionar"): na limpa o ladrilho ganhou um degradê suave de cima para
+// baixo e um fio quase invisível (ouro no hover), a categoria ficou menor
+// e mais leve, o nome em 600. (A linha "Manipulado · sob receita" e o
+// botão em contorno foram feitos e tirados na mesma hora: "tire o
+// manipulado sob receita, quero o botão dourado com um degradê mais leve,
+// mais clean".) O botão é o .botao-carrinho do sistema.
 import Link from "next/link";
 import { ProdutoDTO, ehIndustrializado, precoVisivel } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
@@ -71,7 +79,7 @@ export function ProdutoCard({
         <div
           className={`relative aspect-square overflow-hidden flex items-center justify-center ${
             limpa
-              ? "rounded-[1.75rem] bg-gelo/60 p-5 transition-colors duration-300 group-hover:bg-gelo"
+              ? "rounded-[1.6rem] bg-[linear-gradient(180deg,#f3f6fa_0%,#eef2f8_100%)] ring-1 ring-inset ring-navy/[0.05] p-5 transition duration-300 group-hover:ring-ouro/40 group-hover:bg-[linear-gradient(180deg,#f6f8fb_0%,#f0f4f9_100%)]"
               : "rounded-[1.35rem] bg-gradient-to-b from-gelo to-gelo/30 p-3"
           }`}
         >
@@ -94,9 +102,11 @@ export function ProdutoCard({
             produtos centralizados, no celular e no computador") */}
         <div className={`flex flex-1 flex-col items-center gap-1 text-center ${limpa ? "mt-3.5 px-1" : "mt-3 px-1.5"}`}>
           {mostrarCategoria && produto.categoriaNome && (
-            <p className="rotulo !text-cinza text-[0.6875rem] truncate max-w-full">{produto.categoriaNome}</p>
+            <p className={`rotulo !text-cinza truncate max-w-full ${limpa ? "text-[0.64rem] !tracking-[0.14em] opacity-80" : "text-[0.6875rem]"}`}>
+              {produto.categoriaNome}
+            </p>
           )}
-          <h3 className="text-[1rem] font-medium leading-snug tracking-[-0.015em] text-navy line-clamp-2">
+          <h3 className={`text-[1rem] leading-snug tracking-[-0.015em] text-navy line-clamp-2 ${limpa ? "font-semibold" : "font-medium"}`}>
             {/* O link se estende sobre o cartão inteiro */}
             <Link
               href={href}

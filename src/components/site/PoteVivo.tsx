@@ -4,7 +4,9 @@
 // Segunda versão, no mesmo dia ("não gostei dos movimentos, mude"): saiu o
 // flutuar e inclinar na direção do mouse. Agora é movimento de vitrine:
 //
-//   - cada pote "respira", crescendo 3% e voltando, devagar (4,8 s);
+//   - cada pote "respira", crescendo 1,5% e voltando, devagar (6 s; era 3%
+//     em 4,8 s; 21/10/2026, doutrina de movimento: respiração de vitrine é
+//     tremor sutil, não gesto);
 //   - de tempos em tempos um brilho passa por cima dele, como luz batendo
 //     no vidro; o brilho é recortado no formato do pote (a própria foto
 //     serve de máscara), então não passa pelo fundo do círculo;
@@ -24,9 +26,9 @@ export function PoteVivo({ indice, src, children }: { indice: number; src: strin
     const brilho = faixa.current;
     if (!el || !brilho) return;
 
-    const respira = el.animate([{ transform: "scale(1)" }, { transform: "scale(1.03)" }, { transform: "scale(1)" }], {
-      duration: 4800,
-      delay: -indice * 600,
+    const respira = el.animate([{ transform: "scale(1)" }, { transform: "scale(1.015)" }, { transform: "scale(1)" }], {
+      duration: 6000,
+      delay: -indice * 700,
       iterations: Infinity,
       easing: "ease-in-out",
     });

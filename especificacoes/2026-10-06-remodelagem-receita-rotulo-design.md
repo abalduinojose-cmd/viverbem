@@ -56,6 +56,98 @@
 >   rem; a barra do pé de 3 para 2 px e mais clara nos apagados (parecia
 >   uma barra de progresso vazia). Conferido em 1366 e 390.
 
+> **ADENDO 81 (21/10/2026): as animações do site revisadas pela doutrina de movimento do HyperFrames (skill `movimento-premium`), da hero para baixo, mantendo a essência. IMPLEMENTADO e conferido em quadros; não publicado.**
+> Pedido: "estude e crie uma habilidade com as skills hyperframes-main,
+> depois refaça todas as animações do site usando os novos recursos;
+> mantenha a essência das animações mas deixe mais moderno e clean, comece
+> da hero e vá descendo". A skill ficou em
+> `~/.claude/skills/movimento-premium/` (SKILL.md + references/receitas.md +
+> references/checklist.md): cada movimento faz uma afirmação (quatro
+> empregos), entradas em `out` e saídas em `in`, nada de rebote por padrão
+> (mola crítica ou ζ 0,85), chegadas com opacidade binária, cascatas com
+> vãos que encolhem (x0,84), propriedades compostas só quando contam uma
+> história, balanço ocioso proibido (rotas de movimento sustentado), pausa
+> antes do clímax, lei do vetor nas emendas, desfoque de movimento só na
+> velocidade, brilho ≤ 0,45, determinismo. O que mudou no site, de cima
+> para baixo (a coreografia e o desenho de cada peça seguem iguais):
+> cabeçalho entra com 90 ms de respiro e vãos que encolhem (90/185/265 ms,
+> 0,6 s); as vantagens entram num fade só, 420 ms depois (apoio depois do
+> foco); hero: a mola das letras de "Especialistas" passou de 6% de
+> sobressalto (lia como rebote) para 0,8% (`mola` em cena.ts, amortecida
+> partindo do repouso, normalizada), as letras chegam com opacidade binária
+> (a máscara do fio já faz o recorte) e "em saúde" acende quase de uma vez;
+> a seta do "Como funciona" deixou de balançar sem parar: dois toques e
+> 4,5 s de descanso (ciclo de 6 s); revelações de rolagem só sobem e
+> aparecem (a escala 0,985 saiu: era uma segunda afirmação), os filhos
+> escalonados em faixas que encolhem (2,5/4,6/6,4/7,9/9,2%), o título "se
+> escreve" só pelo recorte (o subir junto saiu), a folha que sai recua
+> menos (0,94 / 0,35); a cascata da carga (.cascata) com vãos x0,84
+> (0/80/147/203/250/290/323/351 ms, 0,6 s); potes das linhas respiram 1,5%
+> em 6 s (era 3% em 4,8 s: tremor sutil, não gesto); título da Saúde da
+> Mulher: o ponto do rótulo em expo (era uma mola de 10%), as letras sem o
+> giro de 7° e quase binárias (offset 0,05), cascata com vãos x0,86
+> (helper `escalona`), palavras idem; cartão do WhatsApp: balões com 2% de
+> sobressalto (era cubic-bezier 1,4); lojas: pinos com 1,25 (era 1,5); A
+> Viver Bem: as palavras do título com vãos que encolhem (85, 73, 61...).
+> Ficaram como estavam, de propósito: a cena da receita (aprovada no
+> detalhe em 11/10), a vitrine da Saúde da Mulher (14/10), o Como funciona
+> em stories (vida sequenciada: a barra é o portador) e o fio que gira nos
+> botões (uma passagem de luz por volta). Conferido em vídeo quadro a
+> quadro (hero 0–3,6 s e título da Saúde da Mulher 0–3,2 s), tsc e eslint
+> limpos, console sem erros com as revelações de rolagem (view() ativo).
+> Segunda passada no mesmo dia ("agora melhore essa com as novas skills",
+> com o canvas da Saúde da Mulher selecionado no celular): a vitrine dos
+> potes (`vitrine.ts`) pela doutrina: entrada em cascata de verdade (vãos
+> que encolhem x0,84 e os potes baixos chegam em 0,5 s, os altos em 0,62:
+> velocidade por peso); a ola nasce sempre à esquerda, de onde vem o
+> letreiro, no mesmo quadro em que ele começa a trocar (antes alternava de
+> lado a cada vez, um pingue-pongue sem causa, e partia 0,05 s depois);
+> os vãos entre os potes na ola também encolhem; o levante é assimétrico
+> (sobe em 35% do tempo, assenta nos 65%); o "giro" de largura saiu (uma
+> segunda história junto do levante e da luz); o reflexo e a sombra
+> assentam um quadro depois do pote (acompanhamento, o que vende o peso:
+> `alturaSobre` é função pura do tempo e é lida também em t − 1 quadro);
+> o flutuar entre as olas caiu de 3,2 para 1,6 unidades (tremor sutil).
+> Gravado em vídeo quadro a quadro no celular (390) e no computador (1440),
+> 0–6,5 s: entrada e primeira ola. O aviso de cookies novo (adendo 80 da
+> outra sessão) é escondido só na gravação.
+> Terceira passada ("agora melhore esse com as novas skills", com o cartão
+> da receita selecionado no celular). CartaoReceita: as letras brancas
+> sem o giro de 6° e quase binárias (offset 0,05), com vãos que encolhem
+> (`escalona(120, 46, i)`, x0,86); as de ouro idem (`escalona(500, 115, i)`);
+> o brilho que corre pelo ouro passou a linear (luz, não objeto).
+> CenaReceita: a emenda do laço obedecia mal à lei do vetor (a saída
+> recua e encolhe, e a entrada crescia do fundo, o espelho proibido);
+> agora a receita e o celular chegam GRANDES, de perto da câmera (z +300 e
+> +320, desfocados pela velocidade, teto de 10 px em vez de 4), e recuam
+> até o lugar: inverse zoom-through, "algo maior pousa"; o pouso do
+> celular e os balões da conversa passam só ~2% do alvo (`saiVolta` com
+> c1 0,5; era 1,4, uns 8%). O resto da cena (foto que voa, clarão, corte
+> por continuidade, foco, onda e faíscas de ouro) ficou igual. Gravado em
+> vídeo quadro a quadro (cena 0–2,4 s no computador e no celular; cartão
+> inteiro com título 0–3 s).
+> Página de produtos, no mesmo dia ("tire a quantidade de produtos por
+> categoria, melhore a primeira parte antes do mais procurados, a
+> apresentação dos produtos, modernize os botões de adicionar, melhore a
+> categoria selecionada"): a pílula "N produtos" saiu dos títulos das
+> faixas (`CabecalhoFaixa` sem `total`); a abertura entra em cascata na
+> carga (`TituloEmCascata`: cada palavra sobe de trás de uma máscara com
+> as classes `.mascara`/`.palavra` da página A Viver Bem, vãos que
+> encolhem; o rótulo, o apoio e o bilhete da receita com `.entra` a 0/480/
+> 640 ms; o itálico em ouro vai na própria `.palavra`, porque o
+> `background-clip: text` do pai não atravessa o inline-block e a palavra
+> sumia); cartões da variante limpa com o ladrilho em degradê suave e fio
+> quase invisível (ouro no hover), categoria menor e mais leve, nome em
+> 600; botão de adicionar no OURO da marca com degradê leve de cima para
+> baixo (#d2b27a → #c9a56b → #bb975a), sem sombra, texto branco (pedido de
+> 10/10; ~2,5:1, escolha dele), hover um passo mais escuro, toque a 0,97,
+> e o ícone (sacola ↔ visto) nasce num pop sem rebote (`.botao-carrinho-
+> icone`); a categoria ativa no cabeçalho com ponto de ouro, fio de ouro
+> fino e letra 600, e a barra centraliza a ativa no celular ao abrir a
+> página. Feitos e tirados na hora, a pedido: a linha "Manipulado · sob
+> receita" sob o nome e o botão em contorno branco ("quero dourado com um
+> degradê mais leve, mais clean").
+
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
 > privacidade, termos de serviço, política de reembolso, revise o Google

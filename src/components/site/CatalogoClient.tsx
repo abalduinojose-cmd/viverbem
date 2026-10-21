@@ -28,6 +28,15 @@
 // o botão); a busca e os chips das áreas ficaram numa barra só, mais
 // baixa, lado a lado no computador; a linha "32 produtos · 6 áreas ·
 // receita conferida" saiu da abertura; mais ar entre as faixas.
+//
+// 21/10/2026 ("tire a quantidade de produtos por categoria, melhore a
+// primeira parte antes do mais procurados, a apresentação dos produtos,
+// os botões de adicionar e a categoria selecionada"): a pílula "N
+// produtos" saiu dos títulos das faixas; a abertura entra em cascata na
+// carga, como a da página A Viver Bem (o título palavra a palavra de trás
+// de uma máscara, com vãos que encolhem; o apoio e o bilhete da receita
+// logo atrás); os cartões e o botão de adicionar são os do ProdutoCard
+// (variante limpa com o botão leve); a categoria ativa é do cabeçalho.
 
 import { useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -74,27 +83,21 @@ function Grade({ lista, comCategoria = true }: { lista: ProdutoDTO[]; comCategor
 // Foto de verdade é a que não é um dos desenhos neutros (.svg)
 const temFoto = (fotoUrl: string | null) => Boolean(fotoUrl && !fotoUrl.toLowerCase().endsWith(".svg"));
 
-/** O cabeçalho de cada faixa: título, o total numa pílula, o apoio e o "ver tudo" */
+/** O cabeçalho de cada faixa: título, o apoio e o "ver tudo" (a pílula com
+ *  o total de produtos saiu em 21/10/2026, a pedido) */
 function CabecalhoFaixa({
   titulo,
-  total,
   apoio,
   href,
 }: {
   titulo: React.ReactNode;
-  total: number;
   apoio?: string;
   href?: string;
 }) {
   return (
     <div className="flex items-end justify-between gap-4 mb-6">
       <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <h2 className="titulo-bloco">{titulo}</h2>
-          <span className="shrink-0 inline-flex items-center h-6 px-2.5 rounded-full bg-white ring-1 ring-fio text-[0.72rem] font-semibold text-cinza tabular-nums">
-            {total} {total === 1 ? "produto" : "produtos"}
-          </span>
-        </div>
+        <h2 className="titulo-bloco">{titulo}</h2>
         {apoio && <p className="text-cinza text-sm md:text-base mt-1.5">{apoio}</p>}
       </div>
       {href && (
@@ -118,6 +121,34 @@ function TituloArea({ nome }: { nome: string }) {
   }
   return <>{nome}</>;
 }
+
+/** O título da abertura em cascata: cada palavra sobe de trás de uma máscara
+ *  (.mascara/.palavra, as mesmas da página A Viver Bem), com os vãos que
+ *  encolhem. As palavras marcadas (o "&" e a palavra-chave) saem em itálico
+ *  ouro. Doutrina de movimento (21/10/2026): chegada em cascata, uma direção,
+ *  opacidade binária (a máscara recorta), a última palavra estala */
+function TituloEmCascata({ palavras }: { palavras: { texto: string; italico?: boolean }[] }) {
+  return (
+    <>
+      {palavras.map((p, i) => (
+        <span key={i}>
+          <span className="mascara">
+            {/* O itálico (ouro em background-clip: text) vai na própria palavra:
+                num pai, o recorte do degradê não atravessa o inline-block e a
+                palavra sumia */}
+            <span className={`palavra ${p.italico ? "italic" : ""}`} style={{ "--i": i } as React.CSSProperties}>
+              {p.texto}
+            </span>
+          </span>
+          {i < palavras.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/** As palavras do nome de uma área, com o "&" em itálico */
+const palavrasDaArea = (nome: string) => nome.split(" ").map((texto) => ({ texto, italico: texto === "&" }));
 
 export function CatalogoClient({
   categorias,
@@ -178,23 +209,25 @@ export function CatalogoClient({
               mais": a barra de áreas presa logo abaixo já diz onde a pessoa está) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 lg:items-end">
             <div className="lg:col-span-7 max-w-2xl">
-              <p className="rotulo-pilula">{categoriaAtiva ? "categoria" : "categorias"}</p>
+              <p className="rotulo-pilula entra">{categoriaAtiva ? "categoria" : "categorias"}</p>
               <h1 className="titulo-secao vao-rotulo">
-                {categoriaAtiva ? (
-                  <TituloArea nome={categoriaAtiva.nome} />
-                ) : (
-                  <>
-                    O que <span className="italic">manipulamos</span>
-                  </>
-                )}
+                <TituloEmCascata
+                  palavras={
+                    categoriaAtiva
+                      ? palavrasDaArea(categoriaAtiva.nome)
+                      : [{ texto: "O que" }, { texto: "manipulamos", italico: true }]
+                  }
+                />
               </h1>
-              <p className="texto-apoio mt-4">{apoio}</p>
+              <p className="texto-apoio mt-4 entra" style={{ "--atraso": "480ms" } as React.CSSProperties}>
+                {apoio}
+              </p>
             </div>
 
             {/* O convite da página: a receita como um bilhete em azul-noite,
                 inteiro clicável, com o ícone em ouro, o título em duas vozes e
                 a seta num círculo branco (07/10/2026, "modernize essa parte") */}
-            <div className="lg:col-span-5 lg:justify-self-end w-full lg:max-w-md">
+            <div className="lg:col-span-5 lg:justify-self-end w-full lg:max-w-md entra" style={{ "--atraso": "640ms" } as React.CSSProperties}>
               <BotaoEnviarReceita
                 comIcone={false}
                 className="group banner-noite em-noite relative w-full overflow-hidden rounded-[1.75rem] ring-1 ring-inset ring-white/10 p-4 sm:p-5 flex items-center gap-4 text-left text-white shadow-[0_24px_50px_-30px_rgba(13,35,64,0.6)] transition duration-300 hover:-translate-y-0.5"
@@ -281,7 +314,6 @@ export function CatalogoClient({
                       Mais <span className="italic">procurados</span>
                     </>
                   }
-                  total={maisProcurados.length}
                   apoio="Os mais pedidos nas três lojas."
                 />
                 <FaixaProdutos produtos={maisProcurados} className="cascata" variante="limpa" />
@@ -297,7 +329,6 @@ export function CatalogoClient({
                       Pronta <span className="italic">entrega</span>
                     </>
                   }
-                  total={industrializados.length}
                   apoio="Industrializados com registro na Anvisa."
                 />
                 <FaixaProdutos produtos={industrializados} className="cascata" variante="limpa" />
@@ -310,7 +341,6 @@ export function CatalogoClient({
                 <section key={c.id} aria-label={c.nome}>
                   <CabecalhoFaixa
                     titulo={<TituloArea nome={c.nome} />}
-                    total={daArea.length}
                     apoio={infoCategoria(c.slug).descricao}
                     href={`/produtos/${c.slug}`}
                   />

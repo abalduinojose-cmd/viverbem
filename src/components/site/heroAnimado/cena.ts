@@ -69,8 +69,14 @@ export const saiExpo = (p: number) => (p >= 1 ? 1 : 1 - 2 ** (-10 * p));
 export const entraCubica = (p: number) => p * p * p;
 export const entraSaiCubica = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2);
 export const entraSaiSeno = (p: number) => -(Math.cos(Math.PI * p) - 1) / 2;
-/** Mola amortecida: passa 6% do alvo e assenta, como uma letra que pousa */
-export const mola = (p: number) => (p >= 1 ? 1 : 1 - Math.exp(-5.5 * p) * Math.cos(6.2 * p));
+/** Mola amortecida partindo do repouso (ζ ≈ 0,85): passa 0,8% do alvo e
+ *  assenta, "sentido, não visto" (21/10/2026, doutrina de movimento; antes
+ *  passava 6%, que lia como rebote). Normalizada para fechar em 1. */
+const MOLA_K = 7;
+const MOLA_W = 4.6;
+const molaBruta = (p: number) => 1 - Math.exp(-MOLA_K * p) * (Math.cos(MOLA_W * p) + (MOLA_K / MOLA_W) * Math.sin(MOLA_W * p));
+const MOLA_1 = molaBruta(1);
+export const mola = (p: number) => (p >= 1 ? 1 : p <= 0 ? 0 : molaBruta(p) + p * (1 - MOLA_1));
 
 // ---------------------------------------------------------------- câmera
 
@@ -1207,7 +1213,9 @@ export async function criarCena(
     const escondido = l.ascent + 13 / textos.escalaIntro + 3;
     const dy = mix(escondido, 0, mola(p)) + entraCubica(q) * (l.ascent + l.descent + 10);
     const peso = q > 0 ? mix(l.peso, fontes.pesoDisplayLeve, saiCubica(q)) : mix(fontes.pesoDisplayLeve, l.peso, saiCubica(p));
-    return { dy, peso, alfa: limitar(p * 4), p, q };
+    // Chegada com opacidade binária (21/10/2026): a letra já nasce atrás do
+    // fio, a máscara faz o recorte; um fade por cima brigava com o estalo
+    return { dy, peso, alfa: p > 0 ? 1 : 0, p, q };
   }
 
   /** Desenha a linha grande no instante tt. Serve para o quadro e, com
@@ -1296,7 +1304,8 @@ export async function criarCena(
     // Inclina no sentido do movimento (para a esquerda ao entrar, para a
     // direita ao sair) e endireita ao pousar
     const inclina = 0.14 * (1 - e) - 0.1 * eq;
-    return { dx, inclina, alfa: limitar(p * 2.5) * (1 - limitar(q * 1.3)), p, q };
+    // Acende quase de uma vez (21/10/2026): chegada é binária, só a saída esmaece
+    return { dx, inclina, alfa: limitar(p * 6) * (1 - limitar(q * 1.3)), p, q };
   }
 
   function desenharLinha2(t: number, cam: Camera) {

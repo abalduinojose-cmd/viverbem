@@ -6,6 +6,12 @@
 // É o botão do carrinho do sistema (.botao-carrinho, globals.css): pílula
 // em ouro com o texto e o ícone em branco (10/10/2026; antes navy), verde
 // por um instante quando o produto entrou.
+//
+// 21/10/2026 ("modernize todos os botões de adicionar ao carrinho"; depois
+// "quero dourado mas com um degradê mais leve, mais clean"): a pílula
+// passou ao ouro da marca num degradê suave de cima para baixo, sem sombra
+// (um contorno em branco foi feito e tirado na hora). Ao adicionar, o visto
+// nasce num pop (escala 0 → 1, sem rebote) e o botão fica verde por 1,8 s.
 import { useState } from "react";
 import Link from "next/link";
 import { ProdutoDTO, listarDosagens } from "@/lib/tipos";
@@ -83,7 +89,10 @@ export function BotaoAdicionar({
       <span className="sr-only" aria-live="polite">
         {adicionado ? "Produto adicionado ao carrinho" : ""}
       </span>
-      {adicionado ? <IconeFeito /> : <IconeCarrinho tamanho={17} />}
+      {/* A key troca o elemento: o ícone novo nasce com o pop */}
+      <span key={adicionado ? "feito" : "sacola"} className="botao-carrinho-icone inline-flex">
+        {adicionado ? <IconeFeito /> : <IconeCarrinho tamanho={17} />}
+      </span>
       {adicionado ? (
         "Adicionado"
       ) : (

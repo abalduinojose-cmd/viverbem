@@ -18,7 +18,7 @@
 // mais estreito de cada lado que o banner nas telas largas. No celular
 // nada muda (o px-5 já era o mesmo).
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import { usePathname } from "next/navigation";
@@ -168,10 +168,17 @@ function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; aut
   );
 }
 
-// Pílula da fileira de categorias: a ativa em navy, as outras em gelo
+// Pílula da fileira de categorias: a ativa em navy, as outras em gelo.
+// 21/10/2026 ("melhore a categoria selecionada"): a ativa ganhou um ponto de
+// ouro na frente (o mesmo sinal dos rótulos do site), um fio de ouro fino
+// em volta e letra em 600; e, no celular, a barra centraliza a ativa
+// quando a página abre (antes uma categoria no fim da fila ficava fora da
+// tela e a pessoa não via onde estava).
 const classeCategoria = (ativo: boolean) =>
-  `shrink-0 inline-flex items-center h-11 px-4 rounded-full text-[0.82rem] font-medium whitespace-nowrap transition-colors ${
-    ativo ? "bg-navy text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)]" : "bg-gelo/70 text-navy/80 hover:bg-gelo hover:text-navy"
+  `shrink-0 inline-flex items-center gap-2 h-11 px-4 rounded-full text-[0.82rem] whitespace-nowrap transition-colors ${
+    ativo
+      ? "bg-navy text-white font-semibold shadow-[0_10px_18px_-10px_rgba(13,35,64,0.65)] ring-1 ring-inset ring-ouro/45 before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[image:var(--ouro-degrade)] before:shadow-[0_0_0_3px_rgba(201,165,107,0.22)]"
+      : "bg-gelo/70 text-navy/80 font-medium hover:bg-gelo hover:text-navy"
   }`;
 
 // Botões do celular (carrinho, busca e menu) numa cápsula branca com fio,
@@ -201,6 +208,14 @@ function SeloAbertoFaixa() {
 
 export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
   const pathname = usePathname();
+  // A barra das categorias centraliza a ativa (celular; no computador cabem todas)
+  const barraCategorias = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const barra = barraCategorias.current;
+    const ativa = barra?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!barra || !ativa || barra.scrollWidth <= barra.clientWidth) return;
+    barra.scrollTo({ left: ativa.offsetLeft - (barra.clientWidth - ativa.offsetWidth) / 2, behavior: "instant" });
+  }, [pathname]);
   const [menuAberto, setMenuAberto] = useState(false);
   const [buscaAberta, setBuscaAberta] = useState(false);
 
@@ -379,11 +394,11 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
         aria-label="Categorias"
         className="entrada-topo entrada-topo-3 relative border-t border-fio/70 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-white/90 md:after:hidden"
       >
-        <div className="max-w-[90rem] mx-auto px-5 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
+        <div ref={barraCategorias} className="max-w-[90rem] mx-auto px-5 h-[3.25rem] flex items-center gap-2 overflow-x-auto rolagem-sem-barra">
           <Link
             href="/produtos"
             aria-current={pathname === "/produtos" ? "page" : undefined}
-            className={`${classeCategoria(pathname === "/produtos")} !pl-3 gap-1.5`}
+            className={`${classeCategoria(pathname === "/produtos")} !pl-3 !gap-1.5 ${pathname === "/produtos" ? "before:hidden" : ""}`}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />

@@ -16,8 +16,11 @@
 // quint de saída, sem nada linear):
 //   - a cápsula do rótulo se abre do ponto de ouro para a direita e as
 //     palavras entram deslizando de dentro dela;
-//   - "Saúde" sobe letra a letra de trás de uma máscara, girando de leve e
-//     assentando, como um bloco de After Effects com "text animator";
+//   - "Saúde" sobe letra a letra de trás de uma máscara e assenta, como um
+//     bloco de After Effects com "text animator" (21/10/2026, doutrina de
+//     movimento: sem o giro, que contava uma segunda história; opacidade
+//     quase binária, porque a máscara já faz o recorte; vãos que encolhem
+//     entre as letras, para a cascata acelerar e a última estalar);
 //   - "em cada fase da" sobe palavra a palavra, logo atrás;
 //   - "mulher" se revela da esquerda para a direita e uma luz corre pelo
 //     ouro; a mesma luz volta a cada volta do letreiro;
@@ -46,8 +49,9 @@ const CURVA = {
   expo: "cubic-bezier(0.16, 1, 0.3, 1)",
   quint: "cubic-bezier(0.22, 1, 0.36, 1)",
   meio: "cubic-bezier(0.65, 0, 0.35, 1)",
-  mola: "cubic-bezier(0.34, 1.56, 0.64, 1)",
 };
+/** Atraso do i-ésimo item de uma cascata cujos vãos encolhem (x0,86) */
+const escalona = (inicio: number, vao: number, i: number) => inicio + (vao * (1 - 0.86 ** i)) / (1 - 0.86);
 // O ouro do "mulher": o degradê do site com uma faixa clara no meio, que
 // passa pela palavra quando a posição do fundo anda
 const OURO_COM_LUZ =
@@ -75,7 +79,7 @@ export function CenaMulher() {
     };
 
     // A cápsula do rótulo
-    anima(el.querySelector("[data-ponto]"), [{ transform: "scale(0)" }, { transform: "scale(1)" }], { duration: 520, delay: 60, easing: CURVA.mola });
+    anima(el.querySelector("[data-ponto]"), [{ transform: "scale(0)" }, { transform: "scale(1)" }], { duration: 620, delay: 90, easing: CURVA.expo });
     anima(
       el.querySelector("[data-capsula]"),
       [
@@ -94,11 +98,11 @@ export function CenaMulher() {
       anima(
         l,
         [
-          { transform: "translateY(112%) rotate(7deg)", opacity: 0 },
-          { opacity: 1, offset: 0.3 },
+          { transform: "translateY(112%)", opacity: 0 },
+          { opacity: 1, offset: 0.05 },
           { transform: "none", opacity: 1 },
         ],
-        { duration: 1150, delay: 280 + i * 62, easing: CURVA.expo }
+        { duration: 950, delay: escalona(280, 64, i), easing: CURVA.expo }
       )
     );
     // "em cada fase da": palavra a palavra
@@ -107,10 +111,10 @@ export function CenaMulher() {
         p,
         [
           { transform: "translateY(110%)", opacity: 0 },
-          { opacity: 1, offset: 0.35 },
+          { opacity: 1, offset: 0.05 },
           { transform: "none", opacity: 1 },
         ],
-        { duration: 1000, delay: 640 + i * 85, easing: CURVA.expo }
+        { duration: 850, delay: escalona(600, 90, i), easing: CURVA.expo }
       )
     );
     // "mulher": a revelação da esquerda para a direita e a luz no ouro

@@ -36,7 +36,7 @@ function fiosDaCelula(i: number) {
 
 export function Beneficios() {
   return (
-    <section aria-label="Vantagens" className="max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
+    <section aria-label="Vantagens" className="entrada-vantagens max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
       <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white md:flex md:flex-wrap md:justify-center md:gap-2.5 lg:gap-3 md:overflow-visible md:rounded-none md:border-0 md:bg-transparent">
         {ITENS.map((i, indice) => {
           const miolo = (

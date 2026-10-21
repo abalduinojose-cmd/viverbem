@@ -34,6 +34,18 @@
 // aparece (createImageBitmap com reamostragem "high"), então o desenho de
 // cada quadro é quase 1 para 1, nítido e barato; e a escala dos potes tem
 // teto pela resolução das fotos (até 1,3x de ampliação), para não amolecer.
+//
+// 21/10/2026 (doutrina de movimento, skill movimento-premium, pedido "melhore
+// essa com as novas skills"): a entrada virou uma cascata de verdade (os vãos
+// entre os potes encolhem x0,84 e os potes baixos chegam mais rápido que os
+// altos: velocidade por peso); a ola nasce SEMPRE à esquerda, de onde vem o
+// letreiro, no mesmo quadro em que ele começa a trocar (antes alternava de
+// lado, um pingue-pongue sem causa, e partia um pouco depois); o levante de
+// cada pote é assimétrico (sobe rápido, assenta devagar), sem o "giro" de
+// largura, que contava uma segunda história; o reflexo e a sombra assentam um
+// quadro depois do pote (acompanhamento: é o que vende o peso); e o flutuar
+// entre as olas caiu para um tremor sutil (1,6 unidades, era 3,2): a vida da
+// cena vem das olas e do letreiro, não de balanço.
 import type { Camera, Coreografia, Imagem, Palco } from "./cena";
 import { DURACAO, FOCAL, TAU, entraSaiCubica, entraSaiSeno, limitar, mix, saiCubica, saiQuinta, trecho } from "./cena";
 
@@ -60,16 +72,24 @@ export function passoDoLetreiro(T: number) {
  *  de novo pelo "mulher" do título */
 export const BRILHO_DO_TITULO = (LETREIRO_INICIO + VEZ * 4.75) % DURACAO;
 
-/** Começo da ola k (tempo corrido): logo que o letreiro começa a trocar */
-const inicioOla = (k: number) => LETREIRO_INICIO + VEZ * (k + 0.8);
-/** Atraso de um pote para o seguinte na ola, e quanto ela dura em cada um */
-const OLA_ATRASO = 0.075;
+/** Começo da ola k (tempo corrido): o MESMO quadro em que o letreiro começa
+ *  a trocar (ver passoDoLetreiro: o último quarto de cada vez) */
+const inicioOla = (k: number) => LETREIRO_INICIO + VEZ * (k + 0.75);
+/** Atraso do primeiro pote para o segundo na ola (os seguintes encolhem
+ *  x0,84: a onda acelera), e quanto ela dura em cada um */
+const OLA_ATRASO = 0.08;
 const OLA_DURA = 0.5;
+const atrasoNaOla = (ordem: number) => (OLA_ATRASO * (1 - 0.84 ** ordem)) / 0.16;
+/** O levante de um pote na ola: sobe rápido (35% do tempo) e assenta devagar */
+const levanta = (p: number) => (p < 0.35 ? saiCubica(p / 0.35) : 1 - entraSaiSeno((p - 0.35) / 0.65));
+/** Um quadro, no tempo da coreografia (a volta corre a ~0,6 da velocidade) */
+const QUADRO = 0.012;
 
 /** Profundidade de cada pote (só para a ordem de desenho e um pouco de
  *  paralaxe; o tamanho na tela já desconta a profundidade) */
 const PROFUNDIDADE = [0, 26, -12, 18];
-/** O flutuar de cada um: voltas inteiras por volta (o laço emenda) e fase */
+/** O tremor sutil de cada um sobre a água: voltas inteiras por volta (o
+ *  laço emenda) e fase; amplitude de 1,6 unidades (ver o cabeçalho) */
 const BOIA = [
   { f: 1, fase: 0.2 },
   { f: 2, fase: 1.4 },
@@ -203,23 +223,27 @@ export function criarVitrine(palco: Palco): Coreografia {
 
   // ---------------------------------------------------------------- o tempo
 
-  /** A ola que está passando pelo pote i no tempo corrido T, se houver:
-   *  progresso (0 a 1) e sentido (1 da esquerda, -1 da direita) */
+  /** A ola que está passando pelo pote i no tempo corrido T, se houver: o
+   *  progresso (0 a 1). Sempre da esquerda para a direita: nasce onde está
+   *  o letreiro, que é a causa dela */
   function ola(i: number, T: number) {
     const k = Math.floor((T - inicioOla(0)) / VEZ);
     for (const j of [k, k - 1]) {
       if (j < 0) continue;
-      const sentido = j % 2 === 0 ? 1 : -1;
-      const ordem = sentido > 0 ? i : n - 1 - i;
-      const ini = inicioOla(j) + ordem * OLA_ATRASO;
+      const ini = inicioOla(j) + atrasoNaOla(i);
       const p = trecho(T, ini, ini + OLA_DURA);
-      if (p > 0 && p < 1) return { p, sentido };
+      if (p > 0 && p < 1) return { p };
     }
     return null;
   }
 
+  /** Quando cada pote começa a subir na entrada: vãos que encolhem (x0,84) */
+  const INICIO_SUBIDA = [0, 1, 2, 3].map((i) => 0.18 + (0.09 * (1 - 0.84 ** i)) / 0.16);
+  /** Quanto dura a subida: os potes altos (pesados) levam mais, os baixos estalam */
+  const duraSubida = (i: number) => (palco.potes[i].altura >= 170 ? 0.62 : 0.5);
   /** Quanto o pote i já subiu na entrada (0 escondido sob o fio, 1 no lugar) */
-  const subida = (i: number, t: number, laco: number) => (laco > 0 ? 1 : saiQuinta(trecho(t, 0.18 + i * 0.09, 0.8 + i * 0.09)));
+  const subida = (i: number, t: number, laco: number) =>
+    laco > 0 ? 1 : saiQuinta(trecho(t, INICIO_SUBIDA[i], INICIO_SUBIDA[i] + duraSubida(i)));
 
   function camera(t: number, laco: number): Camera {
     const onda = (TAU * t) / DURACAO;
@@ -269,10 +293,9 @@ export function criarVitrine(palco: Palco): Coreografia {
     const k = Math.floor((T - inicioOla(0)) / VEZ);
     for (const j of [k, k - 1]) {
       if (j < 0) continue;
-      const q = trecho(T, inicioOla(j), inicioOla(j) + OLA_ATRASO * (n - 1) + OLA_DURA);
+      const q = trecho(T, inicioOla(j), inicioOla(j) + atrasoNaOla(n - 1) + OLA_DURA);
       if (q <= 0 || q >= 1) continue;
-      const ida = j % 2 === 0 ? q : 1 - q;
-      const x = mix(pa.x + (pb.x - pa.x) * 0.12, pb.x - (pb.x - pa.x) * 0.12, entraSaiSeno(ida));
+      const x = mix(pa.x + (pb.x - pa.x) * 0.12, pb.x - (pb.x - pa.x) * 0.12, entraSaiSeno(q));
       const rr = (a.alturaMax * 0.5 + 20) * pa.s;
       ctx.globalAlpha = 0.55 * Math.sin(Math.PI * q);
       palco.luz(palco.luzOuro, x - rr, pa.y - rr * 0.16, rr * 2, rr * 0.32);
@@ -281,35 +304,43 @@ export function criarVitrine(palco: Palco): Coreografia {
   }
 
   function desenharPotes(t: number, T: number, laco: number, cam: Camera, a: Arranjo) {
-    const onda = (TAU * t) / DURACAO;
+    /** Altura do pote i acima do espelho (unidades do palco): o tremor sutil
+     *  da água e o levante da ola. Função pura do tempo, para poder ser lida
+     *  também um quadro antes (o reflexo e a sombra assentam depois do pote) */
+    const alturaSobre = (i: number, tt: number, TT: number) => {
+      const onda = (TAU * tt) / DURACAO;
+      const boia = BOIA[i % BOIA.length];
+      const o = ola(i, TT);
+      return (1.6 * Math.sin(onda * boia.f + boia.fase) + 2.4 + 11 * (o ? levanta(o.p) : 0)) * a.escala;
+    };
     const ordem = a.vagas.map((v, i) => ({ v, i })).sort((p, q) => q.v.z - p.v.z);
     for (const { v, i } of ordem) {
       const sp = palco.potes[i];
       const sobe = subida(i, t, laco);
       if (sobe <= 0) continue;
       const o = ola(i, T);
-      const b = o ? Math.sin(Math.PI * o.p) ** 2 : 0;
-      // Altura acima do espelho: o flutuar e a ola (em unidades do palco,
-      // convertidas para o mundo pela profundidade)
-      const boia = BOIA[i % BOIA.length];
-      const flutua = (3.2 * Math.sin(onda * boia.f + boia.fase) + 3.2 + 11 * b) * a.escala;
+      const flutua = alturaSobre(i, t, T);
+      // Acompanhamento: o que o pote arrasta (reflexo, sombra) resolve um
+      // quadro depois dele. A onda do tremor é periódica (t negativo cai na
+      // volta anterior) e T é contínuo, então um quadro antes é sempre válido
+      const flutuaAntes = alturaSobre(i, t - QUADRO, T - QUADRO);
       const chao = palco.P(v.x, v.chao, v.z, cam);
       const pe = palco.P(v.x, v.chao - flutua / v.s0, v.z, cam);
+      const peAntes = palco.P(v.x, v.chao - flutuaAntes / v.s0, v.z, cam);
       const h = v.altura * pe.s;
-      // Giro aparente na ola: a largura encolhe um pouco e volta
-      const l = h * sp.proporcao * (1 - 0.06 * Math.sin(Math.PI * (o ? o.p : 0)));
+      const l = h * sp.proporcao;
       // Na entrada o pote sobe de trás do fio (escondido o que está abaixo)
       const afunda = (1 - sobe) * h * 1.06;
       const x = pe.x - l / 2;
       const y = pe.y - h + afunda;
       const ergueu = sobe * sobe;
 
-      // Sombra de contato e reflexo, que se afastam quando ele sobe
-      const solto = limitar(flutua / (16 * a.escala));
+      // Sombra de contato e reflexo, que se afastam quando ele sobe (um quadro atrás)
+      const solto = limitar(flutuaAntes / (16 * a.escala));
       ctx.globalAlpha = 0.5 * (1 - solto * 0.6) * ergueu;
       palco.luz(palco.sombra, chao.x - l * 0.62, chao.y - l * 0.08, l * 1.24, l * 0.16);
       ctx.globalAlpha = 0.85 * ergueu;
-      palco.pote(sp.reflexo, x, chao.y + (chao.y - pe.y), l, h * 0.42, true);
+      palco.pote(sp.reflexo, x, chao.y + (chao.y - peAntes.y), l, h * 0.42, true);
 
       const imagem = prontos[i] ?? sp.nitido;
       if (sobe < 1) {
@@ -348,7 +379,7 @@ export function criarVitrine(palco: Palco): Coreografia {
 
       // A faixa de luz da ola correndo pelo rótulo
       if (o) {
-        const centro = o.sentido > 0 ? mix(-0.35, 1.35, o.p) : mix(1.35, -0.35, o.p);
+        const centro = mix(-0.35, 1.35, o.p);
         palco.faixaDeLuz(sp.mascara, x, y, l, h, x + centro * l, l * 0.34, 0.55 * Math.sin(Math.PI * o.p), Infinity, true);
       }
     }

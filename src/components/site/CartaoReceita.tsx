@@ -42,6 +42,9 @@ const CICLO_BOTAO = 5200;
 const SAIDA = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
 const ENTRA_SAI = "cubic-bezier(0.65, 0, 0.35, 1)";
+/** Atraso do i-ésimo item de uma cascata cujos vãos encolhem (x0,86):
+ *  a onda acelera e o último estala (21/10/2026, doutrina de movimento) */
+const escalona = (inicio: number, vao: number, i: number) => inicio + (vao * (1 - 0.86 ** i)) / (1 - 0.86);
 // A voz de display das animações (a mesma do "Saúde" e do "Especialistas")
 const FONTES = JOGOS_DE_FONTES[FONTES_PADRAO];
 
@@ -73,18 +76,20 @@ export function CartaoReceita() {
       { duration: 900, easing: SAIDA },
     );
     // As letras brancas sobem de trás de uma máscara, uma depois da outra,
-    // girando de leve e assentando (14/10/2026, "melhore as transições das
-    // fontes": antes giravam em 3D saindo de um desfoque; a mesma
-    // tipografia cinética do banner da Saúde da Mulher)
+    // e assentam (14/10/2026, "melhore as transições das fontes": antes
+    // giravam em 3D saindo de um desfoque; a mesma tipografia cinética do
+    // banner da Saúde da Mulher). 21/10/2026, doutrina de movimento: sem o
+    // giro de 6° (uma segunda história junto do subir), opacidade quase
+    // binária (a máscara já recorta) e vãos que encolhem entre as letras
     todos<HTMLElement>("[data-letra]").forEach((l, i) => {
       entrar(
         l,
         [
-          { opacity: 0, transform: "translateY(112%) rotate(6deg)" },
-          { opacity: 1, offset: 0.3 },
+          { opacity: 0, transform: "translateY(112%)" },
+          { opacity: 1, offset: 0.05 },
           { opacity: 1, transform: "none" },
         ],
-        { duration: 1100, delay: 120 + i * 42, easing: EXPO },
+        { duration: 950, delay: escalona(120, 46, i), easing: EXPO },
       );
     });
     // As de ouro sobem inteiras, logo atrás, e depois um brilho corre por
@@ -94,15 +99,16 @@ export function CartaoReceita() {
         p,
         [
           { opacity: 0, transform: "translateY(110%)" },
-          { opacity: 1, offset: 0.35 },
+          { opacity: 1, offset: 0.05 },
           { opacity: 1, transform: "none" },
         ],
-        { duration: 1100, delay: 520 + i * 110, easing: EXPO },
+        { duration: 950, delay: escalona(500, 115, i), easing: EXPO },
       );
+      // O brilho corre linear: luz, não objeto (21/10/2026)
       entrar(
         p,
         [{ backgroundPosition: "135% 0, 0 0" }, { backgroundPosition: "-35% 0, 0 0" }],
-        { duration: 1300, delay: 1450 + i * 100, easing: ENTRA_SAI },
+        { duration: 1300, delay: 1450 + i * 100, easing: "linear" },
       );
     });
     // O traço de ouro se desenha embaixo de "da receita"
