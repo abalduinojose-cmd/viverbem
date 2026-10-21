@@ -25,6 +25,7 @@
 // número em ouro por um pino num quadrado gelo; os textos ficaram curtos e
 // diretos ("escrita leve, que converse com todos os públicos").
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { CartaoReceita } from "./CartaoReceita";
 import { CartaoLojas } from "./CartaoLojas";
 import { CartaoWhatsApp } from "./CartaoWhatsApp";
@@ -70,8 +71,15 @@ function SeloAberto({ estado }: { estado: EstadoLoja }) {
 // do horário". O estado ao vivo, a hora de hoje grande, a semana e as
 // linhas já dizem tudo; a régua só pesava.)
 
+// 21/10/2026: nas páginas de lojas e de contato o bloco não aparece (elas
+// já mostram as lojas, o WhatsApp e o horário; repetir tudo no pé era o
+// que deixava as duas páginas carregadas)
+const ROTAS_SEM_O_BLOCO = ["/lojas", "/contato"];
+
 export function FaleComAGente() {
   const estado = useEstadoLoja();
+  const rota = usePathname();
+  if (ROTAS_SEM_O_BLOCO.includes(rota)) return null;
   // A linha de horário de hoje e o detalhe ("fecha às 19h") em minúscula
   const linhaHoje = estado ? HORARIOS.find((l) => l.dias.includes(estado.dia)) : undefined;
   const detalheHoje = estado ? estado.detalhe.charAt(0).toLowerCase() + estado.detalhe.slice(1) : "";

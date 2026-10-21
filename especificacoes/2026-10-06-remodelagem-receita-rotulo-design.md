@@ -1,5 +1,40 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 84 (21/10/2026): páginas Lojas e Contato mais modernas e clean, cada coisa uma vez só. IMPLEMENTADO, conferido no localhost (1366 e 390) e PUBLICADO no 38º push a pedido ("atualize o github").**
+> Pedido: "melhore a parte das lojas, deixe mais moderna e clean; melhore
+> a parte dos contatos; atualize o github".
+> - Lojas (lojas/page.tsx): a lista com o mapa do Google embutido ao lado
+>   (LojasInterativas, apagado) saiu: pesava, abria em branco e deixava a
+>   página em três blocos parecidos. Entraram TRÊS CARTÕES lado a lado
+>   (CartaoLoja), cada um com o MAPA DA PRÓPRIA REGIÃO (MapaLoja: seis
+>   peças do OpenStreetMap no zoom de rua, posicionadas em volta do ponto
+>   da loja por conta feita no servidor, sem script e sem chave; crédito
+>   "© OpenStreetMap" no canto), o pino da marca, o número em ouro numa
+>   pílula branca, o bairro grande, o endereço, o telefone fixo (Centro) e
+>   as ações "Como chegar" (Google Maps) e WhatsApp (mensagem já citando a
+>   loja). O "Aberto agora · fecha às 19h" aparece UMA vez, no cabeçalho
+>   da seção (SeloAoVivo), porque o horário é o mesmo nas três. A fachada
+>   ficou um pouco mais baixa (2,6:1 no computador). As coordenadas das
+>   lojas (lat/lon) foram para UNIDADES em lib/tipos.ts (tipo `Unidade`).
+> - Contato (contato/page.tsx): abertura igual (WhatsApp verde + receita +
+>   horário ao vivo); o formulário continua e, ao lado, UM cartão "outros
+>   canais" (WhatsApp, Instagram e o telefone fixo do Centro, cada um numa
+>   linha com ícone, número e seta; o telefone abre em tel:) e o convite da
+>   receita em azul-noite com os três passos em números de ouro e o botão
+>   branco. No fim, as três lojas nos mesmos cartões com mapa (compactos) e
+>   o link "Fachada, horário e como chegar" para /lojas. O botão "Enviar
+>   pelo WhatsApp" do formulário não quebra mais em duas linhas na coluna
+>   mais estreita (nowrap). Largura da página 6xl como o resto do site.
+> - "Fale com a gente" NÃO aparece em /lojas nem em /contato
+>   (FaleComAGente lê a rota com usePathname e devolve nulo): nas duas o
+>   bloco repetia as lojas, o WhatsApp e o horário que a própria página já
+>   mostra. A página das lojas caiu de 3788 para 2472 px e a de contato de
+>   3324 para 2585 px no computador, sem perder informação.
+> - Conferido com puppeteer: 3 mapas por página com as 18 peças
+>   carregadas, selo ao vivo "Aberto agora · fecha às 19h", sem erros de
+>   console; tsc e eslint limpos.
+
+
 > **ADENDO 83 (21/10/2026): aviso de cookies no padrão de barra, busca ao vivo no cabeçalho, links do cabeçalho e do rodapé acertados e a página Nossa história em cartões. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
 > Pedido: "melhore o cookies deixe mais moderno e padrão; na parte o que
 > você procura, quero que ative a pesquisa quando eu colocar uma letra ou

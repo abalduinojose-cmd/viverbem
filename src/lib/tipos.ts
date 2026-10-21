@@ -123,21 +123,36 @@ export const ANOS_TRADICAO = 20;
 // As 3 lojas, conforme o perfil de cada uma no Google. Ficam aqui
 // porque o rodapé, a página Sobre e a retirada no carrinho usam a
 // mesma lista — se abrir uma loja nova, muda só neste ponto.
-export const UNIDADES = [
+// (lat/lon: onde cada loja fica, para os mapas pequenos das páginas de
+// lojas e de contato; os mesmos pontos do mapa do "Fale com a gente")
+export interface Unidade {
+  bairro: string;
+  endereco: string;
+  telefone: string | null;
+  lat: number;
+  lon: number;
+}
+export const UNIDADES: Unidade[] = [
   {
     bairro: "Centro",
     endereco: "Rua Dom Pedro Segundo, 31, Loja 37",
     telefone: "(24) 2242-3621",
+    lat: -22.5092,
+    lon: -43.1772,
   },
   {
     bairro: "Corrêas",
     endereco: "Rua Dr. Agostinho Goulão, 22",
     telefone: null,
+    lat: -22.4454,
+    lon: -43.1354,
   },
   {
     bairro: "Posse",
     endereco: "Estrada União e Indústria, 33.383",
     telefone: null,
+    lat: -22.2521,
+    lon: -43.0737,
   },
 ];
 
