@@ -29,7 +29,7 @@ export type FotoMarco = { ano: string; src: string; alt: string; largura: number
 // se amontoavam no fim) e a galeria termina com o 2017 aceso.
 const LINHA_LEITURA = 0.28;
 
-export function LinhaDoTempo({ marcos, foto }: { marcos: Marco[]; foto?: FotoMarco }) {
+export function LinhaDoTempo({ marcos, foto, apenasVertical = false }: { marcos: Marco[]; foto?: FotoMarco; apenasVertical?: boolean }) {
   const raiz = useRef<HTMLDivElement>(null);
   const pista = useRef<HTMLDivElement>(null);
   const palco = useRef<HTMLDivElement>(null);
@@ -72,7 +72,7 @@ export function LinhaDoTempo({ marcos, foto }: { marcos: Marco[]; foto?: FotoMar
 
       // O horizontal precisa de tela larga e de a faixa caber abaixo do cabeçalho
       let horizontal = false;
-      if (largo.matches) {
+      if (largo.matches && !apenasVertical) {
         r.dataset.modo = "horizontal";
         const topoPreso = parseFloat(getComputedStyle(pa).top) || 0;
         horizontal = co.offsetHeight + 24 <= window.innerHeight - topoPreso;
@@ -155,7 +155,7 @@ export function LinhaDoTempo({ marcos, foto }: { marcos: Marco[]; foto?: FotoMar
       window.removeEventListener("resize", aoMudar);
       largo.removeEventListener("change", aoMudar);
     };
-  }, []);
+  }, [apenasVertical]);
 
   return (
     <div ref={raiz} data-modo="vertical" className="linha-tempo">

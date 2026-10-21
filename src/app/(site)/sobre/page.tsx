@@ -30,6 +30,12 @@
 //
 // Sistema "Branco, azul e ouro" (06/10/2026): título em navy com a
 // palavra-chave em ouro, fios em vez de caixas, uma folha escura só.
+//
+// 21/10/2026 ("modernize toda a página nossa história"): a barra de
+// leitura no alto saiu (o usuário tirou a mesma linha da home em 14/10);
+// no computador a galeria presa da evolução deu lugar a quatro cartões
+// lado a lado ligados por um fio de ouro, com o "Hoje" em azul-noite
+// (MarcosEmCartoes); até o tablet a lista vertical com o trilho continua.
 import type { Metadata } from "next";
 import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
@@ -37,11 +43,11 @@ import { obterAvaliacoes } from "@/lib/catalogo";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { ANOS_TRADICAO, UNIDADES } from "@/lib/tipos";
-import { ProgressoLeitura } from "@/components/site/historia/ProgressoLeitura";
 import { FotoParalaxe } from "@/components/site/historia/FotoParalaxe";
 import { NumeroRolante } from "@/components/site/historia/NumeroRolante";
 import { TextoRevelado } from "@/components/site/historia/TextoRevelado";
 import { LinhaDoTempo } from "@/components/site/historia/LinhaDoTempo";
+import { MarcosEmCartoes } from "@/components/site/historia/MarcosEmCartoes";
 import { CapituloVinteAnos } from "@/components/site/historia/CapituloVinteAnos";
 
 export const dynamic = "force-dynamic";
@@ -78,6 +84,14 @@ const MARCOS = [
       "Três lojas, a mesma equipe de farmacêuticos e o pedido pela receita também pelo site, com Delivery em Petrópolis e Região.",
   },
 ];
+
+const FOTO_2006 = {
+  ano: "2006",
+  src: "/fotos/laboratorio.webp",
+  alt: "Técnica no laboratório de manipulação da Viver Bem",
+  largura: 576,
+  altura: 720,
+};
 
 const NUMEROS = [
   { valor: "2006", rotulo: "o começo, na Posse" },
@@ -127,9 +141,6 @@ export default async function PaginaSobre() {
 
   return (
     <main className="flex-1">
-      {/* A barra de leitura: enche até o fim do capítulo 04 */}
-      <ProgressoLeitura ateId="futuro" />
-
       {/* ---------- Abertura ---------- */}
       <section id="historia" aria-labelledby="titulo-historia" className={`halo-marca px-5 md:px-8 pt-8 md:pt-12 pb-10 md:pb-14 ${ANCORA}`}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
@@ -211,16 +222,13 @@ export default async function PaginaSobre() {
           </p>
         </div>
         <div className="mt-[clamp(2.5rem,1.5rem+3vw,4.5rem)]">
-          <LinhaDoTempo
-            marcos={MARCOS}
-            foto={{
-              ano: "2006",
-              src: "/fotos/laboratorio.webp",
-              alt: "Técnica no laboratório de manipulação da Viver Bem",
-              largura: 576,
-              altura: 720,
-            }}
-          />
+          {/* Computador: os cartões lado a lado; até o tablet: a lista com o trilho */}
+          <div className="hidden lg:block max-w-6xl mx-auto px-5 md:px-8">
+            <MarcosEmCartoes marcos={MARCOS} foto={FOTO_2006} />
+          </div>
+          <div className="lg:hidden">
+            <LinhaDoTempo marcos={MARCOS} foto={FOTO_2006} apenasVertical />
+          </div>
         </div>
       </section>
 

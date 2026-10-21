@@ -41,7 +41,7 @@ const NAVEGACAO = [
   { href: "/", rotulo: "Início" },
   { href: "/produtos", rotulo: "Produtos" },
   { href: "/sobre", rotulo: "A Viver Bem" },
-  { href: "/sobre#como-funciona", rotulo: "Como funciona" },
+  { href: "/como-funciona", rotulo: "Como funciona" },
   { href: "/lojas", rotulo: "Lojas" },
   { href: "/contato", rotulo: "Contato" },
 ];

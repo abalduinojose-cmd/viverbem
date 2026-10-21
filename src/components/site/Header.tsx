@@ -20,7 +20,6 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import Form from "next/form";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
@@ -28,6 +27,8 @@ import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho, Chevron } from "./icones";
 import { useEstadoLoja } from "./HorarioAtendimento";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { BuscaAoVivo } from "./BuscaAoVivo";
+import type { ItemDoIndice } from "@/lib/indiceBusca";
 import { IconeMoto } from "./IconeMoto";
 import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 
@@ -103,7 +104,7 @@ const VANTAGENS = [
 // alto, e Como funciona e as avaliações têm página própria.
 const MENU_SOBRE = [
   { href: "/produtos", rotulo: "Produtos" },
-  { href: "/sobre#historia", rotulo: "Nossa história" },
+  { href: "/sobre", rotulo: "Nossa história" },
   { href: "/como-funciona", rotulo: "Como funciona" },
   { href: "/avaliacoes", rotulo: "O que dizem os clientes" },
 ];
@@ -117,55 +118,15 @@ function IconeLupa() {
   );
 }
 
-// Na vitrine estática (GitHub Pages) a busca carrega a página inteira, e o
-// catálogo lê o termo no endereço; com servidor, a navegação é instantânea
-const EH_DEMO = process.env.NEXT_PUBLIC_DEMO === "1";
-
-// Busca: vai para /produtos?busca=termo, que já abre filtrado.
-//
-// 14/10/2026 ("deixe o botão de pesquisa funcionando"): a lupa era só um
-// desenho e não havia botão para clicar; só o Enter buscava. Agora a lupa
-// e o botão "Buscar" (à direita, a partir do tablet) enviam a busca; o
-// campo vazio leva ao catálogo inteiro em vez do aviso de campo
-// obrigatório; e na página de resultados o campo mostra o termo buscado.
+// A busca é ao vivo (21/10/2026): o cabeçalho recebe do layout o índice
+// dos produtos e a lista de resultados aparece a cada letra (BuscaAoVivo).
+// O termo que veio no endereço (?busca=) preenche o campo na página de
+// resultados.
 const semAssinatura = () => () => {};
 const lerTermo = () => new URLSearchParams(window.location.search).get("busca") ?? "";
-function CampoBusca({ aoBuscar, autoFoco = false }: { aoBuscar?: () => void; autoFoco?: boolean }) {
-  const Formulario = EH_DEMO ? "form" : Form;
+function CampoBusca({ indice, aoBuscar, autoFoco = false }: { indice: ItemDoIndice[]; aoBuscar?: () => void; autoFoco?: boolean }) {
   const termo = useSyncExternalStore(semAssinatura, lerTermo, () => "");
-  return (
-    <Formulario
-      action={EH_DEMO ? asset("/produtos/") : "/produtos"}
-      onSubmit={aoBuscar}
-      role="search"
-      className="group/busca relative w-full"
-    >
-      <button
-        type="submit"
-        aria-label="Buscar"
-        className="absolute left-1.5 top-1/2 -translate-y-1/2 size-9 rounded-full flex items-center justify-center text-cinza transition-colors hover:text-navy hover:bg-white focus-visible:text-navy"
-      >
-        <IconeLupa />
-      </button>
-      <input
-        key={termo}
-        type="search"
-        name="busca"
-        defaultValue={termo}
-        autoFocus={autoFoco}
-        maxLength={60}
-        placeholder="O que você procura? Nome ou ativo"
-        aria-label="Buscar no site"
-        className="w-full bg-gelo/70 border border-fio rounded-full pl-12 pr-4 md:pr-28 h-12 text-[0.95rem] text-grafite placeholder:text-grafite-suave focus:outline-none focus:ring-2 focus:ring-tinta/30 focus:border-tinta/40 focus:bg-white transition-colors"
-      />
-      <button
-        type="submit"
-        className="hidden md:inline-flex absolute right-1.5 top-1/2 -translate-y-1/2 h-9 items-center gap-1.5 rounded-full bg-navy px-4 text-[0.82rem] font-semibold text-white shadow-[0_8px_16px_-10px_rgba(13,35,64,0.6)] transition-colors hover:bg-tinta active:scale-[0.97]"
-      >
-        Buscar
-      </button>
-    </Formulario>
-  );
+  return <BuscaAoVivo key={termo} indice={indice} termoInicial={termo} autoFoco={autoFoco} aoFechar={aoBuscar} />;
 }
 
 // Pílula da fileira de categorias: a ativa em navy, as outras em gelo.
@@ -206,7 +167,7 @@ function SeloAbertoFaixa() {
   );
 }
 
-export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
+export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]; indice?: ItemDoIndice[] }) {
   const pathname = usePathname();
   // A barra das categorias centraliza a ativa (celular; no computador cabem todas)
   const barraCategorias = useRef<HTMLDivElement>(null);
@@ -344,7 +305,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             sobrava um vão de 381px até os botões, a 1440 e a 1680. Agora
             ela ocupa o que sobra entre a logo e as ações. */}
         <div className="hidden md:block flex-1 min-w-0">
-          <CampoBusca />
+          <CampoBusca indice={indice} />
         </div>
 
         <div className="ml-auto flex items-center gap-2 md:gap-3">
@@ -419,7 +380,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
             </Link>
           ))}
           <Link
-            href="/sobre#como-funciona"
+            href="/como-funciona"
             className="group ml-auto shrink-0 hidden lg:inline-flex items-center gap-2 h-11 pl-4 pr-1.5 rounded-full border border-fio bg-white text-navy text-[0.82rem] font-medium whitespace-nowrap transition-colors hover:border-ouro/50"
           >
             Como funciona
@@ -435,7 +396,7 @@ export function Header({ categorias }: { categorias: CategoriaDTO[] }) {
       {/* Busca aberta, logo abaixo (celular) */}
       {buscaAberta && (
         <div className="md:hidden border-t border-fio bg-white px-5 py-3 animar-surgir">
-          <CampoBusca autoFoco aoBuscar={() => setBuscaAberta(false)} />
+          <CampoBusca indice={indice} autoFoco aoBuscar={() => setBuscaAberta(false)} />
         </div>
       )}
 

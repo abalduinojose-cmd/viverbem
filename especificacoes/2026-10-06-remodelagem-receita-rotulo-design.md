@@ -1,5 +1,56 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 83 (21/10/2026): aviso de cookies no padrão de barra, busca ao vivo no cabeçalho, links do cabeçalho e do rodapé acertados e a página Nossa história em cartões. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
+> Pedido: "melhore o cookies deixe mais moderno e padrão; na parte o que
+> você procura, quero que ative a pesquisa quando eu colocar uma letra ou
+> palavra; acerte os botões (Contato, Lojas, O que dizem os clientes, Como
+> funciona); modernize toda a página Nossa história".
+> - Cookies (ConsentimentoCookies.tsx): em vez do cartão flutuante no canto,
+>   uma BARRA no pé da tela, de borda a borda, em azul-noite (banner-noite
+>   + malha + fio de ouro no topo): ícone de cookie num ladrilho de vidro,
+>   título "Este site usa cookies", o texto com o link para a política e os
+>   dois botões à direita ("Só os necessários" em vidro, "Aceitar todos"
+>   em branco). No celular vira uma folha de largura inteira com os cantos
+>   de cima arredondados e os botões lado a lado. Entra deslizando de baixo
+>   (WAAPI, 560 ms, roda com movimento reduzido). A lógica (localStorage
+>   `vb-cookies`, Consent Mode do GA4, reabrir pelo rodapé) é a mesma.
+> - Busca ao vivo (lib/indiceBusca.ts + BuscaAoVivo.tsx): o layout do site
+>   monta um ÍNDICE enxuto dos produtos (nome, slug, área, foto e o texto
+>   comparável sem acento: nome, descrição, área, composição, indicações)
+>   e entrega ao cabeçalho; a cada letra, uma lista com até seis produtos
+>   aparece embaixo do campo (foto, nome com o trecho em negrito, área) e a
+>   linha "Ver todos os N resultados" leva a /produtos?busca=. Nada é
+>   pedido ao servidor enquanto se digita, então funciona igual na prévia
+>   estática. Palavra de 1 ou 2 letras vale como começo de palavra ("vi"
+>   acha Vitamina); de 3 em diante, contém. Ordem: nome que começa com a
+>   busca, nome que contém, resto. Setas andam pela lista, Enter abre o
+>   produto marcado (ou vai aos resultados sem nada marcado), Esc e clique
+>   fora fecham. Combobox acessível (aria-expanded, activedescendant,
+>   listbox/option). No celular a busca da cápsula usa a mesma lista e fecha
+>   ao escolher. O `next/form` saiu do cabeçalho (o formulário é client).
+> - Links: o chip "Como funciona" da linha de categorias e o "Como funciona"
+>   do rodapé apontavam para a âncora da home (#como-funciona) e passam a ir
+>   à página /como-funciona; "Nossa história" do menu A Viver Bem vai a
+>   /sobre. Contato (/contato), Lojas (/lojas) e O que dizem os clientes
+>   (/#avaliacoes) já estavam certos e foram conferidos.
+> - Nossa história (sobre/page.tsx): saiu a barra de progresso de leitura
+>   (ProgressoLeitura, nunca mais barra) e, no computador, a galeria presa
+>   da evolução que andava de lado (duas telas de rolagem, marcos do fim
+>   apagados) deu lugar a MarcosEmCartoes: quatro cartões lado a lado
+>   ligados por um fio de ouro com um ponto em cada ano (2006, 2012, 2017
+>   e Hoje em azul-noite), ano em numero-tinta, foto do laboratório no
+>   2006, entrada escalonada ao rolar. Até o tablet a LinhaDoTempo vertical
+>   continua (prop `apenasVertical`). A página caiu de 8332 para 7375 px
+>   de altura no computador.
+> - Conferido com puppeteer (busca86.cjs/busca86b.cjs/confere86.cjs):
+>   "vit" lista 6 + "Ver todos os 15 resultados"; Enter no 1º marcado abre
+>   /produto/vitamina-d3; Enter sem marcar vai a /produtos?busca=omega com
+>   "2 resultados para"; no celular "cre" lista 6 e o toque abre o produto
+>   e fecha a busca. tsc e eslint limpos. Lição: a primeira navegação de
+>   uma rota ainda não compilada pelo next dev demora mais que o
+>   waitForFunction do teste; aquecer as rotas com curl antes.
+
+
 > **ADENDO 82 (21/10/2026): Como funciona v10, "a trilha e o palco", pela doutrina de movimento; rodapé com a navegação em pílula e as páginas legais centradas. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
 > Pedido (com o rodapé e a seção selecionados): "modernize essa parte e
 > quero centralizado na versão mobile e desktop; modernize levemente esses
