@@ -120,7 +120,7 @@ export function FormularioContato() {
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2.5 h-13 px-6 rounded-full bg-[#1DA851] text-white text-[0.98rem] font-semibold shadow-[0_14px_28px_-16px_rgba(29,168,81,0.8)] transition-colors hover:bg-[#178a43] active:scale-[0.98]"
+          className="inline-flex items-center justify-center gap-2.5 h-13 px-6 rounded-full bg-[#128C4B] text-white text-[0.98rem] font-semibold shadow-[0_14px_28px_-16px_rgba(18,140,75,0.8)] transition-colors hover:bg-[#0f7a40] active:scale-[0.98]"
         >
           <IconeWhatsApp tamanho={18} />
           Enviar pelo WhatsApp

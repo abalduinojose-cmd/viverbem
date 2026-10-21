@@ -24,22 +24,36 @@ function slugificar(nome) {
     .replace(/^-+|-+$/g, "");
 }
 
+// As senhas iniciais (21/10/2026): vêm de SEED_ADMIN_SENHA e
+// SEED_OPERADOR_SENHA. Sem a variável, em desenvolvimento valem as de
+// sempre; em produção (NODE_ENV=production ou na Vercel) sai uma senha
+// aleatória, mostrada UMA vez no log do build, para a senha de exemplo do
+// repositório público nunca virar a senha do painel de verdade.
+const emProducao = process.env.NODE_ENV === "production" || Boolean(process.env.VERCEL);
+function senhaInicial(variavel, padraoLocal) {
+  const definida = process.env[variavel];
+  if (definida && definida.length >= 8) return { senha: definida, origem: "variável " + variavel };
+  if (!emProducao) return { senha: padraoLocal, origem: "padrão local" };
+  const aleatoria = require("crypto").randomBytes(9).toString("base64url");
+  return { senha: aleatoria, origem: "gerada agora, ANOTE e troque no primeiro acesso" };
+}
+
 async function main() {
   // ---------- Usuário admin (não recria se já existir) ----------
   const adminExiste = await db.usuario.findUnique({
     where: { email: "admin@viverbem.com.br" },
   });
   if (!adminExiste) {
+    const { senha, origem } = senhaInicial("SEED_ADMIN_SENHA", "viverbem123");
     await db.usuario.create({
       data: {
         nome: "Administrador",
         email: "admin@viverbem.com.br",
-        // Senha inicial: viverbem123 (troque depois!)
-        senhaHash: bcrypt.hashSync("viverbem123", 10),
+        senhaHash: bcrypt.hashSync(senha, 10),
         papel: "ADMIN",
       },
     });
-    console.log("Usuário admin criado: admin@viverbem.com.br / viverbem123");
+    console.log(`Usuário admin criado: admin@viverbem.com.br / ${senha} (${origem})`);
   }
 
   // ---------- Usuário colaborador de exemplo (papel OPERADOR: só o catálogo e o site) ----------
@@ -47,16 +61,16 @@ async function main() {
     where: { email: "operador@viverbem.com.br" },
   });
   if (!operadorExiste) {
+    const { senha, origem } = senhaInicial("SEED_OPERADOR_SENHA", "operador123");
     await db.usuario.create({
       data: {
         nome: "Colaborador da Loja",
         email: "operador@viverbem.com.br",
-        // Senha inicial: operador123 (troque depois!)
-        senhaHash: bcrypt.hashSync("operador123", 10),
+        senhaHash: bcrypt.hashSync(senha, 10),
         papel: "OPERADOR",
       },
     });
-    console.log("Usuário colaborador criado: operador@viverbem.com.br / operador123");
+    console.log(`Usuário colaborador criado: operador@viverbem.com.br / ${senha} (${origem})`);
   }
 
   // ---------- Avaliacoes reais do Google ----------

@@ -32,6 +32,7 @@ const NOTA = AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDig
 export const metadata: Metadata = {
   title: "Avaliações · Manipulação Viver Bem",
   description: `Nota ${NOTA} no Google, com ${AVALIACOES_GOOGLE_TOTAL} avaliações. Veja o que os clientes dizem sobre a Manipulação Viver Bem, em Petrópolis.`,
+  alternates: { canonical: "/avaliacoes" },
 };
 
 // Logotipo "G" do Google

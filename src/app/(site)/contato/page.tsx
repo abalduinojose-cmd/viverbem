@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   title: "Contatos · Manipulação Viver Bem",
   description:
     "Fale com a Manipulação Viver Bem pelo WhatsApp e visite as nossas 3 unidades em Petrópolis: Centro, Corrêas e Posse.",
+  alternates: { canonical: "/contato" },
 };
 
 // A conversa direta, sem o formulário: a mensagem já vai pronta

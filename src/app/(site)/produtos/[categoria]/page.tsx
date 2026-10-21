@@ -1,6 +1,8 @@
 // Página de uma categoria (ex.: /produtos/dermatologia-estetica). É o
 // destino do menu "Categorias" e dos cartões da home.
 import { notFound } from "next/navigation";
+import { dadosDeMigalhas } from "@/lib/seo";
+import { DadosEstruturados } from "@/components/site/DadosEstruturados";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
 import { infoCategoria } from "@/lib/categorias";
@@ -27,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${atual.nome} · Manipulação Viver Bem`,
     description: infoCategoria(atual.slug).descricao,
+    alternates: { canonical: `/produtos/${atual.slug}` },
   };
 }
 
@@ -38,11 +41,14 @@ export default async function PaginaCategoria({ params }: Props) {
   const contagens = contarPorArea(produtos);
 
   return (
+    <>
+      <DadosEstruturados dados={dadosDeMigalhas([{ nome: "Produtos", caminho: "/produtos" }, { nome: atual.nome, caminho: `/produtos/${atual.slug}` }])} />
     <CatalogoClient
       categorias={categorias}
       produtos={produtos.filter((p) => p.categoriaId === atual.id)}
       categoriaAtiva={atual}
       contagens={contagens}
     />
+    </>
   );
 }

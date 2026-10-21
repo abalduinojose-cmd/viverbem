@@ -26,8 +26,16 @@ import {
   INSTAGRAM_URL,
   WHATSAPP_NUMERO,
 } from "@/lib/tipos";
+import { BotaoCookies } from "./BotaoCookies";
 
 const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}`;
+
+// As páginas legais e a escolha de cookies, na linha final (21/10/2026)
+const LEGAIS = [
+  { href: "/privacidade", rotulo: "Privacidade" },
+  { href: "/termos", rotulo: "Termos de uso" },
+  { href: "/reembolso", rotulo: "Trocas e reembolso" },
+];
 
 const NAVEGACAO = [
   { href: "/", rotulo: "Início" },
@@ -161,8 +169,22 @@ export function Footer() {
         {/* (O aviso legal em parágrafo saiu em 11/10/2026, a pedido, "por
             enquanto"; a linha de confiança do Como funciona segue no site) */}
 
+        {/* As páginas legais e os cookies, discretos */}
+        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-1 text-[0.74rem] text-white/50">
+          {LEGAIS.map((l) => (
+            <li key={l.href}>
+              <Link href={l.href} className="inline-flex items-center min-h-10 rounded-full px-3 transition-colors hover:text-white">
+                {l.rotulo}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <BotaoCookies className="inline-flex items-center min-h-10 rounded-full px-3 transition-colors hover:text-white" />
+          </li>
+        </ul>
+
         {/* Linha final, com pontos de ouro no lugar dos separadores */}
-        <div className="mt-10 w-full border-t border-white/10 pt-7">
+        <div className="mt-6 w-full border-t border-white/10 pt-7">
           <div className="flex flex-col items-center gap-2 text-[0.78rem] text-white/55 sm:flex-row sm:justify-between">
             <p>
               © {ano} Manipulação Viver Bem

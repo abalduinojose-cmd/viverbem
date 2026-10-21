@@ -34,6 +34,31 @@ const nextConfig: NextConfig = {
       }
     : {}),
 
+  // Cabeçalhos de segurança (21/10/2026). O export estático do Pages não
+  // tem servidor, então só valem na hospedagem de verdade: o painel e o
+  // site não abrem dentro de outro site, o navegador não "adivinha" o tipo
+  // dos arquivos, e câmera, microfone e localização ficam desligados.
+  ...(ehDemo
+    ? {}
+    : {
+        async headers() {
+          const comuns = [
+            { key: "X-Content-Type-Options", value: "nosniff" },
+            { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+            { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+            { key: "X-Frame-Options", value: "DENY" },
+            { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          ];
+          return [
+            { source: "/(.*)", headers: comuns },
+            {
+              source: "/admin/:path*",
+              headers: [...comuns, { key: "Cache-Control", value: "no-store" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }],
+            },
+          ];
+        },
+      }),
+
   env: {
     // Usado pelos <img> e <video> comuns para montar o caminho certo
     NEXT_PUBLIC_BASE_PATH: basePath,

@@ -983,24 +983,6 @@ summary::-webkit-details-marker {
   scroll-timeline-name: --passos;
   scroll-timeline-axis: x;
 }
-.passos-barra {
-  transform-origin: 0% 50%;
-  transform: scaleX(0.25);
-}
-@supports (animation-timeline: scroll()) {
-  .passos-barra {
-    animation: passos-anda linear both;
-    animation-timeline: --passos;
-  }
-}
-@keyframes passos-anda {
-  from {
-    transform: scaleX(0.25);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
 @keyframes trilha-cresce-x {
   from {
     transform: scaleX(0);
@@ -1476,4 +1458,36 @@ summary::-webkit-details-marker {
   .segurar-para-ver video {
     -webkit-user-drag: none;
   }
+}
+
+/* ---------- As páginas legais (privacidade, termos, reembolso), 21/10/2026 ---------- */
+.texto-legal ul,
+.texto-legal ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-left: 1.35rem;
+}
+.texto-legal ul {
+  list-style: disc;
+}
+.texto-legal ol {
+  list-style: decimal;
+}
+.texto-legal li::marker {
+  color: var(--color-ouro-escuro);
+}
+.texto-legal a {
+  color: var(--color-tinta);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(28, 105, 181, 0.35);
+  text-underline-offset: 0.18em;
+}
+.texto-legal a:hover {
+  text-decoration-color: currentColor;
+}
+.texto-legal strong {
+  color: var(--color-navy);
+  font-weight: 600;
 }

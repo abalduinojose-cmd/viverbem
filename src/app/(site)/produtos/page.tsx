@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "O que manipulamos · Manipulação Viver Bem",
   description:
     "Fórmulas manipuladas a partir da receita, separadas por área. Envie a foto da prescrição pelo WhatsApp e retire numa das 3 lojas em Petrópolis ou receba em casa.",
+  alternates: { canonical: "/produtos" },
 };
 
 export default async function PaginaCatalogo({

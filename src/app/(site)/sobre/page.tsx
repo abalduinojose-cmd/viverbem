@@ -49,6 +49,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "A Viver Bem · Manipulação Viver Bem",
   description: `Desde 2006 em Petrópolis, ${ANOS_TRADICAO} anos de manipulação e homeopatia. Conheça a nossa história, como funciona o pedido pela receita e as ${UNIDADES.length} lojas.`,
+  alternates: { canonical: "/sobre" },
 };
 
 // Os marcos, na ordem. O último é o presente ("Hoje"), para a linha do

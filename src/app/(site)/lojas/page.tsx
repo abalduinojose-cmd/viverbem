@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   title: "Lojas · Manipulação Viver Bem",
   description:
     "As 3 lojas da Viver Bem em Petrópolis: Centro, Corrêas e Posse. Endereços, mapa, horário e como chegar.",
+  alternates: { canonical: "/lojas" },
 };
 
 export default function PaginaLojas() {

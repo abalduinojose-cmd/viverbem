@@ -34,7 +34,7 @@ npm run dev                      # sobe em http://localhost:3000
 - Painel: http://localhost:3000/admin
   - **Admin:** `admin@viverbem.com.br` / senha `viverbem123` (acesso total)
   - **Operador:** `operador@viverbem.com.br` / senha `operador123` (só cadastra/edita produtos e preços)
-  - **Troque as senhas em produção** (veja abaixo).
+  - **Em produção as senhas iniciais vêm de `SEED_ADMIN_SENHA` e `SEED_OPERADOR_SENHA`** (ou saem aleatórias no log do build). O passo a passo está em `PRODUCAO.md`.
 
 ### Logo oficial
 

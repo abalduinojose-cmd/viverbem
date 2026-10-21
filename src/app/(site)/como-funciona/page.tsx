@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "Como funciona · Manipulação Viver Bem",
   description:
     "Envie a foto da receita pelo WhatsApp, o farmacêutico confere e informa o valor e o prazo, a fórmula é preparada no laboratório e você retira numa das 3 lojas ou recebe pelo Delivery.",
+  alternates: { canonical: "/como-funciona" },
 };
 
 const NUMEROS = [

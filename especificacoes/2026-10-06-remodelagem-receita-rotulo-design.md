@@ -1,5 +1,53 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
+> Pedido: "faça os três (pendentes da análise) e mais: políticas de
+> privacidade, termos de serviço, política de reembolso, revise o Google
+> Analytics, faça o SEO do site e configure os cookies de consentimento".
+> - SEO (lib/seo.ts + DadosEstruturados): JSON-LD em todas as páginas com
+>   Organization (CNPJ, logo, Instagram e perfil do Google), WebSite com a
+>   busca (?busca=) e as três lojas como Pharmacy (endereço, telefone,
+>   coordenadas, horários; a nota 5,0/680 do Google no Centro). Produto:
+>   Product (oferta só com o preço no site) e migalhas; categoria:
+>   migalhas. Canonical em todas as páginas; imagem padrão de
+>   compartilhamento public/og.png (scripts/gerar-og.js, logo no ladrilho
+>   sobre o azul-noite) e cartão summary_large_image; sitemap com Como
+>   funciona, Avaliações e as páginas legais, com frequência e data.
+> - Páginas legais (/privacidade, /termos, /reembolso) na moldura
+>   PaginaLegal (título em duas vozes, sumário preso, seções numeradas,
+>   convite do WhatsApp) e os links no rodapé. Privacidade pela LGPD (o
+>   site só guarda nome, WhatsApp e o resumo do pedido; a receita vai pelo
+>   WhatsApp e não é guardada; cookies necessários x medição; prazos;
+>   direitos do art. 18). Termos: o site é pré-pedido, venda só depois da
+>   conferência do farmacêutico, manipulado só com receita (RDC 67/2007),
+>   foro de Petrópolis. Reembolso pelo CDC: industrializado com defeito
+>   (arts. 18/26), arrependimento de 7 dias na compra a distância (art.
+>   49), manipulado sem devolução por desistência (sob medida, não volta
+>   ao estoque) mas erro de preparo refeito ou devolvido. TEXTOS A SEREM
+>   LIDOS PELO FARMACÊUTICO RESPONSÁVEL antes de ir ao ar.
+> - Cookies: ConsentimentoCookies (cartão no canto, "Só os necessários" /
+>   "Aceitar", escolha em localStorage vb-cookies, reabre pelo link
+>   Cookies do rodapé via evento). Analytics: GA4 só com NEXT_PUBLIC_GA_ID,
+>   Modo de Consentimento v2 (tudo negado por padrão; analytics_storage
+>   concedido só com o aceite; anúncios sempre negados), IP anônimo, sem a
+>   busca no endereço. Hoje não existe propriedade do GA: o ID precisa ser
+>   criado pela farmácia e colocado na variável.
+> - Produção: cabeçalhos de segurança no next.config (nosniff, referrer,
+>   permissions, X-Frame-Options DENY e frame-ancestors 'none'; o painel
+>   com no-store e noindex), fora do export estático. As senhas iniciais
+>   do seed vêm de SEED_ADMIN_SENHA/SEED_OPERADOR_SENHA; em produção sem
+>   a variável sai uma senha aleatória no log do build (nunca mais a do
+>   repositório). .env.example documenta NEXT_PUBLIC_SITE_URL, GA, senhas
+>   e o Blob. PRODUCAO.md é o passo a passo (Vercel, Postgres, Blob,
+>   domínio, Search Console, GA4) e lembra a RDC 44/2009: falta o nome do
+>   farmacêutico responsável com CRF, AFE e licença no rodapé (dados a
+>   pedir à farmácia).
+> - Limpezas: Graficos.tsx (quatro gráficos sem uso) apagado; CSS da
+>   barra antiga do Como funciona removido; o botão verde do Contato de
+>   #1DA851 para #128C4B (contraste 4,6 com branco).
+> - Fora deste adendo: cena.ts tem uma alteração da mola (doutrina de
+>   movimento) feita por outra sessão em 21/10, deixada de fora do commit.
+
 > **ADENDO 79 (15/10/2026): segurança da rota de pedidos, home mais leve no celular e o fluxo de pedidos no painel. IMPLEMENTADO, testado no localhost e publicado no 36º push.**
 > Da análise geral do projeto (pedido "analise o projeto como um todo,
 > site e painel adm"), o usuário escolheu: "faça o 1, 2 e 4 e atualize o

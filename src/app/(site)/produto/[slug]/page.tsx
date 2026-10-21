@@ -22,6 +22,8 @@
 // selo "Receita conferida", o link "Tenho receita" e o parágrafo sobre a
 // receita no fim: isso fica na seção Como funciona. "Como pedir" em gelo.
 import { notFound } from "next/navigation";
+import { dadosDeMigalhas, dadosDoProduto } from "@/lib/seo";
+import { DadosEstruturados } from "@/components/site/DadosEstruturados";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
@@ -51,6 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: titulo,
     description: descricao,
+    alternates: { canonical: `/produto/${produto.slug}` },
     openGraph: {
       title: titulo,
       description: descricao,
@@ -179,6 +182,15 @@ export default async function PaginaProduto({ params }: Props) {
 
   return (
     <main className="flex-1">
+      {/* Para o Google: o produto e o caminho até ele (21/10/2026) */}
+      <DadosEstruturados dados={dadosDoProduto(produto)} />
+      <DadosEstruturados
+        dados={dadosDeMigalhas([
+          { nome: "Produtos", caminho: "/produtos" },
+          ...(produto.categoriaNome && produto.categoriaId ? [{ nome: produto.categoriaNome, caminho: `/produtos/${categorias.find((c) => c.id === produto.categoriaId)?.slug ?? ""}` }] : []),
+          { nome: produto.nome, caminho: `/produto/${produto.slug}` },
+        ])}
+      />
       {/* Trilha de navegação */}
       <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 md:px-8 pt-6">
         <nav className="flex items-center gap-1.5 text-sm text-cinza min-h-10" aria-label="Você está em">

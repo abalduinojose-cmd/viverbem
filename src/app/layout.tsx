@@ -21,7 +21,12 @@ export const metadata: Metadata = {
     siteName: "Manipulação Viver Bem",
     locale: "pt_BR",
     type: "website",
+    // A imagem padrão ao compartilhar (public/og.png, scripts/gerar-og.js);
+    // a página de produto troca pela foto dele
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Manipulação Viver Bem, Manipulação e Homeopatia em Petrópolis" }],
   },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

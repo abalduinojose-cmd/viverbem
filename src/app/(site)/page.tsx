@@ -17,6 +17,7 @@
 //     (lib/linhas.ts);
 //   - a dobra, a Saúde da Mulher, o banner de cada faixa e o da história
 //     usam a mídia enviada pelo painel (lib/banners.ts), senão o padrão.
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
 import { obterBanners, obterLinhasFotos, obterSecoesHome, obterSecoesOrdem } from "@/lib/configuracao";
@@ -38,6 +39,8 @@ import { SecaoSaudeMulher } from "@/components/site/BannerSaudeMulher";
 import { ROTEIROS } from "@/components/site/heroAnimado/roteiros";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // Quantas fotos reais uma área precisa ter para ganhar vitrine própria
 const MINIMO_PARA_VITRINE = 3;
