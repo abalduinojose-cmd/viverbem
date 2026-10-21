@@ -150,36 +150,40 @@ export function Footer() {
           })}
         </ul>
 
-        {/* Navegação numa pílula de vidro, centrada (21/10/2026, "modernize
-            levemente esses botões"): cada link acende em branco ao passar o
-            mouse, e no celular a pílula quebra em duas linhas */}
-        <nav aria-label="Links do rodapé" className="mt-10 w-full flex justify-center">
-          <ul className="inline-flex flex-wrap items-center justify-center gap-1 rounded-[1.5rem] sm:rounded-full bg-white/[0.05] p-1.5 ring-1 ring-inset ring-white/10 backdrop-blur-sm">
+        {/* Navegação em texto, centrada e com ar (21/10/2026, "mais clean":
+            a pílula de vidro saiu; o link acende em branco e ganha um fio
+            de ouro embaixo ao passar o mouse) */}
+        <nav aria-label="Links do rodapé" className="mt-10 w-full">
+          <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 sm:gap-x-9">
             {NAVEGACAO.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex items-center h-10 rounded-full px-4 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-white/70 transition-colors duration-300 hover:bg-white hover:text-navy"
+                  className="group inline-flex min-h-11 items-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/65 transition-colors duration-300 hover:text-white"
                 >
-                  {l.rotulo}
+                  <span className="relative py-1">
+                    {l.rotulo}
+                    <span aria-hidden="true" className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-[image:var(--ouro-degrade)] transition-transform duration-300 group-hover:scale-x-100" />
+                  </span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
 
-        {/* As páginas legais e os cookies, centrados e separados por pontos de ouro */}
-        <ul className="mt-5 flex flex-wrap items-center justify-center text-[0.76rem] text-white/55">
+        {/* As páginas legais e os cookies, centrados; os pontos de ouro só
+            a partir do tablet (no celular a linha quebra e os pontos sobravam) */}
+        <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[0.76rem] text-white/55 sm:gap-x-0">
           {LEGAIS.map((l, i) => (
             <li key={l.href} className="flex items-center">
-              {i > 0 && <Ponto />}
+              {i > 0 && <span className="hidden sm:inline-flex"><Ponto /></span>}
               <Link href={l.href} className="inline-flex items-center min-h-10 transition-colors hover:text-white">
                 {l.rotulo}
               </Link>
             </li>
           ))}
           <li className="flex items-center">
-            <Ponto />
+            <span className="hidden sm:inline-flex"><Ponto /></span>
             <BotaoCookies className="inline-flex items-center min-h-10 transition-colors hover:text-white" />
           </li>
         </ul>

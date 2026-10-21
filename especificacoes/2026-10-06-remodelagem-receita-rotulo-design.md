@@ -39,6 +39,15 @@
 >   "Cookies" órfão numa segunda linha no celular.
 > - A seção CSS .passos-escopo/.passos-faixa ficou sem uso (está no
 >   globals.css da outra sessão; apagar quando ela commitar).
+> - **DESFEITO no mesmo dia.** O usuário viu a décima ("não gostei, quero
+>   mais clean"), depois a décima primeira só com o emblema no anel
+>   ("não quero essa parte, volte a deixar o que está no github") e a
+>   seção VOLTOU À NONA VERSÃO publicada (cartões com o número em marca
+>   d'água, barra no pé e pontos no celular). Não propor trilha + palco de
+>   novo. O rodapé ficou na versão limpa: links em texto centrados (a
+>   pílula de vidro também foi rejeitada: "mais clean"), as páginas
+>   legais numa linha, com pontos de ouro só a partir do tablet. A seção
+>   CSS .passos-escopo/.passos-faixa voltou a ser usada.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
