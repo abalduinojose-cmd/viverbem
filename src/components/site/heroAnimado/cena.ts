@@ -15,18 +15,26 @@
 //
 //   0,0 a 1,3  a câmera recua; o ponto de ouro vira um fio e
 //              "Especialistas" sobe de trás dele, letra por letra, com o
-//              peso florescendo de leve a pesado e um rastro de movimento
-//   1,25 a 2,1 o título voa para o lugar, "em saúde" (menor e leve) chega
-//              da direita fechando o espaçamento e inclinado pela
-//              velocidade; o fio vira uma cápsula que gira
+//              peso florescendo de leve a pesado, as letras um pouco
+//              abertas que se fecham ao pousar, um rastro de movimento e,
+//              no instante do pouso, uma luz dourada que varre a palavra
+//              (22/10/2026, tipografia cinética)
+//   1,25 a 2,1 o título voa para o lugar; "em saúde" (menor e leve) sobe
+//              de uma fresta palavra a palavra, "saúde" (a âncora) andando
+//              mais e por mais tempo (22/10/2026; antes chegava da direita
+//              inclinada); o fio vira uma cápsula que gira
 //   2,0 a 3,1  a cápsula tomba e vira o anel no chão; os quatro potes
 //              chegam do fundo com desfoque de movimento; "personalizada"
 //              se escreve em ouro, com uma borda macia e uma luz na ponta
-//   3,0 a 5,6  os potes giram em carrossel 3D (profundidade de campo,
-//              reflexo e luz que corre pelo rótulo), a câmera balança e o
-//              letreiro mostra os 4 passos do pedido, um de cada vez, com
-//              traços que contam os passos (desde 10/10/2026 este trecho
-//              corre devagar, pelo ritmo do roteiro)
+//   3,0 a 5,6  o carrossel 3D anda em QUATRO PASSOS, um a cada passo do
+//              letreiro (mesmo quadro): a cada passo gira 90° numa curva
+//              devagar-rápido-devagar e traz um pote novo para a frente,
+//              a luz passa pelo rótulo dele e a câmera avança um pouco;
+//              entre um passo e outro, para (profundidade de campo,
+//              reflexo). O letreiro mostra os 4 passos do pedido com os
+//              traços que os contam. (21/10/2026, doutrina de movimento:
+//              o movimento executa o letreiro, em vez de girar sem parar;
+//              desde 10/10 este trecho corre devagar, pelo ritmo do roteiro)
 //   5,3 a 6,4  fecho: os dois potes da dobra vêm para a frente, os outros
 //              dois somem no fundo, um brilho passa pelos rótulos
 //   6,25 a 7,0 em espelho: as letras grandes caem atrás da própria base
@@ -52,6 +60,16 @@ export const ORBITA_CENTRO = 90; // profundidade do centro do carrossel
 const PASSOS_INICIO = 3.05;
 const PASSOS_VEZ = 0.62;
 const PASSOS_ESCALONA = 0.004;
+/** Quando começa o passo k do letreiro e, com ele, o giro do carrossel e
+ *  o avanço da câmera (21/10/2026) */
+const inicioDoPasso = (k: number) => PASSOS_INICIO + k * PASSOS_VEZ;
+/** Quanto dura o giro do carrossel em cada passo (tempo da coreografia; a
+ *  0,28 da velocidade dá ~1,1 s de giro e ~1,1 s parado) */
+const PASSO_GIRO = 0.3;
+/** A curva "nudge" (devagar, rápido, devagar): 10/65/25 da distância em
+ *  20/18/62 do tempo; a cauda longa é o que mata o tranco de parar */
+const nudge = (p: number) =>
+  p <= 0 ? 0 : p >= 1 ? 1 : p < 0.2 ? 0.1 * entraCubica(p / 0.2) : p < 0.38 ? 0.1 + (0.65 * (p - 0.2)) / 0.18 : 0.75 + 0.25 * saiQuarta((p - 0.38) / 0.62);
 const N_PONTOS = 96;
 const RAD = Math.PI / 180;
 export const TAU = Math.PI * 2;
@@ -91,8 +109,11 @@ function camera(t: number): Camera {
     z = mix(220, 0, p);
     giro = mix(-4, 0, p);
   } else if (t < 6.45) {
-    // Um empurrão lento para dentro durante o carrossel e mais um no fecho
-    z = 30 * entraSaiSeno(trecho(t, 2.4, 5.2)) + 10 * entraSaiSeno(trecho(t, 5.2, 6.2));
+    // A câmera avança um passo a cada passo do letreiro, junto com o giro
+    // do carrossel (câmera com intenção, não deriva), e mais um no fecho
+    let passos = 0;
+    for (let k = 0; k < 4; k++) passos += entraSaiSeno(trecho(t, inicioDoPasso(k), inicioDoPasso(k) + PASSO_GIRO + 0.1));
+    z = 8 * entraSaiSeno(trecho(t, 2.4, 3.0)) + 5.5 * passos + 10 * entraSaiSeno(trecho(t, 5.2, 6.2));
     giro = 1.2 * Math.sin(TAU * meio);
   } else {
     const p = entraCubica(trecho(t, 6.45, DURACAO));
@@ -369,9 +390,20 @@ function prepararPote(img: HTMLImageElement, altura: number): Sprites {
 
 /** O ângulo do carrossel: três quartos de volta entre 2,1 s e 5,3 s,
  *  parando com o Caramelo na frente à esquerda e a Gummy à direita. */
-const anguloCarrossel = (t: number) => (-45 - 270 * (1 - entraSaiSeno(trecho(t, 2.1, 5.3)))) * RAD;
+/** O ângulo do carrossel (21/10/2026): os potes chegam assentando num
+ *  giro de 60° e, depois, o carrossel anda em QUATRO passos de 90°, um a
+ *  cada passo do letreiro (no mesmo quadro), trazendo um pote novo para a
+ *  frente; entre um passo e outro, para. Fecha em 0° (uma volta inteira):
+ *  o pote 0 na frente e o 1 à direita, para o fecho trazer os dois. */
+const anguloCarrossel = (t: number) => {
+  let graus = -360 - 60 * (1 - entraSaiSeno(trecho(t, 2.1, 3.0)));
+  for (let k = 0; k < 4; k++) graus += 90 * nudge(trecho(t, inicioDoPasso(k), inicioDoPasso(k) + PASSO_GIRO));
+  return graus * RAD;
+};
 
 const ORDEM_CHEGADA = [1, 0, 3, 2];
+/** Quando o pote i começa a chegar */
+const chegadaDoPote = (i: number) => 2.1 + ORDEM_CHEGADA[i] * 0.11;
 
 type EstadoPote = { x: number; y: number; z: number; alfa: number; angulo: number };
 
@@ -381,7 +413,7 @@ function estadoPote(e: Enquadramento, i: number, t: number): EstadoPote {
   const rz = ORBITA_CENTRO - 125 * e.ep * Math.cos(a);
 
   // Chegada do fundo, de cima, com uma curva de saída exponencial
-  const tChegada = 2.1 + ORDEM_CHEGADA[i] * 0.11;
+  const tChegada = chegadaDoPote(i);
   const pc = trecho(t, tChegada, tChegada + 0.8);
   const ec = saiExpo(pc);
   const lado = i % 2 === 0 ? -1 : 1;
@@ -662,7 +694,7 @@ export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, bril
 // ---------------------------------------------------------------- a cena
 
 export type SpriteTexto = { tela: Imagem; x0: number; y0: number; l: number; a: number };
-export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Luz: SpriteTexto };
+export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l1Luz: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Luz: SpriteTexto };
 
 /** O que a cena empresta a uma coreografia de fora (ver vitrine.ts): o
  *  contexto, o enquadramento e os textos medidos (que mudam quando o
@@ -862,6 +894,8 @@ export async function criarCena(
       // de repouso, na escala final (sem reduzir, fica mais nítida)
       l1: rasterizar(l1, 1.06, letraALetra(l1, "#ffffff")),
       l1Voo: rasterizar(l1, textos.escalaIntro * 1.04, letraALetra(l1, "#ffffff")),
+      // A versão quente, para a luz que varre a palavra no pouso
+      l1Luz: rasterizar(l1, textos.escalaIntro * 1.04, letraALetra(l1, "#ffe2a8")),
       l2: rasterizar(l2, 1.06, letraALetra(l2, "rgba(255, 255, 255, 0.88)")),
       l3: rasterizar(l3, 1.06, palavra((c) => ouro(c, 0, l3.largura, -1))),
       l3Luz: rasterizar(l3, 1.06, palavra(() => "#fff6e0")),
@@ -1138,6 +1172,22 @@ export async function criarCena(
       .filter((p) => p.g.e.alfa > 0.005)
       .sort((a, b) => b.g.e.z - a.g.e.z);
 
+    // O anel de luz que se abre no chão quando cada pote pousa (21/10/2026:
+    // o impacto acende no quadro do pouso, como na vitrine da Saúde da Mulher)
+    for (const { i, g } of lista) {
+      const pr = trecho(t, chegadaDoPote(i) + 0.5, chegadaDoPote(i) + 0.95);
+      if (pr <= 0 || pr >= 1) continue;
+      const chao = P(g.e.x, enq.chao, g.e.z, cam);
+      const rx = g.l * mix(0.45, 1.5, saiCubica(pr));
+      ctx.globalAlpha = 0.7 * (1 - pr) ** 1.5 * g.e.alfa;
+      ctx.strokeStyle = "rgb(232, 206, 150)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.ellipse(chao.x, chao.y, rx, rx * 0.16, 0, 0, TAU);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
     // Sombras de contato e reflexos primeiro, por baixo de todos
     for (const { i, g } of lista) {
       const noChao = limitar(1 - Math.abs(g.e.y - enq.chao) / 50) * g.e.alfa * (1 - g.desfoque * 0.7);
@@ -1173,9 +1223,22 @@ export async function criarCena(
       if (nitidez > 0.01) {
         // Luz que corre pelo rótulo: acompanha o giro no carrossel e passa
         // de ponta a ponta no fecho
+        // No fecho a luz passa de ponta a ponta em todos; em cada passo,
+        // passa pelo pote que acabou de chegar à frente (21/10/2026); no
+        // resto acompanha o giro
         const varredura = trecho(t, 5.75, 6.3);
-        const naVarredura = varredura > 0 && varredura < 1;
-        const posLuz = naVarredura ? mix(-0.3, 1.3, saiCubica(varredura)) : 0.5 - 0.42 * Math.sin(g.e.angulo);
+        let naVarredura = varredura > 0 && varredura < 1;
+        let fase = varredura;
+        if (!naVarredura && Math.cos(g.e.angulo) > 0.92) {
+          for (let k = 0; k < 4 && !naVarredura; k++) {
+            const q = trecho(t, inicioDoPasso(k) + PASSO_GIRO - 0.06, inicioDoPasso(k) + PASSO_GIRO + 0.24);
+            if (q > 0 && q < 1) {
+              naVarredura = true;
+              fase = q;
+            }
+          }
+        }
+        const posLuz = naVarredura ? mix(-0.3, 1.3, saiCubica(fase)) : 0.5 - 0.42 * Math.sin(g.e.angulo);
         const forcaLuz = (naVarredura ? 0.5 : 0.2 * (1 - trecho(t, 5.25, 5.6))) * nitidez;
         ctx.globalAlpha = nitidez;
         desenharPote(sp.nitido, x, y, g.l, g.h);
@@ -1213,9 +1276,12 @@ export async function criarCena(
     const escondido = l.ascent + 13 / textos.escalaIntro + 3;
     const dy = mix(escondido, 0, mola(p)) + entraCubica(q) * (l.ascent + l.descent + 10);
     const peso = q > 0 ? mix(l.peso, fontes.pesoDisplayLeve, saiCubica(q)) : mix(fontes.pesoDisplayLeve, l.peso, saiCubica(p));
+    // As letras chegam um pouco abertas (a partir do centro) e o
+    // espaçamento fecha ao pousar, como um "tracking" do After Effects
+    const dx = (1 - saiCubica(p)) * l.tamanho * 0.07 * (i - n / 2);
     // Chegada com opacidade binária (21/10/2026): a letra já nasce atrás do
     // fio, a máscara faz o recorte; um fade por cima brigava com o estalo
-    return { dy, peso, alfa: p > 0 ? 1 : 0, p, q };
+    return { dy, dx, peso, alfa: p > 0 ? 1 : 0, p, q };
   }
 
   /** Desenha a linha grande no instante tt. Serve para o quadro e, com
@@ -1240,12 +1306,22 @@ export async function criarCena(
       ctx.rect(-l.tamanho, -l.ascent * 1.6, l.largura + l.tamanho * 2, l.ascent * 1.6 + fundo);
       ctx.clip();
     }
+    // A luz dourada que varre a palavra no instante em que as últimas
+    // letras pousam (22/10/2026): a versão quente da linha, numa faixa que
+    // corre da esquerda para a direita, por cima do branco
+    const luzDoPouso = () => {
+      const b = trecho(tt, 1.0, 1.4);
+      if (b <= 0 || b >= 1 || !spritesTexto || !comRastro) return;
+      const v = spritesTexto.l1Luz;
+      faixaDeLuz(v.tela, v.x0, v.y0, v.l, v.a, mix(-0.25, 1.25, saiCubica(b)) * l.largura, l.largura * 0.22, 0.85);
+    };
     // Com todas as letras assentadas (do fim da subida ao começo da saída,
     // inclusive no voo) a linha é um corpo só: desenha a imagem pronta
     const assentada = tt >= 0.32 + 0.42 + 0.6 && tt < 6.3;
     if (assentada && spritesTexto) {
       ctx.globalAlpha = alfaMult;
       pintarSprite(tt < 1.9 ? spritesTexto.l1Voo : spritesTexto.l1);
+      luzDoPouso();
       ctx.restore();
       return;
     }
@@ -1262,10 +1338,10 @@ export async function criarCena(
         for (let k = 3; k >= 1; k--) {
           const b = letra1(i, tt - k * 0.016);
           if (b.p <= 0 || Math.abs(b.dy - a.dy) < 1.2) continue;
-          itens.push({ ch: l.texto[i], x: l.xs[i], y: b.dy, peso: b.peso, alfa: b.alfa * alfaMult * [0, 0.14, 0.09, 0.05][k] });
+          itens.push({ ch: l.texto[i], x: l.xs[i] + b.dx, y: b.dy, peso: b.peso, alfa: b.alfa * alfaMult * [0, 0.14, 0.09, 0.05][k] });
         }
       }
-      itens.push({ ch: l.texto[i], x: l.xs[i], y: a.dy, peso: a.peso, alfa: a.alfa * alfaMult });
+      itens.push({ ch: l.texto[i], x: l.xs[i] + a.dx, y: a.dy, peso: a.peso, alfa: a.alfa * alfaMult });
     }
     itens.sort((a, b) => a.peso - b.peso);
     ctx.fillStyle = "#ffffff";
@@ -1279,6 +1355,7 @@ export async function criarCena(
       ctx.globalAlpha = it.alfa;
       ctx.fillText(it.ch, it.x, it.y);
     }
+    luzDoPouso();
     ctx.restore();
   }
 
@@ -1291,53 +1368,79 @@ export async function criarCena(
     linha1Em(t, cam, 1, true);
   }
 
-  // ---- a ligação: chega da direita fechando o espaçamento, inclinada pela velocidade
-  function letra2(i: number, t: number) {
+  // ---- a ligação: palavra a palavra, cada uma sobe de trás da própria base
+  // (22/10/2026, tipografia cinética pela doutrina: chegada em cascata de
+  // baixo, uma direção, opacidade binária, a âncora anda mais e por mais
+  // tempo; antes deslizava pela direita inclinada pela velocidade). Na
+  // saída, as palavras caem atrás da base, da última para a primeira.
+  /** As palavras da ligação (índices das letras), medidas uma vez por texto */
+  let palavrasL2: { ini: number; fim: number }[] = [];
+  let textoL2 = "";
+  function palavrasDaLigacao() {
     const l = textos.l2;
-    const n = l.texto.length - 1;
-    const p = trecho(t, 1.55 + i * 0.045, 1.55 + i * 0.045 + 0.5);
-    const e = saiExpo(p);
-    const q = trecho(t, 6.36 + (n - i) * 0.018, 6.36 + (n - i) * 0.018 + 0.26);
-    const eq = entraCubica(q);
-    const abre = l.tamanho * 0.38; // o espaçamento extra inicial, por letra
-    const dx = mix(40 + abre * i, 0, e) + eq * (24 + abre * 0.6 * i);
-    // Inclina no sentido do movimento (para a esquerda ao entrar, para a
-    // direita ao sair) e endireita ao pousar
-    const inclina = 0.14 * (1 - e) - 0.1 * eq;
-    // Acende quase de uma vez (21/10/2026): chegada é binária, só a saída esmaece
-    return { dx, inclina, alfa: limitar(p * 6) * (1 - limitar(q * 1.3)), p, q };
+    if (l.texto !== textoL2) {
+      textoL2 = l.texto;
+      palavrasL2 = [];
+      let comeco = 0;
+      for (let i = 0; i <= l.texto.length; i++) {
+        if (i === l.texto.length || l.texto[i] === " ") {
+          if (i > comeco) palavrasL2.push({ ini: comeco, fim: i });
+          comeco = i + 1;
+        }
+      }
+    }
+    return palavrasL2;
+  }
+  /** Quando a palavra k começa a subir: vãos que encolhem (x0,84) */
+  const inicioPalavra2 = (k: number) => 1.58 + (0.14 * (1 - 0.84 ** k)) / 0.16;
+  /** O estado da palavra k da ligação no instante t: altura em relação à
+   *  base (positivo = escondida abaixo) e os progressos de entrada e saída */
+  function palavra2(k: number, n: number, t: number) {
+    const l = textos.l2;
+    const caminho = l.ascent + l.descent + 6;
+    // A última palavra é a âncora: anda mais tempo
+    const dura = k === n - 1 ? 0.46 : 0.36;
+    const p = trecho(t, inicioPalavra2(k), inicioPalavra2(k) + dura);
+    const atrasoSaida = (n - 1 - k) * 0.05;
+    const q = trecho(t, 6.36 + atrasoSaida, 6.36 + atrasoSaida + 0.26);
+    return { dy: (1 - saiQuinta(p)) * caminho + entraCubica(q) * caminho, p, q };
   }
 
   function desenharLinha2(t: number, cam: Camera) {
     const l = textos.l2;
+    const palavras = palavrasDaLigacao();
+    const n = palavras.length;
+    if (n === 0) return;
     ctx.save();
     noPlano(cam, enq.textoX + l.recuo, textos.base2, 1);
-    const assentada = t >= 1.55 + (l.texto.length - 1) * 0.045 + 0.5 && t < 6.36;
+    const assentada = t >= inicioPalavra2(n - 1) + 0.46 && t < 6.36;
     if (assentada && spritesTexto) {
       pintarSprite(spritesTexto.l2);
       ctx.restore();
       return;
     }
+    // A fresta: nada aparece abaixo da base (com folga para as descendentes)
+    ctx.beginPath();
+    ctx.rect(-l.tamanho, -l.ascent * 1.6, l.largura + l.tamanho * 2, l.ascent * 1.6 + l.descent + 3);
+    ctx.clip();
     ctx.font = fonteDe(l);
     ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
-    for (let i = 0; i < l.texto.length; i++) {
-      const a = letra2(i, t);
-      if (a.p <= 0 || a.q >= 1) continue;
-      for (let k = 2; k >= 1; k--) {
-        const b = letra2(i, t - k * 0.016);
-        if (b.p <= 0 || Math.abs(b.dx - a.dx) < 1) continue;
-        ctx.save();
-        ctx.globalAlpha = b.alfa * [0, 0.12, 0.06][k];
-        ctx.transform(1, 0, b.inclina, 1, l.xs[i] + b.dx, 0);
-        ctx.fillText(l.texto[i], 0, 0);
-        ctx.restore();
+    palavras.forEach((w, k) => {
+      const a = palavra2(k, n, t);
+      if (a.p <= 0 || a.q >= 1) return;
+      // Rastro curto enquanto sobe rápido
+      for (const [dt, alfa] of [
+        [0.032, 0.07],
+        [0.016, 0.14],
+      ] as const) {
+        const b = palavra2(k, n, t - dt);
+        if (b.p <= 0 || Math.abs(b.dy - a.dy) < 1.5) continue;
+        ctx.globalAlpha = alfa;
+        for (let i = w.ini; i < w.fim; i++) ctx.fillText(l.texto[i], l.xs[i], b.dy);
       }
-      ctx.save();
-      ctx.globalAlpha = a.alfa;
-      ctx.transform(1, 0, a.inclina, 1, l.xs[i] + a.dx, 0);
-      ctx.fillText(l.texto[i], 0, 0);
-      ctx.restore();
-    }
+      ctx.globalAlpha = 1;
+      for (let i = w.ini; i < w.fim; i++) ctx.fillText(l.texto[i], l.xs[i], a.dy);
+    });
     ctx.restore();
   }
 
