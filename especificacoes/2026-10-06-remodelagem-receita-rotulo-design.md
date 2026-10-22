@@ -358,6 +358,24 @@
 > página. Feitos e tirados na hora, a pedido: a linha "Manipulado · sob
 > receita" sob o nome e o botão em contorno branco ("quero dourado com um
 > degradê mais leve, mais clean").
+> Hero, 22/10/2026 ("essa animação da home tá boa, mas ainda tá básica,
+> quero um motion mais profissional, tipografia cinética, movimentos leves,
+> transições suaves, alto padrão After Effects, melhore ela como um todo"):
+> o carrossel deixou de girar sem parar e passou a andar em QUATRO PASSOS,
+> um a cada passo do letreiro, no mesmo quadro: a cada passo gira 90° numa
+> curva nudge (devagar-rápido-devagar, 10/65/25 da distância em 20/18/62
+> do tempo, ~1,1 s de giro e ~1,1 s parado no tempo real) e traz um pote
+> novo para a frente (CitoRepair, Glow Cream, Creatina, Caramelo), a luz
+> passa pelo rótulo dele ao chegar, e a câmera avança 5,5 unidades junto
+> (câmera com intenção, não deriva); fecha em 0°, uma volta inteira, com o
+> pote 0 à frente e o 1 à direita, de onde o fecho traz os dois. Os potes
+> chegam assentando num giro de 60° e cada pouso abre um anel de luz no
+> chão (o impacto acende no quadro do pouso). `anguloCarrossel`, `nudge`,
+> `inicioDoPasso`, `PASSO_GIRO`, `chegadaDoPote` em cena.ts. O resto da
+> coreografia (ponto → fio → cápsula → anel, "Especialistas" com bloom e
+> mola de 0,8%, "em saúde" pela direita, "personalizada" que se escreve,
+> fecho e saída em espelho) seguiu igual. Gravado o laço inteiro (15,6 s)
+> no computador e no celular; tsc e eslint limpos.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
