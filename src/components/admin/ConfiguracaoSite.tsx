@@ -345,18 +345,29 @@ export function ConfiguracaoSite({
               </div>
             </>
           ) : (
+            /* A zona de soltar (22/10/2026, "melhore toda a seção"): sem o
+               tracejado pesado; um fundo de gelo com um sopro de azul na base,
+               o ícone num círculo branco com sombra e o texto em navy. No
+               celular, o círculo de vidro sobre o navy. */
             <label
-              className={`absolute inset-0 ${comBarra ? "top-5" : ""} flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer border-2 border-dashed m-2 rounded-lg transition-colors ${
+              className={`group/zona absolute inset-0 ${comBarra ? "top-5" : ""} flex flex-col items-center justify-center gap-2 text-center cursor-pointer m-2 rounded-lg border border-dashed transition-colors ${
                 sobre
-                  ? "border-tinta bg-gelo/80 text-tinta"
+                  ? "border-tinta bg-gelo text-tinta"
                   : celular
-                    ? "border-white/25 text-white/80 hover:border-white/60"
-                    : "border-fio text-cinza hover:border-tinta/50 hover:text-tinta bg-nevoa/40"
+                    ? "border-white/20 text-white/85 hover:border-white/50"
+                    : "border-fio text-navy hover:border-tinta/50 bg-[radial-gradient(70%_70%_at_50%_100%,rgba(28,105,181,0.09),transparent_70%),linear-gradient(180deg,#f7f9fc,#ffffff)]"
               } ${ocupadoAqui ? "opacity-50 pointer-events-none" : ""}`}
             >
-              {ocupadoAqui ? <span aria-hidden="true" className="w-5 h-5 rounded-full border-2 border-current/40 border-t-current animate-spin" /> : <IconeEnviar />}
-              <span className="text-[0.75rem] font-semibold leading-tight px-2">{ocupadoAqui ? "Enviando..." : celular || vertical ? "Enviar" : "Solte aqui ou clique"}</span>
-              {!celular && !vertical && <span className="text-[0.6875rem] opacity-70">{def.video ? "Foto, GIF ou vídeo" : "Foto ou GIF"}</span>}
+              <span
+                aria-hidden="true"
+                className={`flex items-center justify-center rounded-full transition-transform group-hover/zona:-translate-y-0.5 ${
+                  celular || vertical ? "size-10" : "size-12"
+                } ${celular ? "bg-white/10 ring-1 ring-white/25 text-white" : "bg-white text-tinta ring-1 ring-fio shadow-[0_12px_26px_-14px_rgba(13,35,64,0.55)]"}`}
+              >
+                {ocupadoAqui ? <span className="w-5 h-5 rounded-full border-2 border-current/40 border-t-current animate-spin" /> : <IconeEnviar />}
+              </span>
+              <span className={`text-[0.78rem] font-semibold leading-tight px-2 ${celular ? "text-white/90" : "text-navy"}`}>{ocupadoAqui ? "Enviando..." : celular || vertical ? "Enviar" : "Solte aqui ou clique"}</span>
+              {!celular && !vertical && <span className="text-[0.6875rem] text-cinza">{def.video ? "Foto, GIF ou vídeo" : "Foto ou GIF"}</span>}
               {entrada}
             </label>
           )}
@@ -410,11 +421,20 @@ export function ConfiguracaoSite({
       >
         <div className="px-5 pb-5 mt-4 flex flex-col gap-4">
           {grandes.map((def) => (
-            <section key={def.chave} className="rounded-2xl bg-nevoa/50 ring-1 ring-inset ring-fio/70 p-4">
+            <section key={def.chave} className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-4 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.3)]">
               <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-navy">{def.titulo}</h3>
-                  <p className="text-xs text-cinza mt-0.5 leading-snug">{def.texto}</p>
+                <div className="flex min-w-0 items-start gap-3">
+                  <span aria-hidden="true" className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-gelo text-tinta">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <rect x="3.5" y="5" width="17" height="14" rx="3" stroke="currentColor" strokeWidth="1.7" />
+                      <path d="m6.5 16 3.8-4.2 2.7 2.9 2-2.1 2.5 3.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="15.5" cy="9.5" r="1.3" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span className="min-w-0">
+                    <h3 className="font-semibold text-navy">{def.titulo}</h3>
+                    <p className="text-xs text-cinza mt-0.5 leading-snug">{def.texto}</p>
+                  </span>
                 </div>
                 <Selo tom={bannersIniciais[def.chave]?.desktop ? "verde" : "cinza"}>{bannersIniciais[def.chave]?.desktop ? "No ar" : "Padrão"}</Selo>
               </div>
@@ -425,7 +445,7 @@ export function ConfiguracaoSite({
             </section>
           ))}
 
-          <section className="rounded-2xl bg-nevoa/50 ring-1 ring-inset ring-fio/70 p-4">
+          <section className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-4 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.3)]">
             <div className="mb-3">
               <h3 className="font-semibold text-navy">Cartões das faixas e da história</h3>
               <p className="text-xs text-cinza mt-0.5 leading-snug">O cartão vertical no fim de cada faixa de produtos, e a foto do banner da história no celular. Foto ou GIF.</p>

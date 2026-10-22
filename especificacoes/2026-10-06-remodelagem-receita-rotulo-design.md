@@ -1,5 +1,49 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 88 (22/10/2026): auditoria de todos os links e botões (site e painel) e polimento do painel: a marca na lateral, a página Home e arte da dobra e a Visão geral. IMPLEMENTADO e conferido no localhost.**
+> Pedidos: "conserte todos os botões do site e do painel, todos têm que
+> estar funcionando e direcionando para o local ideal"; "melhore a logo;
+> melhore toda a seção de home e arte de dobra; melhore e modernize a
+> visão geral".
+> - AUDITORIA (scratchpad auditar-botoes.cjs / auditar-admin.cjs): um
+>   rastreio em puppeteer visitou as 12 páginas do site (1366 e 390) e as
+>   do painel (entrando com o gestor da semente), conferiu o status de
+>   cada link interno, o id de cada âncora e CLICOU em cada botão numa
+>   página recarregada, medindo o efeito (navegou, abriu janela ou
+>   diálogo, mudou o DOM, rolou). Resultado no site: 0 links quebrados em
+>   12 páginas, 324 botões clicados, todos com efeito (os 18 marcados como
+>   "sem efeito" eram só a janela de 0,7 s do teste, curta demais para o
+>   servidor de desenvolvimento: retestados com mais tempo, o "Buscar"
+>   com o campo vazio leva ao catálogo, a seta das avaliações rola a
+>   faixa, o menu e a busca do celular abrem). Pelo código, nenhum botão
+>   sem onClick ou submit e nenhum link sem destino em todo o src. No
+>   painel, os botões que gravam ou apagam (salvar, remover, publicar,
+>   chaves) só foram listados, não clicados; os demais navegam ou abrem o
+>   que devem. Lições do rastreio: no Git Bash um argumento que começa
+>   com "/" vira "C:/Program Files/Git/" (MSYS_NO_PATHCONV=1); o
+>   formulário de login só funciona depois da hidratação (antes, o Enter
+>   manda por GET); o primeiro botão do formulário é o de mostrar a senha;
+>   um confirm() trava o page.evaluate (dispensar com page.on("dialog")).
+> - Marca na lateral (CascaAdmin.Marca): ladrilho branco mais folgado
+>   (px-4 py-3, raio 1,25rem, anel branco suave, sombra mais funda), a
+>   marca 25% maior (h-10) e em WebP, com o fio de ouro na base.
+> - Home e arte da dobra (ConfiguracaoSite): cada banner num cartão
+>   BRANCO com fio e sombra curta (era gelo chapado), com um ladrilho de
+>   ícone de imagem ao lado do título; as zonas de soltar perderam o
+>   tracejado grosso: fundo de gelo com um sopro de azul na base, o ícone
+>   num círculo branco com sombra (que sobe no hover) e o texto em navy;
+>   no celular, o círculo de vidro sobre o navy. A lógica de envio,
+>   troca e remoção é a mesma.
+> - Visão geral: os três números do catálogo ("No site", "Com foto",
+>   "Preço no site") trocaram a barra fina pelo ANEL que se enche ao
+>   aparecer (PecasVivas.Anel, azul e ouro), em cartão branco com fio; o
+>   estado vazio do gráfico de evolução perdeu a caixa tracejada e ganhou
+>   um fundo de gelo com duas curvas apagadas de apoio (azul e ouro
+>   tracejada), para não parecer erro.
+> - Atenção: o arquivo heroAnimado/cena.ts estava alterado na árvore por
+>   OUTRA sessão e ficou fora deste commit.
+
+
 > **ADENDO 87 (21/10/2026): gaveta do pedido com acabamento mais moderno, mesma estrutura e lógica. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
 > Pedido (com a gaveta selecionada): "modernize ainda mais".
 > - As duas etapas viraram uma PÍLULA DESLIZANTE em gelo no cabeçalho: a

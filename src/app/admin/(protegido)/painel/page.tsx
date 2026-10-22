@@ -28,7 +28,7 @@ import { obterMetricas } from "@/lib/metricas";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { CabecalhoAdmin, CartaoAdmin, ChipAdmin, Inicial, Selo, classeBotaoAdmin } from "@/components/admin/PecasAdmin";
-import { BarraViva } from "@/components/admin/PecasVivas";
+import { Anel } from "@/components/admin/PecasVivas";
 import { ICONES } from "@/components/admin/iconesAdmin";
 import { PainelPeriodo } from "@/components/admin/PainelPeriodo";
 
@@ -144,22 +144,19 @@ export default async function PaginaPainel() {
       <CartaoAdmin className="mt-4" titulo="O catálogo" apoio={`${m.catalogo.total} produtos cadastrados em ${m.catalogo.categorias} categorias`} acao={<LinkCanto href="/admin/produtos">Abrir</LinkCanto>}>
         <div className="px-5 pb-5 mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
           {[
-            { rotulo: "No site", n: m.catalogo.noSite, de: m.catalogo.total, cor: "bg-green-600" },
-            { rotulo: "Com foto", n: m.catalogo.comFoto, de: m.catalogo.total, cor: "bg-tinta" },
-            { rotulo: "Preço no site", n: m.catalogo.comPrecoNoSite, de: m.catalogo.total, cor: "bg-[image:var(--ouro-degrade)]" },
+            { rotulo: "No site", n: m.catalogo.noSite, de: m.catalogo.total, cor: "azul" as const },
+            { rotulo: "Com foto", n: m.catalogo.comFoto, de: m.catalogo.total, cor: "azul" as const },
+            { rotulo: "Preço no site", n: m.catalogo.comPrecoNoSite, de: m.catalogo.total, cor: "ouro" as const },
           ].map((c) => (
-            <div key={c.rotulo} className="rounded-2xl bg-nevoa/70 px-4 py-3.5">
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-xs font-medium text-cinza">{c.rotulo}</span>
-                <span className="text-xs text-grafite-claro tabular-nums">{c.de > 0 ? Math.round((c.n / c.de) * 100) : 0}%</span>
-              </div>
-              <p className="mt-1.5 tabular-nums">
+            /* O anel que se enche ao aparecer (22/10/2026, "modernize a
+               visão geral": antes era uma barra fina) */
+            <div key={c.rotulo} className="flex items-center gap-3 rounded-2xl bg-white ring-1 ring-inset ring-fio/80 px-4 py-3.5 text-navy">
+              <Anel pct={c.de > 0 ? (c.n / c.de) * 100 : 0} cor={c.cor} className="shrink-0" />
+              <p className="min-w-0 tabular-nums">
+                <span className="block text-xs font-medium text-cinza">{c.rotulo}</span>
                 <span className="text-[1.5rem] font-semibold text-navy tracking-[-0.03em] leading-none">{c.n}</span>
                 <span className="text-sm text-grafite-claro"> de {c.de}</span>
               </p>
-              <div className="mt-2.5 h-1.5 rounded-full bg-white overflow-hidden">
-                <BarraViva pct={c.de > 0 ? (c.n / c.de) * 100 : 0} className={`h-full rounded-full ${c.cor}`} />
-              </div>
             </div>
           ))}
           <p className="md:col-span-3 flex flex-wrap gap-2 text-xs">

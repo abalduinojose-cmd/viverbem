@@ -537,8 +537,13 @@ export function PainelPeriodo({ historico, agora }: { historico: PedidoHistorico
         </div>
         <div className="mt-5">
           {atual.pedidos === 0 && anterior.pedidos === 0 ? (
-            <div className="h-[200px] rounded-2xl border border-dashed border-fio bg-nevoa/50 flex flex-col items-center justify-center text-center px-6 gap-1.5">
-              <p className="font-semibold text-navy text-[0.95rem]">Nenhum pedido nos dois períodos</p>
+            <div className="relative h-[200px] overflow-hidden rounded-2xl bg-[linear-gradient(180deg,#f7f9fc,#ffffff)] ring-1 ring-inset ring-fio/70 flex flex-col items-center justify-center text-center px-6 gap-1.5">
+              {/* Uma curva de apoio, bem apagada, para o cartão não parecer um erro */}
+              <svg aria-hidden="true" viewBox="0 0 600 200" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full">
+                <path d="M0 150 C 90 140, 150 90, 230 100 S 360 150, 440 110 S 540 70, 600 80" fill="none" stroke="#1c69b5" strokeOpacity="0.12" strokeWidth="2.5" />
+                <path d="M0 170 C 100 160, 170 130, 250 140 S 380 170, 460 140 S 560 110, 600 120" fill="none" stroke="#c9a56b" strokeOpacity="0.25" strokeWidth="2" strokeDasharray="5 5" />
+              </svg>
+              <p className="relative font-semibold text-navy text-[0.95rem]">Nenhum pedido nos dois períodos</p>
               <p className="text-cinza text-sm max-w-xs leading-snug">Escolha um período maior ou compare com o ano passado.</p>
             </div>
           ) : (

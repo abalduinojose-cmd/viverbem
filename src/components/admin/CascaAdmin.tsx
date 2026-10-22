@@ -80,9 +80,12 @@ export interface ItemNav {
  *  precisa do próprio fundo) */
 function Marca({ className = "" }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center rounded-2xl bg-white px-3.5 py-2.5 shadow-[0_10px_24px_-14px_rgba(0,0,0,0.6)] ${className}`}>
+    // 22/10/2026 ("melhore a logo"): ladrilho mais folgado, a marca maior
+    // (em WebP) e o fio de ouro na base, a assinatura do site
+    <span className={`relative inline-flex items-center overflow-hidden rounded-[1.25rem] bg-white px-4 py-3 ring-1 ring-white/15 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.7)] ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={asset("/logo.png")} alt="Manipulação Viver Bem" width={220} height={97} className="h-8 w-auto object-contain" draggable={false} />
+      <img src={asset("/logo.webp")} alt="Manipulação Viver Bem" width={220} height={97} className="h-10 w-auto object-contain" draggable={false} />
+      <span aria-hidden="true" className="absolute inset-x-4 bottom-0 h-[2px] rounded-full bg-[image:var(--ouro-degrade)]" />
     </span>
   );
 }
