@@ -64,14 +64,13 @@ export function ConsentimentoCookies() {
       <div className="relative mx-auto flex max-w-7xl flex-col gap-4 px-5 py-5 md:flex-row md:items-center md:gap-8 md:px-8 md:py-4">
         <div className="flex items-start gap-3 md:flex-1">
           <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#e1c68f] ring-1 ring-white/15">
-            {/* O gral com o pistilo, símbolo da manipulação (22/10/2026: "não
-                quero um ícone de biscoito, quero um ligado à manipulação") */}
+            {/* O frasco de manipulação com o rótulo, o mesmo traço do frasco
+                dos produtos sem foto (22/10/2026: o gral com pistilo da
+                manhã não agradou, "mude o ícone") */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 11.5h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-              <path d="M5.5 11.5c.2 3.9 2.6 6.8 6.5 6.8s6.3-2.9 6.5-6.8" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-              <path d="M9.5 18.3v2.2h5v-2.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="m13.2 10.2 5.2-6.2" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-              <circle cx="19" cy="3.6" r="1.5" fill="currentColor" />
+              <path d="M9.5 3h5v2.6h-5z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+              <rect x="6.5" y="5.6" width="11" height="15.4" rx="3.4" stroke="currentColor" strokeWidth="1.7" />
+              <path d="M9.3 11.2h5.4M9.3 14.4h5.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
             </svg>
           </span>
           <div className="min-w-0">
