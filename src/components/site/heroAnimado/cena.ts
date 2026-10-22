@@ -25,7 +25,11 @@
 //              inclinada); o fio vira uma cápsula que gira
 //   2,0 a 3,1  a cápsula tomba e vira o anel no chão; os quatro potes
 //              chegam do fundo com desfoque de movimento; "personalizada"
-//              se escreve em ouro, com uma borda macia e uma luz na ponta
+//              nasce letra a letra de uma névoa dourada, cada letra subindo
+//              de leve e o espaçamento fechando, com uma luz na ponta e o
+//              brilho varrendo a palavra quando a última assenta
+//              (22/10/2026; antes era uma cortina da esquerda para a
+//              direita com borda macia, "não gosto dela do jeito que está")
 //   3,0 a 5,6  o carrossel 3D anda em QUATRO PASSOS, um a cada passo do
 //              letreiro (mesmo quadro): a cada passo gira 90° numa curva
 //              devagar-rápido-devagar e traz um pote novo para a frente,
@@ -38,8 +42,9 @@
 //   5,3 a 6,4  fecho: os dois potes da dobra vêm para a frente, os outros
 //              dois somem no fundo, um brilho passa pelos rótulos
 //   6,25 a 7,0 em espelho: as letras grandes caem atrás da própria base
-//              afinando o peso, "em saúde" abre o espaçamento e some,
-//              "personalizada" se desescreve; tudo se recolhe para o ponto
+//              afinando o peso, "em saúde" cai atrás da base,
+//              "personalizada" afunda na névoa da última letra para a
+//              primeira; tudo se recolhe para o ponto
 //              de ouro e a câmera volta a chegar perto, encaixando no começo
 //
 // Dois enquadramentos, escolhidos pela largura do banner:
@@ -694,7 +699,7 @@ export function ouro(ctx: CanvasRenderingContext2D, x0: number, x1: number, bril
 // ---------------------------------------------------------------- a cena
 
 export type SpriteTexto = { tela: Imagem; x0: number; y0: number; l: number; a: number };
-export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l1Luz: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Luz: SpriteTexto };
+export type SpritesDeTexto = { l1: SpriteTexto; l1Voo: SpriteTexto; l1Luz: SpriteTexto; l2: SpriteTexto; l3: SpriteTexto; l3Nevoa: SpriteTexto; l3Luz: SpriteTexto };
 
 /** O que a cena empresta a uma coreografia de fora (ver vitrine.ts): o
  *  contexto, o enquadramento e os textos medidos (que mudam quando o
@@ -865,6 +870,27 @@ export async function criarCena(
     return sprite;
   }
 
+  /** A versão em névoa de uma linha pronta (desfoque por redução e
+   *  ampliação, que roda em qualquer navegador), na mesma caixa: a folga
+   *  da rasterização já dá espaço para o borrão. Feita a partir da tela,
+   *  antes de ela virar ImageBitmap. */
+  function desfocarSprite(sp: SpriteTexto, fator = 7): SpriteTexto {
+    const fonte = sp.tela as HTMLCanvasElement;
+    const pequena = novaTela(fonte.width / fator, fonte.height / fator);
+    const pc = pequena.getContext("2d")!;
+    pc.imageSmoothingQuality = "high";
+    pc.drawImage(fonte, 0, 0, pequena.width, pequena.height);
+    const tela = novaTela(fonte.width, fonte.height);
+    const c = tela.getContext("2d")!;
+    c.imageSmoothingQuality = "high";
+    c.drawImage(pequena, 0, 0, tela.width, tela.height);
+    const sprite: SpriteTexto = { tela, x0: sp.x0, y0: sp.y0, l: sp.l, a: sp.a };
+    void congelar(tela).then((imagem) => {
+      sprite.tela = imagem;
+    });
+    return sprite;
+  }
+
   function prepararSpritesDeTexto() {
     // Solta as texturas do jogo anterior (o banner mudou de tamanho)
     if (spritesTexto && typeof ImageBitmap !== "undefined") {
@@ -889,6 +915,7 @@ export async function criarCena(
       c.fillStyle = e;
       c.fillText(l3.texto, 0, 0);
     };
+    const ouroPronto = rasterizar(l3, 1.06, palavra((c) => ouro(c, 0, l3.largura, -1)));
     spritesTexto = {
       // Duas versões da linha grande: a do voo, maior (nasce ampliada), e a
       // de repouso, na escala final (sem reduzir, fica mais nítida)
@@ -897,7 +924,9 @@ export async function criarCena(
       // A versão quente, para a luz que varre a palavra no pouso
       l1Luz: rasterizar(l1, textos.escalaIntro * 1.04, letraALetra(l1, "#ffe2a8")),
       l2: rasterizar(l2, 1.06, letraALetra(l2, "rgba(255, 255, 255, 0.88)")),
-      l3: rasterizar(l3, 1.06, palavra((c) => ouro(c, 0, l3.largura, -1))),
+      l3: ouroPronto,
+      // A névoa dourada de onde as letras nascem (e para onde voltam)
+      l3Nevoa: desfocarSprite(ouroPronto),
       l3Luz: rasterizar(l3, 1.06, palavra(() => "#fff6e0")),
     };
   }
@@ -1444,65 +1473,111 @@ export async function criarCena(
     ctx.restore();
   }
 
-  // ---- a palavra em ouro: escrita da esquerda para a direita, com borda macia e uma luz na ponta
+  // ---- a palavra em ouro: as letras nascem uma a uma de uma névoa dourada
+  // (22/10/2026, "não gosto dela do jeito que está": antes era uma cortina
+  // da esquerda para a direita com borda macia). Cada letra sobe de leve
+  // (0,22 em), o espaçamento fecha a partir do centro, a névoa se dissolve
+  // na letra nítida; os vãos entre as letras encolhem (x0,86); uma luz
+  // acompanha a ponta da escrita; quando a última assenta, o brilho varre a
+  // palavra. Na saída, da última para a primeira, afundam na névoa.
+  /** Quando a letra i começa a nascer e quanto dura (tempo da coreografia) */
+  const inicioLetra3 = (i: number) => 2.35 + (0.04 * (1 - 0.86 ** i)) / 0.14;
+  const DURA_LETRA3 = 0.5;
   function desenharLinha3(t: number, cam: Camera) {
     const l = textos.l3;
-    const entra = saiCubica(trecho(t, 2.35, 3.1));
-    const sai = entraCubica(trecho(t, 6.3, 6.64));
-    const pe = entra * (1 - sai);
-    if (pe <= 0.001) return;
+    const n = l.texto.length;
+    if (n === 0 || !spritesTexto) return;
+    const fimEntrada = inicioLetra3(n - 1) + DURA_LETRA3;
+    const fimSaida = 6.3 + (n - 1) * 0.012 + 0.3;
+    if (t < 2.35 || t >= fimSaida) return;
     const w = l.largura;
-    const suave = w * 0.16; // a largura da borda macia
-    const borda = pe * (w + suave);
-    const inicio = borda - suave;
-    // O brilho: preso à ponta enquanto escreve, segue para fora quando
-    // termina e volta a passar no fecho, junto com a luz dos potes
-    const brilho =
-      t < 3.2 && entra < 1 ? (inicio + suave * 0.45) / w : t < 4 ? 1.07 + 0.3 * trecho(t, 3.1, 3.45) : mix(-0.3, 1.3, trecho(t, 5.7, 6.4));
-    if (!spritesTexto) return;
     const ouroPronto = spritesTexto.l3;
+    const nevoa = spritesTexto.l3Nevoa;
     const versaoClara = spritesTexto.l3Luz;
     ctx.save();
-    noPlano(cam, enq.textoX - l.tamanho * 0.03, textos.base3 + mix(12, 0, pe), mix(1.035, 1, pe));
-    // A parte já escrita, até onde começa a borda macia (a palavra é uma
-    // imagem pronta: o contorno que encorpa o itálico custava refazer a
-    // cada quadro)
-    if (inicio > -w * 0.02) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(ouroPronto.x0, ouroPronto.y0, Math.min(inicio, w + l.tamanho) - ouroPronto.x0, ouroPronto.a);
-      ctx.clip();
+    noPlano(cam, enq.textoX - l.tamanho * 0.03, textos.base3, 1);
+
+    if (t >= fimEntrada && t < 6.3) {
+      // Assentada: a palavra é uma imagem pronta, com o brilho que corre
+      // logo depois do pouso e de novo no fecho, junto com a luz dos potes
       pintarSprite(ouroPronto);
+      const brilho = t < 4 ? mix(-0.3, 1.3, trecho(t, fimEntrada, fimEntrada + 0.45)) : mix(-0.3, 1.3, trecho(t, 5.7, 6.4));
+      if (brilho > -0.2 && brilho < 1.2) {
+        faixaDeLuz(versaoClara.tela, versaoClara.x0, versaoClara.y0, versaoClara.l, versaoClara.a, brilho * w, w * 0.24, 0.8);
+      }
       ctx.restore();
+      return;
     }
-    // A borda macia: seis faixas, cada uma mais transparente, até sumir
-    // ao longo de "suave"
-    if (inicio < w + 2) {
-      const n = 6;
-      for (let k = 0; k < n; k++) {
-        const a0 = inicio + (suave * k) / n;
+
+    // Letra a letra: o estilo do ouro (degradê ao longo da palavra inteira
+    // e o contorno fino que encorpa o itálico), como na imagem pronta
+    const entrando = t < fimEntrada;
+    ctx.font = fonteDe(l);
+    ctx.lineJoin = "round";
+    const estilo = ouro(ctx, 0, w, -1);
+    const contorno = fontes.contornoDestaque * l.tamanho;
+    // As fronteiras entre letras, para recortar a névoa de cada uma: o meio
+    // entre uma origem e a seguinte (a névoa é macia, o corte não aparece)
+    const fronteira = (i: number) => (i <= 0 ? nevoa.x0 : i >= n ? nevoa.x0 + nevoa.l : (l.xs[i - 1] + l.xs[i]) / 2 + l.tamanho * 0.12);
+    let frente = -1;
+    for (let i = 0; i < n; i++) {
+      let p: number;
+      let dy: number;
+      let dx: number;
+      let alfaNitida: number;
+      let alfaNevoa: number;
+      if (entrando) {
+        p = trecho(t, inicioLetra3(i), inicioLetra3(i) + DURA_LETRA3);
+        if (p <= 0) break;
+        if (p < 1) frente = i;
+        const e = saiQuinta(p);
+        dy = (1 - e) * l.tamanho * 0.22;
+        dx = (1 - e) * l.tamanho * 0.06 * (i - n / 2);
+        alfaNitida = limitar((p - 0.22) / 0.45);
+        alfaNevoa = limitar(1 - p / 0.78);
+      } else {
+        const atraso = (n - 1 - i) * 0.012;
+        const q = trecho(t, 6.3 + atraso, 6.3 + atraso + 0.3);
+        if (q >= 1) continue;
+        dy = entraCubica(q) * l.tamanho * 0.3;
+        dx = 0;
+        alfaNitida = 1 - limitar(q / 0.7);
+        alfaNevoa = Math.sin(Math.PI * q) * 0.8;
+      }
+      if (alfaNevoa > 0.01) {
         ctx.save();
         ctx.beginPath();
-        ctx.rect(Math.max(ouroPronto.x0, a0), ouroPronto.y0, suave / n + 0.6, ouroPronto.a);
+        ctx.rect(fronteira(i), nevoa.y0, fronteira(i + 1) - fronteira(i), nevoa.a);
         ctx.clip();
-        ctx.globalAlpha = 1 - (k + 0.5) / n;
-        pintarSprite(ouroPronto);
+        ctx.translate(dx, dy);
+        ctx.globalAlpha = alfaNevoa;
+        pintarSprite(nevoa);
+        ctx.restore();
+      }
+      if (alfaNitida > 0.01) {
+        ctx.save();
+        ctx.translate(dx, dy);
+        ctx.globalAlpha = alfaNitida;
+        if (contorno > 0) {
+          ctx.lineWidth = contorno;
+          ctx.strokeStyle = estilo;
+          ctx.strokeText(l.texto[i], l.xs[i], 0);
+        }
+        ctx.fillStyle = estilo;
+        ctx.fillText(l.texto[i], l.xs[i], 0);
         ctx.restore();
       }
     }
-    // O brilho que corre: a versão clara da palavra, numa faixa
-    if (brilho > -0.2 && brilho < 1.2) {
-      faixaDeLuz(versaoClara.tela, versaoClara.x0, versaoClara.y0, versaoClara.l, versaoClara.a, brilho * w, w * 0.24, 0.8, Math.min(borda, w + l.tamanho));
-    }
-    // A luz que conduz a escrita (e a desescrita)
-    if (pe > 0 && pe < 1) {
-      const lx = inicio + suave * 0.5;
+    // A luz que acompanha a ponta da escrita
+    if (entrando && frente >= 0) {
+      const lx = l.xs[frente] + l.tamanho * 0.28;
       const ly = -l.ascent * 0.4;
       const r = l.tamanho * 0.55;
       const g2 = ctx.createRadialGradient(lx, ly, 0, lx, ly, r);
-      g2.addColorStop(0, "rgba(255, 246, 220, 0.5)");
+      g2.addColorStop(0, "rgba(255, 246, 220, 0.45)");
       g2.addColorStop(1, "rgba(255, 246, 220, 0)");
       ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = 1 - trecho(t, fimEntrada - 0.18, fimEntrada);
       ctx.fillStyle = g2;
       ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
     }

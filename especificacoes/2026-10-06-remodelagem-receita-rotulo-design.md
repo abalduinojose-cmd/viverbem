@@ -388,6 +388,18 @@
 > da base da última para a primeira). "personalizada" (escrita com borda
 > macia e luz), o rótulo na cápsula e o letreiro em cascata já estavam na
 > gramática e ficaram. Gravado 0–3,6 s no computador e no celular.
+> "personalizada", em seguida ("acho que o personalizada pode melhorar,
+> não gosto dela do jeito que está"): a cortina da esquerda para a direita
+> com borda macia saiu. Agora as letras nascem uma a uma de uma NÉVOA
+> dourada (sprite `l3Nevoa`, a palavra pronta desfocada por redução e
+> ampliação, recortada por letra nas fronteiras entre as origens), cada
+> letra sobe 0,22 em e o espaçamento fecha a partir do centro enquanto a
+> névoa se dissolve na letra nítida (desenhada com o degradê de ouro e o
+> contorno fino, como a imagem pronta); vãos x0,86 (`inicioLetra3`, 0,5 s
+> por letra), uma luz acompanha a ponta da escrita e, quando a última
+> assenta, o brilho varre a palavra. Na saída, da última para a primeira,
+> afundam 0,3 em e somem na névoa. Gravado 0–4,2 s no computador e no
+> celular.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
