@@ -26,6 +26,16 @@
 // (o mesmo do "Fale com a gente"); e a dica embaixo diz o que falta
 // preencher, em vez de repetir a lista inteira. Lógica, campos e a
 // mensagem do WhatsApp não mudaram.
+//
+// 21/10/2026 ("modernize ainda mais"): acabamento, não estrutura. As
+// etapas viraram uma pílula deslizante em gelo (a metade ativa em navy
+// desliza; a feita ganha o visto em ouro); o cartão da receita em repouso
+// e os produtos ficaram em cartões brancos com fio, que acendem em ouro
+// no hover, e o pote ganhou o ladrilho de gelo com a luz dourada dos
+// cartões do site; o contador virou uma pílula em gelo com o "+" em navy;
+// o rodapé da etapa 1 mostra o resumo numa pílula e "valor pelo WhatsApp"
+// com o ícone verde; na etapa 2 as sanfonas e as opções seguem o mesmo
+// cartão branco com fio. Lógica, campos e mensagem iguais.
 
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -422,38 +432,33 @@ export function CarrinhoDrawer() {
               {/* As etapas: a atual em navy, a feita com o visto em ouro, a
                   próxima em contorno; o fio entre elas acende em ouro */}
               {!enviado && (
-                <ol className="mt-4 flex items-center gap-2.5" aria-label="Etapas do pedido">
+                <ol className="relative mt-4 grid grid-cols-2 rounded-full bg-gelo p-1" aria-label="Etapas do pedido">
+                  {/* A metade ativa, em navy, desliza de uma etapa para a outra */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-navy shadow-[0_8px_18px_-10px_rgba(13,35,64,0.7)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    style={{ transform: etapa === "dados" ? "translateX(100%)" : "none" }}
+                  />
                   {ETAPAS.map((e, i) => {
                     const atual = etapa === e.id;
                     const feita = i === 0 && etapa === "dados";
                     return (
-                      <Fragment key={e.id}>
-                        {i > 0 && (
-                          <li
-                            aria-hidden="true"
-                            className={`h-px flex-1 rounded-full transition-colors ${feita ? "bg-[image:var(--ouro-degrade)]" : "bg-fio"}`}
-                          />
-                        )}
-                        <li
-                          aria-current={atual ? "step" : undefined}
-                          className={`flex items-center gap-2 text-[0.78rem] font-semibold transition-colors ${
-                            atual || feita ? "text-navy" : "text-cinza"
+                      <li
+                        key={e.id}
+                        aria-current={atual ? "step" : undefined}
+                        className={`relative z-[1] flex h-9 items-center justify-center gap-2 text-[0.8rem] font-semibold transition-colors duration-300 ${
+                          atual ? "text-white" : "text-navy"
+                        }`}
+                      >
+                        <span
+                          className={`flex size-5 items-center justify-center rounded-full text-[0.65rem] tabular-nums transition-colors duration-300 ${
+                            atual ? "bg-white/15 text-white" : feita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-white text-cinza ring-1 ring-fio"
                           }`}
                         >
-                          <span
-                            className={`flex size-6 items-center justify-center rounded-full text-[0.6875rem] tabular-nums transition-colors ${
-                              atual
-                                ? "bg-navy text-white"
-                                : feita
-                                  ? "bg-[image:var(--ouro-degrade)] text-navy"
-                                  : "border border-fio text-cinza"
-                            }`}
-                          >
-                            {feita ? <IconeFeito tamanho={12} /> : i + 1}
-                          </span>
-                          {e.rotulo}
-                        </li>
-                      </Fragment>
+                          {feita ? <IconeFeito tamanho={11} /> : i + 1}
+                        </span>
+                        {e.rotulo}
+                      </li>
                     );
                   })}
                 </ol>
@@ -493,14 +498,14 @@ export function CarrinhoDrawer() {
                     className={`relative overflow-hidden text-left rounded-[1.5rem] p-4 flex flex-col gap-4 transition ${
                       receita
                         ? "banner-noite em-noite text-white shadow-[0_20px_40px_-24px_rgba(13,35,64,0.6)]"
-                        : "bg-gelo/60 hover:bg-gelo"
+                        : "bg-white ring-1 ring-inset ring-fio hover:ring-ouro/45 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]"
                     }`}
                   >
                     {receita && <span aria-hidden="true" className="malha-banner" />}
                     <span className="relative flex items-center gap-3.5 w-full">
                       <span
                         className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-colors ${
-                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-white text-tinta shadow-sm"
+                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-gelo text-tinta"
                         }`}
                       >
                         <IconeReceita tamanho={22} />
@@ -575,7 +580,9 @@ export function CarrinhoDrawer() {
                   {/* Produtos do carrinho */}
                   {temProdutos && (
                     <div className="mt-2 flex items-center justify-between px-1">
-                      <p className="rotulo !text-cinza">Produtos</p>
+                      <p className="rotulo !text-cinza">
+                        Produtos <span className="ml-1 tabular-nums text-navy">· {totalItens}</span>
+                      </p>
                       <button
                         type="button"
                         onClick={() => itens.forEach((i) => remover(i.produtoId, i.dosagem))}
@@ -588,15 +595,16 @@ export function CarrinhoDrawer() {
                   {itens.map((item, i) => (
                     <div
                       key={`${item.produtoId}-${item.dosagem ?? ""}`}
-                      className="animar-surgir rounded-[1.25rem] bg-gelo/50 p-3 flex gap-3.5"
+                      className="animar-surgir group/item rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-3 flex gap-3.5 transition hover:ring-ouro/45 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]"
                       style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                     >
-                      {/* O pote num ladrilho branco sobre a linha em gelo (10/10/2026, "carrinho mais moderno") */}
-                      <div className="shrink-0 w-[4.5rem] h-[4.5rem] rounded-2xl bg-white shadow-sm flex items-center justify-center p-2">
+                      {/* O pote no ladrilho de gelo com a luz dourada, como nos cartões do site (21/10/2026) */}
+                      <div className="relative shrink-0 w-[4.5rem] h-[4.5rem] overflow-hidden rounded-2xl bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-2">
+                        <span aria-hidden="true" className="absolute inset-x-[15%] bottom-0.5 h-4 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.3),transparent_70%)]" />
                         <FotoProduto
                           fotoUrl={item.fotoUrl ?? null}
                           nome={item.nome}
-                          className="max-w-full max-h-full !object-contain"
+                          className="relative max-w-full max-h-full !object-contain drop-shadow-[0_5px_7px_rgba(16,42,74,0.26)] transition-transform duration-500 group-hover/item:-translate-y-0.5"
                         />
                       </div>
 
@@ -628,12 +636,12 @@ export function CarrinhoDrawer() {
                           ) : (
                             <span />
                           )}
-                          <div className="flex items-center bg-white ring-1 ring-fio rounded-full p-0.5 gap-0.5">
+                          <div className="flex items-center bg-gelo rounded-full p-0.5 gap-0.5">
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, -1)}
                               aria-label="Diminuir"
-                              className="w-8 h-8 rounded-full bg-gelo text-navy text-base flex items-center justify-center active:scale-90 transition hover:bg-fio"
+                              className="w-8 h-8 rounded-full bg-white text-navy text-base flex items-center justify-center active:scale-90 transition hover:bg-fio shadow-sm"
                             >
                               −
                             </button>
@@ -644,7 +652,7 @@ export function CarrinhoDrawer() {
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, 1)}
                               aria-label="Aumentar"
-                              className="w-8 h-8 rounded-full bg-navy text-white text-base flex items-center justify-center active:scale-90 transition"
+                              className="w-8 h-8 rounded-full bg-navy text-white text-base flex items-center justify-center active:scale-90 transition hover:bg-tinta"
                             >
                               +
                             </button>
@@ -656,8 +664,8 @@ export function CarrinhoDrawer() {
 
                   {/* Nada escolhido ainda */}
                   {!temAlgo && (
-                    <div className="mt-2 rounded-[1.5rem] bg-gelo/60 px-5 py-7 text-center">
-                      <span className="mx-auto w-12 h-12 rounded-2xl bg-white text-tinta shadow-sm flex items-center justify-center">
+                    <div className="mt-2 rounded-[1.5rem] bg-white ring-1 ring-inset ring-fio px-5 py-7 text-center">
+                      <span className="mx-auto w-12 h-12 rounded-2xl bg-gelo text-tinta flex items-center justify-center">
                         <IconeCarrinho tamanho={22} />
                       </span>
                       <p className="mt-3 font-semibold text-navy">Seu pedido está vazio</p>
@@ -679,8 +687,13 @@ export function CarrinhoDrawer() {
                 <div className="shrink-0 border-t border-fio bg-white px-5 pt-4 pb-5 md:pb-6">
                   {temAlgo && (
                     <div className="flex items-center justify-between gap-3 text-sm mb-3">
-                      <span className="font-medium text-navy">{resumoCurto}</span>
-                      <span className="text-cinza">valor pelo WhatsApp</span>
+                      <span className="inline-flex h-8 items-center rounded-full bg-gelo px-3 font-semibold text-navy">{resumoCurto}</span>
+                      <span className="inline-flex items-center gap-1.5 text-cinza">
+                        <span className="text-[#1DA851]">
+                          <IconeWhatsApp tamanho={15} />
+                        </span>
+                        valor pelo WhatsApp
+                      </span>
                     </div>
                   )}
                   <button
@@ -767,8 +780,8 @@ export function CarrinhoDrawer() {
                           aria-pressed={entrega === opcao.modo}
                           className={`relative rounded-2xl px-3 py-4 border transition active:scale-95 flex flex-col items-center gap-1.5 text-center ${
                             entrega === opcao.modo
-                              ? "bg-navy text-white border-navy"
-                              : "bg-white text-navy border-fio hover:border-tinta/40"
+                              ? "bg-navy text-white border-navy shadow-[0_18px_40px_-24px_rgba(13,35,64,0.6)]"
+                              : "bg-white text-navy border-fio hover:border-ouro/50"
                           }`}
                         >
                           {/* O selo de marcado, em ouro, no canto */}
@@ -802,7 +815,7 @@ export function CarrinhoDrawer() {
                               onClick={() => setUnidade(`${u.bairro}, ${u.endereco}`)}
                               aria-pressed={marcada}
                               className={`text-left rounded-2xl px-4 py-3 border transition active:scale-[0.98] flex items-start gap-3 ${
-                                marcada ? "bg-gelo/60 border-tinta" : "bg-white border-fio hover:border-tinta/40"
+                                marcada ? "bg-gelo/60 border-tinta" : "bg-white border-fio hover:border-ouro/50"
                               }`}
                             >
                               <span
@@ -843,7 +856,7 @@ export function CarrinhoDrawer() {
                   </div>
 
                   {/* Observação: fechada por padrão, para não alongar a tela */}
-                  <details className="group rounded-2xl bg-gelo/50">
+                  <details className="group rounded-2xl bg-white ring-1 ring-inset ring-fio open:bg-gelo/40 transition-colors">
                     <summary className="flex items-center justify-between gap-3 min-h-12 px-4 cursor-pointer list-none marker:content-[''] text-sm font-semibold text-navy">
                       <span>
                         Observação <span className="text-cinza font-normal">(opcional)</span>
@@ -863,7 +876,7 @@ export function CarrinhoDrawer() {
                   </details>
 
                   {/* Resumo do pedido, fechado por padrão */}
-                  <details className="group rounded-2xl bg-gelo/50">
+                  <details className="group rounded-2xl bg-white ring-1 ring-inset ring-fio open:bg-gelo/40 transition-colors">
                     <summary className="flex items-center justify-between gap-3 min-h-12 px-4 cursor-pointer list-none marker:content-[''] text-sm font-semibold text-navy">
                       <span>
                         Resumo do pedido <span className="text-cinza font-normal">· {resumoCurto}</span>

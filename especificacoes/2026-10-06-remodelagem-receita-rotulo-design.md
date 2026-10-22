@@ -1,5 +1,26 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 87 (21/10/2026): gaveta do pedido com acabamento mais moderno, mesma estrutura e lógica. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
+> Pedido (com a gaveta selecionada): "modernize ainda mais".
+> - As duas etapas viraram uma PÍLULA DESLIZANTE em gelo no cabeçalho: a
+>   metade ativa em navy desliza de "Pedido" para "Dados" (transição de
+>   transform, 500 ms, curva expo), a feita ganha o visto em ouro, a
+>   próxima fica com o número em branco com fio. Mesmo aria (current step).
+> - O cartão da receita em repouso e cada produto viraram cartões BRANCOS
+>   com fio, que acendem em ouro no hover; o pote ganhou o ladrilho de gelo
+>   com a luz dourada dos cartões do site e sobe de leve no hover; o
+>   contador é uma pílula em gelo com o "−" branco e o "+" em navy; o
+>   rótulo "Produtos" mostra a contagem.
+> - Rodapé da etapa 1: o resumo ("2 produtos", "Receita + 1 produto") numa
+>   pílula em gelo e "valor pelo WhatsApp" com o ícone verde ao lado.
+> - Etapa 2: as opções de entrega em cartão branco com fio (a escolhida em
+>   navy com sombra e o visto de ouro), as lojas e as sanfonas de
+>   Observação e Resumo no mesmo cartão branco, que fica em gelo ao abrir.
+> - Nada mudou em lógica, campos, validação, código do pedido, registro no
+>   painel nem na mensagem do WhatsApp; o estado vazio e a confirmação
+>   seguem iguais (o vazio só trocou o gelo pelo cartão branco com fio).
+
+
 > **ADENDO 86 (21/10/2026): selos de volta na página do produto (três) e o site mais leve, medido. IMPLEMENTADO e PUBLICADO no 39º push a pedido ("atualize o github"), junto com o adendo 85.**
 > Pedido: "volte com o delivery e retirada na loja na página do produto e
 > coloque mais informações perto do produto se for necessário; otimize o
