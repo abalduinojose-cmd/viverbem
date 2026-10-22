@@ -1,5 +1,28 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 89 (22/10/2026): o cabeçalho de seção (rótulo, título, traço e apoio) subiu de nível no site inteiro, só pelo CSS. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
+> Pedido (com as pílulas "Como funciona", "Saúde da mulher", "Acompanhe a
+> gente", "Quem já é cliente", "Fale com a gente" e "WhatsApp"
+> selecionadas): "tá muito simples; quero muito mais moderno, um site de
+> alta performance". Como todas as seções usam o mesmo padrão
+> (.rotulo-pilula + .titulo-secao + .texto-apoio), a mudança foi feita
+> uma vez, no globals.css, e vale em todas as páginas e no cartão do
+> WhatsApp:
+> - Pílula do rótulo: branca com o CONTORNO EM DEGRADÊ DE OURO que se
+>   apaga para a direita (duas camadas de fundo, padding-box e
+>   border-box), sombra curta, espaçamento das letras 0,16em; no escuro,
+>   vidro com o mesmo contorno em creme de ouro.
+> - Traço embaixo do título: 2,75rem de ouro cheio seguido de um fio que
+>   se apaga até 9rem (no máximo 60% da largura), em vez do tracinho de
+>   3rem; segue crescendo ao rolar.
+> - A palavra em ouro do título recebe uma VARREDURA DE LUZ ao entrar na
+>   tela (degradê de ouro com um brilho no meio, 240% de largura, a
+>   posição desliza da direita para a esquerda por timeline de rolagem:
+>   roda com movimento reduzido), terminando no ouro normal.
+> - Texto de apoio: entrelinha 1,6 e text-wrap: pretty.
+> Nada de estrutura mudou; os títulos continuam se escrevendo ao rolar.
+
+
 > **ADENDO 88 (22/10/2026): auditoria de todos os links e botões (site e painel) e polimento do painel: a marca na lateral, a página Home e arte da dobra e a Visão geral. IMPLEMENTADO e conferido no localhost.**
 > Pedidos: "conserte todos os botões do site e do painel, todos têm que
 > estar funcionando e direcionando para o local ideal"; "melhore a logo;
