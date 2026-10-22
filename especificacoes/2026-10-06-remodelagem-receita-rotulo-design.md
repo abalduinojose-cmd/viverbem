@@ -376,6 +376,18 @@
 > mola de 0,8%, "em saúde" pela direita, "personalizada" que se escreve,
 > fecho e saída em espelho) seguiu igual. Gravado o laço inteiro (15,6 s)
 > no computador e no celular; tsc e eslint limpos.
+> Tipografia da hero, mesmo dia ("pode seguir com a tipografia toda"):
+> "Especialistas" chega com as letras um pouco abertas a partir do centro
+> e o espaçamento fecha ao pousar (um "tracking" de text animator, `dx` em
+> `letra1`), e no instante em que as últimas letras pousam uma luz dourada
+> varre a palavra da esquerda para a direita (1,0–1,4 s; sprite `l1Luz`,
+> a linha na cor quente #ffe2a8, pela `faixaDeLuz`); "em saúde" deixou de
+> deslizar pela direita inclinada e passou a subir de uma fresta palavra a
+> palavra (`palavra2`: "em" em 0,36 s, "saúde", a âncora, em 0,46 s, vãos
+> x0,84, opacidade binária pela máscara, rastro curto; na saída caem atrás
+> da base da última para a primeira). "personalizada" (escrita com borda
+> macia e luz), o rótulo na cápsula e o letreiro em cascata já estavam na
+> gramática e ficaram. Gravado 0–3,6 s no computador e no celular.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
