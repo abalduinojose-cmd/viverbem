@@ -1,5 +1,21 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 90 (22/10/2026): cabeçalhos de seção com halo e segunda voz maior; rodapé com os links em caixa normal. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
+> Pedidos: "não gostei, melhore mais" (sobre o adendo 89) e "melhore o
+> rodapé" (os links Início, Produtos...); em seguida "não gostei do
+> rodapé, estava melhor antes, só queria mais clean".
+> - Cabeçalhos: um HALO suave atrás de cada bloco "rótulo + título" (ouro
+>   a 16% para azul a 6%, borrado, 24rem, atrás do texto por z-index -1 num
+>   contexto isolado; no escuro, só ouro), encontrado pelo seletor
+>   `:has(> .rotulo-pilula + .titulo-secao)`, sem mexer em nenhuma
+>   seção; a palavra em ouro passou de 1,16em para 1,22em e o rótulo de
+>   11px para 11,5px.
+> - Rodapé: uma versão em duas colunas com pontos de ouro foi reprovada na
+>   hora; voltou a fileira centrada de antes, agora em caixa normal, peso
+>   médio, 0,9rem e branco a 70% (era caixa alta miúda e espaçada), com o
+>   mesmo fio de ouro no hover.
+
+
 > **ADENDO 89 (22/10/2026): o cabeçalho de seção (rótulo, título, traço e apoio) subiu de nível no site inteiro, só pelo CSS. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
 > Pedido (com as pílulas "Como funciona", "Saúde da mulher", "Acompanhe a
 > gente", "Quem já é cliente", "Fale com a gente" e "WhatsApp"

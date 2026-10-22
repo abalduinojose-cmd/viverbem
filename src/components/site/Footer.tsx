@@ -153,13 +153,20 @@ export function Footer() {
         {/* Navegação em texto, centrada e com ar (21/10/2026, "mais clean":
             a pílula de vidro saiu; o link acende em branco e ganha um fio
             de ouro embaixo ao passar o mouse) */}
+        {/* Navegação em texto, centrada e com ar (21/10/2026, "mais clean":
+            a pílula de vidro saiu; o link acende em branco e ganha um fio
+            de ouro embaixo ao passar o mouse). 22/10/2026: uma versão em
+            duas colunas com pontos foi reprovada na hora ("estava melhor
+            antes, só queria mais clean"): ficou a mesma fileira, só que em
+            caixa normal, peso médio e um pouco maior, sem o espaçamento
+            de caixa alta. */}
         <nav aria-label="Links do rodapé" className="mt-10 w-full">
-          <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 sm:gap-x-9">
+          <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-1 sm:gap-x-10">
             {NAVEGACAO.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="group inline-flex min-h-11 items-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/65 transition-colors duration-300 hover:text-white"
+                  className="group inline-flex min-h-11 items-center text-[0.9rem] font-medium tracking-[-0.005em] text-white/70 transition-colors duration-300 hover:text-white"
                 >
                   <span className="relative py-1">
                     {l.rotulo}

@@ -143,7 +143,7 @@ body {
     font-weight: 400;
     /* 1,16em desde 11/10/2026: a voz serifada um pouco maior que a sans
        pesada ao lado, para as duas vozes contrastarem de verdade */
-    font-size: 1.16em;
+    font-size: 1.22em; /* 1,16 -> 1,22 em 22/10/2026 ("melhore mais") */
     letter-spacing: -0.015em;
     background-image: var(--ouro-degrade);
     -webkit-background-clip: text;
@@ -190,8 +190,8 @@ body {
       linear-gradient(#fff, #fff) padding-box,
       linear-gradient(90deg, rgba(201, 165, 107, 0.95) 0%, rgba(201, 165, 107, 0.55) 45%, rgba(28, 105, 181, 0.12) 100%) border-box;
     box-shadow: 0 10px 22px -16px rgba(13, 35, 64, 0.35);
-    /* 11px: piso de leitura para texto funcional (13/10/2026) */
-    font-size: 0.6875rem;
+    /* 11,5px desde 22/10/2026 (o piso de leitura é 11px) */
+    font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -254,6 +254,35 @@ body {
   }
   /* Depois do rótulo, o título ganha um traço curto de ouro embaixo
      (07/10/2026, "quero mais moderno"); centralizado nas seções centradas */
+  /* 22/10/2026 ("melhore mais"): um HALO suave atrás de cada cabeçalho de
+     seção (o bloco que tem o rótulo seguido do título), ouro e azul bem
+     apagados, para o cabeçalho ter atmosfera e não ficar "solto" no branco.
+     Fica atrás do texto (z-index -1 dentro do próprio bloco, que isola o
+     contexto) e não captura cliques. No escuro, só ouro. */
+  .revelar > div:has(> .rotulo-pilula + .titulo-secao),
+  .revelar:has(> .rotulo-pilula + .titulo-secao) {
+    position: relative;
+    isolation: isolate;
+  }
+  .revelar > div:has(> .rotulo-pilula + .titulo-secao)::before,
+  .revelar:has(> .rotulo-pilula + .titulo-secao)::before {
+    content: "";
+    position: absolute;
+    left: -3rem;
+    top: -3.5rem;
+    width: 24rem;
+    max-width: 120%;
+    height: 15rem;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgba(201, 165, 107, 0.16), rgba(28, 105, 181, 0.06) 55%, transparent 100%);
+    filter: blur(10px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .em-noite .revelar > div:has(> .rotulo-pilula + .titulo-secao)::before,
+  .em-noite .revelar:has(> .rotulo-pilula + .titulo-secao)::before {
+    background: radial-gradient(closest-side, rgba(225, 198, 143, 0.14), transparent 100%);
+  }
   /* 22/10/2026: o traço cresceu: 2,75rem de ouro cheio e depois um fio
      que se apaga até 9rem (a assinatura das aberturas de página) */
   .rotulo-pilula + .titulo-secao::after {
