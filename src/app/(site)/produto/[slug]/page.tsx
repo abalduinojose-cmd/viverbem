@@ -129,7 +129,7 @@ function ListaItens({ titulo, itens }: { titulo: string; itens: string[] }) {
 }
 
 // A linha de compra segura, embaixo dos selos
-const SEGURANCA = ["Farmacêutico confere cada pedido", "Você só paga depois de confirmar", "Seus dados ficam com a farmácia (LGPD)"];
+const SEGURANCA = ["Farmacêutico confere cada pedido", "Você só paga depois de confirmar", "Seus dados ficam com a farmácia"];
 
 // Como o pedido chega até a pessoa, em três passos de processo
 const PASSOS_PEDIDO = [
@@ -140,10 +140,11 @@ const PASSOS_PEDIDO = [
 
 // Selos de logística, logo embaixo do cartão de compra: só o que dá para
 // comprovar (voltaram em 21/10/2026, com o terceiro)
+// 23/10/2026: ordem pedida (WhatsApp, Delivery, Retirada), ícones maiores
 const SELOS = [
-  { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "Petrópolis e Região" },
-  { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
-  { icone: <IconeWhatsApp tamanho={15} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
+  { icone: <IconeWhatsApp tamanho={19} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
+  { icone: <IconeMoto tamanho={21} />, titulo: "Delivery", texto: "Petrópolis e Região" },
+  { icone: <IconeLoja tamanho={19} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
 ];
 
 // 23/10/2026 (terceira volta, "melhore"): três colunas em TODA tela, o
@@ -152,12 +153,12 @@ const SELOS = [
 // meia tela)
 function Selos() {
   return (
-    <ul className="mt-5 grid grid-cols-3 divide-x divide-fio overflow-hidden rounded-2xl border border-fio bg-white">
-      {SELOS.map((s) => (
-        <li key={s.titulo} className="flex flex-col items-center gap-1.5 px-2 py-3.5 text-center">
-          <span className="flex size-9 items-center justify-center rounded-full bg-ouro/10 text-ouro-escuro">{s.icone}</span>
-          <b className="text-[0.8rem] font-semibold leading-tight text-navy">{s.titulo}</b>
-          <span className="text-[0.7rem] leading-tight text-cinza">{s.texto}</span>
+    <ul className="mt-5 grid grid-cols-3 divide-x divide-fio overflow-hidden rounded-2xl border border-fio bg-white shadow-[0_18px_40px_-34px_rgba(16,42,74,0.3)]">
+      {SELOS.map((s, i) => (
+        <li key={s.titulo} className="flex flex-col items-center gap-2 px-2 py-4 text-center">
+          <span className={`flex size-11 items-center justify-center rounded-full ring-1 ring-inset ${i === 0 ? "bg-[#25D366]/12 text-[#128C4B] ring-[#25D366]/25" : "bg-ouro/10 text-ouro-escuro ring-ouro/25"}`}>{s.icone}</span>
+          <b className="text-[0.84rem] font-semibold leading-tight text-navy">{s.titulo}</b>
+          <span className="text-[0.72rem] leading-tight text-cinza">{s.texto}</span>
         </li>
       ))}
     </ul>
@@ -427,12 +428,16 @@ export default async function PaginaProduto({ params }: Props) {
             <Selos />
 
             {/* Compra segura */}
-            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[0.8rem] text-cinza">
+            {/* 23/10/2026: os três avisos em pílulas de gelo com o visto num
+                círculo verde, em vez de linhas soltas */}
+            <ul className="mt-4 flex flex-wrap gap-2">
               {SEGURANCA.map((t) => (
-                <li key={t} className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 text-[#1DA851]">
-                    <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                <li key={t} className="inline-flex items-center gap-2 rounded-full bg-gelo/70 py-1 pl-1 pr-3 text-[0.78rem] font-medium text-navy ring-1 ring-inset ring-fio/70">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#1DA851] text-white">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
                   {t}
                 </li>
               ))}

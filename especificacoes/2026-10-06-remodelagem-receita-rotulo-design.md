@@ -28,6 +28,15 @@
 >   horário.
 > - O selo "Manipulado sob receita" saiu de cima da descrição; "Pronta
 >   entrega" segue nos industrializados.
+> - Sexta volta (23/10, "Valor no WhatsApp, Delivery e depois Retirada; melhore
+>   os ícones e aumente um pouco; ative o Compartilhar; melhore a quantidade;
+>   melhore a compra segura"): selos na ordem pedida, círculos de 2,75rem
+>   com anel (o do WhatsApp em verde), ícones maiores; o Compartilhar abre
+>   a folha do aparelho só no toque e, no computador, um MENU com WhatsApp
+>   e Copiar link (com reserva por execCommand quando a área de
+>   transferência é negada); a quantidade virou pílula na altura do carrinho
+>   com "menos" em gelo e "mais" em navy; a compra segura virou três pílulas
+>   de gelo com o visto num círculo verde (sem o "(LGPD)" no texto).
 > - Quinta volta ("tire as dúvidas, exclua a legenda da mensagem, deixe mais
 >   clean, mas tá muito bom"): a aba Dúvidas saiu (ficaram Descrição, Como
 >   pedir e Entrega e retirada) e a legenda embaixo do botão do WhatsApp

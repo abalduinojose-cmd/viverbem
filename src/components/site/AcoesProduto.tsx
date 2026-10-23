@@ -66,8 +66,10 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   const mensagemWhats = `Olá! Vim pelo site e quero pedir: ${quantidade}x ${produto.nome}${dosagem ? ` (${dosagem})` : ""}.`;
   const linkWhats = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagemWhats)}`;
 
-  const classePasso =
-    "flex size-11 items-center justify-center rounded-full text-navy transition-colors hover:bg-gelo active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100";
+  // 23/10/2026 ("melhore o botão de quantidade", de novo): os dois passos
+  // viraram círculos cheios, o "menos" em gelo e o "mais" em navy, com o
+  // número maior no meio; a pílula tem a altura do botão do carrinho
+  const classePasso = "flex size-10 items-center justify-center rounded-full transition active:scale-90 disabled:opacity-35 disabled:active:scale-100";
 
   return (
     <div className="mt-7 rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6 shadow-[0_24px_40px_-32px_rgba(16,42,74,0.35)]">
@@ -112,12 +114,12 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         <div
           role="group"
           aria-labelledby="rotulo-quantidade"
-          className="flex shrink-0 items-center rounded-full bg-white p-1 ring-1 ring-inset ring-fio shadow-[0_8px_18px_-14px_rgba(13,35,64,0.4)]"
+          className="flex h-[3.25rem] shrink-0 items-center gap-0.5 rounded-full bg-white px-1.5 ring-1 ring-inset ring-fio shadow-[0_10px_22px_-16px_rgba(13,35,64,0.45)]"
         >
-          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={classePasso}>
+          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={`${classePasso} bg-gelo text-navy hover:bg-fio`}>
             <IconeMenos />
           </button>
-          <output aria-live="polite" className="w-9 text-center text-[1.15rem] font-semibold text-navy tabular-nums">
+          <output aria-live="polite" className="w-10 text-center text-[1.25rem] font-semibold text-navy tabular-nums">
             {quantidade}
           </output>
           <button
@@ -125,7 +127,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
             onClick={() => setQuantidade((q) => Math.min(MAXIMO, q + 1))}
             disabled={quantidade >= MAXIMO}
             aria-label="Aumentar quantidade"
-            className={classePasso}
+            className={`${classePasso} bg-navy text-white hover:bg-tinta`}
           >
             <IconeMaisQtd />
           </button>
