@@ -1,5 +1,35 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 93 (23/10/2026): página do produto, terceira e quarta voltas. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
+> Pedidos, na sequência: "melhore o botão e as avaliações; melhore os
+> selos (Delivery/Retirada/Valor) e as abas"; "gostei das abas, agora
+> melhore por dentro o Sobre o produto, Entrega e retirada e Como pedir, e
+> exclua Avaliações"; "tire o Manipulado sob receita".
+> - Botão do WhatsApp: numa linha só, verde cheio, ícone e seta; a
+>   legenda com o que vai na mensagem ("A mensagem já vai com 1x ...
+>   Resposta no horário das lojas") ficou embaixo, pequena e centrada.
+> - Selos de entrega: tira única com fio, três colunas em TODA tela, ícone
+>   em círculo de ouro em cima, título e apoio centrados (no celular eram
+>   três linhas empilhadas); "Valor no WhatsApp, no horário das lojas".
+> - Abas: SELETOR EM PÍLULA (trilha em gelo, a ativa numa pílula branca
+>   com sombra curta e fio de ouro na base, que desliza até a escolhida;
+>   rola de lado no celular). Aprovado ("gostei da mudança").
+> - A aba Avaliações saiu (a faixa de avaliações da farmácia foi removida
+>   do componente); o selo embaixo do nome (G, 5,0, estrelas, três rostos,
+>   "680 avaliações", seta) passou a levar à página /avaliacoes.
+> - Por dentro das abas: Descrição = texto + QUATRO CARTÕES com visto de
+>   ouro (manipulado: preparado sob receita, na dose indicada, conferido
+>   pelo farmacêutico, retirada em 3 lojas; industrializado: pronta
+>   entrega, preço no site, conferido, retirada) + o aviso legal em tom de
+>   serviço; Como pedir = três cartões com ícone, número em ouro e o fio
+>   que os liga no computador, mais a chamada com o botão Enviar receita
+>   (com o produto visto); Entrega e retirada = Delivery com três linhas e
+>   Retirada com as três lojas (bairro, endereço e "Como chegar"), sem
+>   horário.
+> - O selo "Manipulado sob receita" saiu de cima da descrição; "Pronta
+>   entrega" segue nos industrializados.
+
+
 > **ADENDO 92 (23/10/2026): página do produto, segunda volta. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
 > Pedido: "gostei, mas melhore: tire a ficha técnica, o valor sob consulta,
 > o código e a marca (é tudo da Viver Bem); melhore o pedir pelo WhatsApp,

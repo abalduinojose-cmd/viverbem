@@ -155,27 +155,25 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         </button>
       </div>
 
-      {/* Pedir direto, sem passar pelo carrinho: o verde do WhatsApp */}
+      {/* Pedir direto, sem passar pelo carrinho: o verde do WhatsApp, numa
+          linha só (23/10/2026, terceira volta: a legenda com o que vai na
+          mensagem saiu de dentro do botão e ficou embaixo, pequena) */}
       <a
         href={linkWhats}
         target="_blank"
         rel="noopener noreferrer"
-        className="group mt-3 flex w-full items-center gap-3 rounded-full bg-[#1DA851] py-2 pl-2 pr-5 text-white shadow-[0_16px_30px_-18px_rgba(29,168,81,0.85)] transition-colors hover:bg-[#178a43]"
+        className="group mt-3 flex w-full items-center justify-center gap-2.5 min-h-[3.25rem] rounded-full bg-[#1DA851] px-5 text-[1rem] font-semibold text-white shadow-[0_16px_30px_-18px_rgba(29,168,81,0.85)] transition-colors hover:bg-[#178a43] active:scale-[0.99]"
       >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20">
-          <IconeWhatsApp tamanho={21} />
-        </span>
-        <span className="min-w-0 flex-1 leading-tight">
-          <span className="block text-[0.98rem] font-semibold">Pedir pelo WhatsApp</span>
-          <span className="block text-[0.75rem] text-white/80">
-            {quantidade}x {produto.nome}
-            {dosagem ? ` (${dosagem})` : ""}, resposta no horário das lojas
-          </span>
-        </span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5">
+        <IconeWhatsApp tamanho={21} />
+        Pedir pelo WhatsApp
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="ml-1 transition-transform group-hover:translate-x-0.5">
           <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
+      <p className="mt-2.5 text-center text-[0.78rem] leading-snug text-cinza tabular-nums">
+        A mensagem já vai com {quantidade}x {produto.nome}
+        {dosagem ? ` (${dosagem})` : ""}. Resposta no horário das lojas.
+      </p>
     </div>
   );
 }

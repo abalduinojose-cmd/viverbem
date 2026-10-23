@@ -61,32 +61,40 @@ export function AbasProduto({ abas }: { abas: Aba[] }) {
 
   return (
     <div ref={raiz} className="scroll-mt-[calc(var(--altura-cabecalho)+1rem)]">
-      <div ref={lista} role="tablist" aria-label="Detalhes do produto" onKeyDown={aoTeclar} className="relative flex gap-1 overflow-x-auto rolagem-sem-barra border-b border-fio">
-        {abas.map((a, i) => (
-          <button
-            key={a.id}
-            ref={(el) => {
-              botoes.current[i] = el;
-            }}
-            type="button"
-            role="tab"
-            id={`${base}-aba-${a.id}`}
-            aria-selected={i === ativa}
-            aria-controls={`${base}-painel-${a.id}`}
-            tabIndex={i === ativa ? 0 : -1}
-            onClick={() => setAtiva(i)}
-            className={`relative shrink-0 h-12 px-4 text-[0.95rem] font-semibold whitespace-nowrap transition-colors ${
-              i === ativa ? "text-navy" : "text-cinza hover:text-navy"
-            }`}
+      {/* 23/10/2026 (terceira volta): as abas viraram um SELETOR EM PÍLULA,
+          como nos marketplaces: a trilha em gelo, a aba ativa numa pílula
+          branca com sombra curta e um fio de ouro na base, que desliza até
+          a aba escolhida; no celular a trilha rola de lado. */}
+      <div className="-mx-5 overflow-x-auto rolagem-sem-barra px-5 md:mx-0 md:px-0">
+        <div ref={lista} role="tablist" aria-label="Detalhes do produto" onKeyDown={aoTeclar} className="relative inline-flex min-w-full gap-1 rounded-full bg-gelo p-1 md:min-w-0">
+          <span
+            aria-hidden="true"
+            className="absolute top-1 bottom-1 left-0 rounded-full bg-white shadow-[0_10px_24px_-14px_rgba(13,35,64,0.5)] ring-1 ring-inset ring-fio/70 transition-[transform,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ transform: `translateX(${marca.x}px)`, width: marca.w }}
           >
-            {a.rotulo}
-          </button>
-        ))}
-        <span
-          aria-hidden="true"
-          className="absolute bottom-[-1px] left-0 h-[3px] rounded-full bg-[image:var(--ouro-degrade)] transition-[transform,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{ transform: `translateX(${marca.x}px)`, width: marca.w }}
-        />
+            <span className="absolute inset-x-4 bottom-0 h-[2px] rounded-full bg-[image:var(--ouro-degrade)]" />
+          </span>
+          {abas.map((a, i) => (
+            <button
+              key={a.id}
+              ref={(el) => {
+                botoes.current[i] = el;
+              }}
+              type="button"
+              role="tab"
+              id={`${base}-aba-${a.id}`}
+              aria-selected={i === ativa}
+              aria-controls={`${base}-painel-${a.id}`}
+              tabIndex={i === ativa ? 0 : -1}
+              onClick={() => setAtiva(i)}
+              className={`relative z-[1] h-11 shrink-0 flex-1 px-4 text-[0.92rem] font-semibold whitespace-nowrap rounded-full transition-colors ${
+                i === ativa ? "text-navy" : "text-cinza hover:text-navy"
+              }`}
+            >
+              {a.rotulo}
+            </button>
+          ))}
+        </div>
       </div>
       {abas.map((a, i) => (
         <div

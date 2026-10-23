@@ -2,8 +2,8 @@
 // São as avaliações reais da FARMÁCIA no Google (não há avaliação por
 // produto, e nenhuma é inventada): no alto, embaixo do nome, um selo com o
 // "G", as estrelas, a nota e o total, com três rostos de clientes, que leva
-// à aba Avaliações; na aba, o resumo grande e três avaliações com foto,
-// trocando conforme o produto para as páginas não repetirem as mesmas.
+// à página /avaliacoes (a aba Avaliações da página do produto saiu a
+// pedido, na quarta volta do mesmo dia).
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, type DepoimentoDTO } from "@/lib/tipos";
@@ -33,7 +33,7 @@ function Rosto({ a, tamanho }: { a: DepoimentoDTO; tamanho: string }) {
 
 /** As avaliações de um produto: as com foto primeiro, a partir de um ponto
  *  que depende do produto (cada página mostra outras) */
-export function escolherAvaliacoes(todas: DepoimentoDTO[], semente: number, quantas = 3) {
+export function escolherAvaliacoes(todas: DepoimentoDTO[], semente: number, quantas = 6) {
   const comFoto = todas.filter((a) => a.fotoUrl && a.texto.trim().length > 40);
   const base = comFoto.length >= quantas ? comFoto : todas;
   if (base.length === 0) return [];
@@ -41,12 +41,12 @@ export function escolherAvaliacoes(todas: DepoimentoDTO[], semente: number, quan
   return Array.from({ length: Math.min(quantas, base.length) }, (_, i) => base[(inicio + i) % base.length]);
 }
 
-/** O selo embaixo do nome do produto: leva à aba Avaliações */
+/** O selo embaixo do nome do produto: leva à página de avaliações */
 export function SeloAvaliacoes({ rostos }: { rostos: DepoimentoDTO[] }) {
   return (
-    <a
-      href="#avaliacoes"
-      className="group mt-3 inline-flex w-fit max-w-full flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1.25rem] sm:rounded-full bg-white py-1.5 pl-1.5 pr-4 ring-1 ring-inset ring-fio shadow-[0_10px_24px_-18px_rgba(13,35,64,0.45)] transition-colors hover:ring-ouro/50"
+    <Link
+      href="/avaliacoes"
+      className="group mt-3 inline-flex w-fit max-w-full flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1.25rem] sm:rounded-full bg-white py-1.5 pl-1.5 pr-3 ring-1 ring-inset ring-fio shadow-[0_10px_24px_-18px_rgba(13,35,64,0.45)] transition-colors hover:ring-ouro/50"
     >
       <span className="flex items-center gap-2">
         <span className="flex size-8 items-center justify-center rounded-full bg-white ring-1 ring-fio">
@@ -64,63 +64,14 @@ export function SeloAvaliacoes({ rostos }: { rostos: DepoimentoDTO[] }) {
           </span>
         )}
         <span className="text-[0.85rem] text-cinza transition-colors group-hover:text-tinta">
-          <span className="tabular-nums font-medium text-navy">{AVALIACOES_GOOGLE_TOTAL}</span> avaliações no Google
+          <span className="tabular-nums font-medium text-navy">{AVALIACOES_GOOGLE_TOTAL}</span> avaliações
+        </span>
+        <span className="flex size-6 items-center justify-center rounded-full bg-gelo text-navy transition-transform group-hover:translate-x-0.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </span>
       </span>
-    </a>
-  );
-}
-
-/** O conteúdo da aba Avaliações */
-export function AbaAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[] }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-[17rem_1fr] gap-6 lg:gap-8 items-start">
-      {/* O resumo */}
-      <div className="banner-noite em-noite relative overflow-hidden rounded-[1.5rem] p-6 text-white">
-        <span aria-hidden="true" className="malha-banner" />
-        <span className="relative inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pl-1 pr-3 text-[0.78rem] font-semibold ring-1 ring-white/15">
-          <span className="flex size-6 items-center justify-center rounded-full bg-white">
-            <IconeGoogle tamanho={13} />
-          </span>
-          Avaliações no Google
-        </span>
-        <p className="relative mt-5 flex items-end gap-2">
-          <span className="text-[3.4rem] font-semibold leading-[0.9] tracking-[-0.04em] tabular-nums">{notaTexto}</span>
-          <span className="pb-1 text-sm text-white/70">de 5</span>
-        </p>
-        <div className="relative mt-3">
-          <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={18} />
-        </div>
-        <p className="relative mt-3 text-sm text-white/75">
-          <span className="tabular-nums font-semibold text-white">{AVALIACOES_GOOGLE_TOTAL}</span> avaliações da farmácia, nas três lojas
-        </p>
-        <Link href="/avaliacoes" className="relative mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#e1c68f] hover:underline underline-offset-4">
-          Ver todas
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </Link>
-      </div>
-
-      {/* Três avaliações reais */}
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {avaliacoes.map((a) => (
-          <li key={a.id} className="flex flex-col rounded-[1.25rem] bg-white p-5 ring-1 ring-inset ring-fio shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]">
-            <div className="flex items-center justify-between gap-2">
-              <Estrelas nota={a.nota} tamanho={14} />
-              <IconeGoogle tamanho={15} />
-            </div>
-            <p className="mt-3 flex-1 text-[0.92rem] leading-relaxed text-grafite line-clamp-6">{a.texto}</p>
-            <div className="mt-4 flex items-center gap-2.5">
-              <Rosto a={a} tamanho="size-9 text-sm" />
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-semibold text-navy">{a.nome}</span>
-                <span className="block text-xs text-cinza">Cliente no Google</span>
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    </Link>
   );
 }

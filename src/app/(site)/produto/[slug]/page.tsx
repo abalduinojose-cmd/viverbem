@@ -54,7 +54,7 @@ import { DadosEstruturados } from "@/components/site/DadosEstruturados";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { obterCatalogo, obterTodasAvaliacoes } from "@/lib/catalogo";
-import { listarItens, ehIndustrializado, UNIDADES } from "@/lib/tipos";
+import { listarItens, ehIndustrializado, UNIDADES, linkMapaUnidade } from "@/lib/tipos";
 import { GaleriaProduto } from "@/components/site/GaleriaProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
@@ -63,7 +63,8 @@ import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
 import { IconeMoto } from "@/components/site/IconeMoto";
 import { IconeLoja } from "@/components/site/IconesVantagens";
 import { IconeWhatsApp } from "@/components/site/icones";
-import { AbaAvaliacoes, SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/AvaliacoesProduto";
+import { SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/AvaliacoesProduto";
+import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
 import { AbasProduto } from "@/components/site/produto/AbasProduto";
 import { CompartilharProduto } from "@/components/site/produto/CompartilharProduto";
 import { PERGUNTAS } from "@/components/site/PerguntasFrequentes";
@@ -143,19 +144,21 @@ const PASSOS_PEDIDO = [
 const SELOS = [
   { icone: <IconeMoto tamanho={16} />, titulo: "Delivery", texto: "Petrópolis e Região" },
   { icone: <IconeLoja tamanho={15} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
-  { icone: <IconeWhatsApp tamanho={15} />, titulo: "Valor pelo WhatsApp", texto: "em minutos, no horário das lojas" },
+  { icone: <IconeWhatsApp tamanho={15} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
 ];
 
+// 23/10/2026 (terceira volta, "melhore"): três colunas em TODA tela, o
+// ícone em cima num círculo de ouro, o título e o apoio centrados, numa
+// tira só com fio (no celular eram três linhas empilhadas que ocupavam
+// meia tela)
 function Selos() {
   return (
-    <ul className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
+    <ul className="mt-5 grid grid-cols-3 divide-x divide-fio overflow-hidden rounded-2xl border border-fio bg-white">
       {SELOS.map((s) => (
-        <li key={s.titulo} className="flex items-center gap-2.5 rounded-2xl border border-fio bg-white px-3 py-2.5 text-[0.78rem] text-cinza">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ouro/10 text-ouro-escuro">{s.icone}</span>
-          <span className="min-w-0 leading-tight">
-            <b className="block text-[0.82rem] font-semibold text-navy">{s.titulo}</b>
-            {s.texto}
-          </span>
+        <li key={s.titulo} className="flex flex-col items-center gap-1.5 px-2 py-3.5 text-center">
+          <span className="flex size-9 items-center justify-center rounded-full bg-ouro/10 text-ouro-escuro">{s.icone}</span>
+          <b className="text-[0.8rem] font-semibold leading-tight text-navy">{s.titulo}</b>
+          <span className="text-[0.7rem] leading-tight text-cinza">{s.texto}</span>
         </li>
       ))}
     </ul>
@@ -175,70 +178,165 @@ export default async function PaginaProduto({ params }: Props) {
   // Três avaliações reais da farmácia, trocando conforme o produto
   const avaliacoesDoProduto = escolherAvaliacoes(await obterTodasAvaliacoes(), produto.id);
 
+  // 23/10/2026 (quarta volta: "melhore por dentro o Sobre o produto, Entrega
+  // e retirada e Como pedir; exclua a aba Avaliações"): cada aba ganhou
+  // cartões com ícone, e não só texto corrido.
+  const destaques = industrializado
+    ? [
+        { titulo: "Pronta entrega", texto: "Com registro na Anvisa, disponível nas lojas e pelo Delivery." },
+        { titulo: "Preço no site", texto: "Você vê o valor aqui e confirma pelo WhatsApp." },
+        { titulo: "Conferido pelo farmacêutico", texto: "Cada pedido passa pela equipe antes de sair." },
+        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou entrega em casa, em Petrópolis e Região." },
+      ]
+    : [
+        { titulo: "Preparado sob receita", texto: "Feito no nosso laboratório a partir da prescrição do seu profissional." },
+        { titulo: "Na dose indicada", texto: "A fórmula e a quantidade são exatamente as da receita." },
+        { titulo: "Conferido pelo farmacêutico", texto: "A receita é conferida e o valor e o prazo vêm antes de você confirmar." },
+        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou entrega em casa, em Petrópolis e Região." },
+      ];
+
   const abaDescricao = (
-    <div className="max-w-3xl">
-      <div className="flex flex-col gap-6">
-        <div>
-          <h3 className="font-semibold text-navy">Sobre o produto</h3>
-          <p className="mt-2.5 text-cinza leading-relaxed">{produto.descricao}</p>
-          {!industrializado && (
-            <p className="mt-3 text-cinza leading-relaxed">
-              É um produto manipulado: preparado no laboratório da Viver Bem a partir da receita, na fórmula e na quantidade que o
-              profissional indicou. O farmacêutico confere a receita e passa o valor e o prazo antes de você confirmar.
-            </p>
+    <div className="max-w-4xl">
+      <h3 className="font-semibold text-navy">Sobre o produto</h3>
+      <p className="mt-2.5 text-cinza leading-relaxed">{produto.descricao}</p>
+      {!industrializado && (
+        <p className="mt-3 text-cinza leading-relaxed">
+          É um produto manipulado: preparado no laboratório da Viver Bem a partir da receita, na fórmula e na quantidade que o
+          profissional indicou.
+        </p>
+      )}
+
+      {/* Os destaques, em quatro cartões com o visto de ouro */}
+      <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {destaques.map((d) => (
+          <li key={d.titulo} className="flex items-start gap-3 rounded-[1.25rem] bg-white p-4 ring-1 ring-inset ring-fio">
+            <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-ouro/10 text-ouro-escuro">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <span className="min-w-0">
+              <span className="block font-semibold text-navy leading-snug">{d.titulo}</span>
+              <span className="mt-0.5 block text-[0.9rem] leading-relaxed text-cinza">{d.texto}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      {industrializado && (
+        <div className="mt-8 flex flex-col gap-6">
+          <ListaItens titulo="Indicações" itens={listarItens(produto.indicacoes)} />
+          <ListaItens titulo="Composição" itens={listarItens(produto.composicao)} />
+          {produto.modoUso && (
+            <div>
+              <h3 className="font-semibold text-navy">Modo de uso</h3>
+              <p className="mt-2.5 text-cinza leading-relaxed whitespace-pre-line">{produto.modoUso}</p>
+            </div>
           )}
         </div>
-        {industrializado && (
-          <>
-            <ListaItens titulo="Indicações" itens={listarItens(produto.indicacoes)} />
-            <ListaItens titulo="Composição" itens={listarItens(produto.composicao)} />
-            {produto.modoUso && (
-              <div>
-                <h3 className="font-semibold text-navy">Modo de uso</h3>
-                <p className="mt-2.5 text-cinza leading-relaxed whitespace-pre-line">{produto.modoUso}</p>
-              </div>
-            )}
-          </>
-        )}
+      )}
+
+      {/* O aviso que a lei pede, em tom de serviço */}
+      <p className="mt-6 flex items-start gap-2.5 rounded-2xl bg-gelo/60 px-4 py-3 text-[0.85rem] leading-relaxed text-cinza">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-tinta">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M12 11v5M12 7.5v.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+        </svg>
+        <span>
+          {industrializado
+            ? "Em caso de dúvida sobre o uso, fale com o farmacêutico pelo WhatsApp ou numa das lojas."
+            : "Manipulado só com receita válida de profissional habilitado. Valor, prazo e orientações de uso são passados pelo farmacêutico."}
+        </span>
+      </p>
+    </div>
+  );
+
+  // Os passos com ícone, ligados por um fio de ouro no computador
+  const iconesPassos = [
+    <svg key="1" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 7h12l-1.2 9.5a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M9 7V6a3 3 0 0 1 6 0v1" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>,
+    <svg key="2" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3 5 6v5.5c0 4.2 2.9 8 7 9.5 4.1-1.5 7-5.3 7-9.5V6l-7-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="m9 12 2.2 2.2L15.5 10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>,
+    <IconeMoto key="3" tamanho={20} />,
+  ];
+  const abaComoPedir = (
+    <div className="max-w-4xl">
+      <ol className="relative grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* O fio que liga os três passos, só no computador */}
+        <span aria-hidden="true" className="pointer-events-none absolute left-[16%] right-[16%] top-9 hidden h-px bg-gradient-to-r from-ouro/60 via-ouro/40 to-ouro/60 md:block" />
+        {PASSOS_PEDIDO.map((p, i) => (
+          <li key={p.titulo} className="relative flex gap-4 rounded-[1.25rem] bg-white p-5 ring-1 ring-inset ring-fio md:flex-col md:gap-0">
+            <span className="relative flex size-12 shrink-0 items-center justify-center rounded-full bg-gelo text-tinta ring-4 ring-white">
+              {iconesPassos[i]}
+              <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-[0.65rem] font-bold text-navy tabular-nums">{i + 1}</span>
+            </span>
+            <span className="min-w-0 md:mt-4">
+              <span className="block font-semibold text-navy leading-snug">{p.titulo}</span>
+              <span className="mt-1 block text-[0.92rem] leading-relaxed text-cinza">{p.texto}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-5 flex flex-col gap-3 rounded-[1.25rem] bg-gelo/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[0.92rem] leading-relaxed text-cinza">
+          {industrializado ? "Prefere falar direto com a equipe? É só chamar no WhatsApp." : "Já tem a receita? Envie a foto e o farmacêutico responde com o valor e o prazo."}
+        </p>
+        <BotaoEnviarReceita className="botao botao-principal botao-compacto shrink-0 !min-h-11" produtoVisto={produto.nome} />
       </div>
     </div>
   );
 
-  const abaComoPedir = (
-    <ol className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {PASSOS_PEDIDO.map((p, i) => (
-        <li key={p.titulo} className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-5">
-          <span aria-hidden="true" className="numero-tinta text-[1.8rem]">{String(i + 1).padStart(2, "0")}</span>
-          <p className="mt-2 font-semibold text-navy leading-snug">{p.titulo}</p>
-          <p className="mt-1 text-cinza text-[0.95rem] leading-relaxed">{p.texto}</p>
-        </li>
-      ))}
-    </ol>
-  );
-
   const abaEntrega = (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid max-w-4xl grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Delivery */}
       <div className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-5">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-ouro/10 text-ouro-escuro">
-          <IconeMoto tamanho={20} />
-        </span>
-        <p className="mt-3 font-semibold text-navy">Delivery em Petrópolis e Região</p>
-        <p className="mt-1 text-cinza text-[0.95rem] leading-relaxed">
-          Entregamos em casa. A taxa e o prazo da entrega são combinados pelo WhatsApp, junto com o valor do pedido.
-        </p>
+        <div className="flex items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ouro/10 text-ouro-escuro">
+            <IconeMoto tamanho={20} />
+          </span>
+          <p className="font-semibold text-navy">Delivery</p>
+        </div>
+        <ul className="mt-4 flex flex-col gap-2.5 text-[0.92rem] leading-relaxed text-cinza">
+          {["Entregamos em Petrópolis e Região", "A taxa e o prazo são combinados pelo WhatsApp, junto com o valor", "Você confirma o pedido só depois de saber o total"].map((t) => (
+            <li key={t} className="flex items-start gap-2.5">
+              <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[image:var(--ouro-degrade)]" aria-hidden="true" />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
+      {/* Retirada */}
       <div className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-5">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-ouro/10 text-ouro-escuro">
-          <IconeLoja tamanho={19} />
-        </span>
-        <p className="mt-3 font-semibold text-navy">Retirada grátis em {UNIDADES.length} lojas</p>
-        <p className="mt-1 text-cinza text-[0.95rem] leading-relaxed">
-          {UNIDADES.map((u) => u.bairro).join(", ").replace(/, ([^,]*)$/, " e $1")}. Você escolhe a loja na hora de enviar o pedido.
-        </p>
-        <Link href="/lojas" className="botao-link !min-h-10 !text-sm mt-2">
-          Ver as lojas
-          <Chevron />
-        </Link>
+        <div className="flex items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ouro/10 text-ouro-escuro">
+            <IconeLoja tamanho={19} />
+          </span>
+          <p className="font-semibold text-navy">Retirada grátis em {UNIDADES.length} lojas</p>
+        </div>
+        <ul className="mt-4 divide-y divide-fio">
+          {UNIDADES.map((u) => (
+            <li key={u.bairro} className="flex items-center justify-between gap-3 py-2.5">
+              <span className="min-w-0">
+                <span className="block text-[0.95rem] font-semibold text-navy">{u.bairro}</span>
+                <span className="block truncate text-xs text-cinza">{u.endereco}</span>
+              </span>
+              <a
+                href={linkMapaUnidade(u.bairro, u.endereco)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-1 text-[0.8rem] font-semibold text-tinta hover:underline underline-offset-4"
+              >
+                Como chegar
+                <Chevron />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-xs leading-relaxed text-cinza">Você escolhe a loja na hora de enviar o pedido.</p>
       </div>
     </div>
   );
@@ -322,10 +420,13 @@ export default async function PaginaProduto({ params }: Props) {
 
             {/* O tipo e a área */}
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className={`inline-flex items-center gap-1.5 h-8 rounded-full px-3 text-[0.78rem] font-semibold ${industrializado ? "bg-green-50 text-green-700" : "bg-gelo text-tinta"}`}>
-                <span aria-hidden="true" className={`size-1.5 rounded-full ${industrializado ? "bg-green-600" : "bg-tinta"}`} />
-                {industrializado ? "Pronta entrega" : "Manipulado sob receita"}
-              </span>
+              {/* O selo "Manipulado sob receita" saiu a pedido (23/10/2026); o de pronta entrega fica */}
+              {industrializado && (
+                <span className="inline-flex items-center gap-1.5 h-8 rounded-full px-3 text-[0.78rem] font-semibold bg-green-50 text-green-700">
+                  <span aria-hidden="true" className="size-1.5 rounded-full bg-green-600" />
+                  Pronta entrega
+                </span>
+              )}
               {produto.categoriaNome && (
                 <Link
                   href={hrefCategoria}
@@ -366,7 +467,6 @@ export default async function PaginaProduto({ params }: Props) {
             { id: "descricao", rotulo: "Descrição", conteudo: abaDescricao },
             { id: "como-pedir", rotulo: "Como pedir", conteudo: abaComoPedir },
             { id: "entrega", rotulo: "Entrega e retirada", conteudo: abaEntrega },
-            ...(avaliacoesDoProduto.length > 0 ? [{ id: "avaliacoes", rotulo: "Avaliações", conteudo: <AbaAvaliacoes avaliacoes={avaliacoesDoProduto} /> }] : []),
             { id: "duvidas", rotulo: "Dúvidas", conteudo: abaDuvidas },
           ]}
         />
