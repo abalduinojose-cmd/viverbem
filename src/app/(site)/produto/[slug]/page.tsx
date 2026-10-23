@@ -67,7 +67,6 @@ import { SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/Av
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
 import { AbasProduto } from "@/components/site/produto/AbasProduto";
 import { CompartilharProduto } from "@/components/site/produto/CompartilharProduto";
-import { PERGUNTAS } from "@/components/site/PerguntasFrequentes";
 
 export const dynamic = "force-dynamic";
 
@@ -341,24 +340,6 @@ export default async function PaginaProduto({ params }: Props) {
     </div>
   );
 
-  const abaDuvidas = (
-    <div className="max-w-3xl divide-y divide-fio border-y border-fio">
-      {PERGUNTAS.map((q) => (
-        <details key={q.pergunta} className="group py-1">
-          <summary className="flex items-center justify-between gap-4 min-h-14 cursor-pointer list-none font-semibold text-navy marker:content-['']">
-            {q.pergunta}
-            <span aria-hidden="true" className="shrink-0 text-tinta transition-transform duration-300 group-open:rotate-45">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </span>
-          </summary>
-          <p className="pb-4 text-cinza leading-relaxed">{q.resposta}</p>
-        </details>
-      ))}
-    </div>
-  );
-
   const relacionados = produtos
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id)
     .slice(0, 8);
@@ -467,7 +448,6 @@ export default async function PaginaProduto({ params }: Props) {
             { id: "descricao", rotulo: "Descrição", conteudo: abaDescricao },
             { id: "como-pedir", rotulo: "Como pedir", conteudo: abaComoPedir },
             { id: "entrega", rotulo: "Entrega e retirada", conteudo: abaEntrega },
-            { id: "duvidas", rotulo: "Dúvidas", conteudo: abaDuvidas },
           ]}
         />
       </section>

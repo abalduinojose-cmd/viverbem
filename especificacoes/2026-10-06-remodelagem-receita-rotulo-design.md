@@ -28,6 +28,10 @@
 >   horário.
 > - O selo "Manipulado sob receita" saiu de cima da descrição; "Pronta
 >   entrega" segue nos industrializados.
+> - Quinta volta ("tire as dúvidas, exclua a legenda da mensagem, deixe mais
+>   clean, mas tá muito bom"): a aba Dúvidas saiu (ficaram Descrição, Como
+>   pedir e Entrega e retirada) e a legenda embaixo do botão do WhatsApp
+>   também; PERGUNTAS segue só na página Como funciona.
 
 
 > **ADENDO 92 (23/10/2026): página do produto, segunda volta. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**

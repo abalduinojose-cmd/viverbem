@@ -156,8 +156,8 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
       </div>
 
       {/* Pedir direto, sem passar pelo carrinho: o verde do WhatsApp, numa
-          linha só (23/10/2026, terceira volta: a legenda com o que vai na
-          mensagem saiu de dentro do botão e ficou embaixo, pequena) */}
+          linha só (23/10/2026; a legenda com o que vai na mensagem saiu de
+          vez na quinta volta: "deixe mais clean") */}
       <a
         href={linkWhats}
         target="_blank"
@@ -170,10 +170,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
           <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
-      <p className="mt-2.5 text-center text-[0.78rem] leading-snug text-cinza tabular-nums">
-        A mensagem já vai com {quantidade}x {produto.nome}
-        {dosagem ? ` (${dosagem})` : ""}. Resposta no horário das lojas.
-      </p>
+
     </div>
   );
 }
