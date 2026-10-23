@@ -1,5 +1,25 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 94 (23/10/2026): página do produto com o que a Amazon e o Mercado Livre fazem e aqui cabe, mantendo o que já estava. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push. Pode ser desfeito com o comando /desfaca.**
+> Pedido: "estude a página de vendas da Amazon e do Mercado Livre e melhore
+> a atual mantendo as características; e desfaça com o comando /desfaça".
+> Do que esses marketplaces fazem, entrou o que não inventa dado nem fere
+> a RDC 67 (manipulado sem preço):
+> - ZOOM NA FOTO ao passar o mouse (Amazon): no computador a foto cresce
+>   1,8x e acompanha o ponteiro; no toque nada muda (GaleriaProduto).
+> - Selo "MAIS PEDIDO" na foto (o "mais vendido" do Mercado Livre), em
+>   ouro com estrela, ligado pela chave "destaque" do painel; o "Novidade"
+>   fica embaixo dele quando os dois valem.
+> - "COMPRE JUNTO" (o "comprados juntos" dos dois): o produto da página
+>   mais dois da mesma área com foto real, lado a lado com o "+" e um botão
+>   só, "Adicionar os 3 ao carrinho" (CompreJunto.tsx); cada um com o seu
+>   link, o da página marcado "este". Entra acima de "Mais procurados" e só
+>   aparece quando há dois companheiros.
+> Ficaram de fora, de propósito: preço/parcelas, prazo de entrega com data,
+> avaliações por produto, "perguntas e respostas" e a ficha técnica (já
+> reprovada). Fontes consultadas: guias gerais de página de produto
+> (Shopify, SeedProd, babitonhela) e as próprias páginas dos marketplaces.
+
 > **ADENDO 93 (23/10/2026): página do produto, terceira e quarta voltas. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
 > Pedidos, na sequência: "melhore o botão e as avaliações; melhore os
 > selos (Delivery/Retirada/Valor) e as abas"; "gostei das abas, agora

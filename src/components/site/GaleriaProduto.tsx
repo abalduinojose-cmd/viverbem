@@ -48,20 +48,32 @@ export function GaleriaProduto({
   fotos,
   nome,
   novidade = false,
+  maisPedido = false,
 }: {
   fotos: string[];
   nome: string;
   novidade?: boolean;
+  /** O selo "Mais pedido" (a chave "destaque" do painel), como o "mais
+   *  vendido" dos marketplaces (23/10/2026) */
+  maisPedido?: boolean;
 }) {
   const [ativa, setAtiva] = useState(0);
   const atual = Math.min(ativa, Math.max(0, fotos.length - 1));
+  // Zoom ao passar o mouse (23/10/2026, estudo da Amazon): no computador a
+  // foto cresce 1,8x e acompanha o ponteiro; no toque não muda nada
+  const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
+  const aoMover = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  };
 
   return (
     <div>
       {/* O ladrilho quadrado, sem fio, com o pote centrado (10/10/2026,
           "acerte os erros de enquadramento": antes o pote ficava colado na
           base de um ladrilho alto, com vazio em cima) */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gelo/60 flex items-center justify-center aspect-square p-8 md:p-12">
+      <div onMouseMove={aoMover} onMouseLeave={() => setZoom(null)} className={`relative overflow-hidden rounded-[2rem] bg-gelo/60 flex items-center justify-center aspect-square p-8 md:p-12 ${zoom ? "cursor-zoom-in" : ""}`}>
         {/* (A luz dourada sob o pote saiu em 11/10/2026, junto com a sombra:
             "tire a sombra debaixo dos produtos") */}
 
@@ -84,7 +96,10 @@ export function GaleriaProduto({
               decoding="async"
               {...(i === 0 ? { fetchPriority: "high" as const } : {})}
               // Desenho neutro (.svg): fundido no gelo, senão vira uma caixa branca
-              style={src.toLowerCase().endsWith(".svg") ? { mixBlendMode: "multiply" } : undefined}
+              style={{
+                ...(src.toLowerCase().endsWith(".svg") ? { mixBlendMode: "multiply" as const } : {}),
+                ...(zoom && i === atual ? { transform: "scale(1.8)", transformOrigin: `${zoom.x}% ${zoom.y}%`, transition: "transform 0.15s ease-out" } : { transition: "transform 0.25s ease-out" }),
+              }}
               className={`relative max-w-full max-h-full object-contain scale-[1.04] ${
                 i === atual ? "animar-surgir" : "hidden"
               }`}
@@ -93,9 +108,17 @@ export function GaleriaProduto({
           )
         )}
 
-        {novidade && (
-          <span className="absolute top-4 left-4 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">
-            Novidade
+        {(novidade || maisPedido) && (
+          <span className="absolute top-4 left-4 flex flex-col items-start gap-1.5">
+            {maisPedido && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[image:var(--ouro-degrade)] px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-navy shadow-[0_8px_18px_-10px_rgba(201,165,107,0.8)]">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.3l6.5-.9L12 2.5z" />
+                </svg>
+                Mais pedido
+              </span>
+            )}
+            {novidade && <span className="rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">Novidade</span>}
           </span>
         )}
         {fotos.length > 1 && (

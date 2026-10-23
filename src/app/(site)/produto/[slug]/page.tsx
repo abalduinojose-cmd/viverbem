@@ -67,6 +67,7 @@ import { SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/Av
 import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
 import { AbasProduto } from "@/components/site/produto/AbasProduto";
 import { CompartilharProduto } from "@/components/site/produto/CompartilharProduto";
+import { CompreJunto } from "@/components/site/produto/CompreJunto";
 
 export const dynamic = "force-dynamic";
 
@@ -341,6 +342,11 @@ export default async function PaginaProduto({ params }: Props) {
     </div>
   );
 
+  // "Compre junto": os dois primeiros da mesma área com foto real
+  const companheiros = produtos
+    .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id && p.fotoUrl && !p.fotoUrl.toLowerCase().endsWith(".svg"))
+    .slice(0, 2);
+
   const relacionados = produtos
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id)
     .slice(0, 8);
@@ -385,7 +391,7 @@ export default async function PaginaProduto({ params }: Props) {
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
             {/* A galeria: até 5 fotos, a primeira com prioridade */}
-            <GaleriaProduto fotos={produto.fotos} nome={produto.nome} novidade={industrializado && produto.novidade} />
+            <GaleriaProduto fotos={produto.fotos} nome={produto.nome} novidade={industrializado && produto.novidade} maisPedido={produto.destaque} />
           </div>
 
           {/* ---------- Texto e ação ---------- */}
@@ -456,6 +462,13 @@ export default async function PaginaProduto({ params }: Props) {
           ]}
         />
       </section>
+
+      {/* Compre junto (23/10/2026, estudo da Amazon e do Mercado Livre) */}
+      {companheiros.length === 2 && (
+        <section className="max-w-6xl mx-auto px-5 md:px-8 pb-5 md:pb-6">
+          <CompreJunto principal={produto} companheiros={companheiros} />
+        </section>
+      )}
 
       {/* Mais procurados e o que a pessoa já viu, em faixas que arrastam, embaixo do produto */}
       <section className="max-w-6xl mx-auto px-5 md:px-8 pb-8 md:pb-10">
