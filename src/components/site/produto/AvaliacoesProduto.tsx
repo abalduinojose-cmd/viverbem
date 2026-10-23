@@ -43,31 +43,32 @@ export function escolherAvaliacoes(todas: DepoimentoDTO[], semente: number, quan
 
 /** O selo embaixo do nome do produto: leva à página de avaliações */
 export function SeloAvaliacoes({ rostos }: { rostos: DepoimentoDTO[] }) {
+  // 23/10/2026: menor ("quero as avaliações menor no site"): uma pílula baixa
   return (
     <Link
       href="/avaliacoes"
-      className="group mt-3 inline-flex w-fit max-w-full flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1.25rem] sm:rounded-full bg-white py-1.5 pl-1.5 pr-3 ring-1 ring-inset ring-fio shadow-[0_10px_24px_-18px_rgba(13,35,64,0.45)] transition-colors hover:ring-ouro/50"
+      className="group mt-2.5 inline-flex w-fit max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 rounded-full bg-white py-1 pl-1 pr-2.5 ring-1 ring-inset ring-fio shadow-[0_8px_18px_-14px_rgba(13,35,64,0.4)] transition-colors hover:ring-ouro/50"
     >
-      <span className="flex items-center gap-2">
-        <span className="flex size-8 items-center justify-center rounded-full bg-white ring-1 ring-fio">
-          <IconeGoogle tamanho={16} />
+      <span className="flex items-center gap-1.5">
+        <span className="flex size-6 items-center justify-center rounded-full bg-white ring-1 ring-fio">
+          <IconeGoogle tamanho={12} />
         </span>
-        <b className="text-[1.05rem] font-semibold text-navy tabular-nums leading-none">{notaTexto}</b>
-        <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={15} />
+        <b className="text-[0.9rem] font-semibold text-navy tabular-nums leading-none">{notaTexto}</b>
+        <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={12} />
       </span>
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-1.5">
         {rostos.length > 0 && (
-          <span className="flex -space-x-2" aria-hidden="true">
+          <span className="flex -space-x-1.5" aria-hidden="true">
             {rostos.slice(0, 3).map((a) => (
-              <Rosto key={a.id} a={a} tamanho="size-6 text-[0.65rem]" />
+              <Rosto key={a.id} a={a} tamanho="size-5 text-[0.55rem]" />
             ))}
           </span>
         )}
-        <span className="text-[0.85rem] text-cinza transition-colors group-hover:text-tinta">
+        <span className="text-[0.76rem] text-cinza transition-colors group-hover:text-tinta">
           <span className="tabular-nums font-medium text-navy">{AVALIACOES_GOOGLE_TOTAL}</span> avaliações
         </span>
-        <span className="flex size-6 items-center justify-center rounded-full bg-gelo text-navy transition-transform group-hover:translate-x-0.5">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <span className="flex size-5 items-center justify-center rounded-full bg-gelo text-navy transition-transform group-hover:translate-x-0.5">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>

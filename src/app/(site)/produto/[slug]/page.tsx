@@ -436,11 +436,12 @@ export default async function PaginaProduto({ params }: Props) {
             {/* Compra segura */}
             {/* 23/10/2026: os três avisos em pílulas de gelo com o visto num
                 círculo verde, em vez de linhas soltas */}
-            <ul className="mt-4 flex flex-wrap gap-2">
+            {/* 23/10/2026: centrada, como a tira de selos acima; pílulas brancas */}
+            <ul className="mt-4 flex flex-wrap justify-center gap-2">
               {SEGURANCA.map((t) => (
-                <li key={t} className="inline-flex items-center gap-2 rounded-full bg-gelo/70 py-1 pl-1 pr-3 text-[0.78rem] font-medium text-navy ring-1 ring-inset ring-fio/70">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#1DA851] text-white">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <li key={t} className="inline-flex items-center gap-1.5 rounded-full bg-white py-1 pl-1 pr-3 text-[0.76rem] font-medium text-navy ring-1 ring-inset ring-fio shadow-[0_8px_18px_-14px_rgba(13,35,64,0.4)]">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1DA851] text-white">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>

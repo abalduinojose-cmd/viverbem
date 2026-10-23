@@ -1,5 +1,13 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 95 (23/10/2026): selo das avaliações menor e garantias centradas na página do produto. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 50º push, junto com o adendo 94.**
+> Pedido: "melhore e centralize essa parte (as três garantias) / quero as
+> avaliações menor no site". O selo G 5,0 + estrelas + rostos + "680
+> avaliações" virou uma pílula baixa (32 px, ícones de 12 px, rostos de
+> 20 px). As três garantias (farmacêutico confere, paga depois, dados
+> ficam) agora ficam centradas sob a tira de selos, em pílulas brancas com
+> fio e sombra curta, o visto verde menor.
+
 > **ADENDO 94 (23/10/2026): página do produto com o que a Amazon e o Mercado Livre fazem e aqui cabe, mantendo o que já estava. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push. Pode ser desfeito com o comando /desfaca.**
 > Pedido: "estude a página de vendas da Amazon e do Mercado Livre e melhore
 > a atual mantendo as características; e desfaça com o comando /desfaça".
