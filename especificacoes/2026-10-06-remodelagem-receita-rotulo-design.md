@@ -1,6 +1,6 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 96 (23/10/2026): página do produto, sétima volta. IMPLEMENTADO e conferido (390 e 1366); commit local, SEM push (não foi pedido).**
+> **ADENDO 96 (23/10/2026): página do produto, sétima volta. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 51º push (a0b771c9).**
 > Pedidos: "coloque o botão de compartilhar no canto superior da foto,
 > preciso do nome mais destacado / modernize o cartão de compra / melhore
 > e modernize as garantias / melhore e modernize o compre junto".
