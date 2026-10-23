@@ -24,56 +24,67 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
     window.setTimeout(() => setFeito(false), 1800);
   }
 
+  // 23/10/2026 ("melhore e modernize o compre junto"): ladrilhos brancos com
+  // fio que sobem no hover, o "+" em navy, o produto da página com um selo
+  // de ouro em cima ("este produto"), e a ação separada por um fio à direita
   return (
-    <section aria-labelledby="titulo-compre-junto" className="rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
-      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+    <section aria-labelledby="titulo-compre-junto" className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-b from-white to-gelo/60 p-5 ring-1 ring-fio md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
+      <span aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.18),transparent_65%)]" />
+      <div className="relative flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>
           <p className="rotulo-pilula !text-[0.6875rem]">compre junto</p>
           <h2 id="titulo-compre-junto" className="mt-2 text-[1.2rem] md:text-[1.5rem] font-semibold tracking-[-0.03em] text-navy">
             Quem pede este, costuma levar <span className="italic">também</span>
           </h2>
         </div>
+        <p className="text-[0.78rem] font-medium text-cinza">
+          <span className="tabular-nums font-semibold text-navy">{todos.length}</span> produtos, um pedido só
+        </p>
       </div>
 
-      <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-6">
+      <div className="relative mt-6 flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-7">
         {/* Os três, com o "+" entre eles */}
-        <ul className="flex items-stretch justify-center gap-2 sm:gap-3 lg:flex-1">
+        <ul className="flex items-stretch justify-center gap-2 pt-2 sm:gap-3 lg:flex-1">
           {todos.map((p, i) => (
             <li key={p.id} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
               {i > 0 && (
-                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gelo text-navy">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full bg-navy text-white shadow-[0_6px_14px_-8px_rgba(13,35,64,0.8)]">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
                   </svg>
                 </span>
               )}
               <Link
                 href={`/produto/${p.slug}`}
                 aria-current={i === 0 ? "page" : undefined}
-                className={`group flex min-w-0 flex-1 flex-col rounded-2xl p-2 transition-colors hover:bg-gelo/50 ${i === 0 ? "ring-1 ring-inset ring-ouro/40 bg-ouro/5" : ""}`}
+                className={`group relative flex min-w-0 flex-1 flex-col rounded-2xl bg-white p-2 ring-1 transition hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-20px_rgba(13,35,64,0.5)] ${
+                  i === 0 ? "ring-ouro/60 shadow-[0_12px_26px_-18px_rgba(201,165,107,0.9)]" : "ring-fio hover:ring-ouro/50"
+                }`}
               >
+                {i === 0 && (
+                  <span className="absolute -top-2.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-[image:var(--ouro-degrade)] px-2.5 py-0.5 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-navy shadow-[0_6px_14px_-8px_rgba(201,165,107,0.9)]">
+                    este produto
+                  </span>
+                )}
                 <span className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-gelo to-gelo/30 p-2">
                   <span aria-hidden="true" className="absolute inset-x-[15%] bottom-0.5 h-4 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.3),transparent_70%)]" />
                   {p.fotoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={asset(p.fotoUrl)} alt="" width={160} height={160} loading="lazy" decoding="async" className="relative max-h-full max-w-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.25)] transition-transform duration-500 group-hover:-translate-y-0.5" />
+                    <img src={asset(p.fotoUrl)} alt="" width={160} height={160} loading="lazy" decoding="async" className="relative max-h-full max-w-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.25)] transition-transform duration-500 group-hover:scale-[1.04]" />
                   ) : (
                     <FotoProduto fotoUrl={null} nome={p.nome} className="relative" />
                   )}
                 </span>
-                <span className="mt-2 line-clamp-2 text-[0.82rem] font-medium leading-snug text-navy">
-                  {i === 0 && <span className="mr-1 rounded-full bg-ouro/15 px-1.5 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-ouro-escuro">este</span>}
-                  {p.nome}
-                </span>
+                <span className="mt-2 line-clamp-2 px-0.5 text-center text-[0.8rem] font-medium leading-snug text-navy">{p.nome}</span>
               </Link>
             </li>
           ))}
         </ul>
 
         {/* A ação única */}
-        <div className="flex shrink-0 flex-col items-stretch gap-2 lg:w-[16rem]">
-          <p className="text-sm text-cinza">
-            {todos.length} produtos. O farmacêutico passa o valor de tudo pelo WhatsApp.
+        <div className="flex shrink-0 flex-col items-stretch gap-2.5 lg:w-[17rem] lg:border-l lg:border-fio lg:pl-7">
+          <p className="text-sm leading-snug text-cinza">
+            Os {todos.length} vão juntos para o carrinho. O farmacêutico passa o valor de tudo pelo WhatsApp.
           </p>
           <button type="button" onClick={adicionarTodos} className={`botao-carrinho w-full !min-h-12 ${feito ? "botao-carrinho-feito" : ""}`}>
             {feito ? (

@@ -1,5 +1,26 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 96 (23/10/2026): página do produto, sétima volta. IMPLEMENTADO e conferido (390 e 1366); commit local, SEM push (não foi pedido).**
+> Pedidos: "coloque o botão de compartilhar no canto superior da foto,
+> preciso do nome mais destacado / modernize o cartão de compra / melhore
+> e modernize as garantias / melhore e modernize o compre junto".
+> - COMPARTILHAR virou um botão redondo branco no canto superior direito da
+>   foto (GaleriaProduto ganhou a vaga "acoes"); o menu (WhatsApp, Copiar
+>   link) abre embaixo dele. O NOME ocupa a linha inteira e cresceu
+>   (2,6rem no celular, 3,4rem no computador, tracking mais fechado).
+> - CARTÃO DE COMPRA em FOLHA NAVY: o azul-noite da marca com um halo de
+>   ouro no canto e um de azul embaixo; "QUANTIDADE" em versalete, o
+>   seletor numa trilha translúcida (o "mais" em branco), o carrinho em ouro
+>   e o WhatsApp em verde. A dosagem, quando existe, em pílulas brancas.
+> - GARANTIAS: tira única em gelo, os três avisos separados por fio
+>   branco (empilhados no celular, três colunas no computador), visto em
+>   verde suave num círculo claro.
+> - COMPRE JUNTO: ladrilhos brancos com fio que sobem no hover, o "+" em
+>   navy, o produto da página com um selo de ouro "este produto" sobre o
+>   ladrilho, contagem "3 produtos, um pedido só" no canto, e a ação
+>   separada por um fio à direita no computador. Atenção: text-[0.58rem]
+>   não saiu no CSS do dev (usar tamanhos já existentes, ex. 0.62rem).
+
 > **ADENDO 95 (23/10/2026): selo das avaliações menor e garantias centradas na página do produto. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 50º push, junto com o adendo 94.**
 > Pedido: "melhore e centralize essa parte (as três garantias) / quero as
 > avaliações menor no site". O selo G 5,0 + estrelas + rostos + "680

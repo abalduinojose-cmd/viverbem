@@ -27,7 +27,7 @@ function copiar(texto: string): boolean {
   return ok;
 }
 
-export function CompartilharProduto({ nome }: { nome: string }) {
+export function CompartilharProduto({ nome, compacto = false }: { nome: string; compacto?: boolean }) {
   const [aberto, setAberto] = useState(false);
   const [copiado, setCopiado] = useState(false);
   // O endereço só existe no navegador; fica em estado para o HTML do
@@ -94,15 +94,21 @@ export function CompartilharProduto({ nome }: { nome: string }) {
         onClick={aoClicar}
         aria-haspopup="menu"
         aria-expanded={aberto}
-        className="inline-flex items-center gap-1.5 h-9 rounded-full px-3 text-[0.8rem] font-semibold text-navy ring-1 ring-inset ring-fio bg-white transition-colors hover:ring-ouro/50"
+        aria-label={compacto ? "Compartilhar" : undefined}
+        title={compacto ? "Compartilhar" : undefined}
+        className={
+          compacto
+            ? "flex size-10 items-center justify-center rounded-full bg-white/90 text-navy ring-1 ring-fio shadow-[0_10px_24px_-14px_rgba(13,35,64,0.5)] backdrop-blur transition-colors hover:ring-ouro/60 hover:text-ouro-escuro"
+            : "inline-flex items-center gap-1.5 h-9 rounded-full px-3 text-[0.8rem] font-semibold text-navy ring-1 ring-inset ring-fio bg-white transition-colors hover:ring-ouro/50"
+        }
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg width={compacto ? 17 : 15} height={compacto ? 17 : 15} viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="18" cy="5.5" r="2.5" stroke="currentColor" strokeWidth="1.8" />
           <circle cx="6" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
           <circle cx="18" cy="18.5" r="2.5" stroke="currentColor" strokeWidth="1.8" />
           <path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1" stroke="currentColor" strokeWidth="1.8" />
         </svg>
-        Compartilhar
+        {!compacto && "Compartilhar"}
       </button>
 
       {aberto && (

@@ -71,13 +71,20 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   // número maior no meio; a pílula tem a altura do botão do carrinho
   const classePasso = "flex size-10 items-center justify-center rounded-full transition active:scale-90 disabled:opacity-35 disabled:active:scale-100";
 
+  // 23/10/2026 ("modernize essa parte"): o cartão virou uma FOLHA NAVY com
+  // um halo de ouro no canto, a voz escura da marca no meio da página branca;
+  // o seletor de quantidade fica numa trilha translúcida, o carrinho em ouro
+  // e o WhatsApp em verde, os dois com a mesma altura
   return (
-    <div className="mt-7 rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6 shadow-[0_24px_40px_-32px_rgba(16,42,74,0.35)]">
+    <div className="relative mt-7 overflow-hidden rounded-[1.75rem] bg-navy p-5 text-white shadow-[0_28px_50px_-30px_rgba(13,35,64,0.7)] md:p-6">
+      <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.35),transparent_65%)]" />
+      <span aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-12 size-48 rounded-full bg-[radial-gradient(circle,rgba(28,105,181,0.45),transparent_65%)]" />
+      <div className="relative">
       {/* O preço, só quando pode aparecer */}
       {preco !== null && (
-        <div className="pb-5 mb-5 border-b border-fio">
-          <p className="text-[2rem] md:text-[2.3rem] font-semibold tracking-[-0.035em] text-navy tabular-nums leading-none">{formatarPreco(preco)}</p>
-          <p className="mt-1.5 text-sm text-cinza tabular-nums">
+        <div className="pb-5 mb-5 border-b border-white/15">
+          <p className="text-[2rem] md:text-[2.3rem] font-semibold tracking-[-0.035em] text-white tabular-nums leading-none">{formatarPreco(preco)}</p>
+          <p className="mt-1.5 text-sm text-white/65 tabular-nums">
             {quantidade > 1 ? `${quantidade} unidades: ${formatarPreco(preco * quantidade)}` : "à vista, confirmado no WhatsApp"}
           </p>
         </div>
@@ -86,7 +93,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
       {/* Dosagens */}
       {dosagens.length > 0 && (
         <div className="mb-5">
-          <p className="text-sm font-semibold text-navy">Escolha a dosagem</p>
+          <p className="text-sm font-semibold text-white">Escolha a dosagem</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {dosagens.map((d) => (
               <button
@@ -95,7 +102,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
                 onClick={() => setDosagem(d)}
                 aria-pressed={dosagem === d}
                 className={`inline-flex items-center h-11 px-5 rounded-full border text-[0.95rem] font-medium transition-colors ${
-                  dosagem === d ? "bg-navy border-navy text-white" : "bg-white border-fio text-grafite hover:border-navy/40"
+                  dosagem === d ? "bg-white border-white text-navy" : "bg-white/10 border-white/20 text-white hover:border-white/50"
                 }`}
               >
                 {d}
@@ -105,7 +112,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         </div>
       )}
 
-      <p id="rotulo-quantidade" className="text-sm font-semibold text-navy">
+      <p id="rotulo-quantidade" className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-white/70">
         Quantidade
       </p>
 
@@ -114,12 +121,12 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         <div
           role="group"
           aria-labelledby="rotulo-quantidade"
-          className="flex h-[3.25rem] shrink-0 items-center gap-0.5 rounded-full bg-white px-1.5 ring-1 ring-inset ring-fio shadow-[0_10px_22px_-16px_rgba(13,35,64,0.45)]"
+          className="flex h-[3.25rem] shrink-0 items-center gap-0.5 rounded-full bg-white/10 px-1.5 ring-1 ring-inset ring-white/15"
         >
-          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={`${classePasso} bg-gelo text-navy hover:bg-fio`}>
+          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={`${classePasso} text-white hover:bg-white/10`}>
             <IconeMenos />
           </button>
-          <output aria-live="polite" className="w-10 text-center text-[1.25rem] font-semibold text-navy tabular-nums">
+          <output aria-live="polite" className="w-10 text-center text-[1.3rem] font-semibold text-white tabular-nums">
             {quantidade}
           </output>
           <button
@@ -127,7 +134,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
             onClick={() => setQuantidade((q) => Math.min(MAXIMO, q + 1))}
             disabled={quantidade >= MAXIMO}
             aria-label="Aumentar quantidade"
-            className={`${classePasso} bg-navy text-white hover:bg-tinta`}
+            className={`${classePasso} bg-white text-navy hover:bg-gelo`}
           >
             <IconeMaisQtd />
           </button>
@@ -164,7 +171,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         href={linkWhats}
         target="_blank"
         rel="noopener noreferrer"
-        className="group mt-3 flex w-full items-center justify-center gap-2.5 min-h-[3.25rem] rounded-full bg-[#1DA851] px-5 text-[1rem] font-semibold text-white shadow-[0_16px_30px_-18px_rgba(29,168,81,0.85)] transition-colors hover:bg-[#178a43] active:scale-[0.99]"
+        className="group mt-3 flex w-full items-center justify-center gap-2.5 min-h-[3.25rem] rounded-full bg-[#1DA851] px-5 text-[1rem] font-semibold text-white shadow-[0_16px_30px_-16px_rgba(29,168,81,0.9)] transition-colors hover:bg-[#22b85c] active:scale-[0.99]"
       >
         <IconeWhatsApp tamanho={21} />
         Pedir pelo WhatsApp
@@ -172,7 +179,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
           <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
-
+      </div>
     </div>
   );
 }

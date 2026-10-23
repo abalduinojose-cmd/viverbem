@@ -391,17 +391,19 @@ export default async function PaginaProduto({ params }: Props) {
           {/* ---------- Foto e selos ---------- */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1.5rem)]">
             {/* A galeria: até 5 fotos, a primeira com prioridade */}
-            <GaleriaProduto fotos={produto.fotos} nome={produto.nome} novidade={industrializado && produto.novidade} maisPedido={produto.destaque} />
+            {/* 23/10/2026: o Compartilhar foi para o canto da foto, e o nome ganhou a linha inteira */}
+            <GaleriaProduto
+              fotos={produto.fotos}
+              nome={produto.nome}
+              novidade={industrializado && produto.novidade}
+              maisPedido={produto.destaque}
+              acoes={<CompartilharProduto nome={produto.nome} compacto />}
+            />
           </div>
 
           {/* ---------- Texto e ação ---------- */}
           <div className="flex flex-col">
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="text-[2.2rem] md:text-[3rem] font-semibold tracking-[-0.045em] text-navy leading-[1.02]">{produto.nome}</h1>
-              <span className="mt-1.5 shrink-0">
-                <CompartilharProduto nome={produto.nome} />
-              </span>
-            </div>
+            <h1 className="text-[2.6rem] md:text-[3.4rem] font-semibold tracking-[-0.05em] text-navy leading-[0.98] [text-wrap:balance]">{produto.nome}</h1>
 
             {/* A nota da farmácia no Google, com rostos de clientes; abre a aba Avaliações */}
             <SeloAvaliacoes rostos={avaliacoesDoProduto} />
@@ -434,14 +436,18 @@ export default async function PaginaProduto({ params }: Props) {
             <Selos />
 
             {/* Compra segura */}
-            {/* 23/10/2026: os três avisos em pílulas de gelo com o visto num
-                círculo verde, em vez de linhas soltas */}
-            {/* 23/10/2026: centrada, como a tira de selos acima; pílulas brancas */}
-            <ul className="mt-4 flex flex-wrap justify-center gap-2">
-              {SEGURANCA.map((t) => (
-                <li key={t} className="inline-flex items-center gap-1.5 rounded-full bg-white py-1 pl-1 pr-3 text-[0.76rem] font-medium text-navy ring-1 ring-inset ring-fio shadow-[0_8px_18px_-14px_rgba(13,35,64,0.4)]">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1DA851] text-white">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            {/* 23/10/2026 ("melhore e modernize"): uma tira só, em gelo, com
+                os três avisos separados por fio; o visto em verde suave */}
+            <ul className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl bg-gelo/60 sm:grid-cols-3">
+              {SEGURANCA.map((t, i) => (
+                <li
+                  key={t}
+                  className={`flex items-center gap-2.5 px-3.5 py-2.5 text-[0.78rem] font-medium leading-snug text-navy sm:justify-center sm:px-2 sm:text-center ${
+                    i > 0 ? "border-t border-white sm:border-t-0 sm:border-l" : ""
+                  }`}
+                >
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#1DA851]/12 text-[#128C4B]">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>

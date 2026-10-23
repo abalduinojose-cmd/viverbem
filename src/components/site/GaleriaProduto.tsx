@@ -49,6 +49,7 @@ export function GaleriaProduto({
   nome,
   novidade = false,
   maisPedido = false,
+  acoes,
 }: {
   fotos: string[];
   nome: string;
@@ -56,6 +57,8 @@ export function GaleriaProduto({
   /** O selo "Mais pedido" (a chave "destaque" do painel), como o "mais
    *  vendido" dos marketplaces (23/10/2026) */
   maisPedido?: boolean;
+  /** O que vai no canto superior direito da foto (o Compartilhar, 23/10/2026) */
+  acoes?: React.ReactNode;
 }) {
   const [ativa, setAtiva] = useState(0);
   const atual = Math.min(ativa, Math.max(0, fotos.length - 1));
@@ -120,6 +123,11 @@ export function GaleriaProduto({
             )}
             {novidade && <span className="rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">Novidade</span>}
           </span>
+        )}
+        {acoes && (
+          <div onMouseMove={(e) => e.stopPropagation()} onMouseEnter={() => setZoom(null)} className="absolute top-4 right-4 z-20">
+            {acoes}
+          </div>
         )}
         {fotos.length > 1 && (
           <span
