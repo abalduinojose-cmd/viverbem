@@ -1,5 +1,42 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 91 (23/10/2026): dois produtos novos (PUBLICADOS no 46º push) e a página do produto no padrão de marketplace (local, sem push).**
+> - Produtos novos, enviados pela farmácia em foto com o rótulo: "Centella
+>   Asiática Creme" (Dermatologia & Estética, id 78) e "Max Solve Coenzima
+>   Q10" 30 mL (Vitaminas & Suplementos, id 79), manipulados, sem preço,
+>   com a foto recortada do transparente e encaixada em 500x500 WebP na
+>   mesma altura útil dos potes existentes (~396 px), no banco local, na
+>   galeria (FotoProduto) e na semente (prisma/seed.js), para um banco de
+>   produção novo nascer com eles. A categoria do Max Solve foi suposta
+>   (gotas de CoQ10 hidrossolúvel = suplemento); trocar pelo painel se for
+>   sérum de uso tópico.
+> - Página do produto, pedido "mais completa, como um marketplace famoso,
+>   tá muito simples": no alto a marca, o código (VB-0079, o número do
+>   cadastro) e o Compartilhar (folha do aparelho no celular, copiar link no
+>   computador); embaixo do nome a nota da FARMÁCIA no Google (5,0, 680
+>   avaliações, dito assim: não há avaliação por produto e não se inventa
+>   uma); selos do tipo ("Manipulado sob receita" ou "Pronta entrega") e da
+>   área; o cartão de compra com o LUGAR DO PREÇO ("Valor sob consulta" e
+>   como ele chega, ou o preço quando é visível), quantidade, carrinho, o
+>   "Pedir agora pelo WhatsApp" (abre a conversa com o produto, a dosagem
+>   e a quantidade) e "Vendido e preparado por Manipulação Viver Bem"; os
+>   três selos de logística; a linha de compra segura (farmacêutico confere,
+>   paga depois de confirmar, LGPD). Embaixo, ABAS (AbasProduto, sublinhado
+>   de ouro que desliza, setas do teclado): Descrição com a FICHA TÉCNICA
+>   (produto, marca, categoria, tipo, apresentação só em industrializado,
+>   código, vendido por), Como pedir (os 3 passos em cartões), Entrega e
+>   retirada (Delivery e retirada nas 3 lojas, sem endereço nem horário, a
+>   pedido de 21/10) e Dúvidas (as perguntas da página Como funciona,
+>   PERGUNTAS exportado). Manipulado segue sem preço, indicação, modo de
+>   uso e apresentação (RDC 67/2007); em industrializado, indicações,
+>   composição e modo de uso entram na aba Descrição (as sanfonas saíram).
+> - Tailwind: `@source not` para docs/, out/ e .demo-temp/. O HTML da
+>   prévia traz o fluxo de dados do Next cortado no meio de um nome de
+>   classe ("bg-[image:var(--ouro-deg" + "rade)]"); lendo a pasta, o
+>   Tailwind gerava CSS inválido e o site inteiro dava 500 em
+>   desenvolvimento.
+
+
 > **ADENDO 90 (22/10/2026): cabeçalhos de seção com halo e segunda voz maior; rodapé com os links em caixa normal. IMPLEMENTADO e conferido no localhost (390 e 1366); commit local, sem push.**
 > Pedidos: "não gostei, melhore mais" (sobre o adendo 89) e "melhore o
 > rodapé" (os links Início, Produtos...); em seguida "não gostei do

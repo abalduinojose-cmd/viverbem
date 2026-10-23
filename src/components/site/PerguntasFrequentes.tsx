@@ -11,7 +11,7 @@
 // vira "x" quando a resposta abre.
 import { UNIDADES } from "@/lib/tipos";
 
-const PERGUNTAS = [
+export const PERGUNTAS = [
   {
     pergunta: "Preciso de receita para pedir?",
     resposta:

@@ -1,4 +1,12 @@
 @import "tailwindcss";
+/* 23/10/2026: a prévia estática (docs/) e as pastas de build não são fonte
+   de classes. O HTML gerado traz o fluxo de dados do Next cortado no meio
+   de um nome de classe ("bg-[image:var(--ouro-deg" + "rade)]"), e o
+   Tailwind, lendo a pasta, gerava um CSS inválido que derrubava o site
+   inteiro em desenvolvimento. */
+@source not "../../docs";
+@source not "../../out";
+@source not "../../.demo-temp";
 
 /* ============================================================
    Identidade visual — Manipulação Viver Bem
