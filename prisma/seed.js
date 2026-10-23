@@ -273,6 +273,15 @@ async function main() {
       destaque: true,
     },
     {
+      // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
+      nome: "Centella Asiática Creme",
+      descricao: "Creme com extrato de centella asiática, manipulado conforme a prescrição.",
+      precoCentavos: 0,
+      categoria: "dermatologia-estetica",
+      fotoUrl: "/uploads/centella-asiatica-creme.webp",
+      novidade: true,
+    },
+    {
       nome: "Firm Defense Serum",
       apresentacao: "Frasco 30ml",
       indicacoes: "Firmeza e sustentação\nFortalece a barreira da pele\nReduz a sensibilidade\nEfeito antioxidante",
@@ -423,6 +432,16 @@ async function main() {
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/vitamina.svg",
       dosagens: "3g, 5g",
+    },
+    {
+      // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
+      nome: "Max Solve Coenzima Q10",
+      apresentacao: "30 mL",
+      descricao: "Coenzima Q10 hidrossolúvel em frasco conta-gotas de 30 mL, manipulada conforme a prescrição.",
+      precoCentavos: 0,
+      categoria: "vitaminas-suplementos",
+      fotoUrl: "/uploads/max-solve-coenzima-q10.webp",
+      novidade: true,
     },
     {
       nome: "Coenzima Q10",
