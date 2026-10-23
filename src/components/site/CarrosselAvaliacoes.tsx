@@ -90,7 +90,10 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
 
   return (
     <section aria-labelledby="titulo-avaliacoes" className="secao">
-      <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      {/* Em linha só do lg para cima (22/10/2026): no tablet em pé (768 px) o
+          título em duas linhas mais o selo do Google estouravam 15 px para
+          fora da tela e a página ganhava rolagem horizontal */}
+      <div className="revelar px-5 md:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         <div className="max-w-2xl">
           <p className="rotulo-pilula">quem já é cliente</p>
           <h2 id="titulo-avaliacoes" className="titulo-secao vao-rotulo">
@@ -103,7 +106,7 @@ export function CarrosselAvaliacoes({ avaliacoes }: { avaliacoes: DepoimentoDTO[
           href={PERFIL_GOOGLE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group self-start md:self-auto flex items-center gap-4 md:pb-1"
+          className="group self-start lg:self-auto flex items-center gap-4 lg:pb-1"
         >
           <span className="flex -space-x-3 shrink-0">
             {rostos.map((a) => (

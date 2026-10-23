@@ -35,8 +35,9 @@
 //              devagar-rápido-devagar e traz um pote novo para a frente,
 //              a luz passa pelo rótulo dele e a câmera avança um pouco;
 //              entre um passo e outro, para (profundidade de campo,
-//              reflexo). O letreiro mostra os 4 passos do pedido com os
-//              traços que os contam. (21/10/2026, doutrina de movimento:
+//              reflexo). O letreiro mostra os 4 passos do pedido numa
+//              cápsula de vidro com o número em odômetro e o progresso na
+//              borda (22/10/2026). (21/10/2026, doutrina de movimento:
 //              o movimento executa o letreiro, em vez de girar sem parar;
 //              desde 10/10 este trecho corre devagar, pelo ritmo do roteiro)
 //   5,3 a 6,4  fecho: os dois potes da dobra vêm para a frente, os outros
@@ -60,11 +61,10 @@ export const DURACAO = 7;
 
 export const FOCAL = 700;
 export const ORBITA_CENTRO = 90; // profundidade do centro do carrossel
-// O letreiro dos passos: quando começa, quanto dura cada passo e o atraso
-// entre uma letra e a seguinte (tempo da coreografia)
+// O letreiro dos passos: quando começa e quanto dura cada passo (tempo da
+// coreografia)
 const PASSOS_INICIO = 3.05;
 const PASSOS_VEZ = 0.62;
-const PASSOS_ESCALONA = 0.004;
 /** Quando começa o passo k do letreiro e, com ele, o giro do carrossel e
  *  o avanço da câmera (21/10/2026) */
 const inicioDoPasso = (k: number) => PASSOS_INICIO + k * PASSOS_VEZ;
@@ -653,14 +653,14 @@ function prepararTextos(ctx: CanvasRenderingContext2D, e: Enquadramento, f: Font
     l3,
     rotulo,
     passos: r.passos.map(([n, t]) => ({
-      numero: medirLinha(ctx, n, f.destaque, "italic ", f.pesoDestaque, Math.round(tp * 1.3), 0),
-      texto: medirLinha(ctx, t, f.apoio, "", 400, tp, 0.01),
+      numero: medirLinha(ctx, n, f.destaque, "italic ", f.pesoDestaque, Math.round(tp * 1.5), 0),
+      texto: medirLinha(ctx, t, f.apoio, "", 500, tp, 0.005),
     })),
     base1,
     base2,
     base3,
     baseRotulo,
-    basePassos: Math.min(base3 + l3.descent + T * 0.42 + tp, e.limitePassos),
+    basePassos: Math.min(base3 + l3.descent + T * 0.42 + tp * 1.55, e.limitePassos),
     escalaIntro: Math.min(1.28, (e.modo === "retrato" ? 330 : e.largura - 140) / l1.largura),
     larguraPassos: Math.min(e.larguraTexto, tp * 20),
   };
@@ -1718,87 +1718,256 @@ export async function criarCena(
     ctx.restore();
   }
 
-  // ---- os passos do pedido (10/10/2026, "tá muito rápido, modernize e
-  // deixe mais leve e devagar"): cada linha sobe de uma fresta letra a
-  // letra, com o espaçamento assentando, fica parada para ser lida e sai
-  // subindo e se apagando, sem mola nem rastro. Embaixo, quatro traços
-  // contam os passos, como nos stories: o da vez se enche de ouro. A calma
-  // vem do ritmo do roteiro (este trecho corre a ~1/4 da velocidade); aqui
-  // os tempos são da coreografia de 7 s
+  // ---- o letreiro dos passos do pedido (22/10/2026, "não está bom, está
+  // muito simples, modernize e retrabalhe"; antes eram o número e a frase
+  // soltos, letra a letra, e quatro traços embaixo). Agora:
+  //   - uma cápsula de vidro abriga o passo (o mesmo gesto do rótulo do
+  //     alto), e a largura dela se ajusta ao texto de cada passo numa
+  //     curva suave; a borda acende de leve a cada troca;
+  //   - o número em ouro itálico, maior, rola como um odômetro: o "0" fica
+  //     parado e só o algarismo que muda gira (01 -> 02); no último item
+  //     o número dá lugar a um ponto de ouro;
+  //   - um fio de ouro vertical separa número e frase;
+  //   - a frase troca palavra a palavra: a que sai sobe e se apaga, a nova
+  //     sobe de baixo em cascata, os vãos encolhendo (o mesmo sentido dos
+  //     dois lados, sem pingue-pongue);
+  //   - o progresso vai DENTRO da cápsula, na borda de baixo: o trecho da
+  //     vez se enche com uma pontinha de luz; no último item os quatro
+  //     trechos se fundem numa linha só.
+  // A troca acontece no mesmo quadro em que o carrossel dá o passo dele
+  // (inicioDoPasso). Tempos da coreografia de 7 s (este trecho corre a
+  // ~0,28 da velocidade: 0,1 aqui é ~0,36 s de verdade).
+  /** As palavras de cada frase do letreiro (índices das letras), por texto */
+  const palavrasDoPasso = new Map<string, { ini: number; fim: number }[]>();
+  function palavrasDe(texto: string) {
+    let lista = palavrasDoPasso.get(texto);
+    if (!lista) {
+      lista = [];
+      let comeco = 0;
+      for (let i = 0; i <= texto.length; i++) {
+        if (i === texto.length || texto[i] === " ") {
+          if (i > comeco) lista.push({ ini: comeco, fim: i });
+          comeco = i + 1;
+        }
+      }
+      palavrasDoPasso.set(texto, lista);
+    }
+    return lista;
+  }
   function desenharPassos(t: number, cam: Camera) {
     const tp = enq.tamanhoPasso;
-    const sai = entraCubica(trecho(t, 6.25, 6.5));
-    const n = textos.passos.length;
+    const passos = textos.passos;
+    const n = passos.length;
+    if (n === 0) return;
+    const entra = trecho(t, PASSOS_INICIO - 0.1, PASSOS_INICIO + 0.14);
+    const sai = trecho(t, 6.22, 6.5);
+    if (entra <= 0 || sai >= 1) return;
+
+    // A geometria da cápsula (origem: a margem do texto, na base da frase)
+    const H = tp * 3;
+    const cy = -tp * 0.14;
+    const topo = cy - H / 2;
+    const base = cy + H / 2;
+    const pE = tp * 0.62;
+    const pD = tp * 0.95;
+    let larguraNumero = 0;
+    for (const passo of passos) larguraNumero = Math.max(larguraNumero, passo.numero.largura);
+    const xFio = pE + larguraNumero + tp * 0.5;
+    const xTexto = xFio + tp * 0.58;
+    const largura = (k: number) => xTexto + passos[k].texto.largura + pD;
+
+    // Qual item está entrando (a troca começa 0,09 antes do passo dele)
+    const inicio = (k: number) => PASSOS_INICIO + k * PASSOS_VEZ;
+    const k = Math.max(0, Math.min(n - 1, Math.floor((t - PASSOS_INICIO + 0.09) / PASSOS_VEZ)));
+    const fimSaida = entraCubica(sai);
+
+    // A largura: abre do tamanho de um círculo na entrada, ajusta a cada troca
+    let w: number;
+    if (k === 0) w = mix(H, largura(0), saiQuinta(trecho(t, PASSOS_INICIO - 0.1, PASSOS_INICIO + 0.12)));
+    else w = mix(largura(k - 1), largura(k), entraSaiCubica(trecho(t, inicio(k) - 0.08, inicio(k) + 0.08)));
+    w = mix(w, H, fimSaida);
+    const alfa = limitar(entra * 2.2) * (1 - trecho(t, 6.36, 6.5));
+    // A borda acende de leve a cada troca (e na chegada)
+    let acende = 0;
+    for (let j = 0; j < n; j++) acende = Math.max(acende, Math.sin(Math.PI * trecho(t, inicio(j) - 0.05, inicio(j) + 0.16)));
+
     ctx.save();
     noPlano(cam, enq.textoX, textos.basePassos, 1);
-    // A fresta: a borda de baixo fica logo abaixo das descendentes
-    ctx.beginPath();
-    ctx.rect(-10, -tp * 1.7, textos.larguraPassos + 40, tp * 2.05);
+    ctx.globalAlpha = alfa;
+
+    // ---- a cápsula de vidro
+    // Uma luz quente atrás do número
+    const gx = pE + larguraNumero * 0.5;
+    const gr = tp * 1.7;
+    ctx.globalAlpha = alfa * (0.16 + 0.1 * acende);
+    desenharLuz(luzOuro, gx - gr, cy - gr, gr * 2, gr * 2);
+    ctx.globalAlpha = alfa;
+    const r = H / 2;
+    const pilula = () => {
+      ctx.beginPath();
+      ctx.moveTo(r, topo);
+      ctx.lineTo(w - r, topo);
+      ctx.arc(w - r, cy, r, -Math.PI / 2, Math.PI / 2);
+      ctx.lineTo(r, base);
+      ctx.arc(r, cy, r, Math.PI / 2, (Math.PI * 3) / 2);
+      ctx.closePath();
+    };
+    pilula();
+    const vidro = ctx.createLinearGradient(0, topo, 0, base);
+    vidro.addColorStop(0, "rgba(255, 255, 255, 0.11)");
+    vidro.addColorStop(1, "rgba(255, 255, 255, 0.035)");
+    ctx.fillStyle = vidro;
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(255, 255, 255, ${(0.17 + 0.28 * acende).toFixed(3)})`;
+    ctx.stroke();
+    // O brilho de vidro na borda de cima
+    if (w > H * 1.4) {
+      const g = ctx.createLinearGradient(r, 0, w - r, 0);
+      g.addColorStop(0, "rgba(255, 255, 255, 0)");
+      g.addColorStop(0.3, "rgba(255, 255, 255, 0.22)");
+      g.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(r, topo + 1, w - r * 2, 1);
+    }
+
+    // Tudo o que vai dentro fica recortado pela cápsula
+    ctx.save();
+    pilula();
     ctx.clip();
-    const subida = tp * 1.15;
-    /** Uma linha, letra a letra: g0 é o índice da primeira letra na linha
-     *  inteira (número + texto), para o escalonamento seguir de uma parte
-     *  para a outra */
-    const letras = (l: Linha, x0: number, g0: number, entra: number, saiDe: number, estilo: string | CanvasGradient) => {
+
+    // ---- o número, como um odômetro
+    const curso = tp * 1.7;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pE - 4, -tp * 1.45, larguraNumero + 8, tp * 1.67);
+    ctx.clip();
+    const desenharNumero = (passo: (typeof passos)[number], mudou: (j: number) => boolean, dySai: number, dyEntra: number, papel: "sai" | "entra") => {
+      const l = passo.numero;
+      if (!l.texto) {
+        // O ponto de ouro do último item
+        const dy = papel === "sai" ? dySai : dyEntra;
+        ctx.fillStyle = "#d6b678";
+        ctx.beginPath();
+        ctx.arc(pE + tp * 0.32, cy + dy, tp * 0.17, 0, TAU);
+        ctx.fill();
+        return;
+      }
       ctx.font = fonteDe(l);
-      ctx.fillStyle = estilo;
-      for (let i = 0; i < l.texto.length; i++) {
-        const g = g0 + i;
-        const pe = saiQuinta(trecho(t, entra + g * PASSOS_ESCALONA, entra + g * PASSOS_ESCALONA + 0.17));
-        const q = entraCubica(trecho(t, saiDe + g * 0.0025, saiDe + g * 0.0025 + 0.1));
-        if (pe <= 0 || q >= 1) continue;
-        ctx.globalAlpha = Math.min(1, pe * 1.4) * (1 - q) * (1 - sai);
-        const dy = mix(subida, 0, pe) - tp * 0.75 * q - 8 * sai;
-        ctx.fillText(l.texto[i], x0 + l.xs[i] + tp * 0.035 * g * (1 - pe), dy);
+      ctx.fillStyle = ouro(ctx, pE, pE + l.largura, -1);
+      for (let j = 0; j < l.texto.length; j++) {
+        if (papel === "sai" && !mudou(j)) continue; // o que fica parado é desenhado pelo que entra
+        const dy = mudou(j) ? (papel === "sai" ? dySai : dyEntra) : 0;
+        ctx.fillText(l.texto[j], pE + l.xs[j], dy + fimSaida * curso);
       }
     };
-    textos.passos.forEach((passo, k) => {
-      const ini = PASSOS_INICIO + k * PASSOS_VEZ;
-      const ultimo = k === n - 1;
-      // O último fica até a saída de tudo
-      const saiDe = ultimo ? 99 : ini + PASSOS_VEZ - 0.12;
-      if (t < ini || t > saiDe + 0.2) return;
-      let x: number;
-      let g0 = 0;
-      if (passo.numero.texto) {
-        letras(passo.numero, 0, 0, ini, saiDe, ouro(ctx, 0, passo.numero.largura, -1));
-        x = passo.numero.largura + tp * 0.6;
-        g0 = passo.numero.texto.length + 1;
-      } else {
-        const pe = saiCubica(trecho(t, ini, ini + 0.14));
-        ctx.globalAlpha = pe * (1 - sai);
-        ctx.fillStyle = "#c9a56b";
-        ctx.beginPath();
-        ctx.arc(tp * 0.25, -tp * 0.34 + mix(subida * 0.6, 0, pe), tp * 0.17, 0, TAU);
-        ctx.fill();
-        x = tp;
-        g0 = 1;
-      }
-      letras(passo.texto, x, g0, ini, saiDe, "rgba(255, 255, 255, 0.9)");
-    });
+    if (k === 0) {
+      const rr = saiQuinta(trecho(t, PASSOS_INICIO - 0.06, PASSOS_INICIO + 0.1));
+      desenharNumero(passos[0], () => true, 0, (1 - rr) * curso, "entra");
+    } else {
+      const rr = entraSaiCubica(trecho(t, inicio(k) - 0.07, inicio(k) + 0.07));
+      const velho = passos[k - 1].numero.texto;
+      const novo = passos[k].numero.texto;
+      const mudou = (j: number) => !velho || !novo || velho[j] !== novo[j];
+      if (rr < 1) desenharNumero(passos[k - 1], mudou, -rr * curso, 0, "sai");
+      desenharNumero(passos[k], mudou, 0, (1 - rr) * curso, "entra");
+    }
     ctx.restore();
 
-    // Os traços que contam os passos (o ponto final não tem traço)
-    const contados = textos.passos.filter((p) => p.numero.texto).length;
-    const surge = saiCubica(trecho(t, PASSOS_INICIO - 0.05, PASSOS_INICIO + 0.15));
-    const alfa = surge * (1 - sai);
-    if (alfa <= 0 || contados === 0) return;
-    const lf = Math.min(textos.larguraPassos * 0.62, tp * 13);
-    const vao = tp * 0.4;
-    const lt = (lf - vao * (contados - 1)) / contados;
-    ctx.save();
-    noPlano(cam, enq.textoX, textos.basePassos + tp * 0.95, 1);
-    for (let k = 0; k < contados; k++) {
-      const x = k * (lt + vao);
-      ctx.globalAlpha = alfa;
-      ctx.fillStyle = "rgba(255, 255, 255, 0.16)";
-      ctx.fillRect(x, 0, lt * surge, 1.5);
-      const ini = PASSOS_INICIO + k * PASSOS_VEZ;
-      const cheio = trecho(t, ini, ini + PASSOS_VEZ);
-      if (cheio <= 0) continue;
-      ctx.fillStyle = ouro(ctx, x, x + lt, -1);
-      ctx.fillRect(x, 0, lt * cheio, 1.5);
+    // ---- o fio de ouro entre o número e a frase
+    const fioAlto = tp * 0.58 * saiCubica(limitar(entra * 1.6)) * (1 - fimSaida);
+    if (fioAlto > 0.5) {
+      const g = ctx.createLinearGradient(0, cy - fioAlto, 0, cy + fioAlto);
+      g.addColorStop(0, "rgba(214, 186, 125, 0)");
+      g.addColorStop(0.5, "rgba(224, 196, 143, 0.85)");
+      g.addColorStop(1, "rgba(214, 186, 125, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(xFio, cy - fioAlto, 1, fioAlto * 2);
     }
+
+    // ---- a frase, palavra a palavra
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(xTexto - 4, -tp * 1.45, w - xTexto, tp * 1.85);
+    ctx.clip();
+    const lTexto = (k2: number) => passos[k2].texto;
+    ctx.font = fonteDe(lTexto(k));
+    const subida = tp * 1.2;
+    const frase = (k2: number, papel: "sai" | "entra") => {
+      const l = lTexto(k2);
+      const palavras = palavrasDe(l.texto);
+      palavras.forEach((pw, i) => {
+        let dy: number;
+        let a: number;
+        if (papel === "entra") {
+          const t0 = (k2 === 0 ? PASSOS_INICIO - 0.015 : inicio(k2) - 0.035) + (0.022 * (1 - 0.84 ** i)) / 0.16;
+          const pe = trecho(t, t0, t0 + 0.12);
+          if (pe <= 0) return;
+          dy = (1 - saiQuinta(pe)) * subida + fimSaida * subida;
+          a = 1;
+        } else {
+          const t0 = inicio(k2 + 1) - 0.09 + i * 0.008;
+          const q = trecho(t, t0, t0 + 0.08);
+          if (q >= 1) return;
+          dy = -entraCubica(q) * subida * 0.8;
+          a = 1 - limitar(q / 0.6);
+        }
+        ctx.globalAlpha = alfa * a;
+        for (let c = pw.ini; c < pw.fim; c++) ctx.fillText(l.texto[c], xTexto + l.xs[c], dy);
+      });
+    };
+    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    if (k > 0 && t < inicio(k) + 0.04) frase(k - 1, "sai");
+    frase(k, "entra");
+    ctx.restore();
+    ctx.globalAlpha = alfa;
+
+    // ---- o progresso, na borda de baixo da cápsula
+    const contados = passos.filter((p) => p.numero.texto).length;
+    if (contados > 0) {
+      const yP = base - tp * 0.48;
+      const x0 = pE;
+      const x1 = w - pD * 0.8;
+      const funde = entraSaiCubica(trecho(t, inicio(n - 1), inicio(n - 1) + 0.12));
+      const vao = tp * 0.22 * (1 - funde);
+      const L = (x1 - x0 - vao * (contados - 1)) / contados;
+      if (L > 2) {
+        for (let j = 0; j < contados; j++) {
+          const sx = x0 + j * (L + vao);
+          // Na entrada, cada trilho se desenha da esquerda, em cascata
+          const trilho = saiCubica(trecho(t, PASSOS_INICIO - 0.03 + j * 0.025, PASSOS_INICIO + 0.09 + j * 0.025));
+          if (trilho <= 0) continue;
+          ctx.fillStyle = "rgba(255, 255, 255, 0.13)";
+          ctx.fillRect(sx, yP, L * trilho, 1.5);
+          const cheio = trecho(t, inicio(j), inicio(j) + PASSOS_VEZ);
+          if (cheio <= 0) continue;
+          ctx.fillStyle = ouro(ctx, x0, x1, -1);
+          ctx.fillRect(sx, yP, L * cheio, 1.5);
+          // A pontinha de luz no trecho que está enchendo
+          if (cheio < 1) {
+            const hx = sx + L * cheio;
+            const hr = tp * 0.5;
+            ctx.globalAlpha = alfa * 0.6;
+            desenharLuz(luzOuro, hx - hr, yP - hr * 0.6, hr * 2, hr * 1.2);
+            ctx.globalAlpha = alfa;
+            ctx.fillStyle = "#fff2d2";
+            ctx.fillRect(hx - 1.5, yP - 0.25, 3, 2);
+          }
+        }
+        // Os quatro passos completos: uma luz corre a linha inteira, uma vez
+        const corre = trecho(t, inicio(n - 1) + 0.06, inicio(n - 1) + 0.36);
+        if (corre > 0 && corre < 1) {
+          const hx = mix(x0, x1, saiCubica(corre));
+          const hr = tp * 0.7;
+          ctx.globalAlpha = alfa * 0.7 * Math.sin(Math.PI * corre);
+          desenharLuz(luzOuro, hx - hr, yP - hr * 0.6, hr * 2, hr * 1.2);
+          ctx.fillStyle = "#fff2d2";
+          ctx.fillRect(hx - 6, yP - 0.25, 12, 2);
+          ctx.globalAlpha = alfa;
+        }
+      }
+    }
+    ctx.restore(); // o recorte da cápsula
     ctx.restore();
   }
 

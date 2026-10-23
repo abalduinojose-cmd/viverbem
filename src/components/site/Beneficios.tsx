@@ -7,6 +7,10 @@
 // seguem as pílulas numa fileira centralizada, com o ícone no círculo.
 // 11/10/2026 ("na versão desktop pode aumentar 15%"): do lg para cima as
 // pílulas crescem 15% (altura, círculo do ícone, ícone, letras e recuos).
+// 22/10/2026 (auditoria em nove larguras): no tablet em pé (768 a 1023 px)
+// só cabiam três pílulas na linha e a quarta ficava órfã embaixo; o cartão
+// 2x2 do celular passou a valer até o lg, e as pílulas (já no tamanho
+// maior) começam em 1024 px, onde as quatro cabem.
 import { IconeMoto } from "./IconeMoto";
 import { IconeReceita } from "./BotaoEnviarReceita";
 import { IconeLoja, IconeEstrela } from "./IconesVantagens";
@@ -26,32 +30,32 @@ const ITENS = [
 
 // Célula do cartão no celular (ícone ao lado, à esquerda); pílula no computador
 const classeItem =
-  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition md:h-14 md:gap-3 md:rounded-full md:border md:border-fio md:bg-white/90 md:py-0 md:pl-1.5 md:pr-5 md:shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] md:backdrop-blur md:hover:border-ouro/40 lg:h-16 lg:gap-3.5 lg:pl-2 lg:pr-6";
+  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition lg:h-16 lg:gap-3.5 lg:rounded-full lg:border lg:border-fio lg:bg-white/90 lg:py-0 lg:pl-2 lg:pr-6 lg:shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] lg:backdrop-blur lg:hover:border-ouro/40";
 
 /** Os fios entre as células no celular: à esquerda das ímpares e em cima
  *  da segunda fileira. No computador cada pílula tem a própria borda. */
 function fiosDaCelula(i: number) {
-  return `border-fio ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""} md:border-0`;
+  return `border-fio ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""} lg:border-0`;
 }
 
 export function Beneficios() {
   return (
     <section aria-label="Vantagens" className="entrada-vantagens max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
-      <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white md:flex md:flex-wrap md:justify-center md:gap-2.5 lg:gap-3 md:overflow-visible md:rounded-none md:border-0 md:bg-transparent">
+      <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white lg:flex lg:flex-wrap lg:justify-center lg:gap-3 lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent">
         {ITENS.map((i, indice) => {
           const miolo = (
             <>
-              <span className="shrink-0 w-6 h-6 md:w-11 md:h-11 md:rounded-full flex items-center justify-center text-ouro-escuro md:bg-ouro/10 lg:w-[3.15rem] lg:h-[3.15rem] lg:[&>svg]:scale-115">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-ouro-escuro lg:w-[3.15rem] lg:h-[3.15rem] lg:rounded-full lg:bg-ouro/10 lg:[&>svg]:scale-115">
                 {i.icone}
               </span>
               <span className="min-w-0 leading-tight">
-                <b className="block font-semibold text-navy text-[0.8rem] md:text-[0.9rem] lg:text-[1.035rem]">{i.titulo}</b>
-                <span className="block text-cinza text-[0.75rem] md:text-[0.78rem] lg:text-[0.9rem] mt-0.5">{i.texto}</span>
+                <b className="block font-semibold text-navy text-[0.8rem] lg:text-[1.035rem]">{i.titulo}</b>
+                <span className="block text-cinza text-[0.75rem] lg:text-[0.9rem] mt-0.5">{i.texto}</span>
               </span>
             </>
           );
           return (
-            <li key={i.titulo} className={`min-w-0 md:shrink-0 ${fiosDaCelula(indice)}`}>
+            <li key={i.titulo} className={`min-w-0 lg:shrink-0 ${fiosDaCelula(indice)}`}>
               {i.href ? (
                 <a href={i.href} target="_blank" rel="noopener noreferrer" className={classeItem}>
                   {miolo}

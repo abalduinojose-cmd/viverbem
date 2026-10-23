@@ -439,6 +439,51 @@
 > assenta, o brilho varre a palavra. Na saída, da última para a primeira,
 > afundam 0,3 em e somem na névoa. Gravado 0–4,2 s no computador e no
 > celular.
+> Auditoria da home animada, 22/10/2026 (briefing colado pelo usuário:
+> animações, responsividade em nove larguras, os três elementos do título,
+> os quatro passos, botões, qualidade de código, desempenho e
+> acessibilidade; o trecho sobre planos e preços não se aplica, o site não
+> tem). Medido com puppeteer, a dobra congelada em dois instantes em
+> 360x780, 390x844, 430x932 (2x), 768x1024 (2x), 1024x768, 1280x800,
+> 1440x900, 1920x1080 e 2560x1080: a cena compõe sem cortes nem
+> sobreposição em todas, os três botões ficam dentro do banner, e o banner
+> fica preso à moldura de 90rem nas telas largas (decisão do site, não da
+> hero). Custo por quadro de 1 a 3 ms em todas as larguras (celular 2x
+> inclusive), cadência 60 fps mediana 16,7 ms e p95 16,8 ms, com e sem a
+> cena. Único defeito achado: rolagem horizontal de 15 px no tablet em pé
+> (768 px), vinda do cabeçalho das avaliações (título em duas linhas + selo
+> do Google em linha desde o md); passou a empilhar até o lg, como os
+> outros cabeçalhos de seção. Estouro zero em 360, 430, 768, 1024 e 1280.
+> O laço da hero já estava em ordem: um requestAnimationFrame só, pausa
+> fora da tela e com a aba escondida, ouvintes e observadores removidos na
+> saída, texturas (ImageBitmap) fechadas quando o tamanho muda, densidade
+> limitada a 2x no celular e 1,5x no desktop, pulo de quadro só quando o
+> desenho pesa. "Reduzir movimento": a dobra segue rodando, por regra do
+> próprio usuário (a máquina dele está com a preferência ligada).
+> Segundo achado do tablet em pé: as quatro vantagens viravam pílulas a
+> partir do md e só três cabiam na linha, a quarta ficava órfã embaixo; o
+> cartão 2x2 do celular passou a valer até o lg e as pílulas (no tamanho
+> maior) começam em 1024 px, onde as quatro cabem.
+> Letreiro dos passos da dobra refeito, 22/10/2026 ("não está bom, está
+> muito simples, modernize e retrabalhe"; antes eram o número e a frase
+> soltos, letra a letra, com quatro traços embaixo). Agora o passo mora
+> numa cápsula de vidro, o mesmo gesto do rótulo do alto, que abre do
+> tamanho de um círculo na entrada e ajusta a largura ao texto de cada
+> passo numa curva suave; a borda acende de leve a cada troca. O número,
+> em ouro itálico e maior, rola como um odômetro: o "0" fica parado e só o
+> algarismo que muda gira (01 para 02), com uma luz quente atrás; no último
+> item ("Petrópolis, desde 2006") o número dá lugar a um ponto de ouro. Um
+> fio de ouro vertical separa número e frase. A frase (Instrument Sans 500)
+> troca palavra a palavra: a velha sobe e se apaga, a nova sobe de baixo
+> em cascata com vãos que encolhem, começando um pouco antes de a velha
+> terminar (ação sobreposta). O progresso foi para dentro da cápsula, na
+> borda de baixo: os trilhos se desenham em cascata na entrada, o trecho
+> da vez se enche de ouro com uma pontinha de luz, e no último item os
+> quatro se fundem numa linha só, que uma luz percorre uma vez. A troca
+> acontece no mesmo quadro em que o carrossel dá o passo dele. Na saída a
+> cápsula volta ao círculo e o conteúdo desce. Custo de 1,7 a 1,9 ms por
+> quadro no trecho, 60 fps; cabe entre o título e os potes em 360, 390,
+> 768, 1024 e 1440.
 
 > **ADENDO 80 (21/10/2026): SEO local, páginas legais, consentimento de cookies com o Google Analytics preparado, preparação para produção e limpezas. IMPLEMENTADO e conferido no localhost; commit local, sem push (não foi pedido).**
 > Pedido: "faça os três (pendentes da análise) e mais: políticas de
