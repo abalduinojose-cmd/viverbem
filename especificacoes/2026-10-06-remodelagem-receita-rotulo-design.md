@@ -1,5 +1,30 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 92 (23/10/2026): página do produto, segunda volta. IMPLEMENTADO e conferido no localhost (1366 e 390); commit local, sem push.**
+> Pedido: "gostei, mas melhore: tire a ficha técnica, o valor sob consulta,
+> o código e a marca (é tudo da Viver Bem); melhore o pedir pelo WhatsApp,
+> as avaliações e o botão de quantidade".
+> - Saíram: marca, código, ficha técnica, "Valor sob consulta" e a linha
+>   "Vendido e preparado por". O preço só aparece quando é visível
+>   (industrializado com a chave ligada), com o total quando a quantidade
+>   passa de 1. O Compartilhar foi para o lado do título.
+> - Quantidade: seletor de três partes (menos, número, mais) em pílula
+>   branca com fio e ícones desenhados, AO LADO do carrinho, como nos
+>   marketplaces; "menos" apagado em 1 e "mais" em 20. No celular o
+>   carrinho diz só "Adicionar" para caber na linha.
+> - Pedir pelo WhatsApp: botão cheio no verde do WhatsApp com o ícone num
+>   círculo, a linha de apoio com o que vai na mensagem ("3x Max Solve
+>   Coenzima Q10, resposta no horário das lojas") e a seta; a mensagem leva
+>   a quantidade e a dosagem.
+> - Avaliações (AvaliacoesProduto.tsx): embaixo do nome um selo com o "G",
+>   a nota 5,0, as estrelas, três rostos de clientes e "680 avaliações no
+>   Google", que abre a aba nova AVALIAÇÕES (AbasProduto abre a aba pela
+>   âncora e rola até ela): o resumo em azul-noite (5,0 de 5, estrelas, 680
+>   avaliações da farmácia nas três lojas, "Ver todas") e três avaliações
+>   REAIS com foto, que mudam conforme o produto (ponto de partida pelo id).
+>   São da farmácia, não do produto, e nada é inventado.
+
+
 > **ADENDO 91 (23/10/2026): dois produtos novos (PUBLICADOS no 46º push) e a página do produto no padrão de marketplace (local, sem push).**
 > - Produtos novos, enviados pela farmácia em foto com o rótulo: "Centella
 >   Asiática Creme" (Dermatologia & Estética, id 78) e "Max Solve Coenzima

@@ -36,6 +36,21 @@ export function AbasProduto({ abas }: { abas: Aba[] }) {
     };
   }, [ativa]);
 
+  // Um link para "#avaliacoes" (o selo embaixo do nome) abre a aba e rola até ela
+  const raiz = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const abrirPelaAncora = () => {
+      const alvo = window.location.hash.slice(1);
+      const i = abas.findIndex((a) => a.id === alvo);
+      if (i < 0) return;
+      setAtiva(i);
+      requestAnimationFrame(() => raiz.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    };
+    abrirPelaAncora();
+    window.addEventListener("hashchange", abrirPelaAncora);
+    return () => window.removeEventListener("hashchange", abrirPelaAncora);
+  }, [abas]);
+
   const aoTeclar = (e: React.KeyboardEvent) => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     e.preventDefault();
@@ -45,7 +60,7 @@ export function AbasProduto({ abas }: { abas: Aba[] }) {
   };
 
   return (
-    <div>
+    <div ref={raiz} className="scroll-mt-[calc(var(--altura-cabecalho)+1rem)]">
       <div ref={lista} role="tablist" aria-label="Detalhes do produto" onKeyDown={aoTeclar} className="relative flex gap-1 overflow-x-auto rolagem-sem-barra border-b border-fio">
         {abas.map((a, i) => (
           <button

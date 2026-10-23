@@ -33,7 +33,13 @@
 // logo embaixo do produto, em todas as telas.
 //
 // 23/10/2026 ("quero a página do produto mais completa, como um marketplace
-// famoso, tá muito simples"): no alto, a marca, o código do produto e o
+// famoso, tá muito simples"). Segunda volta no mesmo dia ("tire a ficha
+// técnica, o valor sob consulta, o código e a marca, é tudo da Viver Bem;
+// melhore o pedir pelo WhatsApp, as avaliações e o botão de quantidade"):
+// saíram a marca, o código, a ficha técnica e o "Vendido por"; a nota virou
+// um selo com o "G", rostos de clientes e o total, que abre a aba nova
+// AVALIAÇÕES (resumo + três avaliações reais com foto). Primeira volta: no
+// alto, a marca, o código do produto e o
 // Compartilhar; embaixo do nome, a nota da FARMÁCIA no Google (é da loja,
 // e está escrito assim: não há avaliação por produto); os selos do tipo
 // (manipulado sob receita ou pronta entrega); o cartão de compra com o
@@ -47,8 +53,8 @@ import { dadosDeMigalhas, dadosDoProduto } from "@/lib/seo";
 import { DadosEstruturados } from "@/components/site/DadosEstruturados";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { obterCatalogo } from "@/lib/catalogo";
-import { listarItens, ehIndustrializado, UNIDADES, AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL } from "@/lib/tipos";
+import { obterCatalogo, obterTodasAvaliacoes } from "@/lib/catalogo";
+import { listarItens, ehIndustrializado, UNIDADES } from "@/lib/tipos";
 import { GaleriaProduto } from "@/components/site/GaleriaProduto";
 import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
@@ -57,7 +63,7 @@ import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
 import { IconeMoto } from "@/components/site/IconeMoto";
 import { IconeLoja } from "@/components/site/IconesVantagens";
 import { IconeWhatsApp } from "@/components/site/icones";
-import { Estrelas } from "@/components/site/Estrelas";
+import { AbaAvaliacoes, SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/AvaliacoesProduto";
 import { AbasProduto } from "@/components/site/produto/AbasProduto";
 import { CompartilharProduto } from "@/components/site/produto/CompartilharProduto";
 import { PERGUNTAS } from "@/components/site/PerguntasFrequentes";
@@ -101,16 +107,6 @@ function Chevron() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ouro shrink-0">
       <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-// Uma linha da ficha técnica (aba Descrição)
-function LinhaFicha({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
-  return (
-    <div className="grid grid-cols-[8.5rem_1fr] sm:grid-cols-[11rem_1fr] gap-4 px-4 py-3 odd:bg-gelo/50">
-      <dt className="text-sm text-cinza">{rotulo}</dt>
-      <dd className="text-sm font-medium text-navy">{children}</dd>
-    </div>
   );
 }
 
@@ -176,11 +172,11 @@ export default async function PaginaProduto({ params }: Props) {
   const categoria = categorias.find((c) => c.id === produto.categoriaId) ?? null;
   const hrefCategoria = categoria ? `/produtos/${categoria.slug}` : "/produtos";
 
-  // O código do produto, como num marketplace (o número do cadastro)
-  const codigo = `VB-${String(produto.id).padStart(4, "0")}`;
+  // Três avaliações reais da farmácia, trocando conforme o produto
+  const avaliacoesDoProduto = escolherAvaliacoes(await obterTodasAvaliacoes(), produto.id);
 
   const abaDescricao = (
-    <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12">
+    <div className="max-w-3xl">
       <div className="flex flex-col gap-6">
         <div>
           <h3 className="font-semibold text-navy">Sobre o produto</h3>
@@ -204,18 +200,6 @@ export default async function PaginaProduto({ params }: Props) {
             )}
           </>
         )}
-      </div>
-      <div>
-        <h3 className="font-semibold text-navy">Ficha técnica</h3>
-        <dl className="mt-2.5 overflow-hidden rounded-2xl ring-1 ring-inset ring-fio">
-          <LinhaFicha rotulo="Produto">{produto.nome}</LinhaFicha>
-          <LinhaFicha rotulo="Marca">Viver Bem</LinhaFicha>
-          {produto.categoriaNome && <LinhaFicha rotulo="Categoria">{produto.categoriaNome}</LinhaFicha>}
-          <LinhaFicha rotulo="Tipo">{industrializado ? "Industrializado, com registro" : "Manipulado sob receita"}</LinhaFicha>
-          {industrializado && produto.apresentacao && <LinhaFicha rotulo="Apresentação">{produto.apresentacao}</LinhaFicha>}
-          <LinhaFicha rotulo="Código">{codigo}</LinhaFicha>
-          <LinhaFicha rotulo="Vendido por">Manipulação Viver Bem, Petrópolis/RJ</LinhaFicha>
-        </dl>
       </div>
     </div>
   );
@@ -326,31 +310,15 @@ export default async function PaginaProduto({ params }: Props) {
 
           {/* ---------- Texto e ação ---------- */}
           <div className="flex flex-col">
-            {/* Marca, código e compartilhar, como num marketplace */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-cinza">
-                Marca{" "}
-                <Link href="/produtos" className="font-semibold text-tinta hover:underline underline-offset-4">
-                  Viver Bem
-                </Link>
-                <span className="mx-2 text-fio" aria-hidden="true">|</span>
-                <span className="tabular-nums">Cód. {codigo}</span>
-              </p>
-              <CompartilharProduto nome={produto.nome} />
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-[2.2rem] md:text-[3rem] font-semibold tracking-[-0.045em] text-navy leading-[1.02]">{produto.nome}</h1>
+              <span className="mt-1.5 shrink-0">
+                <CompartilharProduto nome={produto.nome} />
+              </span>
             </div>
 
-            <h1 className="mt-4 text-[2.2rem] md:text-[3rem] font-semibold tracking-[-0.045em] text-navy leading-[1.02]">
-              {produto.nome}
-            </h1>
-
-            {/* A nota é da FARMÁCIA no Google, e o texto diz isso */}
-            <Link href="/avaliacoes" className="group mt-3 inline-flex w-fit flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-              <Estrelas nota={Math.round(AVALIACOES_GOOGLE_NOTA)} tamanho={16} />
-              <b className="font-semibold text-navy tabular-nums">{AVALIACOES_GOOGLE_NOTA.toFixed(1).replace(".", ",")}</b>
-              <span className="text-cinza group-hover:text-tinta transition-colors">
-                <span className="tabular-nums">{AVALIACOES_GOOGLE_TOTAL}</span> avaliações da farmácia no Google
-              </span>
-            </Link>
+            {/* A nota da farmácia no Google, com rostos de clientes; abre a aba Avaliações */}
+            <SeloAvaliacoes rostos={avaliacoesDoProduto} />
 
             {/* O tipo e a área */}
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -398,6 +366,7 @@ export default async function PaginaProduto({ params }: Props) {
             { id: "descricao", rotulo: "Descrição", conteudo: abaDescricao },
             { id: "como-pedir", rotulo: "Como pedir", conteudo: abaComoPedir },
             { id: "entrega", rotulo: "Entrega e retirada", conteudo: abaEntrega },
+            ...(avaliacoesDoProduto.length > 0 ? [{ id: "avaliacoes", rotulo: "Avaliações", conteudo: <AbaAvaliacoes avaliacoes={avaliacoesDoProduto} /> }] : []),
             { id: "duvidas", rotulo: "Dúvidas", conteudo: abaDuvidas },
           ]}
         />

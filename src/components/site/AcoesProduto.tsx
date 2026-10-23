@@ -4,16 +4,41 @@
 // em navy), que fecha pelo WhatsApp. Sem preço: o farmacêutico
 // passa o valor na conversa.
 //
-// 23/10/2026 ("a página do produto como um marketplace famoso"): o cartão
-// ganhou o lugar do preço no alto (o preço quando é visível; senão "Valor
-// sob consulta" e como ele chega), o "Pedir agora pelo WhatsApp" logo
-// abaixo do carrinho (abre a conversa já com o produto, a dosagem e a
-// quantidade) e a linha de quem vende e prepara.
+// 23/10/2026 ("a página do produto como um marketplace famoso"), segunda
+// volta ("tire o valor sob consulta, melhore o pedir pelo WhatsApp e o botão
+// de quantidade; tire a marca, é tudo da Viver Bem"):
+//   - o preço só aparece quando é visível (industrializado com a chave
+//     ligada); o "Valor sob consulta" e a linha "Vendido por" saíram;
+//   - a QUANTIDADE virou um seletor de três partes (menos, número, mais)
+//     em pílula branca com fio, ícones desenhados, ao lado do carrinho, como
+//     nos marketplaces; no celular os dois ficam lado a lado também;
+//   - o "Pedir pelo WhatsApp" virou um botão cheio no verde do WhatsApp,
+//     com o ícone num círculo e uma linha de apoio ("resposta no horário
+//     das lojas"); abre a conversa já com o produto, a dosagem e a
+//     quantidade.
 import { useState } from "react";
 import { ProdutoDTO, listarDosagens, precoVisivel, WHATSAPP_NUMERO } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
+
+const MAXIMO = 20;
+
+function IconeMenos() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 12h12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconeMaisQtd() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   const { adicionar } = useCarrinho();
@@ -41,31 +66,24 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   const mensagemWhats = `Olá! Vim pelo site e quero pedir: ${quantidade}x ${produto.nome}${dosagem ? ` (${dosagem})` : ""}.`;
   const linkWhats = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagemWhats)}`;
 
+  const classePasso =
+    "flex size-11 items-center justify-center rounded-full text-navy transition-colors hover:bg-gelo active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100";
+
   return (
     <div className="mt-7 rounded-[1.75rem] border border-fio bg-gradient-to-b from-white to-gelo/70 p-5 md:p-6 shadow-[0_24px_40px_-32px_rgba(16,42,74,0.35)]">
-      {/* O lugar do preço, como num marketplace */}
-      <div className="pb-5 mb-5 border-b border-fio">
-        {preco !== null ? (
-          <>
-            <p className="text-[2rem] md:text-[2.3rem] font-semibold tracking-[-0.035em] text-navy tabular-nums leading-none">{formatarPreco(preco)}</p>
-            <p className="mt-1.5 text-sm text-cinza">à vista, confirmado no WhatsApp</p>
-          </>
-        ) : (
-          <>
-            <p className="text-[1.6rem] md:text-[1.8rem] font-semibold tracking-[-0.03em] text-navy leading-none">Valor sob consulta</p>
-            <p className="mt-1.5 flex items-center gap-1.5 text-sm text-cinza">
-              <span className="text-[#1DA851]">
-                <IconeWhatsApp tamanho={15} />
-              </span>
-              O farmacêutico confere e passa o valor pelo WhatsApp
-            </p>
-          </>
-        )}
-      </div>
+      {/* O preço, só quando pode aparecer */}
+      {preco !== null && (
+        <div className="pb-5 mb-5 border-b border-fio">
+          <p className="text-[2rem] md:text-[2.3rem] font-semibold tracking-[-0.035em] text-navy tabular-nums leading-none">{formatarPreco(preco)}</p>
+          <p className="mt-1.5 text-sm text-cinza tabular-nums">
+            {quantidade > 1 ? `${quantidade} unidades: ${formatarPreco(preco * quantidade)}` : "à vista, confirmado no WhatsApp"}
+          </p>
+        </div>
+      )}
 
       {/* Dosagens */}
       {dosagens.length > 0 && (
-        <div>
+        <div className="mb-5">
           <p className="text-sm font-semibold text-navy">Escolha a dosagem</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {dosagens.map((d) => (
@@ -85,80 +103,79 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         </div>
       )}
 
-      {/* Quantidade */}
-      <div className={`flex items-center justify-between gap-4 ${dosagens.length > 0 ? "mt-5" : ""}`}>
-        <div>
-          <p className="text-sm font-semibold text-navy">Quantidade</p>
-          <p className="text-xs text-cinza mt-0.5 tabular-nums">
-            {preco !== null ? `Total ${formatarPreco(preco * quantidade)}` : "até 20 por pedido"}
-          </p>
+      <p id="rotulo-quantidade" className="text-sm font-semibold text-navy">
+        Quantidade
+      </p>
+
+      {/* A quantidade ao lado do carrinho, como num marketplace */}
+      <div className="mt-2.5 flex items-stretch gap-2.5">
+        <div
+          role="group"
+          aria-labelledby="rotulo-quantidade"
+          className="flex shrink-0 items-center rounded-full bg-white p-1 ring-1 ring-inset ring-fio shadow-[0_8px_18px_-14px_rgba(13,35,64,0.4)]"
+        >
+          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={classePasso}>
+            <IconeMenos />
+          </button>
+          <output aria-live="polite" className="w-9 text-center text-[1.15rem] font-semibold text-navy tabular-nums">
+            {quantidade}
+          </output>
+          <button
+            type="button"
+            onClick={() => setQuantidade((q) => Math.min(MAXIMO, q + 1))}
+            disabled={quantidade >= MAXIMO}
+            aria-label="Aumentar quantidade"
+            className={classePasso}
+          >
+            <IconeMaisQtd />
+          </button>
         </div>
 
-        <div className="flex items-center gap-1 rounded-full bg-gelo p-1">
-          <button
-            type="button"
-            onClick={() => setQuantidade((q) => Math.max(1, q - 1))}
-            disabled={quantidade <= 1}
-            aria-label="Diminuir quantidade"
-            className="w-11 h-11 rounded-full bg-white text-navy text-xl font-medium flex items-center justify-center shadow-sm transition active:scale-90 disabled:opacity-40 disabled:active:scale-100"
-          >
-            −
-          </button>
-          <span className="w-9 text-center text-lg font-semibold text-navy tabular-nums">{quantidade}</span>
-          <button
-            type="button"
-            onClick={() => setQuantidade((q) => Math.min(20, q + 1))}
-            aria-label="Aumentar quantidade"
-            className="w-11 h-11 rounded-full bg-navy text-white text-xl font-medium flex items-center justify-center transition hover:bg-tinta active:scale-90"
-          >
-            +
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={adicionarAoCarrinho}
+          className={`botao-carrinho flex-1 min-w-0 !min-h-[3.25rem] !px-4 !text-[1rem] ${adicionado ? "botao-carrinho-feito" : ""}`}
+        >
+          <span className="sr-only" aria-live="polite">
+            {adicionado ? "Produto adicionado ao carrinho" : ""}
+          </span>
+          {adicionado ? (
+            <>
+              <IconeFeito tamanho={20} />
+              Adicionado
+            </>
+          ) : (
+            <>
+              <IconeCarrinho tamanho={20} />
+              <span className="truncate">
+                Adicionar<span className="hidden sm:inline"> ao carrinho</span>
+              </span>
+            </>
+          )}
+        </button>
       </div>
 
-      {/* Adicionar ao carrinho: a ação principal desta tela */}
-      <button
-        type="button"
-        onClick={adicionarAoCarrinho}
-        className={`botao-carrinho w-full mt-5 !min-h-14 !text-[1.05rem] ${adicionado ? "botao-carrinho-feito" : ""}`}
-      >
-        <span className="sr-only" aria-live="polite">
-          {adicionado ? "Produto adicionado ao carrinho" : ""}
-        </span>
-        {adicionado ? (
-          <>
-            <IconeFeito tamanho={22} />
-            Adicionado ao carrinho
-          </>
-        ) : (
-          <>
-            <IconeCarrinho tamanho={22} />
-            Adicionar ao carrinho
-          </>
-        )}
-      </button>
-
-      {/* Pedir direto, sem passar pelo carrinho */}
+      {/* Pedir direto, sem passar pelo carrinho: o verde do WhatsApp */}
       <a
         href={linkWhats}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2.5 flex w-full items-center justify-center gap-2.5 min-h-[3.25rem] rounded-full bg-white text-[#117a3c] text-[0.98rem] font-semibold ring-1 ring-inset ring-[#25D366]/45 transition-colors hover:bg-[#f1fbf4]"
+        className="group mt-3 flex w-full items-center gap-3 rounded-full bg-[#1DA851] py-2 pl-2 pr-5 text-white shadow-[0_16px_30px_-18px_rgba(29,168,81,0.85)] transition-colors hover:bg-[#178a43]"
       >
-        <IconeWhatsApp tamanho={19} />
-        Pedir agora pelo WhatsApp
-      </a>
-
-      {/* Quem vende e prepara */}
-      <p className="mt-4 flex items-start gap-2 text-[0.8rem] leading-snug text-cinza">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-px shrink-0 text-tinta">
-          <path d="M12 3 5 6v5.5c0 4.2 2.9 8 7 9.5 4.1-1.5 7-5.3 7-9.5V6l-7-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="m9 12 2.2 2.2L15.5 10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span>
-          Vendido e preparado por <b className="font-semibold text-navy">Manipulação Viver Bem</b>. Cada pedido passa pelo farmacêutico antes de confirmar.
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20">
+          <IconeWhatsApp tamanho={21} />
         </span>
-      </p>
+        <span className="min-w-0 flex-1 leading-tight">
+          <span className="block text-[0.98rem] font-semibold">Pedir pelo WhatsApp</span>
+          <span className="block text-[0.75rem] text-white/80">
+            {quantidade}x {produto.nome}
+            {dosagem ? ` (${dosagem})` : ""}, resposta no horário das lojas
+          </span>
+        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5">
+          <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
     </div>
   );
 }
