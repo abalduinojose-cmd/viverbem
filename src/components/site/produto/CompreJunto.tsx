@@ -1,11 +1,11 @@
 "use client";
 // "Compre junto" (23/10/2026, estudo das páginas da Amazon e do Mercado
-// Livre): o produto da página mais dois da mesma área, lado a lado com o
+// Livre; desde 24/10 com UM companheiro): o produto da página mais um da mesma área, lado a lado com o
 // "+" entre eles, e UM botão que põe os três no carrinho. É o "comprados
 // juntos" dos marketplaces, mas sem inventar dado: os dois companheiros
 // são os primeiros da mesma categoria com foto real, e cada um tem o
 // próprio link. Sem preço (manipulado não expõe preço).
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import type { ProdutoDTO } from "@/lib/tipos";
@@ -44,16 +44,19 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
 
       <div className="relative mt-6 flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-7">
         {/* Os três, com o "+" entre eles */}
-        <ul className="flex items-stretch justify-center gap-2 pt-2 sm:gap-3 lg:flex-1">
+        <ul className="mx-auto flex w-full max-w-[26rem] items-stretch justify-center gap-3 pt-2 sm:gap-4 lg:mx-0 lg:max-w-sm lg:flex-none">
           {todos.map((p, i) => (
-            <li key={p.id} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+            <Fragment key={p.id}>
               {i > 0 && (
-                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full bg-navy text-white shadow-[0_6px_14px_-8px_rgba(13,35,64,0.8)]">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-                  </svg>
-                </span>
+                <li aria-hidden="true" className="flex shrink-0 items-center">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-navy text-white shadow-[0_6px_14px_-8px_rgba(13,35,64,0.8)]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </li>
               )}
+              <li className="flex min-w-0 flex-1">
               <Link
                 href={`/produto/${p.slug}`}
                 aria-current={i === 0 ? "page" : undefined}
@@ -77,12 +80,13 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
                 </span>
                 <span className="mt-2 line-clamp-2 px-0.5 text-center text-[0.8rem] font-medium leading-snug text-navy">{p.nome}</span>
               </Link>
-            </li>
+              </li>
+            </Fragment>
           ))}
         </ul>
 
         {/* A ação única */}
-        <div className="flex shrink-0 flex-col items-stretch gap-2.5 lg:w-[17rem] lg:border-l lg:border-fio lg:pl-7">
+        <div className="flex flex-col items-stretch gap-2.5 lg:max-w-sm lg:flex-1 lg:border-l lg:border-fio lg:pl-7">
           <p className="text-sm leading-snug text-cinza">
             Os {todos.length} vão juntos para o carrinho. O farmacêutico passa o valor de tudo pelo WhatsApp.
           </p>

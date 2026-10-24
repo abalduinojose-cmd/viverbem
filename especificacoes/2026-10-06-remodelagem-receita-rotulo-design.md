@@ -1,5 +1,19 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 97 (24/10/2026): página do produto, oitava volta. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 52º push.**
+> Pedidos: "deixe o cartão de compra mais clean, não gostei desse azul /
+> deixe os selos mais clean / no compre junto deixe apenas 1 produto".
+> - A FOLHA NAVY do cartão de compra (adendo 96) foi REPROVADA no dia
+>   seguinte. Voltou BRANCO e limpo: só um fio e sombra curta, "QUANTIDADE"
+>   em versalete cinza, o seletor numa pílula de gelo com o "mais" em
+>   navy, carrinho em ouro e WhatsApp em verde.
+> - Selos (Valor no WhatsApp / Delivery / Retirada): sem caixa, sem fio de
+>   contorno nem anel colorido; três itens separados por fio fino, ícone
+>   menor num círculo de gelo (o do WhatsApp em verde suave).
+> - Compre junto com UM companheiro (2 produtos): o "+" virou um item
+>   próprio para os dois ladrilhos ficarem iguais; no computador os
+>   ladrilhos e a ação têm largura máxima (max-w-sm), em vez de esticar.
+
 > **ADENDO 96 (23/10/2026): página do produto, sétima volta. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 51º push (a0b771c9).**
 > Pedidos: "coloque o botão de compartilhar no canto superior da foto,
 > preciso do nome mais destacado / modernize o cartão de compra / melhore

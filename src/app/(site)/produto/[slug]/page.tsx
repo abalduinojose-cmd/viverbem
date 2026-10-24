@@ -143,23 +143,24 @@ const PASSOS_PEDIDO = [
 // comprovar (voltaram em 21/10/2026, com o terceiro)
 // 23/10/2026: ordem pedida (WhatsApp, Delivery, Retirada), ícones maiores
 const SELOS = [
-  { icone: <IconeWhatsApp tamanho={19} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
-  { icone: <IconeMoto tamanho={21} />, titulo: "Delivery", texto: "Petrópolis e Região" },
-  { icone: <IconeLoja tamanho={19} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeWhatsApp tamanho={17} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
+  { icone: <IconeMoto tamanho={19} />, titulo: "Delivery", texto: "Petrópolis e Região" },
+  { icone: <IconeLoja tamanho={17} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
 ];
 
 // 23/10/2026 (terceira volta, "melhore"): três colunas em TODA tela, o
-// ícone em cima num círculo de ouro, o título e o apoio centrados, numa
-// tira só com fio (no celular eram três linhas empilhadas que ocupavam
-// meia tela)
+// ícone em cima, o título e o apoio centrados.
+// 24/10/2026 ("mais clean"): sem caixa, sem fio de contorno e sem anel
+// colorido; só os três itens separados por um fio fino, o ícone num
+// círculo de gelo e o do WhatsApp em verde suave
 function Selos() {
   return (
-    <ul className="mt-5 grid grid-cols-3 divide-x divide-fio overflow-hidden rounded-2xl border border-fio bg-white shadow-[0_18px_40px_-34px_rgba(16,42,74,0.3)]">
+    <ul className="mt-5 grid grid-cols-3 divide-x divide-fio">
       {SELOS.map((s, i) => (
-        <li key={s.titulo} className="flex flex-col items-center gap-2 px-2 py-4 text-center">
-          <span className={`flex size-11 items-center justify-center rounded-full ring-1 ring-inset ${i === 0 ? "bg-[#25D366]/12 text-[#128C4B] ring-[#25D366]/25" : "bg-ouro/10 text-ouro-escuro ring-ouro/25"}`}>{s.icone}</span>
-          <b className="text-[0.84rem] font-semibold leading-tight text-navy">{s.titulo}</b>
-          <span className="text-[0.72rem] leading-tight text-cinza">{s.texto}</span>
+        <li key={s.titulo} className="flex flex-col items-center gap-1.5 px-2 py-3 text-center">
+          <span className={`flex size-9 items-center justify-center rounded-full ${i === 0 ? "bg-[#25D366]/12 text-[#128C4B]" : "bg-gelo text-navy"}`}>{s.icone}</span>
+          <b className="mt-0.5 text-[0.8rem] font-semibold leading-tight text-navy">{s.titulo}</b>
+          <span className="text-[0.7rem] leading-tight text-cinza">{s.texto}</span>
         </li>
       ))}
     </ul>
@@ -342,10 +343,11 @@ export default async function PaginaProduto({ params }: Props) {
     </div>
   );
 
-  // "Compre junto": os dois primeiros da mesma área com foto real
+  // "Compre junto": o primeiro da mesma área com foto real (24/10/2026:
+  // "deixe apenas 1 produto e não 2")
   const companheiros = produtos
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id && p.fotoUrl && !p.fotoUrl.toLowerCase().endsWith(".svg"))
-    .slice(0, 2);
+    .slice(0, 1);
 
   const relacionados = produtos
     .filter((p) => p.categoriaId === produto.categoriaId && p.id !== produto.id)
@@ -471,7 +473,7 @@ export default async function PaginaProduto({ params }: Props) {
       </section>
 
       {/* Compre junto (23/10/2026, estudo da Amazon e do Mercado Livre) */}
-      {companheiros.length === 2 && (
+      {companheiros.length === 1 && (
         <section className="max-w-6xl mx-auto px-5 md:px-8 pb-5 md:pb-6">
           <CompreJunto principal={produto} companheiros={companheiros} />
         </section>
