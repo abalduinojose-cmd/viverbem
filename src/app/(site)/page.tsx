@@ -164,9 +164,11 @@ export default async function Home() {
         );
       case "vitrinesAreas":
         // Nas áreas o banner abre a faixa, um pouco menor (08/10/2026)
+        // 25/10/2026 ("a principal tem muita informação"): só a PRIMEIRA
+        // faixa por área fica na home; as outras continuam em /produtos
         return vitrines.length === 0
           ? null
-          : vitrines.map((v) => (
+          : vitrines.slice(0, 1).map((v) => (
               <VitrineCategoria
                 key={v.categoria.id}
                 id={`titulo-vitrine-${v.categoria.slug}`}

@@ -27,21 +27,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CartaoReceita } from "./CartaoReceita";
-import { CartaoLojas } from "./CartaoLojas";
 import { CartaoWhatsApp } from "./CartaoWhatsApp";
-import { GRADE, HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
-import { SetaDireita } from "./icones";
+import { HORARIOS, useEstadoLoja, type EstadoLoja } from "./HorarioAtendimento";
+import { IconeWhatsApp, SetaDireita } from "./icones";
+import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
+import { UNIDADES, WHATSAPP_NUMERO } from "@/lib/tipos";
 
-// A semana, no índice do getDay() (0 = domingo)
-const DIAS_SEMANA = [
-  { curto: "D", nome: "Domingo" },
-  { curto: "S", nome: "Segunda" },
-  { curto: "T", nome: "Terça" },
-  { curto: "Q", nome: "Quarta" },
-  { curto: "Q", nome: "Quinta" },
-  { curto: "S", nome: "Sexta" },
-  { curto: "S", nome: "Sábado" },
-];
+// (A lista da semana, DIAS_SEMANA, saiu com o cartão do horário em 25/10/2026;
+// a semana em círculos segue em HorarioAtendimento, nas páginas de lojas e contato)
 
 // "Aberto agora · Fecha às 19h", ao vivo (null no servidor: sem horário
 // congelado no HTML)
@@ -88,6 +81,15 @@ export function FaleComAGente() {
   const linhaHoje = estado ? HORARIOS.find((l) => l.dias.includes(estado.dia)) : undefined;
   const detalheHoje = estado ? estado.detalhe.charAt(0).toLowerCase() + estado.detalhe.slice(1) : "";
 
+  // 25/10/2026 ("as páginas estão muito longas; passa o WhatsApp, passa
+  // endereço, horário, em todas as páginas"): o bloco inteiro, com as lojas
+  // e o horário, ficou só nas páginas de Lojas e Contato (que já o têm no
+  // próprio corpo). Na HOME ficam a receita e o WhatsApp, com uma linha para
+  // as lojas e o horário. Nas OUTRAS páginas vira uma FAIXA de uma linha:
+  // título, estado da loja e os três botões. Nada saiu do site: lojas e
+  // horário completos continuam em /lojas e /contato.
+  if (rota !== "/") return <FaixaFaleComAGente estado={estado} />;
+
   return (
     <section aria-labelledby="fale-com-a-gente" className="relative bg-white border-t border-fio">
       <div className="max-w-7xl mx-auto px-5 md:px-8 secao pb-12 md:pb-16">
@@ -118,75 +120,73 @@ export function FaleComAGente() {
               (14/10/2026, ver CartaoWhatsApp) */}
           <CartaoWhatsApp estado={estado} className="sm:col-span-2 lg:col-span-5" />
 
-          {/* As 3 lojas (14/10/2026, ver CartaoLojas): o mapa desenhado com o
-              trajeto e os pinos, e a lista com "Como chegar". Sem o telefone
-              fixo aqui (pedido): ele fica na página das lojas. */}
-          <CartaoLojas className="sm:col-span-2 lg:col-span-9" />
+          {/* 25/10/2026: as lojas e o horário saíram daqui (estão em /lojas e
+              /contato); fica uma linha que leva para lá */}
+          <Link
+            href="/lojas"
+            className="group sm:col-span-2 lg:col-span-12 flex flex-col gap-3 rounded-[1.5rem] bg-gelo/70 ring-1 ring-fio px-5 py-4 md:px-6 md:py-5 sm:flex-row sm:items-center sm:justify-between transition-colors hover:ring-ouro/50"
+          >
+            <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="text-[0.95rem] font-semibold text-navy">
+                {UNIDADES.length} lojas em Petrópolis: {UNIDADES.map((u) => u.bairro).join(", ")}
+              </span>
+              <span className="text-sm text-cinza">
+                {estado ? `${estado.aberto ? "Aberto agora" : "Fechado agora"}, ${detalheHoje}` : `Hoje, ${linhaHoje?.horas ?? HORARIOS[0].horas}`}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-tinta">
+              Endereços, horários e como chegar
+              <SetaDireita tamanho={14} className="transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          {/* O horário (07/10/2026, "modernize"): o estado ao vivo no alto, o
-              horário de hoje grande, a régua do dia com a hora de agora, a
-              semana em sete círculos (hoje em ouro) e as linhas */}
-          <div className="sm:col-span-2 lg:col-span-3 h-full flex flex-col rounded-[1.75rem] border border-fio bg-white p-5 md:p-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)]">
-            <span className="flex items-center justify-between gap-3">
-              <span className="rotulo-pilula">horário</span>
-              {estado ? (
-                <span role="status" className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em]">
-                  <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
-                  <span className={estado.aberto ? "text-green-700" : "text-cinza"}>{estado.aberto ? "Aberto" : "Fechado"}</span>
+// A faixa de uma linha (25/10/2026): o mesmo convite, sem cartões
+function FaixaFaleComAGente({ estado }: { estado: EstadoLoja }) {
+  const detalhe = estado ? estado.detalhe.charAt(0).toLowerCase() + estado.detalhe.slice(1) : "";
+  return (
+    <section aria-labelledby="fale-com-a-gente" className="relative bg-white border-t border-fio">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-9 md:py-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="revelar">
+          <p className="rotulo-pilula">fale com a gente</p>
+          <h2 id="fale-com-a-gente" className="mt-3 text-[1.45rem] md:text-[1.8rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
+            Pelo WhatsApp, pela receita{" "}
+            <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">ou na loja</span>
+          </h2>
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-cinza">
+            {estado ? (
+              <span role="status" className="inline-flex items-center gap-1.5">
+                <span aria-hidden="true" className={`size-2 rounded-full ${estado.aberto ? "bg-green-500" : "bg-cinza/50"}`} />
+                <span>
+                  <span className={`font-semibold ${estado.aberto ? "text-green-700" : "text-navy"}`}>{estado.aberto ? "Aberto agora" : "Fechado agora"}</span>, {detalhe}
                 </span>
-              ) : null}
-            </span>
-            <span className="mt-4 block text-[1.7rem] font-semibold text-navy tracking-[-0.03em] leading-none tabular-nums">
-              {linhaHoje ? linhaHoje.horas : HORARIOS[0].horas}
-            </span>
-            <span className="mt-1.5 block text-sm text-cinza">
-              {estado ? `Hoje, ${GRADE[estado.dia].curto} · ${detalheHoje}` : HORARIOS[0].rotulo}
-            </span>
-
-            {/* A semana: hoje em ouro, dias fechados apagados */}
-            <ul className="mt-6 grid grid-cols-7 gap-1" aria-label="Dias da semana">
-              {DIAS_SEMANA.map((d, i) => {
-                const linha = HORARIOS.find((l) => l.dias.includes(i));
-                const fechado = !linha || linha.horas === "Fechado";
-                const hoje = estado?.dia === i;
-                return (
-                  <li
-                    key={d.nome}
-                    title={`${d.nome}: ${linha?.horas ?? "Fechado"}`}
-                    className={`aspect-square rounded-full flex items-center justify-center text-[0.72rem] font-semibold ${
-                      hoje
-                        ? "bg-[image:var(--ouro-degrade)] text-navy"
-                        : fechado
-                          ? "text-cinza/40"
-                          : "bg-gelo/70 text-navy"
-                    }`}
-                  >
-                    <span aria-hidden="true">{d.curto}</span>
-                    <span className="sr-only">{d.nome}</span>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <ul className="mt-4 text-[0.82rem] lista-fichas">
-              {HORARIOS.map((linha) => {
-                const hoje = estado ? linha.dias.includes(estado.dia) : false;
-                return (
-                  <li key={linha.rotulo} className={`flex items-center justify-between gap-3 py-2 ${hoje ? "text-navy font-semibold" : "text-cinza"}`}>
-                    <span className="flex items-center gap-2">
-                      {hoje && <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[image:var(--ouro-degrade)]" />}
-                      {linha.rotulo}
-                    </span>
-                    <span className="tabular-nums">{linha.horas}</span>
-                  </li>
-                );
-              })}
-            </ul>
-            <Link href="/lojas" className="botao-link !min-h-11 !text-sm mt-auto pt-2 self-start">
-              Página das lojas
-              <SetaDireita tamanho={14} />
-            </Link>
-          </div>
+              </span>
+            ) : (
+              <span>Horário de atendimento</span>
+            )}
+            <span aria-hidden="true" className="size-1 rounded-full bg-ouro" />
+            <span>{UNIDADES.length} lojas em Petrópolis</span>
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2.5 lg:shrink-0">
+          <BotaoEnviarReceita className="botao botao-principal !min-h-12" />
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMERO}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="botao !min-h-12 bg-[#1DA851] text-white hover:bg-[#178a43]"
+          >
+            <IconeWhatsApp tamanho={19} />
+            WhatsApp
+          </a>
+          <Link href="/lojas" className="botao botao-secundario !min-h-12">
+            Lojas e horários
+            <SetaDireita tamanho={15} />
+          </Link>
         </div>
       </div>
     </section>

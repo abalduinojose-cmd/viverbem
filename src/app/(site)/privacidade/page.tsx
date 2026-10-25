@@ -24,6 +24,13 @@ export default function PaginaPrivacidade() {
       tituloItalico="privacidade"
       resumo="O que este site guarda sobre você, para quê, por quanto tempo e o que você pode pedir. Escrito para ser lido, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018)."
       atualizadoEm={ATUALIZADO_EM}
+      essencial={[
+        "O site só guarda nome, WhatsApp e o resumo do pedido de quem finaliza um pedido. Navegar e montar o carrinho não gera registro.",
+        "A foto da receita nunca passa pelo site: ela vai direto na conversa do WhatsApp, e o site não guarda nenhum dado de saúde.",
+        "Os dados servem para a equipe responder e preparar o pedido. Não vendemos nem repassamos para anúncios.",
+        "Cookies de medição só com o seu aceite, e você pode mudar a escolha a qualquer hora pelo rodapé.",
+        "Você pode pedir acesso, correção ou exclusão dos seus dados pelo WhatsApp ou em uma das lojas.",
+      ]}
       secoes={[
         {
           id: "quem-somos",

@@ -1,5 +1,31 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 98 (25/10/2026): páginas mais curtas, sem apagar nada. IMPLEMENTADO e medido; commit local, SEM push (pedido: "quero ver como ficou primeiro").**
+> Pedido: "as páginas estão muito longas; em todas, rola, passa o WhatsApp,
+> endereço, horário; na história tem que ser só a história; a principal
+> tem muita informação, mas não exclua nada, só reposicione; as políticas
+> só com o principal".
+> - FALE COM A GENTE (antes do rodapé, ~3 telas de celular em toda página):
+>   na HOME ficam a receita e o WhatsApp mais uma linha "3 lojas em
+>   Petrópolis, aberto/fechado, endereços e horários"; nas OUTRAS páginas
+>   virou uma FAIXA de uma linha (título, estado da loja, botões Enviar
+>   receita, WhatsApp e Lojas e horários). Lojas com mapa e o horário da
+>   semana seguem inteiros em /lojas e /contato.
+> - HOME: só a primeira faixa por área (as outras continuam em /produtos).
+> - A VIVER BEM (história): o Como funciona inteiro e o carrossel de
+>   avaliações saíram da página; no lugar, dois atalhos curtos (Como
+>   funciona em quatro passos / 5,0 no Google, 680 avaliações).
+> - CONTATO: os três cartões de loja com mapa viraram uma lista compacta
+>   num cartão só (número, bairro, endereço, Como chegar).
+> - PÁGINAS LEGAIS (privacidade, termos, reembolso): "O essencial" em
+>   caixa navy com 4 ou 5 frases, e o texto completo DOBRADO por seção
+>   (details/summary, fechado por padrão); o sumário e links com âncora
+>   abrem a seção certa (AbrirSecaoLegal). Nada foi apagado.
+> Medido no celular (390 px), em telas: home 12,5 -> 10,9; produtos 9,2 ->
+> 6,7; história 12,1 -> 7,7; como funciona 6,6 -> 4,2; contato 5,3 -> 4,5;
+> avaliações 9,7 -> 7,2; privacidade 10,3 -> 4,1; termos 9,3 -> 3,9;
+> reembolso 8,8 -> 3,5. Lojas e produto não mudaram.
+
 > **ADENDO 97 (24/10/2026): página do produto, oitava volta. IMPLEMENTADO, conferido (390 e 1366) e PUBLICADO no 52º push.**
 > Pedidos: "deixe o cartão de compra mais clean, não gostei desse azul /
 > deixe os selos mais clean / no compre junto deixe apenas 1 produto".

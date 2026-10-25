@@ -23,6 +23,12 @@ export default function PaginaTermos() {
       tituloItalico="uso"
       resumo="As regras para usar este site e fazer pedidos. Ao navegar e finalizar um pedido, você concorda com o que está aqui. Em português simples, para não restar dúvida."
       atualizadoEm={ATUALIZADO_EM}
+      essencial={[
+        "O site não vende sozinho: o pedido feito aqui é um pré-pedido, confirmado pelo farmacêutico no WhatsApp.",
+        "Fórmula manipulada só sai com receita válida de profissional habilitado (RDC 67/2007).",
+        "Valor e prazo são passados na conversa; o pagamento é combinado ali e feito na loja, na entrega ou como acertado com a equipe.",
+        "Industrializados têm os prazos do Código de Defesa do Consumidor; manipulados não têm devolução por desistência.",
+      ]}
       secoes={[
         {
           id: "quem",

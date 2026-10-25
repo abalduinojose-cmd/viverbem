@@ -3,9 +3,15 @@
 // última versão; o texto em seções numeradas, com um sumário no computador
 // que acompanha a rolagem; e o convite para falar com a equipe no fim.
 // Texto em português simples, sem travessões. Sistema "Branco, azul e ouro".
+//
+// 25/10/2026 ("as políticas têm muita informação, quero só o principal"):
+// o ESSENCIAL vem em cima, em poucas frases, e o texto completo fica
+// DOBRADO por seção (details/summary), fechado por padrão. Nada saiu: cada
+// seção abre num toque, e o sumário abre a seção que a pessoa escolher.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { WHATSAPP_NUMERO } from "@/lib/tipos";
+import { AbrirSecaoLegal } from "./AbrirSecaoLegal";
 
 export interface SecaoLegal {
   id: string;
@@ -19,6 +25,7 @@ export function PaginaLegal({
   tituloItalico,
   resumo,
   atualizadoEm,
+  essencial,
   secoes,
 }: {
   rotulo: string;
@@ -27,6 +34,8 @@ export function PaginaLegal({
   tituloItalico: string;
   resumo: string;
   atualizadoEm: string;
+  /** O essencial, em três a cinco frases (25/10/2026) */
+  essencial: string[];
   secoes: SecaoLegal[];
 }) {
   return (
@@ -63,17 +72,40 @@ export function PaginaLegal({
 
           {/* O texto */}
           <div className="lg:col-span-8 xl:col-span-8 xl:col-start-5">
-            <div className="bg-white rounded-[2rem] ring-1 ring-fio/80 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] px-6 py-8 md:px-12 md:py-12 flex flex-col gap-10">
+            {/* O essencial */}
+            <section aria-labelledby="essencial-titulo" className="rounded-[2rem] bg-navy em-noite text-white px-6 py-7 md:px-10 md:py-9 shadow-[0_24px_50px_-36px_rgba(13,35,64,0.7)]">
+              <h2 id="essencial-titulo" className="text-[0.6875rem] font-semibold tracking-[0.16em] uppercase text-ouro-claro">O essencial</h2>
+              <ul className="mt-4 flex flex-col gap-3">
+                {essencial.map((frase) => (
+                  <li key={frase} className="flex items-start gap-3 text-[0.98rem] leading-relaxed text-white/90">
+                    <span aria-hidden="true" className="mt-[0.55rem] size-1.5 shrink-0 rounded-full bg-ouro" />
+                    {frase}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-sm text-white/60">O texto completo está logo abaixo, por seção. Toque num título para abrir.</p>
+            </section>
+
+            {/* O texto completo, dobrado por seção */}
+            <div className="mt-5 bg-white rounded-[2rem] ring-1 ring-fio/80 shadow-[0_24px_50px_-40px_rgba(16,42,74,0.45)] px-4 py-3 md:px-8 md:py-5 flex flex-col divide-y divide-fio">
               {secoes.map((s, i) => (
-                <section key={s.id} id={s.id} aria-labelledby={`${s.id}-titulo`} className="scroll-mt-[calc(var(--altura-cabecalho)+1.5rem)]">
-                  <h2 id={`${s.id}-titulo`} className="flex items-baseline gap-3 text-[1.25rem] md:text-[1.4rem] font-semibold tracking-[-0.025em] text-navy">
-                    <span className="numero-tinta text-[1.1rem] md:text-[1.25rem] shrink-0">{String(i + 1).padStart(2, "0")}</span>
-                    {s.titulo}
-                  </h2>
-                  <div className="mt-4 texto-legal text-[0.98rem] leading-[1.75] text-grafite flex flex-col gap-3">{s.conteudo}</div>
-                </section>
+                <details key={s.id} id={s.id} className="group scroll-mt-[calc(var(--altura-cabecalho)+1.5rem)]">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 py-4 md:py-5 [&::-webkit-details-marker]:hidden">
+                    <span className="numero-tinta text-[1rem] md:text-[1.1rem] shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                    <h2 id={`${s.id}-titulo`} className="flex-1 text-[1.05rem] md:text-[1.2rem] font-semibold tracking-[-0.02em] text-navy">
+                      {s.titulo}
+                    </h2>
+                    <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gelo text-navy transition-transform duration-300 group-open:rotate-180">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <div className="pb-6 pl-8 md:pl-10 texto-legal text-[0.98rem] leading-[1.75] text-grafite flex flex-col gap-3">{s.conteudo}</div>
+                </details>
               ))}
             </div>
+            <AbrirSecaoLegal />
 
             {/* Falar com a equipe */}
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-[1.5rem] bg-gelo/70 ring-1 ring-fio/80 px-6 py-5">

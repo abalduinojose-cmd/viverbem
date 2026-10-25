@@ -19,11 +19,11 @@ import {
   UNIDADES,
   WHATSAPP_LOJA,
   WHATSAPP_NUMERO,
+  linkMapaUnidade,
 } from "@/lib/tipos";
 import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
 import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
 import { FormularioContato } from "@/components/site/FormularioContato";
-import { CartaoLoja } from "@/components/site/CartaoLoja";
 import { IconeInstagram, IconeWhatsApp, SetaDireita } from "@/components/site/icones";
 
 export const metadata: Metadata = {
@@ -188,8 +188,11 @@ export default function PaginaContato() {
         </div>
       </section>
 
-      {/* ---------- As três lojas, com o mapa de cada uma ---------- */}
-      <section aria-labelledby="contato-lojas" className="px-5 md:px-8 pt-14 md:pt-20 pb-14 md:pb-20">
+      {/* ---------- As três lojas ---------- */}
+      {/* 25/10/2026 ("as páginas estão muito longas"): os três cartões com
+          mapa viraram uma lista compacta num cartão só; os cartões completos,
+          com fachada, mapa e telefone, seguem em /lojas */}
+      <section aria-labelledby="contato-lojas" className="px-5 md:px-8 pt-12 md:pt-16 pb-14 md:pb-20">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -203,10 +206,23 @@ export default function PaginaContato() {
               <SetaDireita tamanho={14} />
             </Link>
           </div>
-          <ol className="escalonado mt-8 grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
+          <ol className="revelar mt-6 rounded-[1.75rem] border border-fio bg-white px-5 md:px-6 shadow-[0_18px_40px_-32px_rgba(16,42,74,0.35)] divide-y divide-fio">
             {UNIDADES.map((u, i) => (
-              <li key={u.bairro}>
-                <CartaoLoja unidade={u} indice={i} compacto />
+              <li key={u.bairro} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:gap-5">
+                <span className="numero-tinta w-8 shrink-0 text-[1.1rem]">{String(i + 1).padStart(2, "0")}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[1.02rem] font-semibold text-navy tracking-[-0.02em]">{u.bairro}</span>
+                  <span className="block text-sm text-cinza">{u.endereco}</span>
+                </span>
+                <a
+                  href={linkMapaUnidade(u.bairro, u.endereco)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 self-start text-sm font-semibold text-tinta hover:underline sm:self-auto"
+                >
+                  Como chegar
+                  <SetaDireita tamanho={14} />
+                </a>
               </li>
             ))}
           </ol>

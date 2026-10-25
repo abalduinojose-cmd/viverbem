@@ -39,10 +39,8 @@
 import type { Metadata } from "next";
 import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
-import { obterAvaliacoes } from "@/lib/catalogo";
-import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
-import { ComoFunciona } from "@/components/site/ComoFunciona";
-import { ANOS_TRADICAO, UNIDADES } from "@/lib/tipos";
+import { ANOS_TRADICAO, AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, UNIDADES } from "@/lib/tipos";
+import { SetaDireita as SetaAtalho } from "@/components/site/icones";
 import { FotoParalaxe } from "@/components/site/historia/FotoParalaxe";
 import { NumeroRolante } from "@/components/site/historia/NumeroRolante";
 import { TextoRevelado } from "@/components/site/historia/TextoRevelado";
@@ -137,7 +135,6 @@ function SetaBaixo() {
 }
 
 export default async function PaginaSobre() {
-  const avaliacoes = await obterAvaliacoes();
 
   return (
     <main className="flex-1">
@@ -283,15 +280,44 @@ export default async function PaginaSobre() {
         </div>
       </section>
 
-      {/* ---------- Como funciona ---------- */}
-      <ComoFunciona />
-
-      {/* ---------- Avaliações ---------- */}
-      {avaliacoes.length > 0 && (
-        <div id="avaliacoes" className={`pb-14 ${ANCORA}`}>
-          <CarrosselAvaliacoes avaliacoes={avaliacoes} />
-        </div>
-      )}
+      {/* ---------- Veja também ---------- */}
+      {/* 25/10/2026 ("na história tem que ser só a história"): o Como
+          funciona inteiro e o carrossel de avaliações saíram desta página
+          (seguem na home, em /como-funciona e em /avaliacoes); ficam dois
+          atalhos curtos */}
+      <section aria-label="Veja também" className="max-w-6xl mx-auto px-5 md:px-8 pb-14 md:pb-20">
+        <ul className="escalonado grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+          <li>
+            <Link
+              href="/como-funciona"
+              className="group flex h-full items-center justify-between gap-4 rounded-[1.75rem] border border-fio bg-white p-6 transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40"
+            >
+              <span>
+                <span className="rotulo-pilula">o pedido pela receita</span>
+                <span className="mt-3 block text-[1.2rem] md:text-[1.4rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
+                  Como funciona, <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">em quatro passos</span>
+                </span>
+              </span>
+              <SetaAtalho tamanho={18} className="shrink-0 text-tinta transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/avaliacoes"
+              className="group flex h-full items-center justify-between gap-4 rounded-[1.75rem] border border-fio bg-white p-6 transition duration-300 hover:-translate-y-0.5 hover:border-ouro/40"
+            >
+              <span>
+                <span className="rotulo-pilula">quem já é cliente</span>
+                <span className="mt-3 block text-[1.2rem] md:text-[1.4rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
+                  {AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google,{" "}
+                  <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">{AVALIACOES_GOOGLE_TOTAL} avaliações</span>
+                </span>
+              </span>
+              <SetaAtalho tamanho={18} className="shrink-0 text-tinta transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
+          </li>
+        </ul>
+      </section>
     </main>
   );
 }

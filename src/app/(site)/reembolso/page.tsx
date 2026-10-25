@@ -25,6 +25,12 @@ export default function PaginaReembolso() {
       tituloItalico="reembolso"
       resumo="O que pode ser trocado ou devolvido, em quanto tempo e como pedir. Produto industrializado e fórmula manipulada seguem regras diferentes, e explicamos cada uma."
       atualizadoEm={ATUALIZADO_EM}
+      essencial={[
+        "Industrializado com defeito: troca ou devolução do valor em até 30 dias da compra.",
+        "Industrializado comprado a distância, sem defeito: desistência em até 7 dias do recebimento, com o produto lacrado.",
+        "Fórmula manipulada é feita sob medida e não volta ao estoque, por isso não há devolução por desistência; problema de preparo é resolvido sem custo.",
+        "Para pedir, fale pelo WhatsApp com o código do pedido; o reembolso sai pelo mesmo meio do pagamento.",
+      ]}
       secoes={[
         {
           id: "resumo",
