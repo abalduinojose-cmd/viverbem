@@ -1,5 +1,13 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 104 (25/10/2026): bug da gaveta do carrinho no celular. CORRIGIDO e testado; commit local, sem push.**
+> O cartão "Tenho uma receita" aparecia cortado (32 px de altura, texto
+> escondido) quando a tela era baixa. Causa: a área que rola da gaveta é
+> uma coluna flex, e um filho com overflow-hidden tem altura mínima zero,
+> então ele encolhia para caber. Correção: os filhos das duas áreas que
+> rolam (Pedido e Dados) não encolhem mais ([&>*]:shrink-0). Testado em
+> 390 x 700 com dois produtos: o cartão fica com 97 px, inteiro.
+
 > **ADENDO 103 (25/10/2026): na página do produto, "Você viu recentemente" vem ANTES de "Mais procurados". IMPLEMENTADO e testado; commit local, sem push.**
 > Pedido: "nos produtos, antes dos mais pedidos coloque o Você viu
 > recentemente; nessa parte têm que entrar os produtos que a pessoa já

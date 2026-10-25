@@ -487,7 +487,7 @@ export function CarrinhoDrawer() {
             ) : etapa === "pedido" ? (
               /* ---------- Etapa 1: o pedido ---------- */
               <>
-                <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
+                <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-3">
                   {/* A receita: o pedido do manipulado. Ligada, o cartão vira
                       azul-noite com o ouro e mostra os três passos seguintes */}
                   <button
@@ -715,7 +715,7 @@ export function CarrinhoDrawer() {
             ) : (
               /* ---------- Etapa 2: dados ---------- */
               <>
-                <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-6">
+                <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-6">
                   {/* Quem recebe */}
                   <div className="flex flex-col gap-4">
                     <label className="flex flex-col gap-2">
