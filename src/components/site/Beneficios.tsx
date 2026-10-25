@@ -29,28 +29,30 @@ const ITENS = [
 ];
 
 // Célula do cartão no celular (ícone ao lado, à esquerda); pílula no computador
+// 25/10/2026 (clean, marca de beleza): no computador as pílulas com borda,
+// sombra e vidro viraram texto com o ícone em ouro, separados por um fio
 const classeItem =
-  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition lg:h-16 lg:gap-3.5 lg:rounded-full lg:border lg:border-fio lg:bg-white/90 lg:py-0 lg:pl-2 lg:pr-6 lg:shadow-[0_14px_30px_-24px_rgba(16,42,74,0.5)] lg:backdrop-blur lg:hover:border-ouro/40";
+  "flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition lg:h-14 lg:gap-3 lg:py-0 lg:px-7";
 
 /** Os fios entre as células no celular: à esquerda das ímpares e em cima
  *  da segunda fileira. No computador cada pílula tem a própria borda. */
 function fiosDaCelula(i: number) {
-  return `border-fio ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""} lg:border-0`;
+  return `border-fio ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""} lg:border-t-0 ${i > 0 ? "lg:border-l" : "lg:border-0"}`;
 }
 
 export function Beneficios() {
   return (
     <section aria-label="Vantagens" className="entrada-vantagens max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
-      <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white lg:flex lg:flex-wrap lg:justify-center lg:gap-3 lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent">
+      <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white lg:flex lg:flex-wrap lg:justify-center lg:gap-0 lg:overflow-visible lg:rounded-none lg:border-0 lg:border-y lg:border-fio lg:bg-transparent">
         {ITENS.map((i, indice) => {
           const miolo = (
             <>
-              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-ouro-escuro lg:w-[3.15rem] lg:h-[3.15rem] lg:rounded-full lg:bg-ouro/10 lg:[&>svg]:scale-115">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-ouro-escuro lg:w-7 lg:h-7">
                 {i.icone}
               </span>
               <span className="min-w-0 leading-tight">
-                <b className="block font-semibold text-navy text-[0.8rem] lg:text-[1.035rem]">{i.titulo}</b>
-                <span className="block text-cinza text-[0.75rem] lg:text-[0.9rem] mt-0.5">{i.texto}</span>
+                <b className="block font-semibold text-navy text-[0.8rem] lg:text-[0.95rem]">{i.titulo}</b>
+                <span className="block text-cinza text-[0.75rem] lg:text-[0.82rem] mt-0.5">{i.texto}</span>
               </span>
             </>
           );

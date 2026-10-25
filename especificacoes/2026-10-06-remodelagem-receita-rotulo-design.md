@@ -1,5 +1,27 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 101 (25/10/2026): passe "clean de marca de beleza" no site inteiro, mantendo o layout. IMPLEMENTADO; commit local, SEM push (pedido: "só reformule pra gente ver como fica").**
+> Pedido: "não gostei (do cartão do Fale com a gente); quero o site mais
+> clean, nessa ideia atual; é uma marca de manipulação que foca na beleza
+> e estética; mantenha as informações, só deixe mais clean".
+> - Rótulos de seção (.rotulo-pilula): sem o contorno em degradê de ouro e
+>   sem sombra; só o texto em versalete com o ponto de ouro (a classe
+>   manteve o nome). No escuro, sem vidro.
+> - Cabeçalhos: o halo desfocado atrás do título saiu; o traço virou um
+>   risco curto de ouro cheio (2,75rem, 2px), sem a cauda; a varredura de
+>   luz na palavra em ouro foi desligada (fica em .com-varredura, se
+>   quiserem de volta).
+> - Ladrilhos brancos chapados com sombra curta; folhas da home com sombra
+>   mais leve; o halo da abertura das páginas pela metade.
+> - Vantagens sob a dobra (computador): as pílulas com borda, sombra e
+>   vidro viraram texto com o ícone em ouro, separadas por fio, entre dois
+>   fios finos.
+> - FALE COM A GENTE (quinta versão): SEM CAIXA. Um fio no alto, o rótulo
+>   fino, o título curto em duas vozes, o estado da loja; do outro lado
+>   "Enviar receita" cheio e dois links em texto com seta (WhatsApp, Lojas
+>   e horários). As versões em faixa, barra e cartão com trilha foram
+>   reprovadas no mesmo dia.
+
 > **ADENDO 100 (25/10/2026, terceira volta): "Fale com a gente" em cartão. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
 > Pedido: "mais clean e moderno, que fique bem com o layout do site". A
 > barra virou um CARTÃO branco sobre uma faixa em névoa, com o fio de ouro
