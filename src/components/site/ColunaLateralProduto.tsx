@@ -101,9 +101,12 @@ export function ColunaLateralProduto({
 }) {
   const vistos = useVistosRecentemente(slugAtual, catalogo);
   return (
-    <aside className={`flex flex-col gap-5 md:gap-6 ${className}`} aria-label="Mais procurados e vistos recentemente">
-      <Bloco rotulo="os mais pedidos" titulo="Mais procurados" itens={maisProcurados} verMais={{ href: "/produtos", texto: "Ver todos os produtos" }} />
+    // 25/10/2026 ("antes dos mais pedidos coloque o Você viu recentemente,
+    // com os produtos que a pessoa já clicou no site"): o histórico vem
+    // primeiro; ele só aparece quando a pessoa já abriu outro produto
+    <aside className={`flex flex-col gap-5 md:gap-6 ${className}`} aria-label="Vistos recentemente e mais procurados">
       <Bloco rotulo="continue de onde parou" titulo="Você viu recentemente" itens={vistos.slice(0, 10)} />
+      <Bloco rotulo="os mais pedidos" titulo="Mais procurados" itens={maisProcurados} verMais={{ href: "/produtos", texto: "Ver todos os produtos" }} />
     </aside>
   );
 }

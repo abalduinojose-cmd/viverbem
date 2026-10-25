@@ -1,5 +1,15 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 103 (25/10/2026): na página do produto, "Você viu recentemente" vem ANTES de "Mais procurados". IMPLEMENTADO e testado; commit local, sem push.**
+> Pedido: "nos produtos, antes dos mais pedidos coloque o Você viu
+> recentemente; nessa parte têm que entrar os produtos que a pessoa já
+> clicou no site". O bloco já existia (histórico no navegador, pelo
+> useVistosRecentemente, com os produtos que a pessoa abriu); só trocou de
+> lugar. Ele só aparece quando há histórico (na primeira visita fica só o
+> Mais procurados). Testado abrindo três produtos em sequência: os dois
+> primeiros apareceram em "Você viu recentemente", acima do "Mais
+> procurados".
+
 > **ADENDO 102 (25/10/2026): "Fale com a gente" como chamada editorial centrada. IMPLEMENTADO e PUBLICADO no 54º push, junto com o passe clean (adendo 101) e os adendos 100 e 98/99 locais.**
 > Pedido: "melhore o Fale com a gente, ainda tá longe de tá bom, e
 > atualize o github". Sexta versão do dia: centrada, com muito respiro,
