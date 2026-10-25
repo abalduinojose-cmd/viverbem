@@ -31,8 +31,12 @@ const PREFIXOS_SEM_O_BLOCO = ["/produto/"];
 // layout"): a barra virou um CARTÃO branco sobre uma faixa em névoa, com o
 // fio de ouro no alto (o mesmo do rodapé) e as três ações numa TRILHA em
 // gelo, como as pílulas deslizantes das abas e da gaveta do carrinho
+// 25/10/2026, quarta volta ("melhore mais"): o título curto em duas vozes
+// voltou (é a assinatura do site), cada ação ganhou o ícone num círculo, um
+// fio separa o texto das ações no computador e a trilha tem um fio fino
 const classePilula =
-  "group flex flex-1 lg:flex-none flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2.5 rounded-[1.1rem] lg:rounded-full px-2 py-3 lg:px-5 lg:py-0 lg:min-h-11 text-[0.78rem] lg:text-[0.9rem] font-semibold transition duration-300 active:scale-[0.98]";
+  "group flex flex-1 lg:flex-none flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2.5 rounded-[1.1rem] lg:rounded-full px-2 py-2.5 lg:pl-1.5 lg:pr-5 lg:py-0 lg:min-h-12 text-[0.78rem] lg:text-[0.9rem] font-semibold transition duration-300 hover:-translate-y-0.5 active:scale-[0.98]";
+const classeCirculo = "flex size-8 shrink-0 items-center justify-center rounded-full";
 
 export function FaleComAGente() {
   const estado = useEstadoLoja();
@@ -50,13 +54,16 @@ export function FaleComAGente() {
           {/* O fio de ouro no alto, o mesmo do rodapé logo abaixo */}
           <span aria-hidden="true" className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-ouro/70 to-transparent" />
           <span aria-hidden="true" className="pointer-events-none absolute -left-16 -top-20 size-56 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.14),transparent_65%)]" />
+          <span aria-hidden="true" className="pointer-events-none absolute -bottom-24 -right-16 size-64 rounded-full bg-[radial-gradient(circle,rgba(28,105,181,0.10),transparent_65%)]" />
 
-          {/* O rótulo e o estado da loja, ao vivo */}
-          <div className="relative">
-            <h2 id="fale-com-a-gente" className="rotulo-pilula">
-              fale com a gente
+          {/* O rótulo, o título curto em duas vozes e o estado da loja, ao vivo */}
+          <div className="relative lg:flex-1">
+            <p className="rotulo-pilula">fale com a gente</p>
+            <h2 id="fale-com-a-gente" className="mt-3 text-[1.15rem] md:text-[1.3rem] font-semibold tracking-[-0.03em] text-navy leading-tight">
+              Pelo WhatsApp, pela receita{" "}
+              <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">ou na loja</span>
             </h2>
-            <p className="mt-3 flex flex-wrap items-center gap-x-2 text-[0.95rem] text-cinza">
+            <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-sm text-cinza">
               {estado ? (
                 <span role="status" className="inline-flex items-center gap-2">
                   <span aria-hidden="true" className="relative flex size-2.5">
@@ -75,23 +82,29 @@ export function FaleComAGente() {
             </p>
           </div>
 
-          {/* As três ações, numa trilha em gelo */}
-          <div className="relative flex items-stretch gap-1 rounded-[1.4rem] lg:rounded-full bg-gelo p-1">
-            <button type="button" onClick={() => abrirPedido()} data-receita-cta className={`${classePilula} bg-navy text-white shadow-[0_10px_22px_-14px_rgba(13,35,64,0.7)] hover:bg-tinta`}>
-              <IconeReceita tamanho={18} />
+          {/* As três ações, numa trilha em gelo, cada ícone no seu círculo */}
+          <div className="relative flex items-stretch gap-1 rounded-[1.4rem] lg:rounded-full bg-gelo/80 p-1 ring-1 ring-inset ring-fio/70 lg:ml-8 lg:border-l lg:border-fio lg:pl-0 lg:ring-0 lg:bg-transparent lg:gap-2">
+            <button type="button" onClick={() => abrirPedido()} data-receita-cta className={`${classePilula} bg-navy text-white shadow-[0_12px_24px_-14px_rgba(13,35,64,0.75)] hover:bg-tinta lg:ml-8`}>
+              <span className={`${classeCirculo} bg-white/15`}>
+                <IconeReceita tamanho={16} />
+              </span>
               Enviar receita
             </button>
             <a
               href={`https://wa.me/${WHATSAPP_NUMERO}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${classePilula} bg-[#1DA851] text-white shadow-[0_10px_22px_-14px_rgba(29,168,81,0.8)] hover:bg-[#178a43]`}
+              className={`${classePilula} bg-[#1DA851] text-white shadow-[0_12px_24px_-14px_rgba(29,168,81,0.8)] hover:bg-[#178a43]`}
             >
-              <IconeWhatsApp tamanho={18} />
+              <span className={`${classeCirculo} bg-white/20`}>
+                <IconeWhatsApp tamanho={16} />
+              </span>
               WhatsApp
             </a>
-            <Link href="/lojas" className={`${classePilula} text-navy hover:bg-white`}>
-              <IconeLoja tamanho={17} />
+            <Link href="/lojas" className={`${classePilula} text-navy hover:bg-white lg:bg-white lg:ring-1 lg:ring-inset lg:ring-fio lg:hover:ring-ouro/60`}>
+              <span className={`${classeCirculo} bg-white ring-1 ring-fio lg:bg-gelo lg:ring-0`}>
+                <IconeLoja tamanho={15} />
+              </span>
               <span className="lg:hidden">Lojas</span>
               <span className="hidden lg:inline">Lojas e horários</span>
             </Link>

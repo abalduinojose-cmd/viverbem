@@ -8,6 +8,11 @@
 > ações numa TRILHA em gelo (como as pílulas deslizantes das abas e da
 > gaveta): Enviar receita em navy, WhatsApp em verde, Lojas sem fundo.
 > 248 px no celular, 177 no computador.
+> Quarta volta ("melhore mais"): o título curto em duas vozes voltou
+> ("Pelo WhatsApp, pela receita ou na loja", a assinatura do site), cada
+> ação ganhou o ícone num círculo, um fio separa o texto das ações no
+> computador, a trilha tem um fio fino e um halo azul discreto no canto.
+> 317 px no celular, 212 no computador.
 
 > **ADENDO 99 (25/10/2026, segunda volta): "Fale com a gente" em BARRA de uma linha em todas as páginas, história com atalhos numa faixa. IMPLEMENTADO e PUBLICADO no 53º push, junto com o adendo 98.**
 > Pedido: "esse fale conosco tá muito grande, a pessoa vai descer muito;
