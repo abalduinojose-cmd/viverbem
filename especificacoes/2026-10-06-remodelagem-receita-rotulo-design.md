@@ -1,5 +1,15 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 102 (25/10/2026): "Fale com a gente" como chamada editorial centrada. IMPLEMENTADO e PUBLICADO no 54º push, junto com o passe clean (adendo 101) e os adendos 100 e 98/99 locais.**
+> Pedido: "melhore o Fale com a gente, ainda tá longe de tá bom, e
+> atualize o github". Sexta versão do dia: centrada, com muito respiro,
+> o rótulo fino, o título grande em duas vozes (o mesmo .titulo-secao das
+> seções, com o risco de ouro centrado), uma frase de apoio, o estado da
+> loja ao vivo, dois botões no centro (Enviar receita cheio, Chamar no
+> WhatsApp em contorno) e o link em texto "Endereços, horários e como
+> chegar". Sem cartão, trilha ou ícones em círculo; a luz da marca
+> (.halo-marca) atrás. 640 px no celular, 647 no computador.
+
 > **ADENDO 101 (25/10/2026): passe "clean de marca de beleza" no site inteiro, mantendo o layout. IMPLEMENTADO; commit local, SEM push (pedido: "só reformule pra gente ver como fica").**
 > Pedido: "não gostei (do cartão do Fale com a gente); quero o site mais
 > clean, nessa ideia atual; é uma marca de manipulação que foca na beleza
