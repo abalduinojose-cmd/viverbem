@@ -1,5 +1,20 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 99 (25/10/2026, segunda volta): "Fale com a gente" em BARRA de uma linha em todas as páginas, história com atalhos numa faixa. IMPLEMENTADO e PUBLICADO no 53º push, junto com o adendo 98.**
+> Pedido: "esse fale conosco tá muito grande, a pessoa vai descer muito;
+> algo dinâmico; melhore todas as faixas de fale com a gente; melhore os
+> atalhos da história".
+> - A barra: rótulo "fale com a gente", o estado da loja ao vivo (ponto
+>   verde pulsa quando aberta) e três pílulas lado a lado (Enviar receita em
+>   navy, WhatsApp em verde, Lojas e horários em branco), com o ícone em
+>   cima no celular. Igual em TODAS as páginas, home inclusive: os cartões
+>   grandes da receita e do WhatsApp saíram do pé da home (a receita segue
+>   no cabeçalho e no catálogo; WhatsApp, lojas e horário em /contato e
+>   /lojas). Altura: 192 px no celular, 105 no computador (antes 1475 e 342).
+> - História: os dois cartões altos de "Veja também" viraram uma faixa só
+>   com os dois atalhos lado a lado (224 px no celular).
+> Home no celular: 12,5 telas (manhã) -> 9,3; história 12,1 -> 7,3.
+
 > **ADENDO 98 (25/10/2026): páginas mais curtas, sem apagar nada. IMPLEMENTADO e medido; commit local, SEM push (pedido: "quero ver como ficou primeiro").**
 > Pedido: "as páginas estão muito longas; em todas, rola, passa o WhatsApp,
 > endereço, horário; na história tem que ser só a história; a principal
