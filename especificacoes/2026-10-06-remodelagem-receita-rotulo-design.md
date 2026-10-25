@@ -1,5 +1,14 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 100 (25/10/2026, terceira volta): "Fale com a gente" em cartão. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
+> Pedido: "mais clean e moderno, que fique bem com o layout do site". A
+> barra virou um CARTÃO branco sobre uma faixa em névoa, com o fio de ouro
+> no alto (o mesmo do rodapé logo abaixo) e um halo de ouro discreto; o
+> rótulo em pílula do site, o estado da loja ao vivo embaixo, e as três
+> ações numa TRILHA em gelo (como as pílulas deslizantes das abas e da
+> gaveta): Enviar receita em navy, WhatsApp em verde, Lojas sem fundo.
+> 248 px no celular, 177 no computador.
+
 > **ADENDO 99 (25/10/2026, segunda volta): "Fale com a gente" em BARRA de uma linha em todas as páginas, história com atalhos numa faixa. IMPLEMENTADO e PUBLICADO no 53º push, junto com o adendo 98.**
 > Pedido: "esse fale conosco tá muito grande, a pessoa vai descer muito;
 > algo dinâmico; melhore todas as faixas de fale com a gente; melhore os
