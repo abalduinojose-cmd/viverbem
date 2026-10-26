@@ -11,7 +11,7 @@
 // sem migração.
 import { db } from "@/lib/db";
 import { lerRetratoDemo } from "@/lib/catalogo";
-import { normalizarSecoes, normalizarOrdem, type ChaveSecao, type SecoesHome } from "@/lib/secoes";
+import { normalizarSecoes, normalizarOrdem, type SecoesHome, CHAVE_EXTRAS, normalizarExtras, type SecaoExtra } from "@/lib/secoes";
 import { normalizarBanners, type Banners } from "@/lib/banners";
 
 const EH_DEMO = process.env.DEMO === "1";
@@ -30,9 +30,15 @@ export async function lerConfiguracaoSite<T>(chave: string, padrao: T): Promise<
   return lerConfiguracao(chave, padrao);
 }
 
-/** A ordem das seções da home (as que faltarem entram no fim, na ordem padrão). */
-export async function obterSecoesOrdem(): Promise<ChaveSecao[]> {
-  return normalizarOrdem(await lerConfiguracaoSite<unknown>(CHAVE_ORDEM, null));
+/** As seções extras da home (26/10/2026): linhas de produtos por área que o gestor criou. */
+export async function obterSecoesExtras(): Promise<SecaoExtra[]> {
+  return normalizarExtras(await lerConfiguracaoSite<unknown>(CHAVE_EXTRAS, null));
+}
+
+/** A ordem das seções da home, fixas e extras (as que faltarem entram no fim). */
+export async function obterSecoesOrdem(): Promise<string[]> {
+  const extras = await obterSecoesExtras();
+  return normalizarOrdem(await lerConfiguracaoSite<unknown>(CHAVE_ORDEM, null), extras);
 }
 
 /** A foto de cada linha dos círculos, por slug da categoria. */

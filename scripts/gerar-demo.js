@@ -59,6 +59,49 @@ const PAGINAS_DINAMICAS = [
   path.join(ADMIN, "site", "page.tsx"),
 ];
 
+// ---------------------------------------------------------------- leads fictícios
+// (26/10/2026) Os pedidos fictícios viram leads "pedido pelo site", e
+// entram mais alguns de WhatsApp, Instagram, loja e indicação, espalhados
+// pelos últimos meses, para o filtro por semana, mês e ano ter o que mostrar.
+function gerarLeadsFicticios(pedidos) {
+  const origens = ["WHATSAPP", "INSTAGRAM", "LOJA", "INDICACAO", "WHATSAPP", "WHATSAPP"];
+  const interesses = ["Fórmula para queda de cabelo", "Creme clareador", "Vitaminas na gestação", "Homeopatia para ansiedade", "Orçamento de receita", "Colágeno em cápsulas", "Creatina", "Dúvida sobre entrega"];
+  const situacoes = ["NOVO", "EM_CONTATO", "CONVERTIDO", "CONVERTIDO", "PERDIDO", "EM_CONTATO"];
+  const leads = [];
+  let id = 1;
+  for (const p of pedidos) {
+    leads.push({
+      id: id++,
+      nome: p.nome,
+      whatsapp: p.whatsapp,
+      origem: "SITE",
+      interesse: p.receita ? "Receita pelo WhatsApp" : "Pedido pelo site",
+      situacao: p.status === "CONCLUIDO" ? "CONVERTIDO" : p.status === "CANCELADO" ? "PERDIDO" : "EM_CONTATO",
+      observacao: "",
+      codigoPedido: p.codigo,
+      criadoEm: p.criadoEm,
+      atualizadoEm: p.criadoEm,
+    });
+  }
+  const agora = Date.now();
+  for (let i = 0; i < 28; i++) {
+    const quando = new Date(agora - Math.floor(Math.random() * 120) * 86_400_000 - Math.floor(Math.random() * 36_000_000));
+    leads.push({
+      id: id++,
+      nome: `${NOMES_DEMO[(i * 3) % NOMES_DEMO.length]} ${SOBRENOMES_DEMO[i % SOBRENOMES_DEMO.length]}`,
+      whatsapp: `(24) 9${String(8100 + ((i * 731) % 900)).padStart(4, "0")}-${String((i * 1237) % 10000).padStart(4, "0")}`,
+      origem: origens[i % origens.length],
+      interesse: interesses[i % interesses.length],
+      situacao: situacoes[i % situacoes.length],
+      observacao: i % 4 === 0 ? "Pediu retorno à tarde." : "",
+      codigoPedido: "",
+      criadoEm: quando.toISOString(),
+      atualizadoEm: quando.toISOString(),
+    });
+  }
+  return leads.sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
+}
+
 // ---------------------------------------------------------------- pedidos fictícios
 // Pedidos de demonstração para o painel da prévia: nomes inventados, o
 // WhatsApp mascarado e os itens tirados do catálogo real. Sempre os mesmos
@@ -253,6 +296,7 @@ async function gerarRetrato() {
           criadoEm: r.criadoEm.toISOString(),
         })),
         pedidos: gerarPedidosFicticios(todos),
+        leads: gerarLeadsFicticios(gerarPedidosFicticios(todos)),
       },
       // Todas as ativas, com e sem foto: a home filtra as com foto; a página
       // /avaliacoes mostra todas (11/10/2026)

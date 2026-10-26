@@ -65,18 +65,73 @@ export const SECOES_PADRAO: SecoesHome = Object.fromEntries(
 /** A ordem padrão: a da lista acima. */
 export const ORDEM_PADRAO: ChaveSecao[] = SECOES_HOME.map((s) => s.chave);
 
+// ---------- Seções extras (26/10/2026, "coloque a opção de adicionar seção") ----------
+// Uma seção extra é uma linha de produtos de uma área, no formato de faixa
+// (arrasta para o lado, com o banner) ou de bancada (grade de potes). O
+// gestor cria quantas quiser pelo painel; elas entram na ordem da home com a
+// chave "extra:<id>" e podem ser ligadas, desligadas, movidas e removidas.
+export const CHAVE_EXTRAS = "secoesExtras";
+export const FORMATOS_EXTRA = ["faixa", "bancada"] as const;
+export type FormatoExtra = (typeof FORMATOS_EXTRA)[number];
+export interface SecaoExtra {
+  id: string;
+  categoriaId: number;
+  formato: FormatoExtra;
+  /** Título opcional; vazio usa o nome da área */
+  titulo: string;
+  ativa: boolean;
+}
+export const PREFIXO_EXTRA = "extra:";
+export function chaveDaExtra(e: SecaoExtra) {
+  return `${PREFIXO_EXTRA}${e.id}`;
+}
+export function ehChaveExtra(chave: string) {
+  return chave.startsWith(PREFIXO_EXTRA);
+}
+export function ehChaveFixa(chave: string): chave is ChaveSecao {
+  return (ORDEM_PADRAO as string[]).includes(chave);
+}
+
+/** As extras que vieram do banco: só as bem formadas, sem id repetido, no máximo 12. */
+export function normalizarExtras(valor: unknown): SecaoExtra[] {
+  if (!Array.isArray(valor)) return [];
+  const vistos = new Set<string>();
+  const saida: SecaoExtra[] = [];
+  for (const v of valor) {
+    if (!v || typeof v !== "object") continue;
+    const o = v as Record<string, unknown>;
+    const id = typeof o.id === "string" ? o.id.replace(/[^a-z0-9-]/gi, "").slice(0, 24) : "";
+    const categoriaId = Number(o.categoriaId);
+    const formato = FORMATOS_EXTRA.includes(o.formato as FormatoExtra) ? (o.formato as FormatoExtra) : "faixa";
+    if (!id || vistos.has(id) || !Number.isInteger(categoriaId) || categoriaId <= 0) continue;
+    vistos.add(id);
+    saida.push({
+      id,
+      categoriaId,
+      formato,
+      titulo: typeof o.titulo === "string" ? o.titulo.trim().slice(0, 80) : "",
+      ativa: o.ativa !== false,
+    });
+    if (saida.length >= 12) break;
+  }
+  return saida;
+}
+
 /** A ordem das seções que veio do banco (14/10/2026, "a pessoa pode
- *  controlar qual vem primeiro"): só chaves conhecidas, sem repetição; as
- *  que faltarem entram no fim, na ordem padrão. */
-export function normalizarOrdem(valor: unknown): ChaveSecao[] {
-  const conhecidas = new Set<string>(ORDEM_PADRAO);
-  const resultado: ChaveSecao[] = [];
+ *  controlar qual vem primeiro"): só chaves conhecidas (as fixas e as
+ *  extras existentes), sem repetição; as que faltarem entram no fim, as
+ *  fixas na ordem padrão e as extras na ordem em que foram criadas. */
+export function normalizarOrdem(valor: unknown, extras: SecaoExtra[] = []): string[] {
+  const chavesExtras = extras.map(chaveDaExtra);
+  const conhecidas = new Set<string>([...ORDEM_PADRAO, ...chavesExtras]);
+  const resultado: string[] = [];
   if (Array.isArray(valor)) {
     for (const v of valor) {
-      if (typeof v === "string" && conhecidas.has(v) && !resultado.includes(v as ChaveSecao)) resultado.push(v as ChaveSecao);
+      if (typeof v === "string" && conhecidas.has(v) && !resultado.includes(v)) resultado.push(v);
     }
   }
   for (const chave of ORDEM_PADRAO) if (!resultado.includes(chave)) resultado.push(chave);
+  for (const chave of chavesExtras) if (!resultado.includes(chave)) resultado.push(chave);
   return resultado;
 }
 

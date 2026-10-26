@@ -53,6 +53,12 @@ export const ICONES = {
       <path d="M15.5 5.6a3.5 3.5 0 0 1 0 5.8M18 15.2c1.4.8 2.3 2.2 2.6 4.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </>
   ),
+  // Leads (26/10/2026): o funil
+  leads: (
+    <>
+      <path d="M4 5.5h16l-6.2 7.3V19l-3.6-1.8v-4.4L4 5.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </>
+  ),
   site: (
     <>
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />

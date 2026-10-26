@@ -3,11 +3,14 @@
 // chaves enviadas mudam; as outras ficam como estão) e/ou
 //        { secoesOrdem: ["categorias", "comoFunciona", ...] } (14/10/2026:
 // a ordem da página; chaves que faltarem entram no fim).
+//        { secoesExtras: [{ id, categoriaId, formato, titulo, ativa }, ...] }
+// (26/10/2026: a lista INTEIRA das seções extras, linhas de produtos por
+// área criadas no painel; mandar a lista sem uma delas é removê-la).
 // Permissão: qualquer usuário logado (gestor ou colaborador).
 import { NextResponse } from "next/server";
 import { exigirSessaoApi } from "@/lib/sessao";
 import { CHAVE_ORDEM, CHAVE_SECOES, gravarConfiguracao, lerConfiguracao } from "@/lib/configuracao";
-import { SECOES_HOME, normalizarOrdem, normalizarSecoes } from "@/lib/secoes";
+import { CHAVE_EXTRAS, SECOES_HOME, normalizarExtras, normalizarOrdem, normalizarSecoes } from "@/lib/secoes";
 import { registrarLog } from "@/lib/log";
 
 export async function PATCH(req: Request) {
@@ -19,9 +22,11 @@ export async function PATCH(req: Request) {
   const corpo = await req.json().catch(() => ({}));
   const enviado = corpo.secoesHome;
   const ordemEnviada = corpo.secoesOrdem;
+  const extrasEnviadas = corpo.secoesExtras;
   const temSecoes = enviado && typeof enviado === "object";
   const temOrdem = Array.isArray(ordemEnviada);
-  if (!temSecoes && !temOrdem) {
+  const temExtras = Array.isArray(extrasEnviadas);
+  if (!temSecoes && !temOrdem && !temExtras) {
     return NextResponse.json({ erro: "Nada para alterar." }, { status: 400 });
   }
 
@@ -38,16 +43,33 @@ export async function PATCH(req: Request) {
     if (mudancas.length > 0) await gravarConfiguracao(CHAVE_SECOES, atual);
   }
 
-  let ordem = normalizarOrdem(await lerConfiguracao<unknown>(CHAVE_ORDEM, null));
-  if (temOrdem) {
-    const nova = normalizarOrdem(ordemEnviada);
+  // As seções extras: a lista inteira substitui a guardada
+  let extras = normalizarExtras(await lerConfiguracao<unknown>(CHAVE_EXTRAS, null));
+  if (temExtras) {
+    const novas = normalizarExtras(extrasEnviadas);
+    if (JSON.stringify(novas) !== JSON.stringify(extras)) {
+      const antes = new Set(extras.map((e) => e.id));
+      const depois = new Set(novas.map((e) => e.id));
+      const criadas = novas.filter((e) => !antes.has(e.id)).length;
+      const removidas = extras.filter((e) => !depois.has(e.id)).length;
+      extras = novas;
+      await gravarConfiguracao(CHAVE_EXTRAS, extras);
+      mudancas.push(
+        criadas > 0 ? `${criadas} seção(ões) extra(s) criada(s)` : removidas > 0 ? `${removidas} seção(ões) extra(s) removida(s)` : "seções extras"
+      );
+    }
+  }
+
+  let ordem = normalizarOrdem(await lerConfiguracao<unknown>(CHAVE_ORDEM, null), extras);
+  if (temOrdem || temExtras) {
+    const nova = normalizarOrdem(temOrdem ? ordemEnviada : ordem, extras);
     if (nova.join(",") !== ordem.join(",")) {
       ordem = nova;
       await gravarConfiguracao(CHAVE_ORDEM, ordem);
-      mudancas.push("ordem das seções");
+      if (temOrdem) mudancas.push("ordem das seções");
     }
   }
 
   if (mudancas.length > 0) await registrarLog(sessao.nome ?? "?", "alterou a home", mudancas.join(", "));
-  return NextResponse.json({ secoesHome: atual, secoesOrdem: ordem });
+  return NextResponse.json({ secoesHome: atual, secoesOrdem: ordem, secoesExtras: extras });
 }

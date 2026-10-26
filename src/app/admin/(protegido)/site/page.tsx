@@ -7,6 +7,7 @@ import {
   obterArtesHeroConfiguradas,
   obterBanners,
   obterLinhasFotos,
+  obterSecoesExtras,
   obterSecoesHome,
   obterSecoesOrdem,
 } from "@/lib/configuracao";
@@ -18,10 +19,11 @@ import { ConfiguracaoSite } from "@/components/admin/ConfiguracaoSite";
 export const dynamic = "force-dynamic";
 
 export default async function PaginaSite() {
-  const [sessao, secoes, ordem, banners, linhasFotos, legado, { categorias, produtos }] = await Promise.all([
+  const [sessao, secoes, ordem, extras, banners, linhasFotos, legado, { categorias, produtos }] = await Promise.all([
     obterSessao(),
     obterSecoesHome(),
     obterSecoesOrdem(),
+    obterSecoesExtras(),
     obterBanners(),
     obterLinhasFotos(),
     obterArtesHeroConfiguradas(),
@@ -47,6 +49,8 @@ export default async function PaginaSite() {
     <ConfiguracaoSite
       secoes={secoes}
       ordem={ordem}
+      extras={extras}
+      areas={categorias.map((c) => ({ id: c.id, nome: c.nome }))}
       banners={comLegado}
       definicoes={definicoes}
       linhas={linhas}

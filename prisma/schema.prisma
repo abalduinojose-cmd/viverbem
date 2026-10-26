@@ -189,3 +189,20 @@ model LogAlteracao {
   detalhe  String   // ex.: nome do produto e o que mudou
   criadoEm DateTime @default(now())
 }
+
+// Leads (26/10/2026): quem entrou em contato e ainda não é cliente, ou
+// virou. Entram sozinhos quando alguém finaliza um pedido pelo site e à mão
+// pelo painel (WhatsApp, Instagram, loja, indicação). O painel filtra por
+// semana, mês e ano.
+model Lead {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  whatsapp    String
+  origem      String   @default("SITE") // SITE | WHATSAPP | INSTAGRAM | LOJA | INDICACAO | OUTRO
+  interesse   String   @default("") // o que a pessoa procura
+  situacao    String   @default("NOVO") // NOVO | EM_CONTATO | CONVERTIDO | PERDIDO
+  observacao  String   @default("")
+  codigoPedido String  @default("") // o pedido do site que originou (se houver)
+  criadoEm    DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}

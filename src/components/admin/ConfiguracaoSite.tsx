@@ -22,12 +22,12 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { asset } from "@/lib/asset";
-import { SECOES_HOME, type ChaveSecao, type SecoesHome } from "@/lib/secoes";
+import { SECOES_HOME, chaveDaExtra, ehChaveExtra, ehChaveFixa, type ChaveSecao, type FormatoExtra, type SecaoExtra, type SecoesHome } from "@/lib/secoes";
 import { PAPEL_ADMIN } from "@/lib/tipos";
 import type { Banners, DefinicaoBanner, Midia } from "@/lib/banners";
 import type { ImagemDaLinha } from "@/lib/linhas";
 import { useSessaoDemo } from "./ModoDemo";
-import { Alca, AvisoAdmin, CabecalhoAdmin, CartaoAdmin, Interruptor, Selo, classeBotaoAdmin } from "./PecasAdmin";
+import { Alca, AvisoAdmin, BotaoAdmin, CabecalhoAdmin, CartaoAdmin, Interruptor, Selo, classeBotaoAdmin, classeCampoAdmin } from "./PecasAdmin";
 
 type Tela = "desktop" | "celular";
 type Linha = { id: number; nome: string; slug: string; imagem: ImagemDaLinha | null };
@@ -79,13 +79,19 @@ function Previa({ midia, className }: { midia: Midia; className: string }) {
 export function ConfiguracaoSite({
   secoes,
   ordem: ordemInicial,
+  extras: extrasIniciais,
+  areas,
   banners: bannersIniciais,
   definicoes,
   linhas: linhasIniciais,
   papel,
 }: {
   secoes: SecoesHome;
-  ordem: ChaveSecao[];
+  ordem: string[];
+  /** As seções extras (26/10/2026): linhas de produtos por área criadas aqui */
+  extras: SecaoExtra[];
+  /** As áreas do catálogo, para o formulário de seção nova */
+  areas: { id: number; nome: string }[];
   banners: Banners;
   definicoes: DefinicaoBanner[];
   linhas: Linha[];
@@ -96,23 +102,33 @@ export function ConfiguracaoSite({
   const ehGestor = (demo?.papel ?? papel) === PAPEL_ADMIN;
   const [estado, setEstado] = useState(secoes);
   const [ordem, setOrdem] = useState(ordemInicial);
+  const [extras, setExtras] = useState(extrasIniciais);
   const [linhas, setLinhas] = useState(linhasIniciais);
-  const [salvandoSecao, setSalvandoSecao] = useState<ChaveSecao | null>(null);
+  const [salvandoSecao, setSalvandoSecao] = useState<string | null>(null);
+  // O formulário de seção nova
+  const [novaArea, setNovaArea] = useState<number>(areas[0]?.id ?? 0);
+  const [novoFormato, setNovoFormato] = useState<FormatoExtra>("faixa");
+  const [novoTitulo, setNovoTitulo] = useState("");
   const [ocupado, setOcupado] = useState<string | null>(null);
   const [arrastandoSobre, setArrastandoSobre] = useState<string | null>(null);
   const [erro, setErro] = useState("");
   const [aviso, setAviso] = useState("");
 
   // Quando o servidor manda valores novos (router.refresh), as cópias acompanham
-  const [base, setBase] = useState({ secoes, ordemInicial, linhasIniciais });
-  if (secoes !== base.secoes || ordemInicial !== base.ordemInicial || linhasIniciais !== base.linhasIniciais) {
-    setBase({ secoes, ordemInicial, linhasIniciais });
+  const [base, setBase] = useState({ secoes, ordemInicial, linhasIniciais, extrasIniciais });
+  if (secoes !== base.secoes || ordemInicial !== base.ordemInicial || linhasIniciais !== base.linhasIniciais || extrasIniciais !== base.extrasIniciais) {
+    setBase({ secoes, ordemInicial, linhasIniciais, extrasIniciais });
     setEstado(secoes);
     setOrdem(ordemInicial);
     setLinhas(linhasIniciais);
+    setExtras(extrasIniciais);
   }
 
-  const ligadas = SECOES_HOME.filter((s) => estado[s.chave]).length;
+  const ligadas = SECOES_HOME.filter((s) => estado[s.chave]).length + extras.filter((e) => e.ativa).length;
+  const nomeDaArea = (id: number) => areas.find((a) => a.id === id)?.nome ?? "Área removida";
+  const tituloDaExtra = (e: SecaoExtra) => e.titulo || nomeDaArea(e.categoriaId);
+  const descricaoDaExtra = (e: SecaoExtra) =>
+    `${e.formato === "bancada" ? "Bancada em grade" : "Faixa que arrasta"} · ${nomeDaArea(e.categoriaId)}`;
   const bannersNoAr = definicoes.filter((d) => bannersIniciais[d.chave]?.desktop).length;
   const dobraNoAr = ["dobra-1", "dobra-2"].filter((c) => bannersIniciais[c]?.desktop).length;
 
@@ -175,6 +191,61 @@ export function ConfiguracaoSite({
       falhou("Falha de conexão. Tente novamente.");
       setOrdem(ordem);
     }
+  }
+
+  // ---------- Seções extras (26/10/2026) ----------
+  async function salvarExtras(novas: SecaoExtra[], mensagem: string, ordemNova?: string[]) {
+    const antesExtras = extras;
+    const antesOrdem = ordem;
+    setExtras(novas);
+    if (ordemNova) setOrdem(ordemNova);
+    try {
+      const resposta = await fetch("/api/admin/site", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secoesExtras: novas, ...(ordemNova ? { secoesOrdem: ordemNova } : {}) }),
+      });
+      if (!resposta.ok) {
+        const dados = await resposta.json().catch(() => ({}));
+        falhou(dados.erro || "Não foi possível salvar a seção.");
+        setExtras(antesExtras);
+        setOrdem(antesOrdem);
+        return false;
+      }
+      const dados = await resposta.json().catch(() => ({}));
+      if (Array.isArray(dados.secoesOrdem)) setOrdem(dados.secoesOrdem);
+      deuCerto(mensagem);
+      return true;
+    } catch {
+      falhou("Falha de conexão. Tente novamente.");
+      setExtras(antesExtras);
+      setOrdem(antesOrdem);
+      return false;
+    }
+  }
+
+  async function adicionarExtra() {
+    if (!novaArea) return;
+    const id = `s${Date.now().toString(36)}`;
+    const nova: SecaoExtra = { id, categoriaId: novaArea, formato: novoFormato, titulo: novoTitulo.trim().slice(0, 80), ativa: true };
+    const ok = await salvarExtras([...extras, nova], `Seção "${tituloDaExtra(nova)}" criada no fim da página. Já vale no site.`, [...ordem, chaveDaExtra(nova)]);
+    if (ok) setNovoTitulo("");
+  }
+
+  function alternarExtra(id: string) {
+    const novas = extras.map((e) => (e.id === id ? { ...e, ativa: !e.ativa } : e));
+    const alvo = novas.find((e) => e.id === id);
+    salvarExtras(novas, `${alvo ? tituloDaExtra(alvo) : "Seção"} ${alvo?.ativa ? "ligada" : "desligada"}. Já vale no site.`);
+  }
+
+  function removerExtra(id: string) {
+    const alvo = extras.find((e) => e.id === id);
+    if (!alvo || !confirm(`Remover a seção "${tituloDaExtra(alvo)}" da página inicial?`)) return;
+    salvarExtras(
+      extras.filter((e) => e.id !== id),
+      `Seção "${tituloDaExtra(alvo)}" removida.`,
+      ordem.filter((c) => c !== chaveDaExtra(alvo))
+    );
   }
 
   // ---------- Linhas: ordem (só o gestor) ----------
@@ -546,9 +617,12 @@ export function ConfiguracaoSite({
       >
         <ul className="px-5 pb-5 mt-4 flex flex-col gap-2">
           {ordem.map((chave, i) => {
-            const s = SECOES_HOME.find((x) => x.chave === chave);
-            if (!s) return null;
-            const ligada = estado[chave];
+            const extra = ehChaveExtra(chave) ? extras.find((e) => chaveDaExtra(e) === chave) : undefined;
+            const s = ehChaveFixa(chave) ? SECOES_HOME.find((x) => x.chave === chave) : undefined;
+            if (!s && !extra) return null;
+            const ligada = extra ? extra.ativa : estado[chave as ChaveSecao];
+            const titulo = extra ? tituloDaExtra(extra) : (s?.titulo ?? "");
+            const texto = extra ? descricaoDaExtra(extra) : (s?.texto ?? "");
             return (
               <li
                 key={chave}
@@ -565,14 +639,66 @@ export function ConfiguracaoSite({
                 <Alca />
                 <span className={`w-6 text-[0.6875rem] font-semibold tabular-nums ${ligada ? "text-ouro-escuro" : "text-grafite-claro"}`}>{String(i + 1).padStart(2, "0")}</span>
                 <span className="min-w-0 flex-1">
-                  <Interruptor ligado={ligada} rotulo={s.titulo} descricao={s.texto} aoAlternar={() => alternarSecao(chave)} desabilitado={salvandoSecao === chave} />
+                  <Interruptor
+                    ligado={ligada}
+                    rotulo={titulo}
+                    descricao={texto}
+                    aoAlternar={() => (extra ? alternarExtra(extra.id) : alternarSecao(chave as ChaveSecao))}
+                    desabilitado={salvandoSecao === chave}
+                  />
                 </span>
+                {extra && <Selo tom="ouro">extra</Selo>}
+                {extra && (
+                  <button
+                    type="button"
+                    onClick={() => removerExtra(extra.id)}
+                    aria-label={`Remover ${titulo}`}
+                    title="Remover esta seção"
+                    className="flex size-7 items-center justify-center rounded-lg text-grafite-claro transition-colors hover:bg-carimbo/10 hover:text-carimbo"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                )}
                 <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${ligada ? "bg-green-500" : "bg-grafite-claro/40"}`} />
-                <Setas indice={i} total={ordem.length} mover={moverSecao} nome={s.titulo} />
+                <Setas indice={i} total={ordem.length} mover={moverSecao} nome={titulo} />
               </li>
             );
           })}
         </ul>
+
+        {/* ---------- Adicionar seção (26/10/2026) ---------- */}
+        <div className="mx-5 mb-5 rounded-2xl bg-nevoa/70 ring-1 ring-inset ring-fio/70 p-4">
+          <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-escuro">Adicionar seção</p>
+          <p className="mt-1 text-xs text-cinza">Mais uma linha de produtos de uma área, em faixa (arrasta para o lado, com o banner) ou em bancada (grade de potes). Entra no fim e você move depois.</p>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-2 md:items-end">
+            <label className="block text-xs text-cinza">
+              Área
+              <select value={novaArea} onChange={(e) => setNovaArea(Number(e.target.value))} className={`${classeCampoAdmin} mt-1`}>
+                {areas.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.nome}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-xs text-cinza">
+              Formato
+              <select value={novoFormato} onChange={(e) => setNovoFormato(e.target.value as FormatoExtra)} className={`${classeCampoAdmin} mt-1`}>
+                <option value="faixa">Faixa que arrasta</option>
+                <option value="bancada">Bancada em grade</option>
+              </select>
+            </label>
+            <label className="block text-xs text-cinza">
+              Título (opcional)
+              <input value={novoTitulo} onChange={(e) => setNovoTitulo(e.target.value)} placeholder="Vazio usa o nome da área" maxLength={80} className={`${classeCampoAdmin} mt-1`} />
+            </label>
+            <BotaoAdmin variante="primario" onClick={adicionarExtra} disabled={!novaArea || areas.length === 0}>
+              Adicionar
+            </BotaoAdmin>
+          </div>
+        </div>
       </CartaoAdmin>
     </div>
   );

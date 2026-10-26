@@ -53,6 +53,20 @@ export interface LogDemo {
   criadoEm: string;
 }
 
+/** Um lead fictício (26/10/2026), no formato da tabela Lead (datas em ISO). */
+export interface LeadDemo {
+  id: number;
+  nome: string;
+  whatsapp: string;
+  origem: string;
+  interesse: string;
+  situacao: string;
+  observacao: string;
+  codigoPedido: string;
+  criadoEm: string;
+  atualizadoEm: string;
+}
+
 export interface AdminDemo {
   /** O catálogo INTEIRO, inclusive o que está escondido ou aguardando publicação */
   produtos: ProdutoDTO[];
@@ -60,6 +74,8 @@ export interface AdminDemo {
   usuarios: UsuarioDemo[];
   log: LogDemo[];
   pedidos: PedidoDemo[];
+  /** Leads fictícios (26/10/2026); retrato antigo não tem */
+  leads?: LeadDemo[];
 }
 
 /** A sessão fixa usada para gerar as páginas do painel no build (gestor). */

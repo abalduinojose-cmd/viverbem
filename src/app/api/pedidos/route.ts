@@ -95,5 +95,14 @@ export async function POST(req: Request) {
     },
   });
 
+  // 26/10/2026: o pedido vira um lead no painel (origem "pedido pelo site").
+  // Se o lead falhar, o pedido já está salvo: não derruba a resposta.
+  try {
+    const interesse = receita && itensLimpos.length === 0 ? "Receita pelo WhatsApp" : itensLimpos.map((i) => `${i.quantidade}x ${i.nome}`).join(", ").slice(0, 200);
+    await db.lead.create({ data: { nome, whatsapp, origem: "SITE", interesse, codigoPedido: codigo } });
+  } catch {
+    /* sem lead, mas com pedido */
+  }
+
   return NextResponse.json({ ok: true }, { status: 201 });
 }

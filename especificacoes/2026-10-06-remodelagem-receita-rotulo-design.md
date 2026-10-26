@@ -1,5 +1,36 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 107 (26/10/2026): painel, quatro frentes. IMPLEMENTADO e testado de ponta a ponta (login, cadastro e remoção pelo puppeteer); commit local, sem push.**
+> Pedidos: "em Seções da página inicial, a opção de adicionar seção / em
+> Produtos e preços uma lupa para pesquisar, ativa / em Visão geral
+> melhore o Evolução no período, gráficos e apresentação / uma parte para
+> guardar os leads, separando por mês, semana e ano".
+> - SEÇÕES EXTRAS (lib/secoes.ts, chave secoesExtras): o gestor cria
+>   quantas linhas de produtos quiser, escolhendo a área, o formato (faixa
+>   que arrasta, com o banner, ou bancada em grade) e um título opcional.
+>   Entram no fim da ordem com a chave "extra:<id>", ligam, desligam, movem
+>   e removem como as fixas; a home desenha pela ordem. Testado: criada,
+>   apareceu na home, removida.
+> - PESQUISA DE PRODUTOS: a lupa virou botão (leva o cursor ao campo), a
+>   busca lê nome, descrição, área, ativos, apresentação e dosagens sem
+>   ligar para acento ("colageno" acha Colágeno), com a contagem de achados
+>   e o X para limpar (Esc também).
+> - EVOLUÇÃO NO PERÍODO: quatro leituras rápidas (este período, a
+>   comparação, a variação e o pico com a data), modo LINHAS (as duas
+>   séries com área, pontos, o pico marcado) ou BARRAS (lado a lado), quatro
+>   linhas de grade com valor, até seis rótulos no eixo, e o detalhe de cada
+>   ponto com a diferença contra a comparação.
+> - LEADS (tabela Lead no Prisma, /admin/leads, só gestor): semana, mês ou
+>   ano com setas para andar no tempo; os quatro números com o período
+>   anterior; barras por dia (ou por mês no ano); de onde vieram (pedido
+>   pelo site, WhatsApp, Instagram, loja, indicação), que também filtra;
+>   lista com situação (novo, em contato, virou cliente, não fechou) no
+>   lugar, interesse e observação editáveis, WhatsApp e apagar; cadastro à
+>   mão; planilha CSV. Todo pedido finalizado no site vira um lead sozinho
+>   (api/pedidos). O formulário de contato NÃO grava (o site promete que
+>   nada fica guardado ali). Na prévia estática os leads são fictícios
+>   (gerar-demo.js). Em produção o build cria a tabela (prisma db push).
+
 > **ADENDO 106 (26/10/2026): a BANCADA no lugar da passarela. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
 > A esteira do adendo 105 foi REPROVADA ("não gostei dessa seção, não
 > quero esse efeito vitrine"); o componente e o CSS saíram. No lugar, a

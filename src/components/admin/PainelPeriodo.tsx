@@ -259,8 +259,14 @@ function Trilho<T extends string>({
   );
 }
 
-/** O gráfico de linhas comparativo: o período em azul (com a área) e a
- *  comparação tracejada em ouro; passar o dedo ou o mouse mostra o ponto. */
+type Modo = "linhas" | "barras";
+
+/** O gráfico comparativo (26/10/2026, "melhore os gráficos e a
+ *  apresentação"): em LINHAS, o período em azul com a área e os pontos, a
+ *  comparação tracejada em ouro com a própria área; em BARRAS, os dois
+ *  lado a lado em cada ponto. Quatro linhas de grade com os valores, até
+ *  seis rótulos no eixo, o pico marcado, o último valor numa etiqueta, e o
+ *  detalhe de cada ponto (com a diferença) ao passar o dedo ou o mouse. */
 function GraficoComparativo({
   atual,
   anterior,
@@ -269,6 +275,7 @@ function GraficoComparativo({
   formato,
   nomeAtual,
   nomeAnterior,
+  modo,
 }: {
   atual: number[];
   anterior: number[];
@@ -277,6 +284,7 @@ function GraficoComparativo({
   formato: (n: number) => string;
   nomeAtual: string;
   nomeAnterior: string;
+  modo: Modo;
 }) {
   const caixa = useRef<HTMLDivElement>(null);
   const linha = useRef<SVGPathElement>(null);
@@ -291,11 +299,11 @@ function GraficoComparativo({
     return () => observador.disconnect();
   }, []);
 
-  const A = largura < 480 ? 200 : 236;
-  const esq = 44;
-  const dir = 14;
-  const topo = 14;
-  const base = A - 28;
+  const A = largura < 480 ? 224 : 268;
+  const esq = 46;
+  const dir = 16;
+  const topo = 26;
+  const base = A - 30;
   const n = atual.length;
   const teto = tetoRedondo(Math.max(...atual, ...anterior, 0));
   const x = (i: number) => (n <= 1 ? (esq + largura - dir) / 2 : esq + (i / (n - 1)) * (largura - esq - dir));
@@ -305,18 +313,24 @@ function GraficoComparativo({
   const dAtual = curvaSuave(pontosAtual, base, topo);
   const dAnterior = curvaSuave(pontosAnterior, base, topo);
   const area = dAtual ? `${dAtual} L${x(n - 1)},${base} L${x(0)},${base} Z` : "";
+  const areaAnterior = dAnterior ? `${dAnterior} L${x(n - 1)},${base} L${x(0)},${base} Z` : "";
+
+  // O pico do período e o último ponto
+  const maior = Math.max(...atual, 0);
+  const iPico = maior > 0 ? atual.indexOf(maior) : -1;
+  const ultimo = n - 1;
 
   // A linha do período se desenha de novo a cada troca de filtro
   useEffect(() => {
     const el = linha.current;
-    if (!el || !dAtual) return;
+    if (!el || !dAtual || modo !== "linhas") return;
     const comprimento = el.getTotalLength();
     const animacao = el.animate([{ strokeDasharray: `${comprimento}`, strokeDashoffset: comprimento }, { strokeDasharray: `${comprimento}`, strokeDashoffset: 0 }], {
       duration: 900,
       easing: "cubic-bezier(0.22, 1, 0.36, 1)",
     });
     return () => animacao.cancel();
-  }, [dAtual]);
+  }, [dAtual, modo]);
 
   function aoMover(e: React.PointerEvent<SVGRectElement>) {
     const r = e.currentTarget.getBoundingClientRect();
@@ -325,23 +339,37 @@ function GraficoComparativo({
     setFoco(Math.max(0, Math.min(n - 1, i)));
   }
 
-  const marcas = n <= 1 ? [0] : n <= 4 ? atual.map((_, i) => i) : [0, Math.round((n - 1) / 2), n - 1];
+  // Até seis rótulos no eixo, espalhados por igual
+  const quantasMarcas = Math.min(n, largura < 480 ? 4 : 6);
+  const marcas = n <= 1 ? [0] : Array.from({ length: quantasMarcas }, (_, k) => Math.round((k / (quantasMarcas - 1)) * (n - 1)));
   const idGrad = `g-comp-${nomeAtual.length}`;
+  const idGradOuro = `g-ouro-${nomeAtual.length}`;
+
+  // As barras: cada ponto tem uma faixa; dentro dela, a comparação e o período
+  const faixa = n <= 1 ? (largura - esq - dir) / 2 : (largura - esq - dir) / Math.max(1, n - 1);
+  const larguraBarra = Math.max(3, Math.min(18, faixa * 0.3));
+  const diferenca = foco !== null ? (atual[foco] ?? 0) - (anterior[foco] ?? 0) : 0;
 
   return (
     <div ref={caixa} className="relative select-none">
       <svg width={largura} height={A} viewBox={`0 0 ${largura} ${A}`} className="block" role="img" aria-label={`${nomeAtual} comparado com ${nomeAnterior}`}>
         <defs>
           <linearGradient id={idGrad} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={AZUL} stopOpacity="0.22" />
+            <stop offset="0" stopColor={AZUL} stopOpacity="0.24" />
             <stop offset="1" stopColor={AZUL} stopOpacity="0" />
           </linearGradient>
+          <linearGradient id={idGradOuro} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={OURO} stopOpacity="0.16" />
+            <stop offset="1" stopColor={OURO} stopOpacity="0" />
+          </linearGradient>
         </defs>
-        {[0, 0.5, 1].map((f) => (
+
+        {/* A grade: quatro linhas com o valor */}
+        {[0, 1 / 3, 2 / 3, 1].map((f) => (
           <g key={f}>
             <line x1={esq} x2={largura - dir} y1={y(teto * f)} y2={y(teto * f)} stroke="#e4e8ee" strokeDasharray={f === 0 ? undefined : "3 4"} />
             <text x={esq - 8} y={y(teto * f) + 3.5} textAnchor="end" className="fill-grafite-claro" style={{ fontSize: 10.5, fontVariantNumeric: "tabular-nums" }}>
-              {formato(teto * f)}
+              {formato(Math.round(teto * f))}
             </text>
           </g>
         ))}
@@ -349,7 +377,7 @@ function GraficoComparativo({
           <text
             key={i}
             x={x(i)}
-            y={A - 8}
+            y={A - 9}
             textAnchor={n > 1 && i === 0 ? "start" : n > 1 && i === n - 1 ? "end" : "middle"}
             className="fill-grafite-claro"
             style={{ fontSize: 10.5, fontVariantNumeric: "tabular-nums" }}
@@ -358,22 +386,58 @@ function GraficoComparativo({
           </text>
         ))}
 
-        {area && <path d={area} fill={`url(#${idGrad})`} />}
-        {dAnterior && <path d={dAnterior} fill="none" stroke={OURO} strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" />}
-        {dAtual && <path ref={linha} d={dAtual} fill="none" stroke={AZUL} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />}
-        {n === 1 && (
+        {modo === "linhas" ? (
           <>
-            <circle cx={x(0)} cy={y(anterior[0] ?? 0)} r="4" fill={OURO} />
-            <circle cx={x(0)} cy={y(atual[0] ?? 0)} r="5" fill={AZUL} />
+            {areaAnterior && <path d={areaAnterior} fill={`url(#${idGradOuro})`} />}
+            {area && <path d={area} fill={`url(#${idGrad})`} />}
+            {dAnterior && <path d={dAnterior} fill="none" stroke={OURO} strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" />}
+            {dAtual && <path ref={linha} d={dAtual} fill="none" stroke={AZUL} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />}
+            {/* Os pontos do período, quando são poucos */}
+            {n > 1 && n <= 32 && pontosAtual.map(([px, py], i) => <circle key={i} cx={px} cy={py} r={foco === i ? 0 : 3} fill="#fff" stroke={AZUL} strokeWidth="1.8" />)}
+            {n === 1 && (
+              <>
+                <circle cx={x(0)} cy={y(anterior[0] ?? 0)} r="4" fill={OURO} />
+                <circle cx={x(0)} cy={y(atual[0] ?? 0)} r="5" fill={AZUL} />
+              </>
+            )}
           </>
+        ) : (
+          <g>
+            {atual.map((v, i) => {
+              const cx = x(i);
+              const hAnt = base - y(anterior[i] ?? 0);
+              const hAt = base - y(v);
+              const emFoco = foco === i;
+              return (
+                <g key={i}>
+                  <rect x={cx - larguraBarra - 1} y={base - hAnt} width={larguraBarra} height={Math.max(0, hAnt)} rx={Math.min(4, larguraBarra / 2)} fill={OURO} fillOpacity={emFoco ? 0.9 : 0.45} />
+                  <rect x={cx + 1} y={base - hAt} width={larguraBarra} height={Math.max(0, hAt)} rx={Math.min(4, larguraBarra / 2)} fill={AZUL} fillOpacity={emFoco ? 1 : 0.85} />
+                </g>
+              );
+            })}
+          </g>
+        )}
+
+        {/* O pico, marcado */}
+        {iPico >= 0 && n > 1 && foco === null && (
+          <g>
+            <circle cx={x(iPico)} cy={y(maior)} r="5" fill={AZUL} stroke="#fff" strokeWidth="2" />
+            <text x={x(iPico)} y={y(maior) - 10} textAnchor={iPico === 0 ? "start" : iPico === ultimo ? "end" : "middle"} className="fill-navy" style={{ fontSize: 10.5, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+              pico {formato(maior)}
+            </text>
+          </g>
         )}
 
         {/* O ponto em foco */}
         {foco !== null && (
           <g>
             <line x1={x(foco)} x2={x(foco)} y1={topo} y2={base} stroke="#0d2340" strokeOpacity="0.18" />
-            <circle cx={pontosAnterior[foco]?.[0]} cy={pontosAnterior[foco]?.[1]} r="4" fill="#fff" stroke={OURO} strokeWidth="2" />
-            <circle cx={pontosAtual[foco]?.[0]} cy={pontosAtual[foco]?.[1]} r="5" fill={AZUL} stroke="#fff" strokeWidth="2" />
+            {modo === "linhas" && (
+              <>
+                <circle cx={pontosAnterior[foco]?.[0]} cy={pontosAnterior[foco]?.[1]} r="4" fill="#fff" stroke={OURO} strokeWidth="2" />
+                <circle cx={pontosAtual[foco]?.[0]} cy={pontosAtual[foco]?.[1]} r="5.5" fill={AZUL} stroke="#fff" strokeWidth="2" />
+              </>
+            )}
           </g>
         )}
         <rect
@@ -391,8 +455,8 @@ function GraficoComparativo({
 
       {foco !== null && (
         <div
-          className="pointer-events-none absolute top-1 z-10 min-w-[10.5rem] rounded-2xl bg-white/95 backdrop-blur ring-1 ring-fio shadow-[0_16px_36px_-18px_rgba(13,35,64,0.5)] px-3.5 py-2.5 text-xs"
-          style={{ left: Math.min(Math.max(x(foco) - 84, 0), largura - 172) }}
+          className="pointer-events-none absolute top-1 z-10 min-w-[11.5rem] rounded-2xl bg-white/95 backdrop-blur ring-1 ring-fio shadow-[0_16px_36px_-18px_rgba(13,35,64,0.5)] px-3.5 py-2.5 text-xs"
+          style={{ left: Math.min(Math.max(x(foco) - 92, 0), largura - 188) }}
         >
           <p className="flex items-center justify-between gap-3">
             <span className="flex items-center gap-1.5 text-cinza">
@@ -408,6 +472,10 @@ function GraficoComparativo({
             </span>
             <b className="text-navy tabular-nums">{formato(anterior[foco] ?? 0)}</b>
           </p>
+          <p className={`mt-1.5 border-t border-fio pt-1.5 text-right tabular-nums font-semibold ${diferenca > 0 ? "text-green-700" : diferenca < 0 ? "text-carimbo" : "text-cinza"}`}>
+            {diferenca > 0 ? "+" : ""}
+            {formato(diferenca)} contra o {nomeAnterior}
+          </p>
         </div>
       )}
     </div>
@@ -420,6 +488,7 @@ export function PainelPeriodo({ historico, agora }: { historico: PedidoHistorico
   const [periodo, setPeriodo] = useState<Periodo>("mes");
   const [comparar, setComparar] = useState<Comparar>("mes");
   const [medida, setMedida] = useState<Medida>("pedidos");
+  const [modo, setModo] = useState<Modo>("linhas");
   // "Este ano" só se compara com o ano passado
   const comparacao: Comparar = periodo === "ano" ? "ano" : comparar;
 
@@ -515,27 +584,63 @@ export function PainelPeriodo({ historico, agora }: { historico: PedidoHistorico
       </div>
 
       {/* ---------- O gráfico comparativo ---------- */}
+      {/* 26/10/2026 ("melhore o Evolução no período, os gráficos e a
+          apresentação"): no alto o que medir e o modo (linhas ou barras);
+          embaixo do título, quatro leituras rápidas (o total do período, o
+          da comparação, a variação e o pico) antes do gráfico */}
       <div className="mt-4 bg-white rounded-[1.5rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-5">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
           <div className="min-w-0">
             <h2 className="text-[1.02rem] font-semibold text-navy tracking-[-0.01em]">Evolução no período</h2>
-            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs">
-              <span className="inline-flex items-center gap-2 text-cinza">
-                <span aria-hidden="true" className="w-4 h-[3px] rounded-full" style={{ background: AZUL }} />
-                Este período <b className="text-navy tabular-nums">{totalMedida(atual)}</b>
-              </span>
-              <span className="inline-flex items-center gap-2 text-cinza">
-                <span aria-hidden="true" className="w-4 border-t-2 border-dashed" style={{ borderColor: OURO }} />
-                {nomeComparacao.charAt(0).toUpperCase() + nomeComparacao.slice(1)} <b className="text-navy tabular-nums">{totalMedida(anterior)}</b>
-              </span>
-              <span className="text-grafite-claro">por {conta.grao === "dia" ? "dia" : conta.grao === "semana" ? "semana" : "mês"}</span>
-            </div>
+            <p className="mt-0.5 text-xs text-cinza">
+              {MEDIDAS.find((m) => m.valor === medida)?.rotulo} por {conta.grao === "dia" ? "dia" : conta.grao === "semana" ? "semana" : "mês"}, {conta.textoAtual} contra {conta.textoAnterior}
+            </p>
           </div>
-          <div className="overflow-x-auto rolagem-sem-barra -mx-1 px-1">
-            <Trilho rotulo="O que medir" opcoes={MEDIDAS} valor={medida} aoEscolher={setMedida} />
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="overflow-x-auto rolagem-sem-barra -mx-1 px-1">
+              <Trilho rotulo="O que medir" opcoes={MEDIDAS} valor={medida} aoEscolher={setMedida} />
+            </div>
+            <Trilho
+              rotulo="Modo do gráfico"
+              opcoes={[
+                { valor: "linhas", rotulo: "Linhas" },
+                { valor: "barras", rotulo: "Barras" },
+              ]}
+              valor={modo}
+              aoEscolher={setModo}
+            />
           </div>
         </div>
-        <div className="mt-5">
+
+        {/* As quatro leituras */}
+        {(() => {
+          const serie = atual.serie[medida];
+          const maior = Math.max(...serie, 0);
+          const iPico = maior > 0 ? serie.indexOf(maior) : -1;
+          const totalAtual = medida === "faturamento" ? atual.faturamento : atual[medida];
+          const totalAnterior = medida === "faturamento" ? anterior.faturamento : anterior[medida];
+          const leituras: { rotulo: string; valor: string; cor?: string; extra?: React.ReactNode }[] = [
+            { rotulo: "Este período", valor: totalMedida(atual), cor: AZUL },
+            { rotulo: nomeComparacao.charAt(0).toUpperCase() + nomeComparacao.slice(1), valor: totalMedida(anterior), cor: OURO },
+            { rotulo: "Variação", valor: "", extra: <Variacao valor={variacao(totalAtual, totalAnterior)} /> },
+            { rotulo: "Pico", valor: iPico >= 0 ? `${formato(maior)} · ${conta.rotulosAtual[iPico]}` : "sem pedidos" },
+          ];
+          return (
+            <ul className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2">
+              {leituras.map((l) => (
+                <li key={l.rotulo} className="rounded-2xl bg-nevoa/70 px-3.5 py-3">
+                  <p className="flex items-center gap-2 text-[0.72rem] font-medium text-cinza">
+                    {l.cor && <span aria-hidden="true" className="size-2 rounded-full" style={{ background: l.cor }} />}
+                    {l.rotulo}
+                  </p>
+                  <p className="mt-1 text-[1.05rem] font-semibold text-navy tracking-[-0.02em] tabular-nums leading-tight">{l.extra ?? l.valor}</p>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
+
+        <div className="mt-4">
           {atual.pedidos === 0 && anterior.pedidos === 0 ? (
             <div className="relative h-[200px] overflow-hidden rounded-2xl bg-[linear-gradient(180deg,#f7f9fc,#ffffff)] ring-1 ring-inset ring-fio/70 flex flex-col items-center justify-center text-center px-6 gap-1.5">
               {/* Uma curva de apoio, bem apagada, para o cartão não parecer um erro */}
@@ -555,9 +660,21 @@ export function PainelPeriodo({ historico, agora }: { historico: PedidoHistorico
               formato={formato}
               nomeAtual={MEDIDAS.find((m) => m.valor === medida)?.rotulo ?? ""}
               nomeAnterior={nomeComparacao}
+              modo={modo}
             />
           )}
         </div>
+        <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-cinza">
+          <span className="inline-flex items-center gap-2">
+            <span aria-hidden="true" className="w-4 h-[3px] rounded-full" style={{ background: AZUL }} />
+            Este período
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span aria-hidden="true" className="w-4 border-t-2 border-dashed" style={{ borderColor: OURO }} />
+            {nomeComparacao.charAt(0).toUpperCase() + nomeComparacao.slice(1)}
+          </span>
+          <span className="text-grafite-claro">Passe o mouse ou o dedo para ver cada ponto</span>
+        </p>
       </div>
 
       {/* ---------- Como recebem e os mais pedidos, no período ---------- */}

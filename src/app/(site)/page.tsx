@@ -20,11 +20,11 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { obterCatalogo, obterAvaliacoes } from "@/lib/catalogo";
-import { obterBanners, obterLinhasFotos, obterSecoesHome, obterSecoesOrdem } from "@/lib/configuracao";
+import { obterBanners, obterLinhasFotos, obterSecoesExtras, obterSecoesHome, obterSecoesOrdem } from "@/lib/configuracao";
 import { chaveBannerVitrine } from "@/lib/banners";
 import { imagemSeExistir, imagensDasLinhas, temFoto } from "@/lib/linhas";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
-import type { ChaveSecao } from "@/lib/secoes";
+import { ehChaveExtra, ehChaveFixa, chaveDaExtra, type ChaveSecao } from "@/lib/secoes";
 import { Abertura } from "@/components/site/Abertura";
 import { obterArtesHero } from "@/lib/hero";
 import { Beneficios } from "@/components/site/Beneficios";
@@ -86,12 +86,13 @@ function TituloComItalico({ nome }: { nome: string }) {
 }
 
 export default async function Home() {
-  const [{ categorias, produtos }, avaliacoes, artes, secoes, ordem, banners, linhasFotos] = await Promise.all([
+  const [{ categorias, produtos }, avaliacoes, artes, secoes, ordem, extras, banners, linhasFotos] = await Promise.all([
     obterCatalogo(),
     obterAvaliacoes(),
     obterArtesHero(),
     obterSecoesHome(),
     obterSecoesOrdem(),
+    obterSecoesExtras(),
     obterBanners(),
     obterLinhasFotos(),
   ]);
@@ -142,9 +143,42 @@ export default async function Home() {
     .filter((p) => (p.fotoUrl && potesDaMulher.has(p.fotoUrl)) || p.categoriaId === idMulher)
     .sort((a, b) => Number(temFoto(b.fotoUrl)) - Number(temFoto(a.fotoUrl)));
 
+  // As seções extras (26/10/2026, criadas no painel): uma linha de produtos
+  // de uma área, em faixa ou em bancada
+  const blocoExtra = (chave: string): ReactNode | null => {
+    const extra = extras.find((e) => chaveDaExtra(e) === chave);
+    if (!extra || !extra.ativa) return null;
+    const categoria = categoriasComItens.find((c) => c.id === extra.categoriaId);
+    if (!categoria) return null;
+    const lista = comFoto.filter((p) => p.categoriaId === categoria.id);
+    if (lista.length === 0) return null;
+    const titulo = extra.titulo ? <>{extra.titulo}</> : <TituloComItalico nome={categoria.nome} />;
+    const href = `/produtos/${categoria.slug}`;
+    if (extra.formato === "bancada") {
+      return <BancadaProdutos key={chave} id={`titulo-${extra.id}`} rotulo="na bancada" titulo={titulo} href={href} produtos={lista} />;
+    }
+    const texto = BANNERS_POR_SLUG[categoria.slug] ?? { titulo: categoria.nome };
+    return (
+      <VitrineCategoria
+        key={chave}
+        id={`titulo-${extra.id}`}
+        titulo={titulo}
+        href={href}
+        produtos={lista}
+        banner={{
+          ...texto,
+          ...(extra.titulo ? { titulo: extra.titulo } : {}),
+          imagem: imagemSeExistir(`/fotos/banners/${categoria.slug}.jpg`),
+          midia: banners[chaveBannerVitrine(categoria.slug)]?.desktop ?? null,
+        }}
+      />
+    );
+  };
+
   // O que cada seção desenha (null = desligada ou sem conteúdo)
-  const bloco = (chave: ChaveSecao): ReactNode | null => {
-    if (!secoes[chave]) return null;
+  const bloco = (chave: string): ReactNode | null => {
+    if (ehChaveExtra(chave)) return blocoExtra(chave);
+    if (!ehChaveFixa(chave) || !secoes[chave]) return null;
     switch (chave) {
       case "categorias":
         return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} />;
@@ -225,11 +259,12 @@ export default async function Home() {
 
   // As folhas, na ordem do painel: seções de produtos em sequência dividem
   // uma folha; as outras têm a própria
-  const folhas: { chave: ChaveSecao; grupo: boolean; conteudo: ReactNode[] }[] = [];
+  const folhas: { chave: string; grupo: boolean; conteudo: ReactNode[] }[] = [];
   for (const chave of ordem) {
     const c = bloco(chave);
     if (c === null) continue;
-    const doGrupo = GRUPO_PRODUTOS.has(chave);
+    // As extras são linhas de produtos: dividem a folha com as vizinhas
+    const doGrupo = ehChaveExtra(chave) || GRUPO_PRODUTOS.has(chave as ChaveSecao);
     const ultima = folhas[folhas.length - 1];
     if (doGrupo && ultima?.grupo) ultima.conteudo.push(c);
     else folhas.push({ chave, grupo: doGrupo, conteudo: [c] });
@@ -243,7 +278,7 @@ export default async function Home() {
 
       <div className="folhas">
         {folhas.map((f) => (
-          <Folha key={f.chave} tema={TEMA_GELO.has(f.chave) ? "gelo" : "papel"} className={f.chave === "bannerHistoria" ? "md:hidden" : ""}>
+          <Folha key={f.chave} tema={TEMA_GELO.has(f.chave as ChaveSecao) ? "gelo" : "papel"} className={f.chave === "bannerHistoria" ? "md:hidden" : ""}>
             {f.conteudo}
             <div className="secao-fecho" aria-hidden="true" />
           </Folha>

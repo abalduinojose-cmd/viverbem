@@ -77,6 +77,15 @@ function ChipFiltro({
   );
 }
 
+/** Minúsculas, sem acento, para a busca achar "colageno" em "Colágeno" */
+function semAcento(texto: string) {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 function IconeLapis({ tamanho = 14 }: { tamanho?: number }) {
   return (
     <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -108,6 +117,7 @@ export function ListaProdutos({
   const demo = useSessaoDemo();
   const ehGestor = (demo?.papel ?? papel) === PAPEL_ADMIN;
   const [busca, setBusca] = useState("");
+  const campoBusca = useRef<HTMLInputElement>(null);
   const [situacao, setSituacao] = useState<FiltroSituacao>("todos");
   // "" = todas as categorias; "sem" = produtos sem categoria
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>("");
@@ -129,10 +139,13 @@ export function ListaProdutos({
     setLista(produtos);
   }
 
+  // 26/10/2026 ("coloque uma lupa para pesquisar e ative ela"): a busca lê
+  // nome, descrição, área, ativos, apresentação e dosagens, sem ligar para
+  // acento ou maiúscula
   const listaFiltrada = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+    const termo = semAcento(busca);
     return lista.filter((p) => {
-      if (termo && !p.nome.toLowerCase().includes(termo)) return false;
+      if (termo && !semAcento([p.nome, p.descricao, p.categoriaNome ?? "", p.composicao ?? "", p.apresentacao ?? "", p.dosagens ?? ""].join(" ")).includes(termo)) return false;
       if (categoriaFiltro === "sem" && p.categoriaId !== null) return false;
       if (categoriaFiltro && categoriaFiltro !== "sem" && p.categoriaId !== Number(categoriaFiltro)) return false;
       if (situacao === "no-site") return p.ativo && p.aprovado;
@@ -286,18 +299,40 @@ export function ListaProdutos({
       <div className="mt-5 rounded-[1.25rem] bg-white/80 backdrop-blur-sm ring-1 ring-fio/80 p-3 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-56">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-grafite-claro pointer-events-none" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            {/* A lupa é um botão: leva o cursor para o campo */}
+            <button
+              type="button"
+              onClick={() => campoBusca.current?.focus()}
+              aria-label="Pesquisar produtos"
+              className="absolute left-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-grafite-claro transition-colors hover:bg-white hover:text-navy"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+                <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
             <input
+              ref={campoBusca}
               type="search"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              placeholder="Buscar produto..."
-              aria-label="Buscar produto"
-              className={`${classeCampoAdmin} !pl-11 !bg-nevoa/70 !border-transparent focus:!bg-white`}
+              onKeyDown={(e) => e.key === "Escape" && setBusca("")}
+              placeholder="Pesquisar por nome, ativo, área ou apresentação..."
+              aria-label="Pesquisar produtos"
+              className={`${classeCampoAdmin} !pl-11 ${busca ? "!pr-28" : ""} !bg-nevoa/70 !border-transparent focus:!bg-white`}
             />
+            {busca && (
+              <span className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+                <span className="text-xs text-cinza tabular-nums whitespace-nowrap" aria-live="polite">
+                  {listaFiltrada.length} {listaFiltrada.length === 1 ? "achado" : "achados"}
+                </span>
+                <button type="button" onClick={() => setBusca("")} aria-label="Limpar a pesquisa" className="flex size-7 items-center justify-center rounded-full text-grafite-claro transition-colors hover:bg-white hover:text-navy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </span>
+            )}
           </div>
           {/* Filtro por categoria */}
           <div className="relative">
