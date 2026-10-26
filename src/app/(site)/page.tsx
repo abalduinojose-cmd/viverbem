@@ -32,7 +32,7 @@ import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { CategoriasRedondas } from "@/components/site/CategoriasRedondas";
 import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
-import { PassarelaProdutos } from "@/components/site/PassarelaProdutos";
+import { BancadaProdutos } from "@/components/site/BancadaProdutos";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { BannerHistoria } from "@/components/site/BannerHistoria";
@@ -168,8 +168,9 @@ export default async function Home() {
         // 25/10/2026 ("a principal tem muita informação"): só a PRIMEIRA
         // faixa por área fica na home como faixa; as outras continuam em
         // /produtos. 26/10/2026: a SEGUNDA área volta logo abaixo, "de outra
-        // forma, com outros movimentos": a passarela (PassarelaProdutos),
-        // duas fileiras de potes que andam sozinhas em sentidos opostos
+        // forma, com outros movimentos": a bancada (BancadaProdutos), a peça
+        // da área em azul-noite e uma grade de potes que entram em cascata
+        // (a esteira que andava sozinha foi reprovada no mesmo dia)
         if (vitrines.length === 0) return null;
         return vitrines.slice(0, 2).map((v, i) =>
           i === 0 ? (
@@ -182,13 +183,14 @@ export default async function Home() {
               banner={v.banner}
             />
           ) : (
-            <PassarelaProdutos
+            <BancadaProdutos
               key={v.categoria.id}
-              id={`titulo-passarela-${v.categoria.slug}`}
-              rotulo="na esteira da vitrine"
+              id={`titulo-bancada-${v.categoria.slug}`}
+              rotulo="na bancada"
               titulo={<TituloComItalico nome={v.categoria.nome} />}
               href={`/produtos/${v.categoria.slug}`}
               produtos={v.produtos}
+              banner={v.banner}
             />
           )
         );

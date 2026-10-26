@@ -1,5 +1,16 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 106 (26/10/2026): a BANCADA no lugar da passarela. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
+> A esteira do adendo 105 foi REPROVADA ("não gostei dessa seção, não
+> quero esse efeito vitrine"); o componente e o CSS saíram. No lugar, a
+> BANCADA (BancadaProdutos): parada e editorial. À esquerda a peça da área
+> em azul-noite (banner-noite com malha e luz de ouro, o rótulo, o título
+> do banner em duas vozes, o texto e "Ver a linha completa"); à direita a
+> grade de potes em ladrilhos brancos com fio (3 x 2 no computador, 2 x 2
+> no celular), cada um com a luz de ouro, o nome e o "adicionar" em
+> contorno. Movimento só pela rolagem: peça e potes entram em cascata
+> (.escalonado); no hover o pote sobe e o nome acende. Cabeçalho no padrão.
+
 > **ADENDO 105 (26/10/2026): a PASSARELA, segunda linha de produtos da home. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
 > Pedido: "embaixo de Dermatologia & Estética coloque mais uma linha de
 > produtos, mas de outra forma, com outros movimentos, mantendo o nosso
