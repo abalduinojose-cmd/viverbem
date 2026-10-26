@@ -32,6 +32,7 @@ import { Folha } from "@/components/site/Folha";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { CategoriasRedondas } from "@/components/site/CategoriasRedondas";
 import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
+import { PassarelaProdutos } from "@/components/site/PassarelaProdutos";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { BannerHistoria } from "@/components/site/BannerHistoria";
@@ -165,19 +166,32 @@ export default async function Home() {
       case "vitrinesAreas":
         // Nas áreas o banner abre a faixa, um pouco menor (08/10/2026)
         // 25/10/2026 ("a principal tem muita informação"): só a PRIMEIRA
-        // faixa por área fica na home; as outras continuam em /produtos
-        return vitrines.length === 0
-          ? null
-          : vitrines.slice(0, 1).map((v) => (
-              <VitrineCategoria
-                key={v.categoria.id}
-                id={`titulo-vitrine-${v.categoria.slug}`}
-                titulo={<TituloComItalico nome={v.categoria.nome} />}
-                href={`/produtos/${v.categoria.slug}`}
-                produtos={v.produtos}
-                banner={v.banner}
-              />
-            ));
+        // faixa por área fica na home como faixa; as outras continuam em
+        // /produtos. 26/10/2026: a SEGUNDA área volta logo abaixo, "de outra
+        // forma, com outros movimentos": a passarela (PassarelaProdutos),
+        // duas fileiras de potes que andam sozinhas em sentidos opostos
+        if (vitrines.length === 0) return null;
+        return vitrines.slice(0, 2).map((v, i) =>
+          i === 0 ? (
+            <VitrineCategoria
+              key={v.categoria.id}
+              id={`titulo-vitrine-${v.categoria.slug}`}
+              titulo={<TituloComItalico nome={v.categoria.nome} />}
+              href={`/produtos/${v.categoria.slug}`}
+              produtos={v.produtos}
+              banner={v.banner}
+            />
+          ) : (
+            <PassarelaProdutos
+              key={v.categoria.id}
+              id={`titulo-passarela-${v.categoria.slug}`}
+              rotulo="na esteira da vitrine"
+              titulo={<TituloComItalico nome={v.categoria.nome} />}
+              href={`/produtos/${v.categoria.slug}`}
+              produtos={v.produtos}
+            />
+          )
+        );
       case "prontaEntrega":
         // Só aparece quando houver industrializado
         return prontaEntrega.length === 0 ? null : (

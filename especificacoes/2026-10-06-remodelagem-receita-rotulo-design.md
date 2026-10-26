@@ -1,5 +1,20 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 105 (26/10/2026): a PASSARELA, segunda linha de produtos da home. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
+> Pedido: "embaixo de Dermatologia & Estética coloque mais uma linha de
+> produtos, mas de outra forma, com outros movimentos, mantendo o nosso
+> padrão". A segunda área com vitrine ligada (hoje Vitaminas &
+> Suplementos) volta à home como PASSARELA (PassarelaProdutos): duas
+> fileiras de potes que andam sozinhas em sentidos opostos (70 s e 84 s por
+> volta), param com o mouse em cima, com as pontas esmaecidas por máscara.
+> Cada pote é um ladrilho de gelo com a luz de ouro, o nome e o "adicionar"
+> em contorno no canto; o cartão inteiro leva ao produto. Segunda volta
+> ("gostei mas pode melhorar"): potes alternando a altura, cada fileira
+> sobre uma prateleira (fio com luz de ouro), e as fileiras entrando de
+> lados opostos pela rolagem (view timeline). Com movimento reduzido a
+> esteira segue, mais devagar. Cabeçalho no padrão: rótulo, título com o
+> "&" em ouro, risco, "ver tudo".
+
 > **ADENDO 104 (25/10/2026): bug da gaveta do carrinho no celular. CORRIGIDO e testado; commit local, sem push.**
 > O cartão "Tenho uma receita" aparecia cortado (32 px de altura, texto
 > escondido) quando a tela era baixa. Causa: a área que rola da gaveta é
