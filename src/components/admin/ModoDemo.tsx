@@ -33,7 +33,7 @@ export const USUARIOS_DEMO: SessaoDemo[] = [
 ];
 
 // Páginas que só o gestor abre (o layout de verdade decide pela sessão)
-const SOMENTE_GESTOR = ["/admin/painel", "/admin/clientes", "/admin/log", "/admin/usuarios"];
+const SOMENTE_GESTOR = ["/admin/painel", "/admin/clientes", "/admin/leads", "/admin/log", "/admin/usuarios"];
 
 export function lerSessaoDemo(): SessaoDemo | null {
   try {
