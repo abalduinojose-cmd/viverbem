@@ -10,6 +10,11 @@
 > no celular), cada um com a luz de ouro, o nome e o "adicionar" em
 > contorno. Movimento só pela rolagem: peça e potes entram em cascata
 > (.escalonado); no hover o pote sobe e o nome acende. Cabeçalho no padrão.
+> Segunda volta ("tire isso e melhore os produtos"): a peça em azul-noite
+> SAIU; ficou só a grade, com os potes maiores: ladrilho branco com fio,
+> foto grande no gelo (quadrada no celular, 5:4 no computador), nome em
+> negrito, duas linhas da descrição e o "Adicionar ao carrinho" em ouro.
+> 3 x 2 no computador, 2 x 2 no celular. 1155 px / 919 px.
 
 > **ADENDO 105 (26/10/2026): a PASSARELA, segunda linha de produtos da home. IMPLEMENTADO e conferido (390 e 1366); commit local, sem push.**
 > Pedido: "embaixo de Dermatologia & Estética coloque mais uma linha de
