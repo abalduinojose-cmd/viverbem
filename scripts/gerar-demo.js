@@ -54,6 +54,7 @@ const PAGINAS_DINAMICAS = [
   path.join(ADMIN, "produtos", "[id]", "editar", "page.tsx"),
   path.join(ADMIN, "categorias", "page.tsx"),
   path.join(ADMIN, "clientes", "page.tsx"),
+  path.join(ADMIN, "leads", "page.tsx"),
   path.join(ADMIN, "usuarios", "page.tsx"),
   path.join(ADMIN, "log", "page.tsx"),
   path.join(ADMIN, "site", "page.tsx"),
