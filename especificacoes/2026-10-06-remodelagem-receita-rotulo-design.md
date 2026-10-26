@@ -1,5 +1,27 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 108 (26/10/2026): painel, segunda volta. IMPLEMENTADO, testado de ponta a ponta e PUBLICADO no 57º push.**
+> Pedidos: "o filtro de meses dos leads melhor, tipo o painel da Shopee,
+> que você escolhe as datas / modernize o log de alterações / melhore o
+> acesso ao painel".
+> - LEADS, o período (PeriodoLeads): um botão com o período escolhido que
+>   abre o painel com os atalhos (hoje, ontem, 7 dias, 30 dias, esta
+>   semana, este mês, mês passado, este ano) e as duas datas à escolha;
+>   as setas andam o intervalo pelo próprio tamanho. As barras agrupam
+>   sozinhas (por dia até 31 dias, por semana até 120, por mês acima); a
+>   comparação é o mesmo tamanho logo antes (mês e ano inteiros comparam
+>   com o anterior inteiro).
+> - LOG (LogAlteracoes): números (hoje, 7 dias, quem mais mexeu, catálogo),
+>   busca, filtros por área (catálogo, home e banners, pedidos, leads,
+>   acessos) e por pessoa, linha do tempo por dia ("Hoje", "Ontem", a
+>   data) com o ícone do que foi feito (criou, alterou, apagou, ligou,
+>   desligou), hora e área; planilha CSV; até 300 registros.
+> - ACESSOS (ListaUsuarios): números (ativos, gestores, colaboradores,
+>   login bloqueado), lista num cartão só com "entrou há 2 h", erros de
+>   senha, selos; a troca de senha num campo na própria linha com "Gerar"
+>   (10 caracteres fáceis de ditar), no lugar do prompt do navegador; o
+>   novo acesso também gera senha; avisos de sucesso.
+
 > **ADENDO 107 (26/10/2026): painel, quatro frentes. IMPLEMENTADO e testado de ponta a ponta (login, cadastro e remoção pelo puppeteer); commit local, sem push.**
 > Pedidos: "em Seções da página inicial, a opção de adicionar seção / em
 > Produtos e preços uma lupa para pesquisar, ativa / em Visão geral

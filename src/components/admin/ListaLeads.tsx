@@ -2,8 +2,10 @@
 // Leads (26/10/2026, "quero uma parte para guardar os leads, e nela a
 // pessoa pode separar por mês, semana e ano"): quem entrou em contato com
 // a farmácia e em que pé está a conversa.
-//   - o período no alto: semana, mês ou ano, com as setas para andar no
-//     tempo e "Hoje" para voltar; tudo embaixo obedece ao período;
+//   - o período no alto (26/10/2026, segunda volta, "tipo o painel da
+//     Shopee"): atalhos (hoje, ontem, 7 dias, 30 dias, esta semana, este
+//     mês, mês passado, este ano) ou as duas datas à escolha, com as setas
+//     para andar no tempo (ver PeriodoLeads); tudo embaixo obedece;
 //   - os quatro números (leads, novos, em contato, viraram cliente) com a
 //     comparação com o período anterior, e as barras por dia (semana e
 //     mês) ou por mês (ano);
@@ -29,15 +31,14 @@ import {
 } from "@/lib/leads";
 import { AvisoAdmin, BotaoAdmin, CabecalhoAdmin, CartaoNumero, Inicial, Selo, classeCampoAdmin } from "./PecasAdmin";
 import { ICONES } from "./iconesAdmin";
+import { DIA, PeriodoLeads, diasDo, intervaloAnterior, intervaloDoAtalho, meiaNoite, rotuloDoIntervalo, type Intervalo } from "./PeriodoLeads";
 
-type Grao = "semana" | "mes" | "ano";
+type Grao = "dia" | "semana" | "mes";
 type FiltroSituacao = "TODOS" | SituacaoLead;
 type FiltroOrigem = "" | OrigemLead;
 
-const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 const MESES_CURTOS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 const DIAS_CURTOS = ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"];
-const DIA = 86_400_000;
 
 const COR_SITUACAO: Record<SituacaoLead, { pilula: string; ponto: string }> = {
   NOVO: { pilula: "bg-ouro/12 text-ouro-escuro ring-ouro/30", ponto: "bg-ouro-escuro" },
@@ -54,55 +55,51 @@ const TOM_ORIGEM: Record<OrigemLead, "azul" | "verde" | "ouro" | "cinza" | "amba
   OUTRO: "cinza",
 };
 
-// ---------------------------------------------------------------- período
+// ---------------------------------------------------------------- as barras
 
-function meiaNoite(d: Date) {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+/** Como agrupar as barras: por dia até 31 dias, por semana até 120, por mês acima */
+function graoDo(i: Intervalo): Grao {
+  const dias = diasDo(i);
+  return dias <= 31 ? "dia" : dias <= 120 ? "semana" : "mes";
 }
 
-/** O começo (inclusive) e o fim (exclusive) do período, deslocado n vezes */
-function intervalo(grao: Grao, agora: Date, desloc: number) {
-  const hoje = meiaNoite(agora);
-  if (grao === "semana") {
-    // A semana começa na segunda
-    const diaSemana = (hoje.getDay() + 6) % 7;
-    const ini = new Date(hoje.getTime() - diaSemana * DIA + desloc * 7 * DIA);
-    return { ini, fim: new Date(ini.getTime() + 7 * DIA) };
+/** As barras do período: por dia, por semana (a partir do começo) ou por mês */
+function barrasDoPeriodo(i: Intervalo, lista: LeadDTO[]) {
+  const g = graoDo(i);
+  const dias = diasDo(i);
+  if (g === "mes") {
+    const meses: { rotulo: string; valor: number; ano: number; mes: number }[] = [];
+    for (let d = new Date(i.ini.getFullYear(), i.ini.getMonth(), 1); d < i.fim; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+      meses.push({ rotulo: MESES_CURTOS[d.getMonth()], valor: 0, ano: d.getFullYear(), mes: d.getMonth() });
+    }
+    for (const l of lista) {
+      const d = new Date(l.criadoEm);
+      const m = meses.find((x) => x.ano === d.getFullYear() && x.mes === d.getMonth());
+      if (m) m.valor += 1;
+    }
+    return { grao: g, barras: meses.map(({ rotulo, valor }) => ({ rotulo, valor })) };
   }
-  if (grao === "mes") {
-    const ini = new Date(hoje.getFullYear(), hoje.getMonth() + desloc, 1);
-    return { ini, fim: new Date(hoje.getFullYear(), hoje.getMonth() + desloc + 1, 1) };
+  if (g === "semana") {
+    const n = Math.ceil(dias / 7);
+    const barras = Array.from({ length: n }, (_, k) => {
+      const d = new Date(i.ini.getTime() + k * 7 * DIA);
+      return { rotulo: `${d.getDate()}/${String(d.getMonth() + 1).padStart(2, "0")}`, valor: 0 };
+    });
+    for (const l of lista) {
+      const k = Math.floor((meiaNoite(new Date(l.criadoEm)).getTime() - i.ini.getTime()) / (7 * DIA));
+      if (k >= 0 && k < n) barras[k].valor += 1;
+    }
+    return { grao: g, barras };
   }
-  const ini = new Date(hoje.getFullYear() + desloc, 0, 1);
-  return { ini, fim: new Date(hoje.getFullYear() + desloc + 1, 0, 1) };
-}
-
-function rotuloPeriodo(grao: Grao, ini: Date, fim: Date) {
-  if (grao === "semana") {
-    const ultimo = new Date(fim.getTime() - DIA);
-    const mesmoMes = ini.getMonth() === ultimo.getMonth();
-    return mesmoMes
-      ? `${ini.getDate()} a ${ultimo.getDate()} de ${MESES[ini.getMonth()]}`
-      : `${ini.getDate()} ${MESES_CURTOS[ini.getMonth()]} a ${ultimo.getDate()} ${MESES_CURTOS[ultimo.getMonth()]}`;
-  }
-  if (grao === "mes") return `${MESES[ini.getMonth()].charAt(0).toUpperCase()}${MESES[ini.getMonth()].slice(1)} de ${ini.getFullYear()}`;
-  return String(ini.getFullYear());
-}
-
-/** As barras do período: por dia (semana e mês) ou por mês (ano) */
-function barrasDoPeriodo(grao: Grao, ini: Date, fim: Date, lista: LeadDTO[]) {
-  if (grao === "ano") {
-    const n = Array(12).fill(0) as number[];
-    for (const l of lista) n[new Date(l.criadoEm).getMonth()] += 1;
-    return n.map((v, i) => ({ rotulo: MESES_CURTOS[i], valor: v }));
-  }
-  const dias = Math.round((fim.getTime() - ini.getTime()) / DIA);
-  const n = Array(dias).fill(0) as number[];
+  const barras = Array.from({ length: dias }, (_, k) => {
+    const d = new Date(i.ini.getTime() + k * DIA);
+    return { rotulo: dias <= 7 ? DIAS_CURTOS[(d.getDay() + 6) % 7] : String(d.getDate()), valor: 0 };
+  });
   for (const l of lista) {
-    const i = Math.floor((meiaNoite(new Date(l.criadoEm)).getTime() - ini.getTime()) / DIA);
-    if (i >= 0 && i < dias) n[i] += 1;
+    const k = Math.floor((meiaNoite(new Date(l.criadoEm)).getTime() - i.ini.getTime()) / DIA);
+    if (k >= 0 && k < dias) barras[k].valor += 1;
   }
-  return n.map((v, i) => ({ rotulo: grao === "semana" ? DIAS_CURTOS[i] : String(i + 1), valor: v }));
+  return { grao: g, barras };
 }
 
 function formatarData(iso: string) {
@@ -135,8 +132,7 @@ const origemDe = (l: LeadDTO): OrigemLead => (origemValida(l.origem) ? l.origem 
 const FORM_VAZIO = { nome: "", whatsapp: "", origem: "WHATSAPP" as OrigemLead, interesse: "", observacao: "" };
 
 export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }) {
-  const [grao, setGrao] = useState<Grao>("mes");
-  const [desloc, setDesloc] = useState(0);
+  const [intervalo, setIntervalo] = useState<Intervalo>(() => intervaloDoAtalho("mes", agora));
   const [busca, setBusca] = useState("");
   const [origemFiltro, setOrigemFiltro] = useState<FiltroOrigem>("");
   const [situacaoFiltro, setSituacaoFiltro] = useState<FiltroSituacao>("TODOS");
@@ -158,15 +154,14 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
   );
 
   const periodo = useMemo(() => {
-    const hoje = new Date(agora);
-    const { ini, fim } = intervalo(grao, hoje, desloc);
-    const { ini: ini2, fim: fim2 } = intervalo(grao, hoje, desloc - 1);
+    const { ini, fim } = intervalo;
+    const antes = intervaloAnterior(intervalo);
     const dentro = (l: LeadDTO, a: Date, b: Date) => {
       const t = new Date(l.criadoEm).getTime();
       return t >= a.getTime() && t < b.getTime();
     };
     const atual = todos.filter((l) => dentro(l, ini, fim));
-    const anterior = todos.filter((l) => dentro(l, ini2, fim2));
+    const anterior = todos.filter((l) => dentro(l, antes.ini, antes.fim));
     const contar = (lista: LeadDTO[]) => {
       const n = { total: lista.length, NOVO: 0, EM_CONTATO: 0, CONVERTIDO: 0, PERDIDO: 0 } as Record<string, number>;
       for (const l of lista) n[situacaoDe(l)] += 1;
@@ -174,18 +169,20 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
     };
     const porOrigem = Object.fromEntries(ORIGENS_LEAD.map((o) => [o, 0])) as Record<OrigemLead, number>;
     for (const l of atual) porOrigem[origemDe(l)] += 1;
+    const { grao, barras } = barrasDoPeriodo(intervalo, atual);
     return {
       ini,
       fim,
-      rotulo: rotuloPeriodo(grao, ini, fim),
-      rotuloAnterior: rotuloPeriodo(grao, ini2, fim2),
+      rotulo: rotuloDoIntervalo(intervalo, agora),
+      rotuloAnterior: rotuloDoIntervalo(antes, agora),
       atual,
       n: contar(atual),
       nAnterior: contar(anterior),
       porOrigem,
-      barras: barrasDoPeriodo(grao, ini, fim, atual),
+      grao,
+      barras,
     };
-  }, [todos, agora, grao, desloc]);
+  }, [todos, agora, intervalo]);
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
@@ -280,7 +277,7 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
       setCriados((c) => [novo, ...c]);
       setForm(FORM_VAZIO);
       setFormAberto(false);
-      setDesloc(0);
+      setIntervalo(intervaloDoAtalho("mes", agora));
       deuCerto(`${novo.nome} cadastrado.`);
     } catch (err) {
       falhou((err as Error).message);
@@ -303,10 +300,6 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
     a.click();
     URL.revokeObjectURL(a.href);
   }
-
-  const classeGrao = (ativo: boolean) =>
-    `h-8 rounded-full px-3.5 text-[0.8rem] font-medium whitespace-nowrap transition ${ativo ? "bg-white text-navy shadow-[0_6px_16px_-10px_rgba(13,35,64,0.55)] ring-1 ring-fio" : "text-cinza hover:text-navy"}`;
-  const classeSeta = "flex size-9 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-fio text-navy transition-colors hover:ring-tinta/40 disabled:opacity-40";
 
   return (
     <div className="max-w-6xl">
@@ -369,52 +362,15 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
 
       {/* ---------- O período ---------- */}
       <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div role="radiogroup" aria-label="Separar por" className="inline-flex w-fit gap-0.5 rounded-full bg-nevoa p-1 ring-1 ring-inset ring-fio/70">
-          {(
-            [
-              ["semana", "Semana"],
-              ["mes", "Mês"],
-              ["ano", "Ano"],
-            ] as [Grao, string][]
-          ).map(([v, r]) => (
-            <button
-              key={v}
-              type="button"
-              role="radio"
-              aria-checked={grao === v}
-              onClick={() => {
-                setGrao(v);
-                setDesloc(0);
-              }}
-              className={classeGrao(grao === v)}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setDesloc((d) => d - 1)} aria-label="Período anterior" className={classeSeta}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="m15 6-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <p className="min-w-[11rem] text-center text-[0.95rem] font-semibold text-navy tabular-nums">{periodo.rotulo}</p>
-          <button type="button" onClick={() => setDesloc((d) => d + 1)} disabled={desloc >= 0} aria-label="Próximo período" className={classeSeta}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="m9 6 6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          {desloc !== 0 && (
-            <BotaoAdmin tamanho="pequeno" onClick={() => setDesloc(0)}>
-              Hoje
-            </BotaoAdmin>
-          )}
-        </div>
+        <PeriodoLeads valor={intervalo} agora={agora} aoMudar={setIntervalo} />
+        <p className="text-xs text-cinza tabular-nums">
+          comparado com <span className="font-medium text-navy">{periodo.rotuloAnterior}</span>
+        </p>
       </div>
 
       {/* ---------- Os quatro números ---------- */}
       <div className="cascata grid grid-cols-2 xl:grid-cols-4 gap-3 mt-4">
-        <CartaoNumero tom="noite" icone={ICONES.leads} rotulo="Leads" valor={periodo.n.total} apoio={`${periodo.nAnterior.total} no período anterior`} />
+        <CartaoNumero tom="noite" icone={ICONES.leads} rotulo="Leads" valor={periodo.n.total} apoio={`${periodo.nAnterior.total} em ${periodo.rotuloAnterior}`} />
         <CartaoNumero icone={ICONES.pedidos} rotulo="Novos" valor={periodo.n.NOVO} apoio="ainda sem resposta" />
         <CartaoNumero icone={ICONES.clientes} rotulo="Em contato" valor={periodo.n.EM_CONTATO} apoio="conversa em andamento" />
         <CartaoNumero tom={periodo.n.CONVERTIDO > 0 ? "verde" : "navy"} icone={ICONES.site} rotulo="Viraram cliente" valor={periodo.n.CONVERTIDO} apoio={`${taxa}% dos leads do período`} />
@@ -423,16 +379,16 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
       {/* ---------- As barras e as origens ---------- */}
       <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_1fr] gap-4 mt-4">
         <div className="bg-white rounded-[1.5rem] ring-1 ring-fio/80 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)] p-5">
-          <h2 className="text-[1.02rem] font-semibold text-navy tracking-[-0.01em]">Leads por {grao === "ano" ? "mês" : "dia"}</h2>
+          <h2 className="text-[1.02rem] font-semibold text-navy tracking-[-0.01em]">Leads por {periodo.grao === "mes" ? "mês" : periodo.grao === "semana" ? "semana" : "dia"}</h2>
           <p className="text-cinza text-xs mt-0.5">{periodo.rotulo}</p>
           {periodo.n.total === 0 ? (
             <p className="mt-6 text-sm text-cinza">Nenhum lead neste período.</p>
           ) : (
-            <div className="mt-5 flex h-36 items-end gap-[3px]" role="img" aria-label={`Leads por ${grao === "ano" ? "mês" : "dia"}`}>
+            <div className="mt-5 flex h-36 items-end gap-[3px]" role="img" aria-label={`Leads por ${periodo.grao === "mes" ? "mês" : periodo.grao === "semana" ? "semana" : "dia"}`}>
               {periodo.barras.map((b, i) => {
                 const alt = Math.max(b.valor > 0 ? 6 : 2, Math.round((b.valor / maiorBarra) * 100));
                 const topo = b.valor === maiorBarra && b.valor > 0;
-                const mostrarRotulo = grao !== "mes" || i % 5 === 0 || i === periodo.barras.length - 1;
+                const mostrarRotulo = periodo.barras.length <= 12 || i % 5 === 0 || i === periodo.barras.length - 1;
                 return (
                   <div key={i} className="group relative flex min-w-0 flex-1 flex-col items-center justify-end gap-1.5 h-full" title={`${b.rotulo}: ${b.valor}`}>
                     {topo && <span className="text-[0.65rem] font-semibold text-navy tabular-nums">{b.valor}</span>}
