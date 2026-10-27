@@ -1,5 +1,18 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 114 (27/10/2026): "Fale com a gente" só com a receita. IMPLEMENTADO, testado e PUBLICADO no 63º push.**
+> Sobre o bento do adendo 113: "o mapa polui, ele tem que ficar na parte
+> dele; tira horário, WhatsApp e mapa; quero só o envie a receita e receba
+> o orçamento; modernize, alta qualidade, minimalista". Ficou UMA PEÇA
+> larga em azul noite (malha, luz de ouro no canto e luz azul embaixo):
+> rótulo, título grande em duas vozes ("orçamento" no itálico de ouro),
+> uma frase, o botão vivo e uma linha miúda ("Sem compromisso. Você só paga
+> depois que o farmacêutico confirma o pedido."). No desktop, à direita,
+> uma folha de receita em vidro inclinada (Rx, traço de ouro, linhas,
+> círculo de ouro com o visto) que sobe ao passar o mouse; no celular ela
+> não aparece. Desktop 645 px de altura, celular 542 px. MapaTresLojas
+> (criado no 113) saiu do código. Testado: o botão abre o pedido.
+
 > **ADENDO 113 (27/10/2026): "Fale com a gente" refeito como BENTO. IMPLEMENTADO, testado e PUBLICADO no 62º push.**
 > Pedido: "o fale com a gente no desktop não tá bom, melhore ele e para
 > mobile também, quero algo moderno e condizente com o site"; o índice em
