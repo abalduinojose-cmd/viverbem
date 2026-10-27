@@ -1,5 +1,28 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 113 (27/10/2026): "Fale com a gente" refeito como BENTO. IMPLEMENTADO, testado e PUBLICADO no 62º push.**
+> Pedido: "o fale com a gente no desktop não tá bom, melhore ele e para
+> mobile também, quero algo moderno e condizente com o site"; o índice em
+> linhas com fio (feito primeiro) foi reprovado ("nada que você fez tá
+> legal nessa parte, quero algo totalmente moderno, estude tudo que já
+> fizemos"). A versão que ficou usa só peças já aprovadas no site:
+> - cabeçalho como o do "Como funciona" (rótulo, título em duas vozes à
+>   esquerda, frase à direita);
+> - bento de 4 peças: RECEITA alta em azul noite (malha, luz de ouro,
+>   receita grande como marca d'água, pílulas de vidro, botão vivo com o fio
+>   de ouro girando, "orçamento" em itálico de ouro); MAPA real com os 3
+>   pinos (MapaTresLojas, extraído do CartaoLojas de 14/10) com os bairros
+>   em pílulas numa faixa de vidro (passar na pílula acende o pino; no
+>   celular a faixa vai abaixo do mapa); WHATSAPP branco com o verde do
+>   ícone e o número; HORÁRIO com "Aberto agora" ao vivo e a grade da
+>   semana com o dia de hoje aceso.
+> - entram em cascata ao rolar (.escalonado) e sobem de leve ao passar o
+>   mouse. Desktop 980 px de altura, celular 1643 px (eram 646 / 620 na
+>   chamada centrada do adendo 102). Testado: pílula acende o pino, botão
+>   abre o pedido, links do WhatsApp e das lojas corretos.
+> - MapaTresLojas lê a folga da faixa pela variável CSS --folga-baixo, para
+>   os pinos não ficarem atrás dela.
+
 > **ADENDO 112 (27/10/2026): melhorias do painel apontadas na revisão. IMPLEMENTADO, testado e PUBLICADO no 61º push.**
 > - TARJAS NA LISTA DE PRODUTOS: embaixo de cada nome, duas pílulas
 >   ("Mais vendido" e "Novidade") que ligam e desligam num toque; ligadas
