@@ -67,8 +67,11 @@ export function validarCorpoProduto(corpo: Record<string, unknown>) {
       // A capa é sempre a primeira FOTO da galeria (vídeo não vira capa)
       fotoUrl: capaDaGaleria(galeria.fotos),
       ativo: corpo.ativo !== false,
-      novidade: industrializado && corpo.novidade === true,
-      destaque: industrializado && corpo.destaque === true,
+      // 27/10/2026: Novidade e Destaque (as tarjas "Novidade" e "Mais
+      // vendido") valem para qualquer produto; ligar num manipulado é escolha
+      // do gestor com o farmacêutico (RDC 67/2007, item 5.14)
+      novidade: corpo.novidade === true,
+      destaque: corpo.destaque === true,
       // Preço no site em qualquer produto, a escolha do gestor (14/10/2026;
       // antes só industrializado, pela RDC 67/2007, que segue como aviso)
       mostrarPreco: corpo.mostrarPreco === true,

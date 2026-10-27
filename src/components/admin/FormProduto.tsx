@@ -294,8 +294,8 @@ export function FormProduto({
         fotosMudaram: galeriaMudou,
         ativo,
         mostrarPreco,
-        novidade: industrializado && novidade,
-        destaque: industrializado && destaque,
+        novidade,
+        destaque,
         dosagens: dosagens.trim() || null,
         apresentacao: apresentacao.trim() || null,
         indicacoes: indicacoes.trim() || null,
@@ -699,12 +699,20 @@ export function FormProduto({
                 aoAlternar={() => setMostrarPreco((v) => !v)}
                 cor="ouro"
               />
-              {industrializado && (
-                <>
-                  <Interruptor ligado={novidade} rotulo="Novidade" descricao="Selo de novidade no site." aoAlternar={() => setNovidade((v) => !v)} />
-                  <Interruptor ligado={destaque} rotulo="Destaque" descricao="Primeiro na faixa de pronta entrega." aoAlternar={() => setDestaque((v) => !v)} />
-                </>
-              )}
+              {/* 27/10/2026: as tarjas sobre a foto, para todos os produtos */}
+              <Interruptor
+                ligado={novidade}
+                rotulo="Tarja Novidade"
+                descricao={industrializado ? "A tarja branca \"Novidade\" sobre a foto." : "A tarja \"Novidade\" sobre a foto. Em manipulado, só com o aval do farmacêutico (RDC 67/2007)."}
+                aoAlternar={() => setNovidade((v) => !v)}
+              />
+              <Interruptor
+                ligado={destaque}
+                rotulo="Tarja Mais vendido"
+                descricao={industrializado ? "A tarja de ouro \"Mais vendido\" sobre a foto, e o produto vem primeiro na pronta entrega." : "A tarja de ouro \"Mais vendido\" sobre a foto. Em manipulado, só com o aval do farmacêutico (RDC 67/2007)."}
+                aoAlternar={() => setDestaque((v) => !v)}
+                cor="ouro"
+              />
             </div>
           </div>
         </aside>

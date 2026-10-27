@@ -118,7 +118,6 @@ async function main() {
       precoCentavos: 8990,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/creme.svg",
-      novidade: true,
     },
     {
       nome: "Sérum Vitamina C 10%",
@@ -161,7 +160,6 @@ async function main() {
       precoCentavos: 6200,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/vitamina.svg",
-      novidade: true,
     },
     {
       nome: "Fórmula Sono Reparador",
@@ -174,11 +172,11 @@ async function main() {
       precoCentavos: 7490,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/sono.svg",
-      novidade: true,
     },
     // --- Linha própria Viver Bem (fotos reais) — todos em destaque ---
     {
       nome: "CitoRepair™ 2.0",
+      destaque: true,
       apresentacao: "30 cápsulas",
       indicacoes: "Longevidade celular\nImita os efeitos do jejum\nContribui para a renovação das células\nApoia a disposição no dia a dia",
       composicao: "Espermidina\nResveratrol\nNAD+ precursores\nCoenzima Q10",
@@ -188,11 +186,10 @@ async function main() {
       precoCentavos: 18900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/citorepair.webp",
-      novidade: true,
-      destaque: true,
     },
     {
       nome: "Ômega 3 Viver Bem",
+      destaque: true,
       apresentacao: "90 cápsulas · 126g",
       indicacoes: "Saúde cardiovascular\nApoio à função cerebral\nAção anti-inflamatória\nSaúde dos olhos",
       composicao: "Óleo de peixe concentrado\nEPA\nDHA\nVitamina E (antioxidante)",
@@ -202,7 +199,6 @@ async function main() {
       precoCentavos: 8900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/omega3.webp",
-      destaque: true,
     },
     {
       nome: "VitaFlex",
@@ -215,7 +211,6 @@ async function main() {
       precoCentavos: 12900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/vitaflex.webp",
-      destaque: true,
     },
     {
       nome: "Creatina Gummy",
@@ -228,11 +223,10 @@ async function main() {
       precoCentavos: 9900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/creatina-gummy.webp",
-      novidade: true,
-      destaque: true,
     },
     {
       nome: "Caramelo de Creatina",
+      novidade: true,
       apresentacao: "500g · 35 unidades de 10g",
       indicacoes: "Energia com sabor\nGanho de força\nPrático para levar\nÓtima adesão",
       composicao: "Creatina monoidratada\nFarinha de amêndoa\nCaramelo",
@@ -242,8 +236,6 @@ async function main() {
       precoCentavos: 11900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/caramelo-creatina.webp",
-      novidade: true,
-      destaque: true,
     },
     {
       nome: "Composto Emagrecedor",
@@ -256,10 +248,10 @@ async function main() {
       precoCentavos: 13900,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/composto-emagrecedor.webp",
-      destaque: true,
     },
     {
       nome: "Glow Cream",
+      destaque: true,
       apresentacao: "Pote 30g",
       indicacoes: "Viço e luminosidade\nFirmeza da pele\nHidratação profunda\nUniformiza o tom",
       composicao: "Ceramida 6%\nNiacinamida 4%\nÁcido hialurônico 0,5%\nOligo HA 0,1%\nCopper Peptide 1%",
@@ -269,17 +261,15 @@ async function main() {
       precoCentavos: 16900,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/glow-cream.webp",
-      novidade: true,
-      destaque: true,
     },
     {
       // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
       nome: "Centella Asiática Creme",
+      novidade: true,
       descricao: "Creme com extrato de centella asiática, manipulado conforme a prescrição.",
       precoCentavos: 0,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/centella-asiatica-creme.webp",
-      novidade: true,
     },
     {
       nome: "Firm Defense Serum",
@@ -292,7 +282,6 @@ async function main() {
       precoCentavos: 15900,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/firm-defense-serum.webp",
-      destaque: true,
     },
     {
       nome: "ZincBlock FPS",
@@ -305,8 +294,6 @@ async function main() {
       precoCentavos: 11900,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/zincblock-fps.webp",
-      novidade: true,
-      destaque: true,
     },
     {
       nome: "Bastão Clareador",
@@ -319,7 +306,6 @@ async function main() {
       precoCentavos: 9900,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/bastao-clareador.webp",
-      destaque: true,
     },
     {
       nome: "Pó Finalizador FPB 20",
@@ -332,7 +318,6 @@ async function main() {
       precoCentavos: 8900,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/po-finalizador.webp",
-      destaque: true,
     },
     {
       nome: "Ômega 3 Concentrado",
@@ -368,7 +353,6 @@ async function main() {
       precoCentavos: 9200,
       categoria: "saude-da-mulher",
       fotoUrl: "/uploads/feminino.svg",
-      novidade: true,
     },
     {
       nome: "Cranberry",
@@ -436,12 +420,12 @@ async function main() {
     {
       // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
       nome: "Max Solve Coenzima Q10",
+      novidade: true,
       apresentacao: "30 mL",
       descricao: "Coenzima Q10 hidrossolúvel em frasco conta-gotas de 30 mL, manipulada conforme a prescrição.",
       precoCentavos: 0,
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/max-solve-coenzima-q10.webp",
-      novidade: true,
     },
     {
       nome: "Coenzima Q10",
@@ -459,7 +443,6 @@ async function main() {
       precoCentavos: 7890,
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/creme.svg",
-      novidade: true,
     },
     {
       nome: "Creme Ácido Retinoico",
@@ -485,7 +468,6 @@ async function main() {
       precoCentavos: 10900,
       categoria: "saude-da-mulher",
       fotoUrl: "/uploads/feminino.svg",
-      novidade: true,
     },
     {
       nome: "Testoviver Homem 45+",
@@ -514,7 +496,6 @@ async function main() {
       categoria: "cabelos-unhas",
       fotoUrl: "/uploads/combo.svg",
       tipo: "COMBO",
-      novidade: true,
     },
     {
       nome: "Combo Imunidade em Dia",

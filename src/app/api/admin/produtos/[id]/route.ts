@@ -50,13 +50,8 @@ export async function PATCH(req: Request, contexto: Contexto) {
         }
         dados.aprovado = corpo.aprovado === true;
       } else if (c === "novidade" || c === "destaque") {
-        // Vitrine promocional não existe para manipulado
-        if (!industrializado && corpo[c] === true) {
-          return NextResponse.json(
-            { erro: "Manipulado não pode ter selo de novidade ou destaque." },
-            { status: 400 }
-          );
-        }
+        // 27/10/2026: as tarjas valem para qualquer produto (antes a rota
+        // recusava no manipulado); o painel avisa sobre a RDC 67/2007
         dados[c] = corpo[c] === true;
       } else if (c === "mostrarPreco") {
         // 14/10/2026: a chave vale para qualquer produto, a escolha do

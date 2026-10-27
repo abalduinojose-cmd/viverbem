@@ -1,5 +1,22 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 111 (27/10/2026): tarjas com a cápsula, 3 de cada, e o formulário que apagava a tarja. IMPLEMENTADO, testado e PUBLICADO no 60º push.**
+> - "Tire a estrela e coloque um remédio, um pouquinho maior": a tarja
+>   Mais vendido traz uma cápsula inclinada (metade cheia, metade vazada),
+>   uns 30% maior que a estrela.
+> - "O mais vendido só em alguns e novidades só em alguns, 3 de cada":
+>   Mais vendido em CitoRepair 2.0, Ômega 3 Viver Bem e Glow Cream;
+>   Novidade em Centella Asiática Creme, Max Solve Coenzima Q10 e Caramelo
+>   de Creatina. Banco de desenvolvimento e prisma/seed.js alinhados (a
+>   produção começa igual).
+> - DEFEITO CORRIGIDO (achado na revisão do painel): o formulário de
+>   produto só mostrava e só salvava Novidade e Destaque em industrializado,
+>   e a rota parcial recusava em manipulado; editar o CitoRepair apagava o
+>   "Mais vendido". Agora as chaves "Tarja Novidade" e "Tarja Mais vendido"
+>   aparecem em todos, com o aviso da RDC 67/2007 no manipulado
+>   (FormProduto, lib/validarProduto, api/admin/produtos/[id]). Testado:
+>   ligar e desligar num manipulado grava no banco.
+
 > **ADENDO 110 (27/10/2026): tarjas Mais vendido e Novidade, selo de Compra garantida, Leads para o colaborador. IMPLEMENTADO, testado e PUBLICADO no 59º push.**
 > Pedidos: "embaixo do comprar no WhatsApp um selo de compra garantida /
 > em alguns produtos uma tarja de mais vendido e de novidade, simples, por
