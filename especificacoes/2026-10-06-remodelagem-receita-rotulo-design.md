@@ -1,5 +1,16 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 109 (27/10/2026): potes sem a luz dourada e auditoria de botões. IMPLEMENTADO e PUBLICADO no 58º push.**
+> Pedido: "a sombra dourada tá longe do produto (na bancada de Vitaminas e
+> na página do produto); tire e aumente o produto um pouco; verifique se
+> todos os links e botões funcionam". A luz de ouro na base dos ladrilhos
+> saiu da bancada, do Mais procurados, do Você viu recentemente e do
+> Compre junto; a foto ganhou espaço (menos respiro em volta). Auditoria
+> no localhost (12 páginas, 1366 e 390): 0 links quebrados, 76 âncoras
+> conferidas, 444 botões clicados; os 9 marcados "sem efeito" (setas de
+> faixa, pontos dos passos) rolam a faixa, só não mudam o DOM, conferido à
+> parte. Nada precisou de conserto.
+
 > **ADENDO 108 (26/10/2026): painel, segunda volta. IMPLEMENTADO, testado de ponta a ponta e PUBLICADO no 57º push.**
 > Pedidos: "o filtro de meses dos leads melhor, tipo o painel da Shopee,
 > que você escolhe as datas / modernize o log de alterações / melhore o
