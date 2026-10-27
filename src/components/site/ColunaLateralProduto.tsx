@@ -23,11 +23,8 @@ import { SetaDireita } from "./icones";
 function CartaoCompacto({ produto }: { produto: ProdutoDTO }) {
   return (
     <article className="group relative flex h-full flex-col rounded-2xl p-2 transition-colors hover:bg-gelo/50">
-      <span className="relative aspect-square w-full overflow-hidden rounded-xl bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-3 md:p-4">
-        <span
-          aria-hidden="true"
-          className="absolute inset-x-[15%] bottom-1 h-6 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.3),transparent_70%)]"
-        />
+      {/* 27/10/2026: a luz de ouro na base saiu (ficava longe do pote) e a foto ganhou espaço */}
+      <span className="relative aspect-square w-full overflow-hidden rounded-xl bg-gradient-to-b from-gelo to-gelo/30 flex items-center justify-center p-2 md:p-2.5">
         <FotoProduto
           fotoUrl={produto.fotoUrl}
           nome={produto.nome}

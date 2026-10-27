@@ -69,8 +69,8 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
                     este produto
                   </span>
                 )}
-                <span className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-gelo to-gelo/30 p-2">
-                  <span aria-hidden="true" className="absolute inset-x-[15%] bottom-0.5 h-4 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.3),transparent_70%)]" />
+                {/* 27/10/2026: sem a luz de ouro na base; a foto um pouco maior */}
+                <span className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-gelo to-gelo/30 p-1.5">
                   {p.fotoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={asset(p.fotoUrl)} alt="" width={160} height={160} loading="lazy" decoding="async" className="relative max-h-full max-w-full object-contain drop-shadow-[0_6px_8px_rgba(16,42,74,0.25)] transition-transform duration-500 group-hover:scale-[1.04]" />

@@ -26,8 +26,10 @@ function Pote({ produto }: { produto: ProdutoDTO }) {
     <li>
       <article className="group relative flex h-full flex-col rounded-[1.75rem] border border-fio bg-white p-2.5 transition duration-300 hover:-translate-y-1 hover:border-ouro/50 hover:shadow-[0_28px_44px_-32px_rgba(16,42,74,0.45)]">
         {/* A foto: quadrada no celular, um pouco mais baixa no computador, para a grade não virar uma torre */}
-        <span className="relative flex aspect-square md:aspect-[5/4] items-center justify-center overflow-hidden rounded-[1.25rem] bg-gradient-to-b from-gelo to-gelo/30 p-5 md:p-7">
-          <span aria-hidden="true" className="absolute inset-x-[16%] bottom-1.5 h-8 bg-[radial-gradient(50%_70%_at_50%_100%,rgba(201,165,107,0.34),transparent_70%)]" />
+        {/* 27/10/2026 ("a sombra dourada tá longe do produto; tire e aumente o
+            produto um pouco"): a luz de ouro na base saiu e a foto ganhou
+            espaço (menos respiro em volta) */}
+        <span className="relative flex aspect-square md:aspect-[5/4] items-center justify-center overflow-hidden rounded-[1.25rem] bg-gradient-to-b from-gelo to-gelo/30 p-3.5 md:p-4">
           <FotoProduto
             fotoUrl={produto.fotoUrl}
             nome={produto.nome}
