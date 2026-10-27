@@ -1,5 +1,26 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 110 (27/10/2026): tarjas Mais vendido e Novidade, selo de Compra garantida, Leads para o colaborador. IMPLEMENTADO, testado e PUBLICADO no 59º push.**
+> Pedidos: "embaixo do comprar no WhatsApp um selo de compra garantida /
+> em alguns produtos uma tarja de mais vendido e de novidade, simples, por
+> cima do produto / para os funcionários coloque o painel de leads".
+> - TARJAS (TarjaProduto): "Mais vendido" em ouro com estrela (chave
+>   Destaque do painel) e "Novidade" branca com o ponto azul (chave
+>   Novidade), no canto de cima da foto, em todos os cartões (faixas,
+>   bancada, Mais procurados, vistos recentemente) e na foto grande do
+>   produto ("Mais pedido" virou "Mais vendido"). A vitrine deixou de
+>   apagar essas duas chaves dos manipulados (lib/catalogo.ts); atenção à
+>   RDC 67/2007, item 5.14: quem liga é o gestor, com o farmacêutico.
+>   Marcados no banco: CitoRepair 2.0, Ômega 3, Glow Cream e Creatina Gummy
+>   (Mais vendido); Centella e Max Solve já eram Novidade.
+> - COMPRA GARANTIDA: faixa verde clara embaixo do "Pedir pelo WhatsApp",
+>   com o escudo, "Você só paga depois que o farmacêutico confirma o
+>   pedido" e o link para Trocas e reembolso.
+> - LEADS PARA O COLABORADOR: Leads saiu de Gestão e foi para o grupo
+>   Atendimento, que o colaborador vê; ele cadastra e muda a situação, só o
+>   gestor apaga (a API devolve 401 no DELETE para o colaborador). Textos
+>   de Acessos atualizados.
+
 > **ADENDO 109 (27/10/2026): potes sem a luz dourada e auditoria de botões. IMPLEMENTADO e PUBLICADO no 58º push.**
 > Pedido: "a sombra dourada tá longe do produto (na bancada de Vitaminas e
 > na página do produto); tire e aumente o produto um pouco; verifique se

@@ -62,8 +62,10 @@ function paraVitrine(p: ProdutoDTO): ProdutoDTO {
     ...p,
     precoCentavos: comPreco ? p.precoCentavos : 0,
     mostrarPreco: comPreco,
-    novidade: false,
-    destaque: false,
+    // 27/10/2026 ("em alguns produtos coloque a tarja de mais vendido e de
+    // novidade"): as chaves Destaque e Novidade passam a valer também no
+    // manipulado. Atenção: a RDC 67/2007 (item 5.14) restringe a promoção de
+    // manipulado; quem liga é o gestor, no painel, com o farmacêutico.
     dosagens: null,
     composicao: null,
     modoUso: null,

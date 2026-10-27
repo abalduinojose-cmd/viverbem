@@ -16,6 +16,7 @@ import Link from "next/link";
 import { ProdutoDTO } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
+import { TarjaProduto } from "./TarjaProduto";
 import { FaixaProdutos } from "./FaixaProdutos";
 import { useVistosRecentemente } from "@/lib/useVistosRecentemente";
 import { SetaDireita } from "./icones";
@@ -32,6 +33,7 @@ function CartaoCompacto({ produto }: { produto: ProdutoDTO }) {
         />
         {/* O "adicionar" no canto da foto, para o nome ter a largura toda */}
         <BotaoAdicionar produto={produto} compacto suave className="absolute right-2 top-2 z-[1]" />
+        <TarjaProduto produto={produto} tamanho="pequena" />
       </span>
       <div className="mt-2.5 min-w-0">
         {/* O link se estende sobre o cartão inteiro */}

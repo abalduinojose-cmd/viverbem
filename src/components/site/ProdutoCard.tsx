@@ -29,6 +29,7 @@ import { formatarPreco } from "@/lib/preco";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
 import { SegurarParaVer } from "./SegurarParaVer";
+import { TarjaProduto } from "./TarjaProduto";
 
 export type VarianteCartao = "cartao" | "limpa";
 
@@ -91,11 +92,9 @@ export function ProdutoCard({
             nome={produto.nome}
             className="relative max-h-full w-auto max-w-full !object-contain scale-[1.04] transition-transform duration-500 group-hover:-translate-y-1.5"
           />
-          {industrializado && produto.novidade && (
-            <span className="absolute top-2.5 left-2.5 rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-2.5 py-1">
-              Novidade
-            </span>
-          )}
+          {/* 27/10/2026: Mais vendido e Novidade em todos (antes a Novidade
+              era só dos industrializados) */}
+          <TarjaProduto produto={produto} />
         </div>
 
         {/* Nome, categoria e descrição centrados (11/10/2026, "quero o nome dos

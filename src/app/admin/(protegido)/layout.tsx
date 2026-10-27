@@ -32,12 +32,14 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
     itens.push(
       { href: "/admin/painel", rotulo: "Visão geral", icone: "painel", grupo: "Gestão" },
       { href: "/admin/clientes", rotulo: "Pedidos", icone: "pedidos", grupo: "Gestão" },
-      { href: "/admin/leads", rotulo: "Leads", icone: "leads", grupo: "Gestão" },
       { href: "/admin/log", rotulo: "Log de alterações", icone: "log", grupo: "Gestão" },
       { href: "/admin/usuarios", rotulo: "Acessos ao painel", icone: "acessos", grupo: "Gestão" }
     );
   }
+  // 27/10/2026 ("para os funcionários coloque o painel de leads também"):
+  // Leads saiu de Gestão e foi para Atendimento, que o colaborador também vê
   itens.push(
+    { href: "/admin/leads", rotulo: "Leads", icone: "leads", grupo: "Atendimento" },
     { href: "/admin/produtos", rotulo: "Produtos e preços", icone: "produtos", grupo: "Catálogo" },
     { href: "/admin/categorias", rotulo: "Categorias", icone: "categorias", grupo: "Catálogo" },
     { href: "/admin/site", rotulo: "Home e arte da dobra", icone: "vitrine", grupo: "Catálogo" },

@@ -397,7 +397,7 @@ export default async function PaginaProduto({ params }: Props) {
             <GaleriaProduto
               fotos={produto.fotos}
               nome={produto.nome}
-              novidade={industrializado && produto.novidade}
+              novidade={produto.novidade}
               maisPedido={produto.destaque}
               acoes={<CompartilharProduto nome={produto.nome} compacto />}
             />

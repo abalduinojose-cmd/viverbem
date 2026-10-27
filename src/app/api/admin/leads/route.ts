@@ -2,10 +2,10 @@
 //   POST   { nome, whatsapp, origem?, interesse?, observacao?, situacao? } cria um
 //   PATCH  { id, situacao?, observacao?, interesse?, nome?, whatsapp?, origem? } muda um
 //   DELETE { id } apaga um
-// Permissão: só o gestor (é dado de cliente, como os pedidos).
+// Permissão (27/10/2026): gestor e colaborador criam e alteram; só o gestor apaga.
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { exigirAdminApi } from "@/lib/sessao";
+import { exigirAdminApi, exigirSessaoApi } from "@/lib/sessao";
 import { registrarLog } from "@/lib/log";
 import { origemValida, situacaoValida } from "@/lib/leads";
 
@@ -14,7 +14,7 @@ function limpar(v: unknown, max: number) {
 }
 
 export async function POST(req: Request) {
-  const sessao = await exigirAdminApi();
+  const sessao = await exigirSessaoApi();
   if (!sessao) return NextResponse.json({ erro: "Não autorizado." }, { status: 401 });
 
   const corpo = await req.json().catch(() => ({}));
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const sessao = await exigirAdminApi();
+  const sessao = await exigirSessaoApi();
   if (!sessao) return NextResponse.json({ erro: "Não autorizado." }, { status: 401 });
 
   const corpo = await req.json().catch(() => ({}));

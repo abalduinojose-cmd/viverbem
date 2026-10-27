@@ -31,6 +31,8 @@ import {
 } from "@/lib/leads";
 import { AvisoAdmin, BotaoAdmin, CabecalhoAdmin, CartaoNumero, Inicial, Selo, classeCampoAdmin } from "./PecasAdmin";
 import { ICONES } from "./iconesAdmin";
+import { useSessaoDemo } from "./ModoDemo";
+import { PAPEL_ADMIN } from "@/lib/tipos";
 import { DIA, PeriodoLeads, diasDo, intervaloAnterior, intervaloDoAtalho, meiaNoite, rotuloDoIntervalo, type Intervalo } from "./PeriodoLeads";
 
 type Grao = "dia" | "semana" | "mes";
@@ -131,7 +133,10 @@ const origemDe = (l: LeadDTO): OrigemLead => (origemValida(l.origem) ? l.origem 
 
 const FORM_VAZIO = { nome: "", whatsapp: "", origem: "WHATSAPP" as OrigemLead, interesse: "", observacao: "" };
 
-export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }) {
+export function ListaLeads({ leads, agora, podeApagar = false }: { leads: LeadDTO[]; agora: number; podeApagar?: boolean }) {
+  // Na prévia estática quem manda é quem entrou no navegador
+  const demo = useSessaoDemo();
+  const apaga = demo ? demo.papel === PAPEL_ADMIN : podeApagar;
   const [intervalo, setIntervalo] = useState<Intervalo>(() => intervaloDoAtalho("mes", agora));
   const [busca, setBusca] = useState("");
   const [origemFiltro, setOrigemFiltro] = useState<FiltroOrigem>("");
@@ -551,6 +556,7 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
                       >
                         <IconeWhats />
                       </a>
+                      {apaga && (
                       <button
                         type="button"
                         onClick={() => apagar(l)}
@@ -561,6 +567,7 @@ export function ListaLeads({ leads, agora }: { leads: LeadDTO[]; agora: number }
                           <path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </button>
+                      )}
                     </div>
                   </div>
 

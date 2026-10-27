@@ -60,12 +60,12 @@ const PAPEIS = [
   {
     valor: PAPEL_OPERADOR,
     titulo: "Colaborador",
-    texto: "Cuida do catálogo: produtos, fotos, preço no site, categorias e as seções da home.",
+    texto: "Cuida do catálogo, das seções da home e dos leads: produtos, fotos, preço no site, categorias.",
   },
   {
     valor: PAPEL_ADMIN,
     titulo: "Gestor",
-    texto: "Tudo do colaborador, mais publicar, apagar, os números, pedidos, leads, o log e os acessos.",
+    texto: "Tudo do colaborador, mais publicar, apagar, os números, os pedidos, o log e os acessos.",
   },
 ];
 
@@ -175,7 +175,7 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
       <CabecalhoAdmin
         rotulo="Gestão"
         titulo="Acessos ao painel"
-        descricao="Quem pode entrar e o que cada um consegue fazer. Gestor vê tudo; colaborador cuida do catálogo e da home."
+        descricao="Quem pode entrar e o que cada um consegue fazer. Gestor vê tudo; colaborador cuida do catálogo, da home e dos leads."
         acao={
           !criando ? (
             <BotaoAdmin variante="primario" onClick={() => setCriando(true)}>
@@ -190,7 +190,7 @@ export function ListaUsuarios({ usuarios, meuId }: { usuarios: UsuarioDTO[]; meu
       <div className="cascata grid grid-cols-2 xl:grid-cols-4 gap-3 mt-6">
         <CartaoNumero tom="noite" icone={ICONES.acessos} rotulo="Acessos ativos" valor={ativos.length} apoio={`${usuarios.length - ativos.length} desligado${usuarios.length - ativos.length === 1 ? "" : "s"}`} />
         <CartaoNumero icone={ICONES.painel} rotulo="Gestores" valor={gestores} apoio="veem tudo" />
-        <CartaoNumero icone={ICONES.produtos} rotulo="Colaboradores" valor={colaboradores} apoio="catálogo e home" />
+        <CartaoNumero icone={ICONES.produtos} rotulo="Colaboradores" valor={colaboradores} apoio="catálogo, home e leads" />
         <CartaoNumero tom={bloqueados > 0 ? "ambar" : "navy"} icone={ICONES.log} rotulo="Login bloqueado" valor={bloqueados} apoio={bloqueados > 0 ? "por senha errada" : "nenhum travado"} />
       </div>
 

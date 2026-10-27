@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { ehVideo } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
+import { TarjaProduto } from "./TarjaProduto";
 
 function VideoDaGaleria({ src, ativo, nome }: { src: string; ativo: boolean; nome: string }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -111,19 +112,9 @@ export function GaleriaProduto({
           )
         )}
 
-        {(novidade || maisPedido) && (
-          <span className="absolute top-4 left-4 flex flex-col items-start gap-1.5">
-            {maisPedido && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[image:var(--ouro-degrade)] px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-navy shadow-[0_8px_18px_-10px_rgba(201,165,107,0.8)]">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.3l6.5-.9L12 2.5z" />
-                </svg>
-                Mais pedido
-              </span>
-            )}
-            {novidade && <span className="rotulo !text-ouro text-[0.6875rem] bg-white border border-ouro/40 rounded-full px-3 py-1.5">Novidade</span>}
-          </span>
-        )}
+        {/* 27/10/2026: a mesma tarja dos cartões, maior ("Mais vendido" no
+            lugar de "Mais pedido") */}
+        <TarjaProduto produto={{ destaque: maisPedido, novidade }} tamanho="grande" className="!left-4 !top-4" />
         {acoes && (
           <div onMouseMove={(e) => e.stopPropagation()} onMouseEnter={() => setZoom(null)} className="absolute top-4 right-4 z-20">
             {acoes}

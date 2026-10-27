@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 import { ProdutoDTO } from "@/lib/tipos";
 import { FotoProduto } from "./FotoProduto";
 import { BotaoAdicionar } from "./BotaoAdicionar";
+import { TarjaProduto } from "./TarjaProduto";
 import { SetaDireita } from "./icones";
 
 const MAXIMO_DE_POTES = 6;
@@ -35,6 +36,7 @@ function Pote({ produto }: { produto: ProdutoDTO }) {
             nome={produto.nome}
             className="relative max-h-full max-w-full !object-contain drop-shadow-[0_10px_12px_rgba(16,42,74,0.26)] transition-transform duration-500 group-hover:-translate-y-1.5"
           />
+          <TarjaProduto produto={produto} tamanho="normal" />
         </span>
         <div className="flex flex-1 flex-col px-2 pb-2 pt-3">
           <Link
