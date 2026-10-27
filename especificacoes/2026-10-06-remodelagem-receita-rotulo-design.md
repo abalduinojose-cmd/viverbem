@@ -1,5 +1,21 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 115 (27/10/2026): lapidação do "Fale com a gente" aprovado. IMPLEMENTADO, medido e PUBLICADO no 64º push.**
+> "Gostei, ficou ótimo assim, só aprimore mais." Sem mexer na estrutura do
+> adendo 114, tudo guiado pela rolagem (roda com "reduzir movimento"):
+> - o título se escreve ao entrar (a mesma clip-path dos títulos de seção);
+> - na folha de receita em vidro, o traço de ouro e as cinco linhas se
+>   desenham uma depois da outra (cresce-x, cada linha com o índice --i
+>   adiando a faixa em 2,4%) e o visto de ouro aparece por último, com uma
+>   mola leve (uma história só: a receita chega e é conferida);
+> - um fio de luz na borda de cima do cartão (inset 1px branco a 10%) e a
+>   luz de ouro cresce 10% ao passar o mouse.
+> - O cartão passou de overflow-hidden para overflow-clip: hidden fazia
+>   dele um contêiner de rolagem e as linhas de tempo view() ficavam presas
+>   (medido: tudo "pronto" já na entrada). Com clip, medido em três pontos:
+>   entrando (topo a 86% da tela) linhas 0 e visto 0; no meio (55%) quatro
+>   linhas prontas; assentado (25%) tudo completo.
+
 > **ADENDO 114 (27/10/2026): "Fale com a gente" só com a receita. IMPLEMENTADO, testado e PUBLICADO no 63º push.**
 > Sobre o bento do adendo 113: "o mapa polui, ele tem que ficar na parte
 > dele; tira horário, WhatsApp e mapa; quero só o envie a receita e receba

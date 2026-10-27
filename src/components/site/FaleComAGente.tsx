@@ -19,6 +19,16 @@
 // Ao fundo, a malha de laboratório e a luz de ouro no canto. Nada mais:
 // WhatsApp, lojas e horário completos seguem em /contato e /lojas, onde
 // este bloco não aparece (nem na página do produto).
+//
+// Lapidação (27/10/2026, "gostei, ficou ótimo, só aprimore mais"): tudo
+// guiado pela rolagem (roda também com "reduzir movimento"): o título se
+// escreve ao entrar (como os títulos de seção), na folha as linhas se
+// desenham uma depois da outra e o visto de ouro aparece por último (uma
+// história só: a receita chega e é conferida); um fio de luz na borda de
+// cima do cartão; a luz de ouro cresce um pouco ao passar o mouse. O cartão
+// recorta com overflow: clip (overflow: hidden faria dele um contêiner de
+// rolagem, e as linhas de tempo view() ficariam presas nele).
+import type React from "react";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
 import { SetaDireita } from "./icones";
@@ -36,16 +46,16 @@ export function FaleComAGente() {
   return (
     <section aria-labelledby="fale-com-a-gente" className="relative border-t border-fio bg-white">
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-14 md:py-20 lg:py-24">
-        <article className="revelar group relative isolate overflow-hidden rounded-[2rem] bg-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_40px_80px_-48px_rgba(13,35,64,0.75)]">
+        <article className="revelar group relative isolate overflow-clip rounded-[2rem] bg-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_40px_80px_-48px_rgba(13,35,64,0.75),inset_0_1px_0_rgba(255,255,255,0.1)]">
           {/* A atmosfera: a malha e a luz de ouro */}
           <span aria-hidden="true" className="malha-banner" />
-          <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.32),transparent_62%)]" />
+          <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.32),transparent_62%)] transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110" />
           <span aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-[22rem] w-[22rem] rounded-full bg-[radial-gradient(circle,rgba(28,105,181,0.28),transparent_64%)]" />
 
           <div className="relative grid grid-cols-1 gap-10 p-7 sm:p-10 lg:grid-cols-12 lg:items-center lg:gap-8 lg:p-14">
             <div className="lg:col-span-7">
               <p className="rotulo-pilula !text-[#e1c68f]/85">fale com a gente</p>
-              <h2 id="fale-com-a-gente" className="mt-5 max-w-[16ch] text-[2.1rem] sm:text-[2.6rem] lg:text-[3.25rem] font-bold leading-[1.02] tracking-[-0.04em] text-white text-balance">
+              <h2 id="fale-com-a-gente" className="titulo-receita mt-5 max-w-[16ch] text-[2.1rem] sm:text-[2.6rem] lg:text-[3.25rem] font-bold leading-[1.02] tracking-[-0.04em] text-white text-balance">
                 Envie a receita e receba o <span className="font-[family-name:var(--font-destaque)] font-normal italic tracking-[-0.01em] text-[#e1c68f]">orçamento</span>
               </h2>
               <p className="mt-6 max-w-[40ch] text-[1.02rem] md:text-[1.1rem] leading-[1.6] text-white/72 text-pretty">
@@ -71,16 +81,15 @@ export function FaleComAGente() {
                     <IconeReceita tamanho={22} />
                   </span>
                 </span>
-                <span className="mt-7 block h-[3px] w-14 rounded-full bg-[image:var(--ouro-degrade)]" />
+                <span className="receita-linha mt-7 block h-[3px] w-14 rounded-full bg-[image:var(--ouro-degrade)]" style={{ "--i": 0 } as React.CSSProperties} />
                 <span className="mt-6 block space-y-3.5">
-                  <span className="block h-2 w-[88%] rounded-full bg-white/[0.16]" />
-                  <span className="block h-2 w-[68%] rounded-full bg-white/[0.16]" />
-                  <span className="block h-2 w-[78%] rounded-full bg-white/[0.16]" />
-                  <span className="block h-2 w-[52%] rounded-full bg-white/[0.16]" />
+                  {["88%", "68%", "78%", "52%"].map((largura, i) => (
+                    <span key={largura} className="receita-linha block h-2 rounded-full bg-white/[0.16]" style={{ width: largura, "--i": i + 1 } as React.CSSProperties} />
+                  ))}
                 </span>
                 <span className="mt-8 flex items-center justify-between">
-                  <span className="block h-2 w-[34%] rounded-full bg-white/[0.12]" />
-                  <span className="flex size-8 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-navy">
+                  <span className="receita-linha block h-2 w-[34%] rounded-full bg-white/[0.12]" style={{ "--i": 5 } as React.CSSProperties} />
+                  <span className="receita-visto flex size-8 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-navy">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
