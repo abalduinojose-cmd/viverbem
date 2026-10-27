@@ -58,7 +58,8 @@ function tempoRelativo(iso: string) {
 /** Link discreto no canto dos cartões ("Abrir", "Ver todos") */
 function LinkCanto({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="group/lc inline-flex items-center gap-1 shrink-0 text-tinta text-sm font-medium">
+    // 27/10/2026: área de toque de 40 px no celular, sem mudar o desenho
+    <Link href={href} className="group/lc inline-flex min-h-10 md:min-h-0 items-center gap-1 shrink-0 text-tinta text-sm font-medium">
       {children}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="transition-transform group-hover/lc:translate-x-0.5">
         <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />

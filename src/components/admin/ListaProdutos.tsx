@@ -4,7 +4,10 @@
 // Lista em LINHAS (07/10/2026, "painel mais moderno e clean": os cartões
 // em grade tinham muita informação repetida): capa, nome com a área e os
 // selos, o preço (editável no lugar), as duas chaves do site ("No site" e
-// "Preço no site") e as ações. Novidade e destaque ficam no formulário.
+// "Preço no site") e as ações. Desde 27/10/2026 as tarjas "Mais vendido" e
+// "Novidade" também se ligam na própria linha (antes só no formulário), e
+// no celular a linha ficou mais baixa (as chaves numa linha só, com o nome
+// ao lado, a capa menor).
 // - Filtro por texto, por categoria e por situação
 // - Resumo no topo (total, no site, em falta, aguardando aprovação)
 // - Produto cadastrado pelo colaborador espera o gestor publicar
@@ -43,8 +46,8 @@ import {
   classeCampoAdmin,
 } from "./PecasAdmin";
 
-type FiltroSituacao = "todos" | "no-site" | "inativos" | "aguardando" | "com-preco" | "industrializados" | "sem-foto";
-type CampoChave = "ativo" | "aprovado" | "mostrarPreco";
+type FiltroSituacao = "todos" | "no-site" | "inativos" | "aguardando" | "com-preco" | "com-tarja" | "industrializados" | "sem-foto";
+type CampoChave = "ativo" | "aprovado" | "mostrarPreco" | "destaque" | "novidade";
 
 const AVISO_MANIPULADO =
   "A Anfarmag orienta não expor manipulado com preço (RDC 67/2007, item 5.14). Ligue só com o aval do farmacêutico responsável.";
@@ -73,6 +76,60 @@ function ChipFiltro({
       }`}
     >
       {children}
+    </button>
+  );
+}
+
+/** A tarja do site como pílula que liga e desliga na linha (27/10/2026):
+ *  ligada, igual à do site (ouro com a cápsula ou branca com o ponto azul);
+ *  desligada, só o contorno tracejado com um "+". */
+function BotaoTarja({
+  ligada,
+  tipo,
+  aoAlternar,
+  desabilitado,
+  nome,
+}: {
+  ligada: boolean;
+  tipo: "destaque" | "novidade";
+  aoAlternar: () => void;
+  desabilitado: boolean;
+  nome: string;
+}) {
+  const rotulo = tipo === "destaque" ? "Mais vendido" : "Novidade";
+  const ligadaClasse =
+    tipo === "destaque"
+      ? "bg-[image:var(--ouro-degrade)] text-navy shadow-[0_6px_14px_-10px_rgba(201,165,107,0.9)]"
+      : "bg-white text-navy ring-1 ring-inset ring-tinta/40";
+  return (
+    <button
+      type="button"
+      onClick={aoAlternar}
+      disabled={desabilitado}
+      aria-pressed={ligada}
+      aria-label={`${ligada ? "Tirar" : "Pôr"} a tarja ${rotulo} em ${nome}`}
+      title={ligada ? `Tirar a tarja ${rotulo}` : `Pôr a tarja ${rotulo} sobre a foto no site`}
+      className={`inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] transition disabled:opacity-50 ${
+        ligada ? ligadaClasse : "text-grafite-claro ring-1 ring-inset ring-fio hover:text-navy hover:ring-tinta/40"
+      }`}
+    >
+      {ligada ? (
+        tipo === "destaque" ? (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <g transform="rotate(-45 12 12)">
+              <rect x="3.5" y="8" width="17" height="8" rx="4" stroke="currentColor" strokeWidth="2" />
+              <path d="M12 8h4.5a4 4 0 0 1 0 8H12V8Z" fill="currentColor" />
+            </g>
+          </svg>
+        ) : (
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-tinta" />
+        )
+      ) : (
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        </svg>
+      )}
+      {rotulo}
     </button>
   );
 }
@@ -152,6 +209,7 @@ export function ListaProdutos({
       if (situacao === "inativos") return !p.ativo;
       if (situacao === "aguardando") return !p.aprovado;
       if (situacao === "com-preco") return p.mostrarPreco;
+      if (situacao === "com-tarja") return p.destaque || p.novidade;
       if (situacao === "industrializados") return ehIndustrializado(p);
       if (situacao === "sem-foto") return p.fotos.length === 0;
       return true;
@@ -167,6 +225,7 @@ export function ListaProdutos({
       aguardando: lista.filter((p) => !p.aprovado).length,
       semFoto: lista.filter((p) => p.fotos.length === 0).length,
       comPreco: lista.filter((p) => p.mostrarPreco).length,
+      comTarja: lista.filter((p) => p.destaque || p.novidade).length,
     }),
     [lista]
   );
@@ -362,6 +421,9 @@ export function ListaProdutos({
           <ChipFiltro valor="com-preco" atual={situacao} aoEscolher={setSituacao}>
             Com preço{resumo.comPreco > 0 ? ` (${resumo.comPreco})` : ""}
           </ChipFiltro>
+          <ChipFiltro valor="com-tarja" atual={situacao} aoEscolher={setSituacao}>
+            Com tarja{resumo.comTarja > 0 ? ` (${resumo.comTarja})` : ""}
+          </ChipFiltro>
           <ChipFiltro valor="inativos" atual={situacao} aoEscolher={setSituacao}>Em falta</ChipFiltro>
           <ChipFiltro valor="aguardando" atual={situacao} aoEscolher={setSituacao}>Aguardando</ChipFiltro>
           <ChipFiltro valor="sem-foto" atual={situacao} aoEscolher={setSituacao}>
@@ -425,7 +487,7 @@ export function ListaProdutos({
                     onDragStart={() => (indiceArrastado.current = indice)}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => aoSoltar(indice)}
-                    className={`group/linha relative px-3.5 py-3 md:px-4 lg:px-5 flex flex-wrap md:grid ${colunasMd} items-center gap-x-3 md:gap-x-4 gap-y-2.5 transition-colors duration-200 hover:bg-nevoa/55 ${
+                    className={`group/linha relative px-3 py-2.5 md:px-4 md:py-3 lg:px-5 flex flex-wrap md:grid ${colunasMd} items-center gap-x-3 md:gap-x-4 gap-y-2 transition-colors duration-200 hover:bg-nevoa/55 ${
                       ocupado === p.id ? "opacity-60" : ""
                     }`}
                   >
@@ -440,7 +502,7 @@ export function ListaProdutos({
                     {/* Capa (com a alça do gestor ao lado) */}
                     <div className="flex items-center gap-2">
                       {podeArrastar && <Alca />}
-                      <div className="w-14 h-14 shrink-0 rounded-xl bg-gelo/70 ring-1 ring-inset ring-navy/5 overflow-hidden flex items-center justify-center p-1.5">
+                      <div className="w-11 h-11 md:w-14 md:h-14 shrink-0 rounded-xl bg-gelo/70 ring-1 ring-inset ring-navy/5 overflow-hidden flex items-center justify-center p-1 md:p-1.5">
                         {p.fotoUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={asset(p.fotoUrl)} alt="" className="max-w-full max-h-full object-contain" />
@@ -452,7 +514,8 @@ export function ListaProdutos({
 
                     {/* Nome, situação e a linha de apoio */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      {/* No celular só a linha do título abre espaço para editar e apagar, no canto */}
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pr-[4.75rem] md:pr-0">
                         <Link
                           href={`/admin/produtos/${p.id}/editar`}
                           className="font-semibold text-navy text-[0.95rem] leading-snug hover:text-tinta transition-colors"
@@ -495,14 +558,30 @@ export function ListaProdutos({
                           {totalFotos === 0 ? "sem foto" : totalFotos === 1 ? "1 foto" : `${totalFotos} fotos`}
                         </span>
                       </p>
+                      {/* As tarjas sobre a foto no site, num toque (27/10/2026) */}
+                      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                        <BotaoTarja
+                          ligada={p.destaque}
+                          tipo="destaque"
+                          aoAlternar={() => alternar(p, "destaque")}
+                          desabilitado={ocupado === p.id}
+                          nome={p.nome}
+                        />
+                        <BotaoTarja
+                          ligada={p.novidade}
+                          tipo="novidade"
+                          aoAlternar={() => alternar(p, "novidade")}
+                          desabilitado={ocupado === p.id}
+                          nome={p.nome}
+                        />
+                      </div>
                     </div>
 
                     {/* No celular, a segunda linha (preço, chaves e ações); no computador o
                         invólucro some (contents) e cada parte vira uma coluna */}
-                    <div className="w-full flex items-center gap-3 border-t border-fio pt-2.5 md:contents">
+                    <div className="w-full flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-fio pt-2 md:contents">
                       {/* O preço (em todos os produtos; clique para mudar) */}
                       <div className="mr-auto md:mr-0 flex items-center md:justify-end gap-2">
-                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.12em] uppercase text-cinza">Preço</span>
                         {editandoPreco === p.id ? (
                           <div className="flex items-center gap-1.5">
                             <span className="text-cinza text-sm">R$</span>
@@ -565,8 +644,8 @@ export function ListaProdutos({
                       </div>
 
                       {/* As duas chaves: no celular com o nome em cima, no computador só a chave (o cabeçalho diz o que é) */}
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.1em] uppercase text-cinza whitespace-nowrap">Preço no site</span>
+                      <div className="flex flex-row-reverse md:flex-col items-center gap-1.5 md:gap-0.5">
+                        <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.1em] uppercase text-cinza whitespace-nowrap">Preço</span>
                         <span className="inline-flex items-center gap-1.5">
                           <Interruptor
                             ligado={p.mostrarPreco}
@@ -583,7 +662,7 @@ export function ListaProdutos({
                           )}
                         </span>
                       </div>
-                      <div className="flex flex-col items-center gap-0.5">
+                      <div className="flex flex-row-reverse md:flex-col items-center gap-1.5 md:gap-0.5">
                         <span className="md:hidden text-[0.625rem] font-semibold tracking-[0.1em] uppercase text-cinza whitespace-nowrap">No site</span>
                         <Interruptor
                           ligado={p.ativo}
@@ -596,7 +675,7 @@ export function ListaProdutos({
                       </div>
 
                       {/* Ações: editar e apagar em ícones que acendem na linha */}
-                      <div className="flex items-center gap-1 md:justify-end">
+                      <div className="absolute right-2.5 top-2 flex items-center gap-0.5 md:static md:gap-1 md:justify-end">
                         <Link
                           href={`/admin/produtos/${p.id}/editar`}
                           title="Editar"

@@ -1,5 +1,19 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 112 (27/10/2026): melhorias do painel apontadas na revisão. IMPLEMENTADO, testado e PUBLICADO no 61º push.**
+> - TARJAS NA LISTA DE PRODUTOS: embaixo de cada nome, duas pílulas
+>   ("Mais vendido" e "Novidade") que ligam e desligam num toque; ligadas
+>   ficam iguais às do site, desligadas só o contorno com "+". Filtro novo
+>   "Com tarja". Testado: liga e desliga grava no banco.
+> - TOQUE NO CELULAR: as setas de subir e descer e o remover das seções da
+>   home passaram de 28 para 40 px; os links do canto dos cartões da Visão
+>   geral ganharam área de 40 px de altura.
+> - PRODUTOS NO CELULAR: a linha ficou mais baixa (capa 44 px, editar e
+>   apagar no canto de cima, ao lado do nome, sem o rótulo "Preço" antes do
+>   valor, as duas chaves numa linha só). Mesmo com a fileira nova das
+>   tarjas, a página tem 9 telas (eram 8,6 sem as tarjas; chegou a 11,5 no
+>   meio do caminho).
+
 > **ADENDO 111 (27/10/2026): tarjas com a cápsula, 3 de cada, e o formulário que apagava a tarja. IMPLEMENTADO, testado e PUBLICADO no 60º push.**
 > - "Tire a estrela e coloque um remédio, um pouquinho maior": a tarja
 >   Mais vendido traz uma cápsula inclinada (metade cheia, metade vazada),

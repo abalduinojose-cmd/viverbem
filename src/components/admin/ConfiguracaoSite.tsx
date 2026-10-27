@@ -54,7 +54,8 @@ function IconeSeta({ cima }: { cima: boolean }) {
 
 /** Botões de subir e descer (também para quem não arrasta: toque, teclado) */
 function Setas({ indice, total, mover, nome }: { indice: number; total: number; mover: (de: number, para: number) => void; nome: string }) {
-  const classe = "flex size-7 items-center justify-center rounded-lg text-grafite-claro hover:bg-nevoa hover:text-navy disabled:opacity-30 disabled:hover:bg-transparent transition-colors";
+  // 27/10/2026: maiores no celular (eram 28 px, pequenas para o dedo)
+  const classe = "flex size-10 md:size-7 items-center justify-center rounded-lg text-grafite-claro hover:bg-nevoa hover:text-navy disabled:opacity-30 disabled:hover:bg-transparent transition-colors";
   return (
     <span className="flex flex-col">
       <button type="button" className={classe} disabled={indice === 0} onClick={() => mover(indice, indice - 1)} aria-label={`Subir ${nome}`}>
@@ -654,7 +655,7 @@ export function ConfiguracaoSite({
                     onClick={() => removerExtra(extra.id)}
                     aria-label={`Remover ${titulo}`}
                     title="Remover esta seção"
-                    className="flex size-7 items-center justify-center rounded-lg text-grafite-claro transition-colors hover:bg-carimbo/10 hover:text-carimbo"
+                    className="flex size-10 md:size-7 items-center justify-center rounded-lg text-grafite-claro transition-colors hover:bg-carimbo/10 hover:text-carimbo"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
