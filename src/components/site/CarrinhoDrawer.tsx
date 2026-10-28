@@ -489,88 +489,72 @@ export function CarrinhoDrawer() {
               /* ---------- Etapa 1: o pedido ---------- */
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-3">
-                  {/* A receita: o pedido do manipulado. Ligada, o cartão vira
-                      azul-noite com o ouro e mostra os três passos seguintes.
-                      28/10/2026 ("melhore esse botão"): o azul claro do
-                      banner-noite deu lugar ao azul-noite com a luz de ouro
-                      no canto (o mesmo do "Fale com a gente"); os passos
-                      viraram uma linha fina de etapas ligadas por fio, que
-                      abre suave (grid 0fr -> 1fr) em vez de surgir de uma
-                      vez; a chave ganhou o visto quando ligada. O cartão
-                      ficou mais baixo, para a lista de produtos aparecer. */}
+                  {/* A receita: o pedido do manipulado. A linha toda é a chave.
+                      28/10/2026, segunda volta ("tá muito pesado, quero algo
+                      moderno e clean"): saiu o bloco azul-noite com malha e
+                      luz de ouro. Agora é branco com fio nos dois estados e
+                      um acento só, o azul da marca: ligada, o fio fica azul,
+                      o fundo ganha um gelo bem leve, o ícone e a chave
+                      enchem de azul. Os três passos viram uma linha de texto
+                      miúdo (número azul, nome cinza, fio fino entre eles),
+                      que abre suave (grid 0fr -> 1fr). */}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`group/rec relative isolate overflow-clip text-left rounded-[1.4rem] p-3.5 flex flex-col transition-[background-color,box-shadow] duration-500 ${
-                      receita
-                        ? "bg-noite em-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_22px_44px_-26px_rgba(13,35,64,0.75)]"
-                        : "bg-white ring-1 ring-inset ring-fio hover:ring-ouro/45 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]"
+                    className={`group/rec text-left rounded-[1.25rem] px-4 py-3.5 flex flex-col ring-1 ring-inset transition-[background-color,box-shadow] duration-300 ${
+                      receita ? "bg-gelo/45 ring-tinta/35" : "bg-white ring-fio hover:ring-tinta/30"
                     }`}
                   >
-                    {/* A atmosfera do cartão ligado: malha e luz de ouro, em fade */}
-                    <span aria-hidden="true" className={`malha-banner transition-opacity duration-500 ${receita ? "opacity-100" : "opacity-0"}`} />
-                    <span
-                      aria-hidden="true"
-                      className={`pointer-events-none absolute -right-14 -top-20 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.38),transparent_62%)] transition-opacity duration-500 ${
-                        receita ? "opacity-100" : "opacity-0"
-                      }`}
-                    />
-
-                    <span className="relative flex items-center gap-3 w-full">
+                    <span className="flex items-center gap-3 w-full">
                       <span
-                        className={`shrink-0 size-11 rounded-2xl flex items-center justify-center transition-colors duration-500 ${
-                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-gelo text-tinta group-hover/rec:bg-tinta group-hover/rec:text-white"
+                        className={`shrink-0 size-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                          receita ? "bg-tinta text-white" : "bg-gelo text-tinta"
                         }`}
                       >
-                        <IconeReceita tamanho={21} />
+                        <IconeReceita tamanho={19} />
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className={`block text-[1.02rem] font-semibold tracking-[-0.015em] ${receita ? "text-white" : "text-navy"}`}>
-                          Tenho uma receita
-                        </span>
-                        <span className={`block text-[0.82rem] leading-snug mt-0.5 ${receita ? "text-white/65" : "text-cinza"}`}>
-                          {receita ? "A foto vai na conversa" : "Envie a foto pelo WhatsApp"}
+                        <span className="block text-[0.98rem] font-semibold tracking-[-0.015em] text-navy">Tenho uma receita</span>
+                        <span className="block text-[0.8rem] leading-snug mt-0.5 text-cinza">
+                          {receita ? "A foto vai na conversa do WhatsApp" : "Envie a foto pelo WhatsApp"}
                         </span>
                       </span>
-                      {/* A chave: trilho em ouro e o botão com o visto quando ligada */}
+                      {/* A chave: azul ligada, com o visto no botão */}
                       <span
                         aria-hidden="true"
-                        className={`shrink-0 flex h-7 w-12 items-center rounded-full p-[3px] transition-colors duration-300 ${
-                          receita ? "bg-[image:var(--ouro-degrade)]" : "bg-fio group-hover/rec:bg-[#d6dde7]"
+                        className={`shrink-0 flex h-6 w-10 items-center rounded-full p-[3px] transition-colors duration-300 ${
+                          receita ? "bg-tinta" : "bg-[#dfe5ed] group-hover/rec:bg-[#d3dbe6]"
                         }`}
                       >
                         <span
-                          className={`flex size-[1.375rem] items-center justify-center rounded-full shadow-[0_2px_6px_-1px_rgba(13,35,64,0.35)] transition-[translate,background-color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] ${
-                            receita ? "translate-x-5 bg-noite text-[#e1c68f]" : "translate-x-0 bg-white text-transparent"
+                          className={`flex size-[1.125rem] items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(13,35,64,0.25)] transition-[translate,color] duration-300 ease-[cubic-bezier(0.34,1.3,0.64,1)] ${
+                            receita ? "translate-x-4 text-tinta" : "translate-x-0 text-transparent"
                           }`}
                         >
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-                            <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                            <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </span>
                       </span>
                     </span>
 
-                    {/* Os três passos seguintes: etapas ligadas por fio, que
-                        abrem suave quando a chave liga */}
+                    {/* Os três passos seguintes, em texto miúdo */}
                     <span
                       aria-hidden={!receita}
-                      className={`relative grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                         receita ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                       }`}
                     >
                       <span className="min-h-0 overflow-hidden">
-                        <span className="mt-3.5 flex items-center gap-2 border-t border-white/10 pt-3">
+                        <span className="mt-3 ml-[3.25rem] flex items-center gap-2.5 border-t border-tinta/10 pt-2.5">
                           {PASSOS_RECEITA.map((passo, i) => (
                             <Fragment key={passo}>
-                              {i > 0 && <span aria-hidden="true" className="h-px min-w-3 flex-1 bg-gradient-to-r from-[#e1c68f]/50 to-white/15" />}
-                              <span className="flex shrink-0 items-center gap-1.5">
-                                <span className="flex size-5 items-center justify-center rounded-full text-[0.66rem] font-semibold tabular-nums text-[#e1c68f] ring-1 ring-inset ring-[#e1c68f]/50">
-                                  {i + 1}
-                                </span>
-                                <span className="whitespace-nowrap text-[0.72rem] font-medium text-white/85">{passo}</span>
+                              {i > 0 && <span aria-hidden="true" className="h-px w-3 shrink-0 bg-tinta/20" />}
+                              <span className="whitespace-nowrap text-[0.74rem] text-cinza">
+                                <span className="mr-1 font-semibold tabular-nums text-tinta">{i + 1}</span>
+                                {passo}
                               </span>
                             </Fragment>
                           ))}

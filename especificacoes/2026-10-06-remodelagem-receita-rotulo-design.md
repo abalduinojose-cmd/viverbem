@@ -1,5 +1,17 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 119 (28/10/2026): o cartão da receita, clean. IMPLEMENTADO e testado, SÓ LOCAL.**
+> Sobre o adendo 118: "melhore mais, tá muito pesado, quero algo moderno e
+> clean". Saiu o bloco azul-noite (malha, luz de ouro, chave em ouro).
+> Agora: branco com fio nos dois estados e um acento só, o azul da marca.
+> Ligado, o fio fica azul, o fundo ganha um gelo leve, o ícone (em
+> círculo) e a chave enchem de azul, o botão da chave mostra o visto. Os
+> passos são uma linha de texto miúdo (número azul, nome cinza, traço fino
+> entre eles), alinhada ao título, que abre suave. Altura no celular: 71 px
+> desligado e 112 px ligado. Lição: no carrinho, que já é uma tela de
+> tarefa, até o azul-noite aprovado na home pesa; aqui vale o clean de
+> marca de beleza (fio, branco, um acento).
+
 > **ADENDO 118 (28/10/2026): cartão "Tenho uma receita" do carrinho. IMPLEMENTADO e testado, SÓ LOCAL.**
 > "Melhore esse botão." Ligado, o azul claro do banner-noite deu lugar ao
 > azul-noite com malha e luz de ouro (o mesmo do Fale com a gente), que
