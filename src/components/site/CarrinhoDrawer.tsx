@@ -37,7 +37,7 @@
 // com o ícone verde; na etapa 2 as sanfonas e as opções seguem o mesmo
 // cartão branco com fio. Lógica, campos e mensagem iguais.
 
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
@@ -489,61 +489,66 @@ export function CarrinhoDrawer() {
               /* ---------- Etapa 1: o pedido ---------- */
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-3">
-                  {/* A receita: o pedido do manipulado. A linha toda é a chave.
-                      28/10/2026, segunda volta ("tá muito pesado, quero algo
-                      moderno e clean"): saiu o bloco azul-noite com malha e
-                      luz de ouro. Agora é branco com fio nos dois estados e
-                      um acento só, o azul da marca: ligada, o fio fica azul,
-                      o fundo ganha um gelo bem leve, o ícone e a chave
-                      enchem de azul. Os três passos viram uma linha de texto
-                      miúdo (número azul, nome cinza, fio fino entre eles),
-                      que abre suave (grid 0fr -> 1fr). Terceira volta
-                      ("melhore mais"): o cartão afunda de leve ao toque, tem
-                      anel de foco no teclado, e o passo 1 aparece como o
-                      próximo (pílula azul clara), os outros esmaecidos. */}
+                  {/* A receita: o pedido do manipulado. O cartão inteiro é a
+                      escolha (role="switch").
+                      28/10/2026, quarta volta ("pode melhorar, deixe mais
+                      moderno"): a chave de ligar e desligar deu lugar a um
+                      CARTÃO DE SELEÇÃO, como as escolhas de pagamento dos apps:
+                      um círculo no canto que se enche de azul com o visto
+                      (com uma mola leve), o fio do cartão engrossa em azul e
+                      o fundo ganha um degradê gelo bem leve. Os passos viram
+                      uma barra de progresso de três segmentos (o primeiro
+                      cheio, o próximo passo) com os nomes embaixo, que abre
+                      suave (grid 0fr -> 1fr). Um acento só: o azul da marca.
+                      Antes: azul-noite com ouro ("pesado") e a versão com a
+                      chave (adendos 118 a 120). */}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`group/rec text-left rounded-[1.25rem] px-4 py-3.5 flex flex-col ring-1 ring-inset outline-none transition-[background-color,box-shadow,scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta ${
-                      receita ? "bg-gelo/45 ring-tinta/35" : "bg-white ring-fio hover:ring-tinta/30"
+                    className={`group/rec relative text-left rounded-[1.25rem] p-4 flex flex-col outline-none transition-[background-color,box-shadow,scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2 ${
+                      receita
+                        ? "bg-gradient-to-br from-gelo/70 via-white to-white shadow-[inset_0_0_0_1.5px_var(--color-tinta),0_14px_30px_-22px_rgba(28,105,181,0.55)]"
+                        : "bg-white shadow-[inset_0_0_0_1px_var(--color-fio)] hover:shadow-[inset_0_0_0_1px_rgba(28,105,181,0.35)]"
                     }`}
                   >
-                    <span className="flex items-center gap-3 w-full">
+                    <span className="flex items-center gap-3.5 w-full pr-8">
                       <span
-                        className={`shrink-0 size-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                          receita ? "bg-tinta text-white" : "bg-gelo text-tinta"
+                        className={`shrink-0 size-11 rounded-[0.9rem] flex items-center justify-center transition-colors duration-300 ${
+                          receita ? "bg-tinta text-white" : "bg-gelo text-tinta group-hover/rec:bg-[#e3ecf6]"
                         }`}
                       >
-                        <IconeReceita tamanho={19} />
+                        <IconeReceita tamanho={20} />
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className="block text-[0.98rem] font-semibold tracking-[-0.015em] text-navy">Tenho uma receita</span>
+                        <span className="block text-[1rem] font-semibold tracking-[-0.02em] text-navy">Tenho uma receita</span>
                         <span className="block text-[0.8rem] leading-snug mt-0.5 text-cinza">
                           {receita ? "A foto vai na conversa do WhatsApp" : "Envie a foto pelo WhatsApp"}
                         </span>
                       </span>
-                      {/* A chave: azul ligada, com o visto no botão */}
-                      <span
-                        aria-hidden="true"
-                        className={`shrink-0 flex h-6 w-10 items-center rounded-full p-[3px] transition-colors duration-300 ${
-                          receita ? "bg-tinta" : "bg-[#dfe5ed] group-hover/rec:bg-[#d3dbe6]"
-                        }`}
-                      >
-                        <span
-                          className={`flex size-[1.125rem] items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(13,35,64,0.25)] transition-[translate,color] duration-300 ease-[cubic-bezier(0.34,1.3,0.64,1)] ${
-                            receita ? "translate-x-4 text-tinta" : "translate-x-0 text-transparent"
-                          }`}
-                        >
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                            <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </span>
-                      </span>
                     </span>
 
-                    {/* Os três passos seguintes, em texto miúdo */}
+                    {/* O círculo da seleção, no canto */}
+                    <span
+                      aria-hidden="true"
+                      className={`absolute right-4 top-4 flex size-[1.375rem] items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
+                        receita ? "bg-tinta shadow-[0_4px_10px_-3px_rgba(28,105,181,0.6)]" : "shadow-[inset_0_0_0_1.5px_#cfd8e3] group-hover/rec:shadow-[inset_0_0_0_1.5px_rgba(28,105,181,0.5)]"
+                      }`}
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className={`text-white transition-[scale,opacity] duration-300 ease-[cubic-bezier(0.34,1.5,0.64,1)] ${receita ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
+                      >
+                        <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+
+                    {/* Os três passos seguintes: barra de progresso em três
+                        segmentos, o primeiro cheio (o próximo passo) */}
                     <span
                       aria-hidden={!receita}
                       className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -551,19 +556,14 @@ export function CarrinhoDrawer() {
                       }`}
                     >
                       <span className="min-h-0 overflow-hidden">
-                        <span className="mt-3 ml-[3.25rem] flex items-center gap-2 border-t border-tinta/10 pt-2.5">
+                        <span className="mt-3.5 grid grid-cols-3 gap-1.5">
                           {PASSOS_RECEITA.map((passo, i) => (
-                            <Fragment key={passo}>
-                              {i > 0 && <span aria-hidden="true" className="h-px w-2.5 shrink-0 bg-tinta/20" />}
-                              <span
-                                className={`inline-flex items-center gap-1 whitespace-nowrap text-[0.74rem] ${
-                                  i === 0 ? "rounded-full bg-tinta/10 px-2 py-0.5 font-medium text-tinta" : "text-cinza/80"
-                                }`}
-                              >
-                                <span className={`font-semibold tabular-nums ${i === 0 ? "" : "text-tinta/70"}`}>{i + 1}</span>
-                                {passo}
+                            <span key={passo} className="flex flex-col gap-1.5">
+                              <span className={`h-1 rounded-full ${i === 0 ? "bg-tinta" : "bg-tinta/15"}`} />
+                              <span className={`text-[0.72rem] leading-none ${i === 0 ? "font-semibold text-tinta" : "text-cinza/80"}`}>
+                                <span className="tabular-nums">{i + 1}.</span> {passo}
                               </span>
-                            </Fragment>
+                            </span>
                           ))}
                         </span>
                       </span>

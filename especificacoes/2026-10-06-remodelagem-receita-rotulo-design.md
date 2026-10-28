@@ -1,5 +1,15 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 121 (28/10/2026): a receita como cartão de seleção. IMPLEMENTADO, testado e PUBLICADO no 67º push.**
+> "Pode melhorar, deixe mais moderno." A chave de ligar e desligar deu lugar
+> a um CARTÃO DE SELEÇÃO, como as escolhas de pagamento dos apps: círculo
+> vazio no canto que se enche de azul com o visto (mola leve), fio do cartão
+> que engrossa em azul, fundo com degradê gelo bem leve, ícone num quadrado
+> arredondado que enche de azul. Os passos viraram barra de progresso de
+> três segmentos (o primeiro cheio, o próximo passo) com "1. Seus dados",
+> "2. Mensagem" e "3. Foto" embaixo. Um acento só. 76 px desligado e 112 px
+> ligado no celular; conferido no desktop. Segue role="switch" (acessível).
+
 > **ADENDO 120 (28/10/2026): acabamento do cartão da receita. IMPLEMENTADO, testado e PUBLICADO no 66º push (com os 118 e 119).**
 > "Melhore mais e atualize o github." Sem somar peso: o cartão afunda de
 > leve ao toque (scale 0,985), tem anel de foco azul no teclado, e na linha
