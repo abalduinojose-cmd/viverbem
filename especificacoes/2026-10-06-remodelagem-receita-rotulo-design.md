@@ -1,6 +1,13 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 119 (28/10/2026): o cartão da receita, clean. IMPLEMENTADO e testado, SÓ LOCAL.**
+> **ADENDO 120 (28/10/2026): acabamento do cartão da receita. IMPLEMENTADO, testado e PUBLICADO no 66º push (com os 118 e 119).**
+> "Melhore mais e atualize o github." Sem somar peso: o cartão afunda de
+> leve ao toque (scale 0,985), tem anel de foco azul no teclado, e na linha
+> de etapas o passo 1 (Seus dados) aparece como o próximo, numa pílula azul
+> clara, com os outros dois esmaecidos. 71 px desligado e 116 px ligado no
+> celular; conferido também no desktop.
+
+> **ADENDO 119 (28/10/2026): o cartão da receita, clean. IMPLEMENTADO, testado e PUBLICADO no 66º push.**
 > Sobre o adendo 118: "melhore mais, tá muito pesado, quero algo moderno e
 > clean". Saiu o bloco azul-noite (malha, luz de ouro, chave em ouro).
 > Agora: branco com fio nos dois estados e um acento só, o azul da marca.
@@ -12,7 +19,7 @@
 > tarefa, até o azul-noite aprovado na home pesa; aqui vale o clean de
 > marca de beleza (fio, branco, um acento).
 
-> **ADENDO 118 (28/10/2026): cartão "Tenho uma receita" do carrinho. IMPLEMENTADO e testado, SÓ LOCAL.**
+> **ADENDO 118 (28/10/2026): cartão "Tenho uma receita" do carrinho. IMPLEMENTADO e testado; substituído pelo 119.**
 > "Melhore esse botão." Ligado, o azul claro do banner-noite deu lugar ao
 > azul-noite com malha e luz de ouro (o mesmo do Fale com a gente), que
 > entram em fade; os três passos viraram uma linha de etapas (número em

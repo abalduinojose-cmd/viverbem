@@ -497,13 +497,16 @@ export function CarrinhoDrawer() {
                       o fundo ganha um gelo bem leve, o ícone e a chave
                       enchem de azul. Os três passos viram uma linha de texto
                       miúdo (número azul, nome cinza, fio fino entre eles),
-                      que abre suave (grid 0fr -> 1fr). */}
+                      que abre suave (grid 0fr -> 1fr). Terceira volta
+                      ("melhore mais"): o cartão afunda de leve ao toque, tem
+                      anel de foco no teclado, e o passo 1 aparece como o
+                      próximo (pílula azul clara), os outros esmaecidos. */}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`group/rec text-left rounded-[1.25rem] px-4 py-3.5 flex flex-col ring-1 ring-inset transition-[background-color,box-shadow] duration-300 ${
+                    className={`group/rec text-left rounded-[1.25rem] px-4 py-3.5 flex flex-col ring-1 ring-inset outline-none transition-[background-color,box-shadow,scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta ${
                       receita ? "bg-gelo/45 ring-tinta/35" : "bg-white ring-fio hover:ring-tinta/30"
                     }`}
                   >
@@ -548,12 +551,16 @@ export function CarrinhoDrawer() {
                       }`}
                     >
                       <span className="min-h-0 overflow-hidden">
-                        <span className="mt-3 ml-[3.25rem] flex items-center gap-2.5 border-t border-tinta/10 pt-2.5">
+                        <span className="mt-3 ml-[3.25rem] flex items-center gap-2 border-t border-tinta/10 pt-2.5">
                           {PASSOS_RECEITA.map((passo, i) => (
                             <Fragment key={passo}>
-                              {i > 0 && <span aria-hidden="true" className="h-px w-3 shrink-0 bg-tinta/20" />}
-                              <span className="whitespace-nowrap text-[0.74rem] text-cinza">
-                                <span className="mr-1 font-semibold tabular-nums text-tinta">{i + 1}</span>
+                              {i > 0 && <span aria-hidden="true" className="h-px w-2.5 shrink-0 bg-tinta/20" />}
+                              <span
+                                className={`inline-flex items-center gap-1 whitespace-nowrap text-[0.74rem] ${
+                                  i === 0 ? "rounded-full bg-tinta/10 px-2 py-0.5 font-medium text-tinta" : "text-cinza/80"
+                                }`}
+                              >
+                                <span className={`font-semibold tabular-nums ${i === 0 ? "" : "text-tinta/70"}`}>{i + 1}</span>
                                 {passo}
                               </span>
                             </Fragment>
