@@ -1,5 +1,14 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 118 (28/10/2026): cartão "Tenho uma receita" do carrinho. IMPLEMENTADO e testado, SÓ LOCAL.**
+> "Melhore esse botão." Ligado, o azul claro do banner-noite deu lugar ao
+> azul-noite com malha e luz de ouro (o mesmo do Fale com a gente), que
+> entram em fade; os três passos viraram uma linha de etapas (número em
+> círculo de ouro, fio entre elas: Seus dados, Mensagem, Foto) que abre
+> suave (grid 0fr -> 1fr); a chave ficou maior, com o visto em ouro e uma
+> mola leve; as frases encurtaram para uma linha. Altura no celular: 73 px
+> desligado e 120 px ligado (era 139 ligado).
+
 > **ADENDO 117 (28/10/2026): tarjas fora dos manipulados. IMPLEMENTADO e PUBLICADO no 65º push (junto com o 116).**
 > "Tire as tarjas e atualize o github." As 6 tarjas (Mais vendido em
 > CitoRepair 2.0, Ômega 3 e Glow Cream; Novidade em Caramelo de Creatina,

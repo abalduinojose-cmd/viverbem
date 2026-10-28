@@ -46,7 +46,7 @@ import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeMoto } from "./IconeMoto";
 import { FotoProduto } from "./FotoProduto";
 import { IconeReceita } from "./BotaoEnviarReceita";
-import { Chevron, IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
+import { IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
 
 type Etapa = "pedido" | "dados";
 
@@ -57,7 +57,8 @@ const ETAPAS: { id: Etapa; rotulo: string }[] = [
 ];
 
 // O que acontece depois de marcar a receita, em três passos curtos
-const PASSOS_RECEITA = ["Seus dados", "Mensagem pronta", "Foto na conversa"];
+// 28/10/2026: rótulos curtos, para os três caberem numa linha no celular
+const PASSOS_RECEITA = ["Seus dados", "Mensagem", "Foto"];
 
 // "a, b e c", para a dica do que falta preencher
 function listar(partes: string[]) {
@@ -489,63 +490,93 @@ export function CarrinhoDrawer() {
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-3">
                   {/* A receita: o pedido do manipulado. Ligada, o cartão vira
-                      azul-noite com o ouro e mostra os três passos seguintes */}
+                      azul-noite com o ouro e mostra os três passos seguintes.
+                      28/10/2026 ("melhore esse botão"): o azul claro do
+                      banner-noite deu lugar ao azul-noite com a luz de ouro
+                      no canto (o mesmo do "Fale com a gente"); os passos
+                      viraram uma linha fina de etapas ligadas por fio, que
+                      abre suave (grid 0fr -> 1fr) em vez de surgir de uma
+                      vez; a chave ganhou o visto quando ligada. O cartão
+                      ficou mais baixo, para a lista de produtos aparecer. */}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={receita}
                     onClick={() => setReceita(!receita)}
-                    className={`relative overflow-hidden text-left rounded-[1.5rem] p-4 flex flex-col gap-4 transition ${
+                    className={`group/rec relative isolate overflow-clip text-left rounded-[1.4rem] p-3.5 flex flex-col transition-[background-color,box-shadow] duration-500 ${
                       receita
-                        ? "banner-noite em-noite text-white shadow-[0_20px_40px_-24px_rgba(13,35,64,0.6)]"
+                        ? "bg-noite em-noite text-white ring-1 ring-inset ring-white/10 shadow-[0_22px_44px_-26px_rgba(13,35,64,0.75)]"
                         : "bg-white ring-1 ring-inset ring-fio hover:ring-ouro/45 shadow-[0_18px_40px_-34px_rgba(16,42,74,0.35)]"
                     }`}
                   >
-                    {receita && <span aria-hidden="true" className="malha-banner" />}
-                    <span className="relative flex items-center gap-3.5 w-full">
+                    {/* A atmosfera do cartão ligado: malha e luz de ouro, em fade */}
+                    <span aria-hidden="true" className={`malha-banner transition-opacity duration-500 ${receita ? "opacity-100" : "opacity-0"}`} />
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute -right-14 -top-20 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(201,165,107,0.38),transparent_62%)] transition-opacity duration-500 ${
+                        receita ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+
+                    <span className="relative flex items-center gap-3 w-full">
                       <span
-                        className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-colors ${
-                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-gelo text-tinta"
+                        className={`shrink-0 size-11 rounded-2xl flex items-center justify-center transition-colors duration-500 ${
+                          receita ? "bg-[image:var(--ouro-degrade)] text-navy" : "bg-gelo text-tinta group-hover/rec:bg-tinta group-hover/rec:text-white"
                         }`}
                       >
-                        <IconeReceita tamanho={22} />
+                        <IconeReceita tamanho={21} />
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className={`block font-semibold ${receita ? "text-white" : "text-navy"}`}>
+                        <span className={`block text-[1.02rem] font-semibold tracking-[-0.015em] ${receita ? "text-white" : "text-navy"}`}>
                           Tenho uma receita
                         </span>
-                        <span className={`block text-sm leading-snug mt-0.5 ${receita ? "text-white/70" : "text-cinza"}`}>
-                          {receita ? "A foto vai na conversa do WhatsApp" : "Envie a foto pelo WhatsApp, na própria conversa"}
+                        <span className={`block text-[0.82rem] leading-snug mt-0.5 ${receita ? "text-white/65" : "text-cinza"}`}>
+                          {receita ? "A foto vai na conversa" : "Envie a foto pelo WhatsApp"}
                         </span>
                       </span>
-                      {/* Chave visual do switch: ouro quando ligada */}
+                      {/* A chave: trilho em ouro e o botão com o visto quando ligada */}
                       <span
                         aria-hidden="true"
-                        className={`shrink-0 w-11 h-6 rounded-full p-0.5 transition-colors ${
-                          receita ? "bg-[image:var(--ouro-degrade)]" : "bg-fio"
+                        className={`shrink-0 flex h-7 w-12 items-center rounded-full p-[3px] transition-colors duration-300 ${
+                          receita ? "bg-[image:var(--ouro-degrade)]" : "bg-fio group-hover/rec:bg-[#d6dde7]"
                         }`}
                       >
                         <span
-                          className={`block w-5 h-5 rounded-full shadow-sm transition-transform ${
-                            receita ? "bg-navy translate-x-5" : "bg-white"
+                          className={`flex size-[1.375rem] items-center justify-center rounded-full shadow-[0_2px_6px_-1px_rgba(13,35,64,0.35)] transition-[translate,background-color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] ${
+                            receita ? "translate-x-5 bg-noite text-[#e1c68f]" : "translate-x-0 bg-white text-transparent"
                           }`}
-                        />
+                        >
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                            <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </span>
                       </span>
                     </span>
-                    {/* Os três passos seguintes numa linha, ligados por setas */}
-                    {receita && (
-                      <span className="relative flex items-center gap-1.5 w-full border-t border-white/10 pt-3.5">
-                        {PASSOS_RECEITA.map((passo, i) => (
-                          <Fragment key={passo}>
-                            {i > 0 && <Chevron tamanho={12} className="shrink-0 text-white/35" />}
-                            <span className="flex-1 min-w-0 flex flex-col gap-0.5">
-                              <span className="numero-tinta text-[0.9rem]">{`0${i + 1}`}</span>
-                              <span className="text-[0.72rem] leading-tight text-white/85">{passo}</span>
-                            </span>
-                          </Fragment>
-                        ))}
+
+                    {/* Os três passos seguintes: etapas ligadas por fio, que
+                        abrem suave quando a chave liga */}
+                    <span
+                      aria-hidden={!receita}
+                      className={`relative grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        receita ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <span className="min-h-0 overflow-hidden">
+                        <span className="mt-3.5 flex items-center gap-2 border-t border-white/10 pt-3">
+                          {PASSOS_RECEITA.map((passo, i) => (
+                            <Fragment key={passo}>
+                              {i > 0 && <span aria-hidden="true" className="h-px min-w-3 flex-1 bg-gradient-to-r from-[#e1c68f]/50 to-white/15" />}
+                              <span className="flex shrink-0 items-center gap-1.5">
+                                <span className="flex size-5 items-center justify-center rounded-full text-[0.66rem] font-semibold tabular-nums text-[#e1c68f] ring-1 ring-inset ring-[#e1c68f]/50">
+                                  {i + 1}
+                                </span>
+                                <span className="whitespace-nowrap text-[0.72rem] font-medium text-white/85">{passo}</span>
+                              </span>
+                            </Fragment>
+                          ))}
+                        </span>
                       </span>
-                    )}
+                    </span>
                   </button>
 
                   {/* De qual manipulado a pessoa veio */}
