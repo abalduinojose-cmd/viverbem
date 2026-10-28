@@ -1,5 +1,39 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 116 (28/10/2026): revisão dos textos legais. IMPLEMENTADO e testado, SÓ LOCAL (sem push).**
+> Pedido: "faça a revisão dos textos de privacidade, termos e reembolso e a
+> decisão do farmacêutico sobre preço e tarjas nos manipulados". Os textos
+> foram conferidos contra o que o site faz de fato (banco, rotas, painel):
+> - PRIVACIDADE: entrou a lista de contatos (Leads), vista também pela
+>   equipe de atendimento e onde a equipe registra contatos do WhatsApp,
+>   Instagram e lojas; os registros técnicos da hospedagem; o "Você viu
+>   recentemente" no navegador; a receita como dado de saúde recebida pelo
+>   WhatsApp (LGPD art. 11, II, a e f). Corrigido "o acesso aos pedidos é
+>   restrito à gerência" (os contatos não são).
+> - TERMOS: "manipulado só sai com receita" era absoluto e contrariava o
+>   próprio site (40 dos 41 produtos são manipulados e vão ao carrinho sem
+>   receita). Agora: o que exige prescrição só com receita; nos demais o
+>   farmacêutico confirma no atendimento. "Só industrializados mostram preço"
+>   e "nada é cobrado pelo site".
+> - REEMBOLSO: 30 dias contam do recebimento (CDC art. 26 § 1º) e, no defeito
+>   oculto, de quando ele aparece (§ 3º); desistência do manipulado sem custo
+>   até o início do preparo; "com o seu nome no rótulo" saiu.
+> - Mesmas correções na pergunta frequente da receita, na de dados ("nada é
+>   compartilhado" era falso: WhatsApp e hospedagem), na linha da
+>   finalização (agora com link para a privacidade), no aviso da página de
+>   cada manipulado e na linha de confiança do "Como funciona".
+> - PREÇO NOS MANIPULADOS: nenhum manipulado mostra preço (só o protetor
+>   solar, industrializado). Já está na leitura conservadora; nada mudou.
+> - TARJAS: as 6 (3 Mais vendido, 3 Novidade) estão em manipulados. NÃO
+>   foram mexidas: a decisão é do farmacêutico responsável. Riscos levados
+>   ao usuário: a RDC 67/2007 restringe a promoção de manipulados; e "Mais
+>   vendido" é afirmação de fato que precisa refletir as vendas reais (foi
+>   escolhida a dedo em 27/10 só para mostrar o desenho).
+> - PENDENTE COM A FARMÁCIA: farmacêutico responsável e CRF, AFE e licença
+>   sanitária no rodapé (RDC 44/2009); quem é o encarregado de dados (LGPD
+>   art. 41); confirmar quais produtos da linha saem sem receita; leitura
+>   final dos três textos pelo farmacêutico e, se quiserem, pelo jurídico.
+
 > **ADENDO 115 (27/10/2026): lapidação do "Fale com a gente" aprovado. IMPLEMENTADO, medido e PUBLICADO no 64º push.**
 > "Gostei, ficou ótimo assim, só aprimore mais." Sem mexer na estrutura do
 > adendo 114, tudo guiado pela rolagem (roda com "reduzir movimento"):

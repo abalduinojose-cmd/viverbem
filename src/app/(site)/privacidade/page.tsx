@@ -2,6 +2,15 @@
 // WhatsApp e o resumo do pedido de quem finaliza pelo site; a foto da
 // receita vai pelo WhatsApp e nunca passa pelo site. Texto para a
 // farmácia conferir com o responsável e, se quiser, o jurídico.
+//
+// Revisão de 28/10/2026 (adendo 116): o texto prometia mais do que o site
+// cumpre. Entraram a lista de contatos do painel (Leads, que a equipe de
+// atendimento também vê e onde a equipe registra contatos vindos do
+// WhatsApp, do Instagram e das lojas), os registros técnicos da
+// hospedagem, o "Você viu recentemente" guardado no navegador e a receita
+// como dado de saúde que a farmácia recebe pelo WhatsApp (art. 11 da LGPD).
+// "O acesso aos pedidos é restrito à gerência" deixou de valer para os
+// contatos e foi corrigido.
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegal } from "@/components/site/PaginaLegal";
@@ -13,7 +22,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacidade" },
 };
 
-const ATUALIZADO_EM = "21 de outubro de 2026";
+const ATUALIZADO_EM = "28 de outubro de 2026";
 
 export default function PaginaPrivacidade() {
   const centro = UNIDADES[0];
@@ -25,8 +34,8 @@ export default function PaginaPrivacidade() {
       resumo="O que este site guarda sobre você, para quê, por quanto tempo e o que você pode pedir. Escrito para ser lido, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018)."
       atualizadoEm={ATUALIZADO_EM}
       essencial={[
-        "O site só guarda nome, WhatsApp e o resumo do pedido de quem finaliza um pedido. Navegar e montar o carrinho não gera registro.",
-        "A foto da receita nunca passa pelo site: ela vai direto na conversa do WhatsApp, e o site não guarda nenhum dado de saúde.",
+        "O site guarda nome, WhatsApp e o resumo do pedido de quem finaliza um pedido. Navegar e montar o carrinho não gera cadastro.",
+        "A foto da receita não passa pelo site: vai direto na conversa do WhatsApp, onde só a equipe da farmácia a vê, para conferir e preparar.",
         "Os dados servem para a equipe responder e preparar o pedido. Não vendemos nem repassamos para anúncios.",
         "Cookies de medição só com o seu aceite, e você pode mudar a escolha a qualquer hora pelo rodapé.",
         "Você pode pedir acesso, correção ou exclusão dos seus dados pelo WhatsApp ou em uma das lojas.",
@@ -51,7 +60,7 @@ export default function PaginaPrivacidade() {
           titulo: "O que o site guarda",
           conteudo: (
             <>
-              <p>O site só guarda dados quando você finaliza um pedido. Nesse momento ficam registrados:</p>
+              <p>O site só cria um cadastro quando você finaliza um pedido. Nesse momento ficam registrados:</p>
               <ul>
                 <li>o seu nome e o seu WhatsApp, para a equipe responder;</li>
                 <li>a forma de receber (retirada em uma das lojas ou entrega) e, na entrega, o bairro ou endereço informado;</li>
@@ -59,9 +68,14 @@ export default function PaginaPrivacidade() {
                 <li>a marcação de que você vai enviar uma receita pelo WhatsApp.</li>
               </ul>
               <p>
-                A foto da receita não passa pelo site. Ela é enviada por você diretamente na conversa do WhatsApp, e é lá que o farmacêutico a confere. O site não guarda receitas, laudos, diagnósticos nem qualquer outro dado de saúde.
+                Com o pedido, o seu nome, o seu WhatsApp e o que você procura entram também na lista de contatos da farmácia, para a equipe acompanhar o atendimento. Nessa lista a equipe pode registrar, da mesma forma, contatos recebidos pelo WhatsApp, pelo Instagram ou nas lojas.
               </p>
-              <p>Navegar pelo site, buscar produtos e montar o carrinho não gera registro nenhum no nosso servidor: o carrinho fica só no seu navegador.</p>
+              <p>
+                A foto da receita não passa pelo site: você a envia direto na conversa do WhatsApp, e é lá que o farmacêutico a confere. O site não guarda receitas, laudos nem diagnósticos. A receita é um dado de saúde: a farmácia a usa só para conferir, preparar e registrar o que a legislação sanitária exige, e ela não vai para a lista de contatos.
+              </p>
+              <p>
+                Navegar pelo site, buscar produtos e montar o carrinho não gera cadastro. O carrinho e a lista &quot;Você viu recentemente&quot; ficam só no seu navegador. Como em qualquer site, os servidores da hospedagem registram dados técnicos de acesso (como o endereço IP e a página pedida) por pouco tempo, para segurança e para corrigir falhas.
+              </p>
             </>
           ),
         },
@@ -77,7 +91,7 @@ export default function PaginaPrivacidade() {
                 <li>entender, em números gerais e sem identificar ninguém, como o site é usado.</li>
               </ul>
               <p>
-                A base legal é a execução do contrato que você pede ao finalizar (art. 7º, V, da LGPD), o cumprimento de obrigações legais da farmácia (art. 7º, II) e, para as estatísticas, o nosso interesse legítimo em melhorar o site (art. 7º, IX).
+                A base legal é a execução do contrato que você pede ao finalizar (art. 7º, V, da LGPD), o cumprimento de obrigações legais da farmácia (art. 7º, II) e, para as estatísticas e a lista de contatos, o nosso interesse legítimo em atender bem e melhorar o site (art. 7º, IX). A receita, por ser dado de saúde, é tratada para cumprir a legislação sanitária e para a tutela da sua saúde pelo farmacêutico (art. 11, II, alíneas a e f).
               </p>
               <p>Não vendemos, não alugamos e não cedemos os seus dados para ninguém usar em marketing. Se um dia quisermos mandar promoções, pediremos antes o seu consentimento, e você poderá recusar.</p>
             </>
@@ -129,6 +143,7 @@ export default function PaginaPrivacidade() {
               <p>
                 O registro do pedido fica guardado enquanto for necessário para atender você e pelo prazo que a legislação sanitária e fiscal exige para os registros da farmácia, em geral cinco anos. Depois disso é apagado ou deixa de identificar você.
               </p>
+              <p>Os contatos da lista de atendimento são apagados quando deixam de ser úteis para atender você, ou antes, se você pedir. Os registros técnicos da hospedagem são descartados em poucos dias.</p>
               <p>As estatísticas do Google Analytics, quando aceitas, são mantidas por até 14 meses e não identificam pessoas.</p>
             </>
           ),
@@ -158,7 +173,7 @@ export default function PaginaPrivacidade() {
           conteudo: (
             <>
               <p>
-                O site usa conexão criptografada (HTTPS). O painel da farmácia exige senha, bloqueia tentativas repetidas e registra o que cada pessoa da equipe altera. As senhas da equipe são guardadas de forma embaralhada, sem como recuperá-las. O acesso aos pedidos é restrito à gerência.
+                O site usa conexão criptografada (HTTPS). O painel da farmácia exige senha, bloqueia tentativas repetidas e registra o que cada pessoa da equipe altera. As senhas da equipe são guardadas de forma embaralhada, sem como recuperá-las. Os pedidos completos só a gerência vê; a lista de contatos também é vista pela equipe de atendimento, que pode registrar e atualizar contatos, mas não apagar.
               </p>
             </>
           ),

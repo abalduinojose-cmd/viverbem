@@ -15,7 +15,7 @@ export const PERGUNTAS = [
   {
     pergunta: "Preciso de receita para pedir?",
     resposta:
-      "Para manipulados, sim: a lei exige receita de profissional habilitado, dentro da validade. Os produtos de pronta entrega do catálogo podem ser pedidos direto pelo carrinho.",
+      "Para fórmulas que exigem prescrição, sim: a lei pede receita de profissional habilitado, dentro da validade. Os produtos do catálogo podem ser pedidos pelo carrinho, e o farmacêutico confirma no atendimento se algum deles precisa de receita.",
   },
   {
     pergunta: "Como envio a receita?",
@@ -39,7 +39,7 @@ export const PERGUNTAS = [
   {
     pergunta: "O que acontece com a minha receita e os meus dados?",
     resposta:
-      "Ficam só com a nossa equipe, para o preparo e o atendimento, conforme a LGPD. Nada é compartilhado.",
+      "A receita vai direto pelo WhatsApp e não passa pelo site. Ela e os seus dados são usados só para o preparo e o atendimento, conforme a LGPD, e não são vendidos nem cedidos para anúncios. Os detalhes estão na política de privacidade.",
   },
 ];
 

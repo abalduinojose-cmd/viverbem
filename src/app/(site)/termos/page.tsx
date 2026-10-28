@@ -2,6 +2,13 @@
 // nada sozinho; o pedido feito aqui é um pré-pedido, confirmado pelo
 // farmacêutico no WhatsApp, e manipulado só sai com receita válida
 // (RDC 67/2007). Texto para a farmácia conferir com o responsável.
+//
+// Revisão de 28/10/2026 (adendo 116): "fórmula manipulada só sai com
+// receita" era absoluto e contrariava o próprio site, que tem a linha de
+// produtos da farmácia (manipulados) no carrinho, sem receita. Agora: o que
+// exige prescrição só com receita; nos demais, o farmacêutico confere no
+// atendimento se a receita é necessária. Quem define cada caso é o
+// farmacêutico responsável.
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegal } from "@/components/site/PaginaLegal";
@@ -13,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/termos" },
 };
 
-const ATUALIZADO_EM = "21 de outubro de 2026";
+const ATUALIZADO_EM = "28 de outubro de 2026";
 
 export default function PaginaTermos() {
   return (
@@ -25,7 +32,7 @@ export default function PaginaTermos() {
       atualizadoEm={ATUALIZADO_EM}
       essencial={[
         "O site não vende sozinho: o pedido feito aqui é um pré-pedido, confirmado pelo farmacêutico no WhatsApp.",
-        "Fórmula manipulada só sai com receita válida de profissional habilitado (RDC 67/2007).",
+        "Fórmula que exige prescrição só é preparada com receita válida de profissional habilitado (RDC 67/2007); nos demais produtos, o farmacêutico confere se a receita é necessária.",
         "Valor e prazo são passados na conversa; o pagamento é combinado ali e feito na loja, na entrega ou como acertado com a equipe.",
         "Industrializados têm os prazos do Código de Defesa do Consumidor; manipulados não têm devolução por desistência.",
       ]}
@@ -61,7 +68,10 @@ export default function PaginaTermos() {
           conteudo: (
             <>
               <p>
-                Fórmulas manipuladas são preparadas uma a uma, para a pessoa indicada na receita, conforme a legislação sanitária (RDC 67/2007 da Anvisa). Por isso elas só são preparadas com receita válida, de profissional habilitado, apresentada na loja ou pela foto no WhatsApp. A receita original pode ser pedida na retirada ou na entrega.
+                Fórmulas manipuladas são preparadas depois do pedido, conforme a legislação sanitária (RDC 67/2007 da Anvisa). As que exigem prescrição só são preparadas com receita válida, de profissional habilitado, apresentada na loja ou pela foto no WhatsApp, e a receita original pode ser pedida na retirada ou na entrega.
+              </p>
+              <p>
+                A linha de produtos da farmácia que aparece no site também passa pelo farmacêutico: ao conferir o pré-pedido, ele confirma se aquele produto pode ser preparado para você sem receita ou se é preciso apresentar uma, e orienta o uso.
               </p>
               <p>
                 O farmacêutico pode recusar o preparo quando a receita estiver incompleta, vencida ou ilegível, quando a prescrição exigir ajuste, ou quando a lei não permitir. Nesses casos a equipe avisa pelo WhatsApp.
@@ -78,7 +88,8 @@ export default function PaginaTermos() {
           conteudo: (
             <>
               <ul>
-                <li>Quando um produto mostra preço no site, ele vale como referência e é confirmado pelo farmacêutico no atendimento. O valor de uma fórmula manipulada depende da receita e é informado pelo WhatsApp.</li>
+                <li>Só produtos industrializados mostram preço no site, como referência confirmada no atendimento. O valor de uma fórmula manipulada depende da receita e da formulação e é informado pelo WhatsApp, antes de você confirmar.</li>
+                <li>Nada é cobrado pelo site. Você só paga depois que o farmacêutico confirma o pedido e você aceita o valor e o prazo.</li>
                 <li>Os prazos de preparo são informados no atendimento e podem variar conforme a fórmula e os insumos.</li>
                 <li>A retirada nas lojas não tem custo. A entrega em Petrópolis e Região tem taxa e prazo combinados pelo WhatsApp antes da confirmação.</li>
                 <li>Erros evidentes de digitação em preços ou descrições podem ser corrigidos antes da confirmação do pedido.</li>

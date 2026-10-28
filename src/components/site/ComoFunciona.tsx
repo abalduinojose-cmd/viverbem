@@ -125,8 +125,9 @@ const PASSOS = [
 
 // A linha de confiança, no convite: o aviso legal em dois pontos curtos
 const CONFIANCA = [
-  { icone: <IconeEscudo />, texto: "Manipulação com receita válida." },
-  { icone: <IconeCadeado />, texto: "Sua receita e seus dados ficam só com a nossa equipe." },
+  // 28/10/2026 (adendo 116): os textos legais dizem o mesmo agora
+  { icone: <IconeEscudo />, texto: "Cada fórmula conferida pelo farmacêutico." },
+  { icone: <IconeCadeado />, texto: "Sua receita e seus dados só servem para o seu atendimento." },
 ];
 
 // Só o computador acende os passos; até o tablet a pessoa arrasta

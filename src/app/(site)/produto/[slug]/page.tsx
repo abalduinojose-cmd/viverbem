@@ -238,7 +238,9 @@ export default async function PaginaProduto({ params }: Props) {
         </div>
       )}
 
-      {/* O aviso que a lei pede, em tom de serviço */}
+      {/* O aviso que a lei pede, em tom de serviço. 28/10/2026 (adendo 116):
+          era "manipulado só com receita", mas a linha da farmácia vai ao
+          carrinho sem receita; quem diz se ela é preciso é o farmacêutico */}
       <p className="mt-6 flex items-start gap-2.5 rounded-2xl bg-gelo/60 px-4 py-3 text-[0.85rem] leading-relaxed text-cinza">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-tinta">
           <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" />
@@ -247,7 +249,7 @@ export default async function PaginaProduto({ params }: Props) {
         <span>
           {industrializado
             ? "Em caso de dúvida sobre o uso, fale com o farmacêutico pelo WhatsApp ou numa das lojas."
-            : "Manipulado só com receita válida de profissional habilitado. Valor, prazo e orientações de uso são passados pelo farmacêutico."}
+            : "Fórmula manipulada: o farmacêutico confere se é preciso receita e passa o valor, o prazo e as orientações de uso antes de você confirmar."}
         </span>
       </p>
     </div>

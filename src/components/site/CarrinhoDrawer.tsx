@@ -929,7 +929,11 @@ export function CarrinhoDrawer() {
                       <>
                         {`${receita ? "Depois da mensagem, anexe a foto da receita. " : ""}Pedido `}
                         <span className="whitespace-nowrap">{codigo}</span>
-                        {" · seus dados ficam só com a Viver Bem (LGPD)."}
+                        {" · seus dados servem só para o seu atendimento ("}
+                        <Link href="/privacidade" className="underline underline-offset-2 hover:text-navy">
+                          privacidade
+                        </Link>
+                        {")."}
                       </>
                     )}
                   </p>
