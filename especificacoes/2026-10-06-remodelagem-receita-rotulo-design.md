@@ -1,6 +1,15 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 116 (28/10/2026): revisão dos textos legais. IMPLEMENTADO e testado, SÓ LOCAL (sem push).**
+> **ADENDO 117 (28/10/2026): tarjas fora dos manipulados. IMPLEMENTADO e PUBLICADO no 65º push (junto com o 116).**
+> "Tire as tarjas e atualize o github." As 6 tarjas (Mais vendido em
+> CitoRepair 2.0, Ômega 3 e Glow Cream; Novidade em Caramelo de Creatina,
+> Centella Asiática Creme e Max Solve Q10), todas em manipulados, saíram do
+> banco e do seed (a produção nasce sem elas). O desenho das tarjas e os
+> interruptores do painel continuam: servem aos industrializados e voltam
+> nos manipulados só com o aval do farmacêutico. Conferido: zero tarjas na
+> home, no catálogo e nas páginas dos produtos.
+
+> **ADENDO 116 (28/10/2026): revisão dos textos legais. IMPLEMENTADO, testado e PUBLICADO no 65º push.**
 > Pedido: "faça a revisão dos textos de privacidade, termos e reembolso e a
 > decisão do farmacêutico sobre preço e tarjas nos manipulados". Os textos
 > foram conferidos contra o que o site faz de fato (banco, rotas, painel):
@@ -24,8 +33,8 @@
 >   cada manipulado e na linha de confiança do "Como funciona".
 > - PREÇO NOS MANIPULADOS: nenhum manipulado mostra preço (só o protetor
 >   solar, industrializado). Já está na leitura conservadora; nada mudou.
-> - TARJAS: as 6 (3 Mais vendido, 3 Novidade) estão em manipulados. NÃO
->   foram mexidas: a decisão é do farmacêutico responsável. Riscos levados
+> - TARJAS: as 6 (3 Mais vendido, 3 Novidade) estão em manipulados. Aqui
+>   NÃO foram mexidas (saíram no adendo 117, a pedido): a decisão é do farmacêutico responsável. Riscos levados
 >   ao usuário: a RDC 67/2007 restringe a promoção de manipulados; e "Mais
 >   vendido" é afirmação de fato que precisa refletir as vendas reais (foi
 >   escolhida a dedo em 27/10 só para mostrar o desenho).

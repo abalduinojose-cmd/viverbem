@@ -173,10 +173,11 @@ async function main() {
       categoria: "vitaminas-suplementos",
       fotoUrl: "/uploads/sono.svg",
     },
-    // --- Linha própria Viver Bem (fotos reais) — todos em destaque ---
+    // --- Linha própria Viver Bem (fotos reais) ---
+    // 28/10/2026 (adendo 117): sem tarjas "Mais vendido"/"Novidade" nos
+    // manipulados (RDC 67/2007 restringe a promoção; o farmacêutico decide)
     {
       nome: "CitoRepair™ 2.0",
-      destaque: true,
       apresentacao: "30 cápsulas",
       indicacoes: "Longevidade celular\nImita os efeitos do jejum\nContribui para a renovação das células\nApoia a disposição no dia a dia",
       composicao: "Espermidina\nResveratrol\nNAD+ precursores\nCoenzima Q10",
@@ -189,7 +190,6 @@ async function main() {
     },
     {
       nome: "Ômega 3 Viver Bem",
-      destaque: true,
       apresentacao: "90 cápsulas · 126g",
       indicacoes: "Saúde cardiovascular\nApoio à função cerebral\nAção anti-inflamatória\nSaúde dos olhos",
       composicao: "Óleo de peixe concentrado\nEPA\nDHA\nVitamina E (antioxidante)",
@@ -226,7 +226,6 @@ async function main() {
     },
     {
       nome: "Caramelo de Creatina",
-      novidade: true,
       apresentacao: "500g · 35 unidades de 10g",
       indicacoes: "Energia com sabor\nGanho de força\nPrático para levar\nÓtima adesão",
       composicao: "Creatina monoidratada\nFarinha de amêndoa\nCaramelo",
@@ -251,7 +250,6 @@ async function main() {
     },
     {
       nome: "Glow Cream",
-      destaque: true,
       apresentacao: "Pote 30g",
       indicacoes: "Viço e luminosidade\nFirmeza da pele\nHidratação profunda\nUniformiza o tom",
       composicao: "Ceramida 6%\nNiacinamida 4%\nÁcido hialurônico 0,5%\nOligo HA 0,1%\nCopper Peptide 1%",
@@ -265,7 +263,6 @@ async function main() {
     {
       // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
       nome: "Centella Asiática Creme",
-      novidade: true,
       descricao: "Creme com extrato de centella asiática, manipulado conforme a prescrição.",
       precoCentavos: 0,
       categoria: "dermatologia-estetica",
@@ -420,7 +417,6 @@ async function main() {
     {
       // 23/10/2026: produto novo enviado pela farmácia (foto com o rótulo)
       nome: "Max Solve Coenzima Q10",
-      novidade: true,
       apresentacao: "30 mL",
       descricao: "Coenzima Q10 hidrossolúvel em frasco conta-gotas de 30 mL, manipulada conforme a prescrição.",
       precoCentavos: 0,
