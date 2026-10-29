@@ -22,7 +22,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
-import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
+import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, CategoriaDTO, PERFIL_GOOGLE_URL } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho, Chevron } from "./icones";
 import { useEstadoLoja } from "./HorarioAtendimento";
@@ -86,16 +86,19 @@ const INSTITUCIONAL = [
 ];
 
 // Vantagens da faixa do topo (computador). Para a faixa nunca quebrar
-// linha, a nota do Google entra de lg para cima e a retirada só de xl.
+// linha, cada item entra só a partir da largura em que cabe.
+// 29/10/2026 ("retirada na loja para desktop"): a retirada aparecia só de
+// xl (1280 px) e virou "Retirada na loja", curta, já no lg; a nota do
+// Google passou para o xl (em 1024 px os dois juntos estouravam a linha).
 const VANTAGENS = [
   { icone: <IconeMoto tamanho={16} />, texto: "Delivery em Petrópolis e Região" },
   {
     icone: <IconeEstrela tamanho={14} />,
     texto: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google · ${AVALIACOES_GOOGLE_TOTAL} avaliações`,
     href: PERFIL_GOOGLE_URL,
-    aPartirDe: "lg" as const,
+    aPartirDe: "xl" as const,
   },
-  { icone: <IconeLoja tamanho={15} />, texto: `Retirada sem taxa em ${UNIDADES.length} lojas`, aPartirDe: "xl" as const },
+  { icone: <IconeLoja tamanho={15} />, texto: "Retirada na loja", aPartirDe: "lg" as const },
 ];
 
 // Itens do submenu "A Viver Bem" no menu do celular. Desde 11/10/2026
@@ -154,15 +157,16 @@ const classeBotaoCapsula = (ativo = false) =>
 const classeBotaoCarrinhoCelular = classeBotaoCapsula();
 
 // "Aberto agora · Fecha às 19h" na faixa do topo (07/10/2026). No servidor
-// é null: sai um texto neutro, sem horário congelado no HTML.
-function SeloAbertoFaixa() {
+// é null: sai um texto neutro, sem horário congelado no HTML. No celular
+// (compacto) vai só "Aberto agora", sem o horário, para caber na linha.
+function SeloAbertoFaixa({ compacto = false }: { compacto?: boolean }) {
   const estado = useEstadoLoja();
-  if (!estado) return <span className="text-white/80">Horário de atendimento</span>;
+  if (!estado) return <span className="text-white/80">{compacto ? "Horário" : "Horário de atendimento"}</span>;
   return (
     <span role="status" className="inline-flex items-center gap-2">
       <span aria-hidden="true" className={`w-2 h-2 rounded-full ${estado.aberto ? "bg-green-400" : "bg-white/40"}`} />
       <span className="font-semibold text-white">{estado.aberto ? "Aberto agora" : "Fechado agora"}</span>
-      <span className="text-white/60">· {estado.detalhe}</span>
+      {!compacto && <span className="text-white/60">· {estado.detalhe}</span>}
     </span>
   );
 }
@@ -204,7 +208,38 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-[0_1px_0_var(--color-fio)]">
-      {/* ---------- 1. Faixa do topo (computador) ---------- */}
+      {/* ---------- 1a. Faixa do topo (celular) ----------
+          29/10/2026 ("melhore o header para mobile: aberto agora, delivery
+          e retirada na loja"): a mesma faixa azul-noite do computador, numa
+          linha só e centrada, com os três itens curtos e o ícone em ouro.
+          Soma 2rem ao --altura-cabecalho do celular (globals.css). */}
+      <div className="entrada-topo entrada-topo-1 md:hidden bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
+        <ul className="h-8 px-4 flex items-center justify-center text-[0.72rem] whitespace-nowrap">
+          <li className="flex items-center">
+            <SeloAbertoFaixa compacto />
+          </li>
+          <li className="flex items-center">
+            <span aria-hidden="true" className="mx-2.5 h-3 w-px bg-white/20" />
+            <span className="inline-flex items-center gap-1.5 text-white/85">
+              <span className="text-ouro-claro">
+                <IconeMoto tamanho={14} />
+              </span>
+              Delivery
+            </span>
+          </li>
+          <li className="flex items-center">
+            <span aria-hidden="true" className="mx-2.5 h-3 w-px bg-white/20" />
+            <span className="inline-flex items-center gap-1.5 text-white/85">
+              <span className="text-ouro-claro">
+                <IconeLoja tamanho={13} />
+              </span>
+              Retirada na loja
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      {/* ---------- 1b. Faixa do topo (computador) ---------- */}
       {/* Em azul-noite, como a dobra: o selo ao vivo "Aberto agora" e as
           vantagens com ícone em ouro, separadas por um fio; os links
           institucionais em pílulas na ponta. Nada quebra linha: cada item

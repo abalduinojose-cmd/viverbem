@@ -7,6 +7,13 @@
 // redondas nas bordas que avançam ou voltam uma tela (07/10/2026,
 // "modernize essa área"); cada seta some quando a faixa já está naquela
 // ponta, para não prometer o que não existe.
+//
+// 29/10/2026 ("o botão de arrastar para o lado não tá bom, modernize e
+// coloque pra cima"): as setas saíram das bordas, onde cobriam os cartões, e
+// subiram para uma barra acima da faixa (só no computador): à esquerda, uma
+// linha fina de progresso que mostra a parte da faixa à vista e anda com a
+// rolagem; à direita, as duas setas lado a lado. Em vez de sumir, a seta da
+// ponta fica apagada (os dois botões não trocam de lugar).
 
 import { Children, useEffect, useRef, useState } from "react";
 import { ProdutoDTO } from "@/lib/tipos";
@@ -15,7 +22,7 @@ import { ProdutoCard, type VarianteCartao } from "./ProdutoCard";
 
 function Seta({ direcao }: { direcao: "esquerda" | "direita" }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d={direcao === "direita" ? "M5 12h14m0 0-6-6m6 6-6 6" : "M19 12H5m0 0 6-6m-6 6 6 6"}
         stroke="currentColor"
@@ -52,7 +59,7 @@ export function FaixaProdutos({
   antes?: React.ReactNode;
   /** Cartão que fecha a faixa (o banner da área, depois dos produtos) */
   depois?: React.ReactNode;
-  /** Setas nas bordas, no computador */
+  /** A barra de progresso e as setas, acima da faixa, no computador */
   setas?: boolean;
   /**
    * Cartões próprios da seção, já montados (a vitrine escura usa os dela).
@@ -67,6 +74,8 @@ export function FaixaProdutos({
   // Em qual ponta a faixa está, para esconder a seta que não faria nada.
   // Começa "nas duas pontas" (sem setas) até a primeira medida.
   const [pontas, setPontas] = useState({ inicio: true, fim: true });
+  // A linha de progresso: quanto da faixa está à vista e onde (0 a 1)
+  const [trilho, setTrilho] = useState({ visivel: 1, posicao: 0 });
   useEffect(() => {
     const faixa = faixaRef.current;
     if (!faixa) return;
@@ -75,6 +84,11 @@ export function FaixaProdutos({
       setPontas({
         inicio: faixa.scrollLeft <= folga,
         fim: faixa.scrollLeft + faixa.clientWidth >= faixa.scrollWidth - folga,
+      });
+      const sobra = faixa.scrollWidth - faixa.clientWidth;
+      setTrilho({
+        visivel: faixa.scrollWidth > 0 ? Math.min(1, faixa.clientWidth / faixa.scrollWidth) : 1,
+        posicao: sobra > 0 ? Math.min(1, Math.max(0, faixa.scrollLeft / sobra)) : 0,
       });
     };
     const quadro = requestAnimationFrame(medir);
@@ -97,10 +111,35 @@ export function FaixaProdutos({
   const classeItem =
     largura === "estreita" ? "w-52 md:w-64 shrink-0 snap-start" : "w-60 md:w-72 shrink-0 snap-start";
   const classeSeta =
-    "hidden md:flex absolute top-1/2 -translate-y-1/2 z-[2] w-11 h-11 rounded-full bg-white/95 text-navy ring-1 ring-fio shadow-[0_14px_30px_-14px_rgba(13,35,64,0.5)] items-center justify-center transition hover:bg-navy hover:text-white active:scale-95";
+    "flex size-10 items-center justify-center rounded-full bg-white text-navy ring-1 ring-inset ring-fio transition hover:bg-navy hover:text-white hover:ring-navy active:scale-95 disabled:opacity-35 disabled:pointer-events-none";
+  // Só há o que rolar quando a faixa não cabe inteira
+  const rola = !(pontas.inicio && pontas.fim);
 
   return (
     <div className="relative">
+      {/* A barra de cima: progresso e setas (computador) */}
+      {setas && rola && (
+        <div className="hidden md:flex items-center gap-5 mb-4">
+          <div aria-hidden="true" className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-fio">
+            <span
+              className="absolute inset-y-0 left-0 rounded-full bg-tinta transition-[translate] duration-200 ease-out"
+              style={{
+                width: `${trilho.visivel * 100}%`,
+                translate: `${(trilho.posicao * (1 - trilho.visivel) * 100) / trilho.visivel}% 0`,
+              }}
+            />
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button type="button" onClick={() => rolar(-1)} disabled={pontas.inicio} aria-label="Ver os anteriores" className={classeSeta}>
+              <Seta direcao="esquerda" />
+            </button>
+            <button type="button" onClick={() => rolar(1)} disabled={pontas.fim} aria-label="Ver os próximos" className={classeSeta}>
+              <Seta direcao="direita" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div
         ref={faixaRef}
         {...arraste.props}
@@ -123,16 +162,6 @@ export function FaixaProdutos({
         {depois && <div className="shrink-0 snap-start flex">{depois}</div>}
       </div>
 
-      {setas && !pontas.inicio && (
-        <button type="button" onClick={() => rolar(-1)} aria-label="Ver os anteriores" className={`${classeSeta} left-2`}>
-          <Seta direcao="esquerda" />
-        </button>
-      )}
-      {setas && !pontas.fim && (
-        <button type="button" onClick={() => rolar(1)} aria-label="Ver os próximos" className={`${classeSeta} right-2`}>
-          <Seta direcao="direita" />
-        </button>
-      )}
     </div>
   );
 }

@@ -1,5 +1,21 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 123 (29/10/2026): faixa do topo no celular, creatinas primeiro e setas das faixas no alto. IMPLEMENTADO, testado e PUBLICADO no 69º push.**
+> - CABEÇALHO: no celular entrou a faixa azul-noite do topo (32 px, uma
+>   linha centrada): "Aberto agora" ao vivo, Delivery e Retirada na loja,
+>   ícones em ouro; --altura-cabecalho do celular foi de 7,25 para 9,25rem.
+>   No computador a retirada virou "Retirada na loja" e aparece já em
+>   1024 px; a nota do Google passou para 1280 px (em 1024 os dois juntos
+>   estouravam a linha). Medido: sem estouro em 360, 390, 1024, 1280, 1366.
+> - MAIS PROCURADOS: Creatina Gummy e Caramelo de Creatina primeiro (ordem
+>   -2 e -1 no banco e no seed, que aceita "ordem" por item). Vale para a
+>   home, o catálogo e a página do produto, que seguem a ordem do catálogo.
+> - SETAS DAS FAIXAS DE PRODUTOS: saíram das bordas (por cima dos cartões) e
+>   subiram para uma barra acima da faixa, no computador: linha fina de
+>   progresso que mostra a parte à vista e anda com a rolagem, e as duas
+>   setas lado a lado à direita; a seta da ponta fica apagada em vez de
+>   sumir. Vale para todas as faixas (FaixaProdutos).
+
 > **ADENDO 122 (29/10/2026): três produtos novos, a cena da receita de volta e o "Saúde" consertado. IMPLEMENTADO, testado e PUBLICADO no 68º push.**
 > - PRODUTOS (fotos enviadas pelo usuário, levadas a 500x500 com fundo
 >   transparente e o mesmo tamanho dos potes atuais): Calm Repair Pad

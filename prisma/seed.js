@@ -214,6 +214,8 @@ async function main() {
     },
     {
       nome: "Creatina Gummy",
+      // 29/10/2026: primeiro nos "Mais procurados" (pedido)
+      ordem: -2,
       apresentacao: "Pote com gomas · sabor frutas vermelhas",
       indicacoes: "Ganho de força\nDesempenho nos treinos\nPrática de tomar\nSem precisar dissolver",
       composicao: "Creatina monoidratada\nSabor natural de frutas vermelhas",
@@ -226,6 +228,8 @@ async function main() {
     },
     {
       nome: "Caramelo de Creatina",
+      // 29/10/2026: primeiro nos "Mais procurados" (pedido)
+      ordem: -1,
       apresentacao: "500g · 35 unidades de 10g",
       indicacoes: "Energia com sabor\nGanho de força\nPrático para levar\nÓtima adesão",
       composicao: "Creatina monoidratada\nFarinha de amêndoa\nCaramelo",
@@ -566,7 +570,9 @@ async function main() {
         indicacoes: null,
         composicao: p.composicao || null,
         modoUso: p.modoUso || null,
-        ordem: i,
+        // 29/10/2026: um item pode pedir a sua posição (ordem negativa vem
+        // antes de todos); sem isso, a ordem da lista
+        ordem: p.ordem ?? i,
         categoriaId: categorias[p.categoria].id,
       },
     });
