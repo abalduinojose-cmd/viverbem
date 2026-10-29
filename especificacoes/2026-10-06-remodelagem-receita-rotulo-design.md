@@ -38,7 +38,9 @@
 >   subiram para uma barra acima da faixa, no computador: linha fina de
 >   progresso que mostra a parte à vista e anda com a rolagem, e as duas
 >   setas lado a lado à direita; a seta da ponta fica apagada em vez de
->   sumir. Vale para todas as faixas (FaixaProdutos).
+>   sumir. Vale para todas as faixas (FaixaProdutos). RECUSADA no mesmo dia
+>   ("não gostei disso na versão desktop, tire"): a barra saiu inteira no
+>   72º push e a faixa ficou sem setas, rolando com o arraste do mouse.
 
 > **ADENDO 122 (29/10/2026): três produtos novos, a cena da receita de volta e o "Saúde" consertado. IMPLEMENTADO, testado e PUBLICADO no 68º push.**
 > - PRODUTOS (fotos enviadas pelo usuário, levadas a 500x500 com fundo
