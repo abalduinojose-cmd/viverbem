@@ -87,6 +87,8 @@ export function fontesParaCarregar(f: FontesDaCena): string[] {
   return [
     `${f.pesoDisplayLeve} 48px ${f.display}`,
     `${f.pesoDisplay} 48px ${f.display}`,
+    // As duas formas de receber, na dobra (29/10/2026)
+    `700 48px ${f.display}`,
     `${f.pesoConector} 48px ${f.conector}`,
     `italic ${f.pesoDestaque} 48px ${f.destaque}`,
     `${f.pesoRotulo} 12px ${f.rotulo}`,

@@ -35,9 +35,11 @@
 //              devagar-rápido-devagar e traz um pote novo para a frente,
 //              a luz passa pelo rótulo dele e a câmera avança um pouco;
 //              entre um passo e outro, para (profundidade de campo,
-//              reflexo). O letreiro mostra os 4 passos do pedido numa
-//              cápsula de vidro com o número em odômetro e o progresso na
-//              borda (22/10/2026). (21/10/2026, doutrina de movimento:
+//              reflexo). Embaixo do título, as duas formas de receber
+//              ("Retire na loja", "Receba em casa"), uma de cada vez, a
+//              troca girando letra a letra no quadro do passo, e as duas
+//              juntas no fecho (29/10/2026; antes, os quatro passos do
+//              pedido numa cápsula de vidro). (21/10/2026, doutrina de movimento:
 //              o movimento executa o letreiro, em vez de girar sem parar;
 //              desde 10/10 este trecho corre devagar, pelo ritmo do roteiro)
 //   5,3 a 6,4  fecho: os dois potes da dobra vêm para a frente, os outros
@@ -61,7 +63,8 @@ export const DURACAO = 7;
 
 export const FOCAL = 700;
 export const ORBITA_CENTRO = 90; // profundidade do centro do carrossel
-// O letreiro dos passos: quando começa e quanto dura cada passo (tempo da
+// Os passos do carrossel (e as batidas do letreiro de entrega, que caem nos
+// mesmos quadros): quando começa e quanto dura cada passo (tempo da
 // coreografia)
 const PASSOS_INICIO = 3.05;
 const PASSOS_VEZ = 0.62;
@@ -581,21 +584,67 @@ export type Rotulo = {
   capsula: { x0: number; x1: number; topo: number; base: number };
 };
 
+/** Uma letra do letreiro de entrega: o caractere, a pena (x) e a largura */
+export type LetraEntrega = { ch: string; x: number; w: number };
+
+/** Uma das formas de receber, medida: as letras do verbo e do lugar (em
+ *  ouro), o apoio e o ícone */
+export type ItemEntrega = {
+  verbo: LetraEntrega[];
+  nome: LetraEntrega[];
+  textoNome: string;
+  xNome: number;
+  /** Onde começa e acaba a palavra em ouro (para o degradê e o brilho) */
+  faixaNome: [number, number];
+  apoio: string;
+  apoioLargura: number;
+  icone: { partes: Path2D[]; comprimentos: number[] };
+};
+
+/** O letreiro de entrega da dobra (29/10/2026). Medidas em relação à
+ *  margem do texto (x) e à base da primeira linha (y). */
+export type Entrega = {
+  itens: [ItemEntrega, ItemEntrega];
+  /** Corpo do título e do apoio */
+  hs: number;
+  as: number;
+  /** A altura da caixa-alta do verbo; o eixo dos cubos passa no meio dela */
+  cap: number;
+  /** Meia aresta do cubo de cada letra */
+  cubo: number;
+  /** Diâmetro do selo (o anel de ouro) e tamanho do ícone dentro dele */
+  selo: number;
+  ic: number;
+  /** A base do apoio e a da segunda linha (no fecho) */
+  yS: number;
+  y2: number;
+  /** O fio de ouro do apoio (início e comprimento) e onde o texto começa */
+  xRegra: number;
+  regra: number;
+  xApoio: number;
+  largura: number;
+  fonteVerbo: string;
+  fonteNome: string;
+  fonteApoio: string;
+  /** Tinta acima da primeira base e abaixo da última, nos dois estados */
+  topo: number;
+  base: number;
+};
+
 export type Textos = {
   l1: Linha;
   l2: Linha;
   l3: Linha;
   rotulo: Rotulo;
-  passos: { numero: Linha; texto: Linha }[];
+  entrega: Entrega | null;
   // Bases das linhas (mundo, plano z = 0)
   base1: number;
   base2: number;
   base3: number;
   baseRotulo: number;
-  basePassos: number;
+  baseEntrega: number;
   /** Quanto a linha grande nasce maior, centrada, antes de voar ao lugar */
   escalaIntro: number;
-  larguraPassos: number;
 };
 
 function medirRotulo(ctx: CanvasRenderingContext2D, tr: number, f: FontesDaCena, palavras: Roteiro["rotulo"]): Rotulo {
@@ -626,6 +675,115 @@ function medirRotulo(ctx: CanvasRenderingContext2D, tr: number, f: FontesDaCena,
   };
 }
 
+// Os ícones do site (IconesVantagens: o pino da loja; IconeMoto: a moto
+// do Delivery), em partes, para cada traço se desenhar por inteiro
+const ICONES_ENTREGA: Record<"loja" | "moto", string[]> = {
+  loja: ["M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z", "M14.3 11a2.3 2.3 0 1 0 -4.6 0a2.3 2.3 0 1 0 4.6 0"],
+  moto: [
+    "M5 16v1a2 2 0 1 0 4 0v-5h-3a3 3 0 0 0 -3 3v1h10a6 6 0 0 1 5 -4v-5a2 2 0 0 0 -2 -2h-1",
+    "M16 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0",
+    "M6 9l3 0",
+  ],
+};
+
+/** O comprimento de um traço (para o tracejado que o desenha) */
+function comprimentoDoTraco(d: string) {
+  try {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    el.setAttribute("d", d);
+    const c = el.getTotalLength();
+    return Number.isFinite(c) && c > 0 ? c : 60;
+  } catch {
+    return 60;
+  }
+}
+
+/** Mede as duas formas de receber. O título do letreiro fica ~0,48 do
+ *  título grande no celular e ~0,36 no desktop (mais destaque que os
+ *  passos de antes, que tinham 16 a 18 px). */
+function medirEntrega(ctx: CanvasRenderingContext2D, e: Enquadramento, f: FontesDaCena, r: Roteiro, T: number): Entrega | null {
+  const lista = r.entrega;
+  if (!lista || lista.length !== 2) return null;
+  const hs = e.modo === "retrato" ? Math.round(Math.min(24, Math.max(19, T * 0.48))) : Math.round(Math.min(32, Math.max(22, T * 0.36)));
+  const as = Math.max(13, Math.round(hs * 0.54));
+  const selo = Math.round(hs * 1.25);
+  const ic = Math.round(selo * 0.58);
+  const xTexto = selo + Math.round(hs * 0.45);
+  const regra = Math.round(hs * 0.75);
+  const xApoio = xTexto + regra + Math.round(hs * 0.32);
+  let fonteVerbo = "";
+  let fonteNome = "";
+  let fonteApoio = "";
+  let asc = 0;
+  let desc = 0;
+  let descA = 0;
+  let ascB = 0;
+  let descB = 0;
+  let apAsc = 0;
+  let apDesc = 0;
+  let largura = 0;
+  /** As letras de uma linha medida, a partir de x0 */
+  const letras = (l: Linha, x0: number): LetraEntrega[] =>
+    l.texto.split("").map((ch, i) => ({ ch, x: x0 + l.xs[i], w: (i < l.texto.length - 1 ? l.xs[i + 1] : l.largura) - l.xs[i] }));
+  const itens = lista.map((it, k): ItemEntrega => {
+    const v = medirLinha(ctx, it.verbo, f.display, "", 700, hs, -0.01);
+    const n = medirLinha(ctx, it.nome, f.destaque, "italic ", f.pesoDestaque, Math.round(hs * 1.16), 0);
+    const ap = medirLinha(ctx, it.apoio, f.apoio, "", 500, as, 0);
+    fonteVerbo = fonteDe(v);
+    fonteNome = fonteDe(n);
+    fonteApoio = fonteDe(ap);
+    ctx.font = fonteVerbo;
+    const xNome = xTexto + v.largura + ctx.measureText(" ").width * 1.15;
+    const tracos = ICONES_ENTREGA[it.icone];
+    const ascL = Math.max(v.ascent, n.ascent);
+    const descL = Math.max(v.descent, n.descent);
+    asc = Math.max(asc, ascL);
+    desc = Math.max(desc, descL);
+    if (k === 0) descA = descL;
+    else {
+      ascB = ascL;
+      descB = descL;
+    }
+    apAsc = Math.max(apAsc, ap.ascent);
+    apDesc = Math.max(apDesc, ap.descent);
+    largura = Math.max(largura, xNome + n.largura, xApoio + ap.largura);
+    return {
+      verbo: letras(v, xTexto),
+      nome: letras(n, xNome),
+      textoNome: it.nome,
+      xNome,
+      faixaNome: [xNome, xNome + n.largura],
+      apoio: it.apoio,
+      apoioLargura: ap.largura,
+      icone: { partes: tracos.map((d) => new Path2D(d)), comprimentos: tracos.map(comprimentoDoTraco) },
+    };
+  });
+  ctx.font = fonteVerbo;
+  const cap = ctx.measureText("H").actualBoundingBoxAscent || hs * 0.72;
+  const yS = Math.round(desc + hs * 0.24 + apAsc);
+  const y2 = Math.round(Math.max(descA + hs * 0.36 + ascB, selo + hs * 0.14));
+  return {
+    itens: [itens[0], itens[1]],
+    hs,
+    as,
+    cap,
+    cubo: cap * 0.56,
+    selo,
+    ic,
+    yS,
+    y2,
+    xRegra: xTexto,
+    regra,
+    xApoio,
+    largura,
+    fonteVerbo,
+    fonteNome,
+    fonteApoio,
+    topo: Math.max(asc, cap / 2 + selo / 2 + 1),
+    base: Math.max(yS + apDesc, y2 + Math.max(descB, selo / 2 - cap / 2 + 1)),
+  };
+}
+
 function prepararTextos(ctx: CanvasRenderingContext2D, e: Enquadramento, f: FontesDaCena, r: Roteiro): Textos {
   const [texto1, texto2, texto3] = r.linhas;
   // O tamanho que faz a linha mais larga caber na coluna do texto
@@ -647,22 +805,23 @@ function prepararTextos(ctx: CanvasRenderingContext2D, e: Enquadramento, f: Font
   const base1 = baseRotulo + rotulo.capsula.base + T * 0.3 + l1.ascent;
   const base2 = base1 + l1.descent + T * 0.1 + l2.ascent;
   const base3 = base2 + l2.descent + T * 0.08 + l3.ascent;
+  // O letreiro de entrega logo abaixo de "personalizada", sem descer além de
+  // onde a cápsula dos passos descia (a faixa livre entre o título e os
+  // potes, apertada no celular)
+  const entrega = medirEntrega(ctx, e, f, r, T);
+  const baseEntrega = entrega ? Math.min(base3 + l3.descent + T * 0.36 + entrega.topo, e.limitePassos + tp * 1.36 - entrega.base) : 0;
   return {
     l1,
     l2,
     l3,
     rotulo,
-    passos: r.passos.map(([n, t]) => ({
-      numero: medirLinha(ctx, n, f.destaque, "italic ", f.pesoDestaque, Math.round(tp * 1.5), 0),
-      texto: medirLinha(ctx, t, f.apoio, "", 500, tp, 0.005),
-    })),
+    entrega,
     base1,
     base2,
     base3,
     baseRotulo,
-    basePassos: Math.min(base3 + l3.descent + T * 0.42 + tp * 1.55, e.limitePassos),
+    baseEntrega,
     escalaIntro: Math.min(1.28, (e.modo === "retrato" ? 330 : e.largura - 140) / l1.largura),
-    larguraPassos: Math.min(e.larguraTexto, tp * 20),
   };
 }
 
@@ -1718,256 +1877,295 @@ export async function criarCena(
     ctx.restore();
   }
 
-  // ---- o letreiro dos passos do pedido (22/10/2026, "não está bom, está
-  // muito simples, modernize e retrabalhe"; antes eram o número e a frase
-  // soltos, letra a letra, e quatro traços embaixo). Agora:
-  //   - uma cápsula de vidro abriga o passo (o mesmo gesto do rótulo do
-  //     alto), e a largura dela se ajusta ao texto de cada passo numa
-  //     curva suave; a borda acende de leve a cada troca;
-  //   - o número em ouro itálico, maior, rola como um odômetro: o "0" fica
-  //     parado e só o algarismo que muda gira (01 -> 02); no último item
-  //     o número dá lugar a um ponto de ouro;
-  //   - um fio de ouro vertical separa número e frase;
-  //   - a frase troca palavra a palavra: a que sai sobe e se apaga, a nova
-  //     sobe de baixo em cascata, os vãos encolhendo (o mesmo sentido dos
-  //     dois lados, sem pingue-pongue);
-  //   - o progresso vai DENTRO da cápsula, na borda de baixo: o trecho da
-  //     vez se enche com uma pontinha de luz; no último item os quatro
-  //     trechos se fundem numa linha só.
-  // A troca acontece no mesmo quadro em que o carrossel dá o passo dele
-  // (inicioDoPasso). Tempos da coreografia de 7 s (este trecho corre a
-  // ~0,28 da velocidade: 0,1 aqui é ~0,36 s de verdade).
-  /** As palavras de cada frase do letreiro (índices das letras), por texto */
-  const palavrasDoPasso = new Map<string, { ini: number; fim: number }[]>();
-  function palavrasDe(texto: string) {
-    let lista = palavrasDoPasso.get(texto);
-    if (!lista) {
-      lista = [];
-      let comeco = 0;
-      for (let i = 0; i <= texto.length; i++) {
-        if (i === texto.length || texto[i] === " ") {
-          if (i > comeco) lista.push({ ini: comeco, fim: i });
-          comeco = i + 1;
-        }
-      }
-      palavrasDoPasso.set(texto, lista);
-    }
-    return lista;
-  }
-  function desenharPassos(t: number, cam: Camera) {
-    const tp = enq.tamanhoPasso;
-    const passos = textos.passos;
-    const n = passos.length;
-    if (n === 0) return;
-    const entra = trecho(t, PASSOS_INICIO - 0.1, PASSOS_INICIO + 0.14);
-    const sai = trecho(t, 6.22, 6.5);
-    if (entra <= 0 || sai >= 1) return;
+  // ---- as duas formas de receber (29/10/2026). Pedido: "envie a foto da
+  // receita pode sair, farmacêutico confere pode sair [...] são duas
+  // informações falando do delivery ou da retirada na loja; melhore a
+  // fonte, tipografia cinética, movimentos mais suaves na letra, dê mais
+  // destaque". Saiu o letreiro dos quatro passos (a cápsula de vidro com o
+  // número em odômetro, 22/10/2026, que lia como um botão). A primeira
+  // versão desta (letras subindo de uma fresta e um rolo plano) foi "muito
+  // simples"; esta é a segunda, no mesmo dia:
+  //   - um SELO de ouro: o anel se desenha em volta do ícone do site, que
+  //     acende com uma luz quente; na troca o selo vira como uma moeda e
+  //     mostra a moto do outro lado
+  //   - cada letra é a face de um CUBO que gira em 3D, em cascata (vãos
+  //     que encolhem): a face que sai achata e escurece, a que entra
+  //     cresce e clareia, e um fio de luz corre na aresta entre as duas
+  //   - a palavra em ouro chega com FOCO DE LENTE (grande e desfocada,
+  //     assentando nítida) e um brilho de estrela quando pousa
+  //   - o apoio sai de trás de um fio de ouro, como letreiro de TV
+  // As batidas caem nos mesmos quadros dos passos do carrossel:
+  //   passo 0  o selo abre e "Retire na" gira de baixo, letra a letra;
+  //            "loja" entra em foco e a estrela pisca
+  //   passo 1  o fio se desenha e "Numa das 3 lojas em Petrópolis" desliza
+  //   passo 2  o apoio volta para trás do fio; a linha inteira gira para
+  //            "Receba em casa" (os cubos rodam uma face para cima, na
+  //            curva devagar-rápido-devagar do carrossel) e o selo vira
+  //   passo 3  o apoio do Delivery desliza
+  //   fecho    "Receba em casa" desce para a segunda linha e "Retire na
+  //            loja" volta girando de cima, com o selo e o foco: as duas
+  //            formas juntas, um brilho passando pelas duas palavras
+  //   saída    os cubos giram para baixo, da última letra para a
+  //            primeira; os selos se fecham
+  // Tempos da coreografia de 7 s (este trecho corre a ~0,28: 0,1 aqui é
+  // ~0,36 s de verdade).
+  const E_1 = inicioDoPasso(0);
+  const E_1B = inicioDoPasso(1);
+  const E_2 = inicioDoPasso(2);
+  const E_2B = inicioDoPasso(3);
+  const E_F = PASSOS_INICIO + 4 * PASSOS_VEZ;
+  const E_SAI = 6.22;
+  const TROCA = E_2 - 0.03;
+  const JUNTA = E_F - 0.02;
+  const COR_APOIO = "rgba(255, 255, 255, 0.78)";
+  /** O começo da peça k de uma cascata com vãos que encolhem */
+  const cascata = (vao: number, k: number, r = 0.86) => (vao * (1 - r ** k)) / (1 - r);
 
-    // A geometria da cápsula (origem: a margem do texto, na base da frase)
-    const H = tp * 3;
-    const cy = -tp * 0.14;
-    const topo = cy - H / 2;
-    const base = cy + H / 2;
-    const pE = tp * 0.62;
-    const pD = tp * 0.95;
-    let larguraNumero = 0;
-    for (const passo of passos) larguraNumero = Math.max(larguraNumero, passo.numero.largura);
-    const xFio = pE + larguraNumero + tp * 0.5;
-    const xTexto = xFio + tp * 0.58;
-    const largura = (k: number) => xTexto + passos[k].texto.largura + pD;
-
-    // Qual item está entrando (a troca começa 0,09 antes do passo dele)
-    const inicio = (k: number) => PASSOS_INICIO + k * PASSOS_VEZ;
-    const k = Math.max(0, Math.min(n - 1, Math.floor((t - PASSOS_INICIO + 0.09) / PASSOS_VEZ)));
-    const fimSaida = entraCubica(sai);
-
-    // A largura: abre do tamanho de um círculo na entrada, ajusta a cada troca
-    let w: number;
-    if (k === 0) w = mix(H, largura(0), saiQuinta(trecho(t, PASSOS_INICIO - 0.1, PASSOS_INICIO + 0.12)));
-    else w = mix(largura(k - 1), largura(k), entraSaiCubica(trecho(t, inicio(k) - 0.08, inicio(k) + 0.08)));
-    w = mix(w, H, fimSaida);
-    const alfa = limitar(entra * 2.2) * (1 - trecho(t, 6.36, 6.5));
-    // A borda acende de leve a cada troca (e na chegada)
-    let acende = 0;
-    for (let j = 0; j < n; j++) acende = Math.max(acende, Math.sin(Math.PI * trecho(t, inicio(j) - 0.05, inicio(j) + 0.16)));
-
+  function desenharEntrega(t: number, cam: Camera) {
+    const en = textos.entrega;
+    if (!en || t < E_1 - 0.08 || t > E_SAI + 0.25) return;
+    const [A, B] = en.itens;
+    const hs = en.hs;
+    const R = en.cubo;
+    const yc = -en.cap / 2;
+    const Q = Math.PI / 2;
     ctx.save();
-    noPlano(cam, enq.textoX, textos.basePassos, 1);
-    ctx.globalAlpha = alfa;
+    noPlano(cam, enq.textoX, textos.baseEntrega, 1);
+    const dobras: { x: number; w: number; y: number; f: number }[] = [];
 
-    // ---- a cápsula de vidro
-    // Uma luz quente atrás do número
-    const gx = pE + larguraNumero * 0.5;
-    const gr = tp * 1.7;
-    ctx.globalAlpha = alfa * (0.16 + 0.1 * acende);
-    desenharLuz(luzOuro, gx - gr, cy - gr, gr * 2, gr * 2);
-    ctx.globalAlpha = alfa;
-    const r = H / 2;
-    const pilula = () => {
-      ctx.beginPath();
-      ctx.moveTo(r, topo);
-      ctx.lineTo(w - r, topo);
-      ctx.arc(w - r, cy, r, -Math.PI / 2, Math.PI / 2);
-      ctx.lineTo(r, base);
-      ctx.arc(r, cy, r, Math.PI / 2, (Math.PI * 3) / 2);
-      ctx.closePath();
+    // ---- os cubos: dy é o centro da face em relação ao eixo da linha, k o
+    // quanto ela está de frente (cosseno); de lado, escurece (pelo
+    // quadrado: quase de lado, some, em vez de ficar como uma lasca na
+    // cauda longa do giro)
+    const face = (ch: string, x: number, y: number, dy: number, k: number) => {
+      if (k <= 0.06 || ch === " ") return;
+      ctx.save();
+      ctx.translate(0, y + yc + dy);
+      ctx.scale(1, k);
+      ctx.globalAlpha = 0.1 + 0.9 * k * k;
+      ctx.fillText(ch, x, en.cap / 2);
+      ctx.restore();
     };
-    pilula();
-    const vidro = ctx.createLinearGradient(0, topo, 0, base);
-    vidro.addColorStop(0, "rgba(255, 255, 255, 0.11)");
-    vidro.addColorStop(1, "rgba(255, 255, 255, 0.035)");
-    ctx.fillStyle = vidro;
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = `rgba(255, 255, 255, ${(0.17 + 0.28 * acende).toFixed(3)})`;
-    ctx.stroke();
-    // O brilho de vidro na borda de cima
-    if (w > H * 1.4) {
-      const g = ctx.createLinearGradient(r, 0, w - r, 0);
-      g.addColorStop(0, "rgba(255, 255, 255, 0)");
-      g.addColorStop(0.3, "rgba(255, 255, 255, 0.22)");
-      g.addColorStop(1, "rgba(255, 255, 255, 0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(r, topo + 1, w - r * 2, 1);
-    }
-
-    // Tudo o que vai dentro fica recortado pela cápsula
-    ctx.save();
-    pilula();
-    ctx.clip();
-
-    // ---- o número, como um odômetro
-    const curso = tp * 1.7;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(pE - 4, -tp * 1.45, larguraNumero + 8, tp * 1.67);
-    ctx.clip();
-    const desenharNumero = (passo: (typeof passos)[number], mudou: (j: number) => boolean, dySai: number, dyEntra: number, papel: "sai" | "entra") => {
-      const l = passo.numero;
-      if (!l.texto) {
-        // O ponto de ouro do último item
-        const dy = papel === "sai" ? dySai : dyEntra;
-        ctx.fillStyle = "#d6b678";
-        ctx.beginPath();
-        ctx.arc(pE + tp * 0.32, cy + dy, tp * 0.17, 0, TAU);
-        ctx.fill();
-        return;
-      }
-      ctx.font = fonteDe(l);
-      ctx.fillStyle = ouro(ctx, pE, pE + l.largura, -1);
-      for (let j = 0; j < l.texto.length; j++) {
-        if (papel === "sai" && !mudou(j)) continue; // o que fica parado é desenhado pelo que entra
-        const dy = mudou(j) ? (papel === "sai" ? dySai : dyEntra) : 0;
-        ctx.fillText(l.texto[j], pE + l.xs[j], dy + fimSaida * curso);
-      }
+    /** A letra parada ou girando: u de 0 a 1 é o quarto de volta; sentido
+     *  "sobe" (a face sai por cima, a nova vem de baixo) ou "desce" */
+    const cubo = (velha: string, nova: string, x: number, w: number, y: number, u: number, sentido: "sobe" | "desce") => {
+      if (u <= 0) return face(velha, x, y, 0, 1);
+      if (u >= 1) return face(nova, x, y, 0, 1);
+      const a = u * Q;
+      const sg = sentido === "sobe" ? 1 : -1;
+      face(velha, x, y, -sg * R * Math.sin(a), Math.cos(a));
+      face(nova, x, y, sg * R * Math.cos(a), Math.sin(a));
+      dobras.push({ x, w, y: y + yc + sg * (R * Math.cos(a) - R * Math.sin(a)), f: Math.sin(2 * a) });
     };
-    if (k === 0) {
-      const rr = saiQuinta(trecho(t, PASSOS_INICIO - 0.06, PASSOS_INICIO + 0.1));
-      desenharNumero(passos[0], () => true, 0, (1 - rr) * curso, "entra");
-    } else {
-      const rr = entraSaiCubica(trecho(t, inicio(k) - 0.07, inicio(k) + 0.07));
-      const velho = passos[k - 1].numero.texto;
-      const novo = passos[k].numero.texto;
-      const mudou = (j: number) => !velho || !novo || velho[j] !== novo[j];
-      if (rr < 1) desenharNumero(passos[k - 1], mudou, -rr * curso, 0, "sai");
-      desenharNumero(passos[k], mudou, 0, (1 - rr) * curso, "entra");
-    }
-    ctx.restore();
-
-    // ---- o fio de ouro entre o número e a frase
-    const fioAlto = tp * 0.58 * saiCubica(limitar(entra * 1.6)) * (1 - fimSaida);
-    if (fioAlto > 0.5) {
-      const g = ctx.createLinearGradient(0, cy - fioAlto, 0, cy + fioAlto);
-      g.addColorStop(0, "rgba(214, 186, 125, 0)");
-      g.addColorStop(0.5, "rgba(224, 196, 143, 0.85)");
-      g.addColorStop(1, "rgba(214, 186, 125, 0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(xFio, cy - fioAlto, 1, fioAlto * 2);
-    }
-
-    // ---- a frase, palavra a palavra
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(xTexto - 4, -tp * 1.45, w - xTexto, tp * 1.85);
-    ctx.clip();
-    const lTexto = (k2: number) => passos[k2].texto;
-    ctx.font = fonteDe(lTexto(k));
-    const subida = tp * 1.2;
-    const frase = (k2: number, papel: "sai" | "entra") => {
-      const l = lTexto(k2);
-      const palavras = palavrasDe(l.texto);
-      palavras.forEach((pw, i) => {
-        let dy: number;
-        let a: number;
-        if (papel === "entra") {
-          const t0 = (k2 === 0 ? PASSOS_INICIO - 0.015 : inicio(k2) - 0.035) + (0.022 * (1 - 0.84 ** i)) / 0.16;
-          const pe = trecho(t, t0, t0 + 0.12);
-          if (pe <= 0) return;
-          dy = (1 - saiQuinta(pe)) * subida + fimSaida * subida;
-          a = 1;
-        } else {
-          const t0 = inicio(k2 + 1) - 0.09 + i * 0.008;
-          const q = trecho(t, t0, t0 + 0.08);
-          if (q >= 1) return;
-          dy = -entraCubica(q) * subida * 0.8;
-          a = 1 - limitar(q / 0.6);
-        }
-        ctx.globalAlpha = alfa * a;
-        for (let c = pw.ini; c < pw.fim; c++) ctx.fillText(l.texto[c], xTexto + l.xs[c], dy);
+    /** Uma linha inteira de letras com o estado de cada uma */
+    const letras = (lista: LetraEntrega[], y: number, estado: (i: number) => { velha: string; nova: string; x: number; u: number; sentido: "sobe" | "desce" }) => {
+      lista.forEach((l, i) => {
+        const e = estado(i);
+        cubo(e.velha, e.nova, e.x, l.w, y, e.u, e.sentido);
       });
     };
-    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-    if (k > 0 && t < inicio(k) + 0.04) frase(k - 1, "sai");
-    frase(k, "entra");
-    ctx.restore();
-    ctx.globalAlpha = alfa;
-
-    // ---- o progresso, na borda de baixo da cápsula
-    const contados = passos.filter((p) => p.numero.texto).length;
-    if (contados > 0) {
-      const yP = base - tp * 0.48;
-      const x0 = pE;
-      const x1 = w - pD * 0.8;
-      const funde = entraSaiCubica(trecho(t, inicio(n - 1), inicio(n - 1) + 0.12));
-      const vao = tp * 0.22 * (1 - funde);
-      const L = (x1 - x0 - vao * (contados - 1)) / contados;
-      if (L > 2) {
-        for (let j = 0; j < contados; j++) {
-          const sx = x0 + j * (L + vao);
-          // Na entrada, cada trilho se desenha da esquerda, em cascata
-          const trilho = saiCubica(trecho(t, PASSOS_INICIO - 0.03 + j * 0.025, PASSOS_INICIO + 0.09 + j * 0.025));
-          if (trilho <= 0) continue;
-          ctx.fillStyle = "rgba(255, 255, 255, 0.13)";
-          ctx.fillRect(sx, yP, L * trilho, 1.5);
-          const cheio = trecho(t, inicio(j), inicio(j) + PASSOS_VEZ);
-          if (cheio <= 0) continue;
-          ctx.fillStyle = ouro(ctx, x0, x1, -1);
-          ctx.fillRect(sx, yP, L * cheio, 1.5);
-          // A pontinha de luz no trecho que está enchendo
-          if (cheio < 1) {
-            const hx = sx + L * cheio;
-            const hr = tp * 0.5;
-            ctx.globalAlpha = alfa * 0.6;
-            desenharLuz(luzOuro, hx - hr, yP - hr * 0.6, hr * 2, hr * 1.2);
-            ctx.globalAlpha = alfa;
-            ctx.fillStyle = "#fff2d2";
-            ctx.fillRect(hx - 1.5, yP - 0.25, 3, 2);
-          }
-        }
-        // Os quatro passos completos: uma luz corre a linha inteira, uma vez
-        const corre = trecho(t, inicio(n - 1) + 0.06, inicio(n - 1) + 0.36);
-        if (corre > 0 && corre < 1) {
-          const hx = mix(x0, x1, saiCubica(corre));
-          const hr = tp * 0.7;
-          ctx.globalAlpha = alfa * 0.7 * Math.sin(Math.PI * corre);
-          desenharLuz(luzOuro, hx - hr, yP - hr * 0.6, hr * 2, hr * 1.2);
-          ctx.fillStyle = "#fff2d2";
-          ctx.fillRect(hx - 6, yP - 0.25, 12, 2);
-          ctx.globalAlpha = alfa;
+    /** A palavra em ouro entrando em foco: grande e desfocada (cópias em
+     *  volta), assentando nítida; p é o progresso cru */
+    const nomeEmFoco = (it: ItemEntrega, y: number, p: number, brilho: number) => {
+      if (p <= 0) return;
+      const e = saiQuinta(p);
+      const s = 1 + 0.32 * (1 - e);
+      const raio = (1 - e) * hs * 0.24;
+      const aparece = limitar(p * 5);
+      ctx.save();
+      ctx.translate(it.xNome, y);
+      ctx.scale(s, s);
+      ctx.translate(-it.xNome, 0);
+      ctx.fillStyle = ouro(ctx, it.faixaNome[0], it.faixaNome[1], brilho);
+      if (raio > 0.35) {
+        ctx.globalAlpha = aparece * (0.03 + 0.13 * (1 - e));
+        for (let k = 0; k < 8; k++) {
+          const ang = (k / 8) * TAU;
+          ctx.fillText(it.textoNome, it.xNome + Math.cos(ang) * raio, Math.sin(ang) * raio * 0.7);
         }
       }
+      ctx.globalAlpha = aparece * e ** 1.4;
+      ctx.fillText(it.textoNome, it.xNome, 0);
+      ctx.restore();
+    };
+    /** A estrela de brilho que pisca no fim da palavra em ouro */
+    const estrela = (it: ItemEntrega, y: number, g: number) => {
+      if (g <= 0 || g >= 1) return;
+      const a = Math.sin(Math.PI * g);
+      const r = hs * 0.4 * a;
+      const x = it.faixaNome[1] - hs * 0.06;
+      const yy = y - en.cap * 0.92;
+      ctx.save();
+      ctx.translate(x, yy);
+      ctx.globalAlpha = 0.4 * a;
+      desenharLuz(luzOuro, -r * 1.8, -r * 1.8, r * 3.6, r * 3.6);
+      ctx.rotate(g * Math.PI * 0.5);
+      ctx.globalAlpha = 0.95 * a;
+      ctx.fillStyle = "#fff6dc";
+      ctx.beginPath();
+      ctx.moveTo(0, -r);
+      ctx.quadraticCurveTo(0, 0, r * 0.7, 0);
+      ctx.quadraticCurveTo(0, 0, 0, r);
+      ctx.quadraticCurveTo(0, 0, -r * 0.7, 0);
+      ctx.quadraticCurveTo(0, 0, 0, -r);
+      ctx.fill();
+      ctx.restore();
+    };
+    /** O selo: o anel de ouro (desenhado até anel), o ícone (traço até
+     *  traco), a escala e o giro de moeda (0 a 1 = meia volta; passada a
+     *  metade, mostra o ícone de trás) */
+    const selo = (frente: ItemEntrega["icone"], tras: ItemEntrega["icone"], y: number, anel: number, traco: number, escala: number, giro: number) => {
+      if (escala <= 0.01 || (anel <= 0.002 && traco <= 0.002)) return;
+      const cg = Math.cos(giro * Math.PI);
+      const icone = cg >= 0 ? frente : tras;
+      const r = en.selo / 2;
+      ctx.save();
+      ctx.translate(r, y + yc);
+      ctx.globalAlpha = 0.24 * anel * escala;
+      desenharLuz(luzOuro, -r * 2.2, -r * 2.2, r * 4.4, r * 4.4);
+      ctx.scale(escala * Math.max(0.03, Math.abs(cg)), escala);
+      ctx.globalAlpha = 0.4 + 0.6 * Math.abs(cg);
+      if (anel > 0.002) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${(0.07 * anel).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, TAU);
+        ctx.fill();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1.3;
+        ctx.strokeStyle = ouro(ctx, -r, r, -1);
+        ctx.beginPath();
+        ctx.arc(0, 0, r, -Q, -Q + TAU * anel);
+        ctx.stroke();
+      }
+      if (traco > 0.002) {
+        const sc = en.ic / 24;
+        ctx.translate(-en.ic / 2, -en.ic / 2);
+        ctx.scale(sc, sc);
+        ctx.lineWidth = 1.9;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = ouro(ctx, 3, 21, -1);
+        const n = icone.partes.length;
+        const vao = n > 1 ? 0.18 : 0;
+        icone.partes.forEach((parte, k) => {
+          const pk = trecho(traco, vao * k, vao * k + 1 - vao * (n - 1));
+          if (pk <= 0) return;
+          const c = icone.comprimentos[k];
+          ctx.setLineDash(pk >= 1 ? [] : [c * pk, c + 2]);
+          ctx.stroke(parte);
+        });
+      }
+      ctx.restore();
+    };
+    /** O apoio: o fio de ouro se desenha e o texto desliza de trás dele; na
+     *  saída, o texto volta para trás do fio e o fio se recolhe */
+    const apoio = (it: ItemEntrega, chega: number, sai: number) => {
+      const pr = Math.min(saiCubica(trecho(t, chega - 0.03, chega + 0.05)), 1 - entraCubica(trecho(t, sai + 0.06, sai + 0.11)));
+      const pt = Math.min(saiQuinta(trecho(t, chega + 0.02, chega + 0.18)), 1 - entraCubica(trecho(t, sai, sai + 0.07)));
+      if (pr <= 0.002 && pt <= 0.002) return;
+      const yL = en.yS - en.as * 0.36;
+      ctx.globalAlpha = 1;
+      if (pr > 0.002) {
+        ctx.fillStyle = ouro(ctx, en.xRegra, en.xRegra + en.regra, -1);
+        ctx.fillRect(en.xRegra, yL - 0.6, en.regra * pr, 1.2);
+      }
+      if (pt > 0.002) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(en.xApoio - 1, en.yS - en.as * 1.3, it.apoioLargura + hs * 2, en.as * 1.8);
+        ctx.clip();
+        ctx.font = en.fonteApoio;
+        ctx.fillStyle = COR_APOIO;
+        ctx.fillText(it.apoio, en.xApoio - (1 - pt) * (it.apoioLargura * 0.55 + hs * 0.4), en.yS);
+        ctx.restore();
+      }
+    };
+    /** O brilho que passa uma vez pelo ouro */
+    const passa = (inicio: number) => mix(-0.25, 1.25, saiCubica(trecho(t, inicio, inicio + 0.12)));
+    /** A saída de uma letra: gira para baixo e some, da última para a primeira */
+    const saida = (i: number, n: number, atraso: number) => {
+      const a = E_SAI + atraso + 0.005 * (n - 1 - i);
+      return entraCubica(trecho(t, a, a + 0.12));
+    };
+    /** Verbo e lugar parados, ou saindo (cubos para baixo) */
+    const linhaParada = (it: ItemEntrega, y: number, brilho: number, atraso: number) => {
+      const n = it.verbo.length + 1 + it.nome.length;
+      ctx.font = en.fonteVerbo;
+      ctx.fillStyle = "#ffffff";
+      letras(it.verbo, y, (i) => ({ velha: it.verbo[i].ch, nova: " ", x: it.verbo[i].x, u: saida(i, n, atraso), sentido: "desce" }));
+      ctx.font = en.fonteNome;
+      ctx.fillStyle = ouro(ctx, it.faixaNome[0], it.faixaNome[1], brilho);
+      letras(it.nome, y, (j) => ({ velha: it.nome[j].ch, nova: " ", x: it.nome[j].x, u: saida(it.verbo.length + 1 + j, n, atraso), sentido: "desce" }));
+    };
+    const fechaSelo = (atraso: number) => 1 - entraCubica(trecho(t, E_SAI + atraso, E_SAI + atraso + 0.1));
+
+    if (t < TROCA) {
+      // ---- passo 0: "Retire na loja"
+      const abre = trecho(t, E_1 - 0.06, E_1 + 0.12);
+      selo(A.icone, A.icone, 0, saiCubica(trecho(t, E_1 - 0.06, E_1 + 0.1)), saiCubica(trecho(t, E_1 - 0.01, E_1 + 0.13)), mix(0.6, 1, saiQuinta(abre)), 0);
+      ctx.font = en.fonteVerbo;
+      ctx.fillStyle = "#ffffff";
+      letras(A.verbo, 0, (i) => ({ velha: " ", nova: A.verbo[i].ch, x: A.verbo[i].x, u: saiQuarta(trecho(t, E_1 + cascata(0.014, i), E_1 + cascata(0.014, i) + 0.16)), sentido: "sobe" }));
+      ctx.font = en.fonteNome;
+      nomeEmFoco(A, 0, trecho(t, E_1 + 0.08, E_1 + 0.25), passa(E_1 + 0.23));
+      estrela(A, 0, trecho(t, E_1 + 0.22, E_1 + 0.34));
+    } else if (t < JUNTA) {
+      // ---- passo 2: a linha gira para "Receba em casa" e o selo vira
+      selo(A.icone, B.icone, 0, 1, 1, 1, entraSaiCubica(trecho(t, TROCA, TROCA + 0.18)));
+      const nv = Math.max(A.verbo.length, B.verbo.length);
+      const giro = (k: number) => nudge(trecho(t, TROCA + 0.01 + cascata(0.013, k), TROCA + 0.01 + cascata(0.013, k) + 0.17));
+      ctx.font = en.fonteVerbo;
+      ctx.fillStyle = "#ffffff";
+      for (let i = 0; i < nv; i++) {
+        const la = A.verbo[i];
+        const lb = B.verbo[i];
+        const ref = lb ?? la;
+        if (!ref) continue;
+        const u = giro(i);
+        cubo(la ? la.ch : " ", lb ? lb.ch : " ", mix(la ? la.x : ref.x, lb ? lb.x : ref.x, u), ref.w, 0, u, "sobe");
+      }
+      const nn = Math.max(A.nome.length, B.nome.length);
+      const anda = giro(nv + nn);
+      ctx.font = en.fonteNome;
+      ctx.fillStyle = ouro(ctx, mix(A.faixaNome[0], B.faixaNome[0], anda), mix(A.faixaNome[1], B.faixaNome[1], anda), passa(TROCA + cascata(0.013, nv + nn) + 0.17));
+      for (let j = 0; j < nn; j++) {
+        const la = A.nome[j];
+        const lb = B.nome[j];
+        const ref = lb ?? la;
+        if (!ref) continue;
+        const u = giro(nv + 1 + j);
+        cubo(la ? la.ch : " ", lb ? lb.ch : " ", mix(la ? la.x : ref.x, lb ? lb.x : ref.x, u), ref.w, 0, u, "sobe");
+      }
+      estrela(B, 0, trecho(t, TROCA + cascata(0.013, nv + nn) + 0.16, TROCA + cascata(0.013, nv + nn) + 0.28));
+    } else {
+      // ---- fecho: as duas formas juntas
+      const yB = en.y2 * entraSaiCubica(trecho(t, JUNTA, JUNTA + 0.15));
+      selo(B.icone, B.icone, yB, fechaSelo(0.02), fechaSelo(0.02), mix(0.6, 1, fechaSelo(0.02)), 0);
+      linhaParada(B, yB, passa(E_F + 0.36), 0.02);
+      const abre = trecho(t, JUNTA + 0.05, JUNTA + 0.21);
+      selo(A.icone, A.icone, 0, Math.min(saiCubica(trecho(t, JUNTA + 0.05, JUNTA + 0.19)), fechaSelo(0)), Math.min(saiCubica(trecho(t, JUNTA + 0.09, JUNTA + 0.22)), fechaSelo(0)), mix(0.6, 1, Math.min(saiQuinta(abre), fechaSelo(0))), 0);
+      if (t < JUNTA + 0.3) {
+        ctx.font = en.fonteVerbo;
+        ctx.fillStyle = "#ffffff";
+        letras(A.verbo, 0, (i) => ({ velha: " ", nova: A.verbo[i].ch, x: A.verbo[i].x, u: saiQuarta(trecho(t, JUNTA + 0.07 + cascata(0.014, i), JUNTA + 0.07 + cascata(0.014, i) + 0.16)), sentido: "desce" }));
+        ctx.font = en.fonteNome;
+        nomeEmFoco(A, 0, trecho(t, JUNTA + 0.13, JUNTA + 0.29), passa(E_F + 0.32));
+      } else {
+        linhaParada(A, 0, passa(E_F + 0.32), 0);
+      }
     }
-    ctx.restore(); // o recorte da cápsula
+
+    // ---- os apoios, e o fio de luz nas arestas dos cubos
+    apoio(A, E_1B, E_2 - 0.13);
+    apoio(B, E_2B, E_F - 0.13);
+    if (dobras.length) {
+      ctx.fillStyle = "#fff6e0";
+      for (const d of dobras) {
+        if (d.f <= 0.02) continue;
+        ctx.globalAlpha = 0.3 * d.f;
+        ctx.fillRect(d.x, d.y - 0.5, d.w, 1);
+      }
+    }
     ctx.restore();
   }
 
@@ -2024,7 +2222,7 @@ export async function criarCena(
     desenharLinha3(t, cam);
     desenharLinha1(t, cam);
     desenharLinha2(t, cam);
-    desenharPassos(t, cam);
+    desenharEntrega(t, cam);
     if (formaNaFrente) desenharForma(t, cam);
   }
 

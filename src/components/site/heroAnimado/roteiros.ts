@@ -10,6 +10,7 @@
 //
 // Nenhum texto promete efeito (RDC 67/2007 e RDC 96/2008): só o nome da
 // linha, tipos de produto e o atendimento.
+import { UNIDADES } from "@/lib/tipos";
 
 export type FontePote = { src: string; altura: number };
 
@@ -29,9 +30,14 @@ export type Roteiro = {
   /** O rótulo da cápsula: duas palavras em caixa alta e, no meio, a
    *  ligação em ouro itálico */
   rotulo: [string, string, string];
-  /** O letreiro: número e texto (número vazio = ponto de ouro, o último
-   *  fica até a saída) */
-  passos: [string, string][];
+  /** O letreiro dos passos (a Saúde da Mulher, em HTML): número e texto
+   *  (número vazio = ponto de ouro, o último fica até a saída) */
+  passos?: [string, string][];
+  /** A dobra (29/10/2026): as duas formas de receber, uma de cada vez e as
+   *  duas juntas no fecho. O verbo vai na voz display, o lugar em ouro
+   *  itálico, e o apoio numa linha menor embaixo. Com o mesmo número de
+   *  letras por palavra nas duas frases, a troca gira letra a letra. */
+  entrega?: { verbo: string; nome: string; apoio: string; icone: "loja" | "moto" }[];
   /** A cor da luz atrás dos potes e a segunda cor da poeira de luz (a
    *  primeira é sempre o ouro) */
   luz: [number, number, number];
@@ -56,12 +62,17 @@ export const ROTEIROS = {
     ],
     linhas: ["Especialistas", "em saúde", "personalizada"],
     rotulo: ["MANIPULAÇÃO", "e", "HOMEOPATIA"],
-    passos: [
-      ["01", "Envie a foto da receita"],
-      ["02", "O farmacêutico confere"],
-      ["03", "Manipulamos a sua fórmula"],
-      ["04", "Retire ou receba em casa"],
-      ["", "Petrópolis, desde 2006"],
+    // 29/10/2026: no lugar dos quatro passos do pedido ("envie a foto da
+    // receita pode sair, farmacêutico confere pode sair [...] são duas
+    // informações falando do delivery ou da retirada na loja"), as duas
+    // formas de receber, só com o que o site já afirma (lojas, página do
+    // produto): as 3 lojas em Petrópolis e o Delivery em Petrópolis e
+    // Região ("Grátis" na retirada saiu a pedido, no mesmo dia). "Retire na loja" e "Receba em casa" têm 6, 2 e
+    // 4 letras nas três palavras: é isso que deixa a troca girar letra a
+    // letra (cena.ts, desenharEntrega)
+    entrega: [
+      { verbo: "Retire na", nome: "loja", apoio: `Numa das ${UNIDADES.length} lojas em Petrópolis`, icone: "loja" },
+      { verbo: "Receba em", nome: "casa", apoio: "Delivery em Petrópolis e Região", icone: "moto" },
     ],
     luz: [80, 160, 235],
     poeira: [138, 184, 234],

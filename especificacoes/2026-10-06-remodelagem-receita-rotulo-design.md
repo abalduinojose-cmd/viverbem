@@ -1,5 +1,29 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 124 (29/10/2026, sessão da dobra animada): o letreiro dos passos virou as duas formas de receber, em tipografia cinética. IMPLEMENTADO e conferido em quadros (1440, 390 e 360); commit local, sem push.**
+> - PEDIDO: "envie a foto da receita pode sair, farmacêutico confere pode
+>   sair [...] são duas informações falando do delivery ou da retirada na
+>   loja; melhore a fonte, tipografia cinética, movimentos mais suaves na
+>   letra, dê mais destaque". O carrossel dos potes ficou como estava
+>   ("a transição dos produtos tá muito bom").
+> - TEXTO: "Retire na loja" com "Numa das 3 lojas em Petrópolis" e "Receba
+>   em casa" com "Delivery em Petrópolis e Região" (só o que o site já
+>   afirma). "Petrópolis, desde 2006" e os passos 01 a 04 saíram. A primeira
+>   versão dizia "Grátis, numa das 3 lojas" e foi recusada no mesmo dia.
+> - DESENHO: sem a cápsula de vidro (lia como botão). O verbo na voz display
+>   em 700 e o lugar em ouro itálico, como o título; corpo ~0,48 do título no
+>   celular e ~0,36 no computador. Um selo de ouro com o ícone do site (o
+>   pino da retirada, a moto do Delivery) e o apoio saindo de trás de um fio
+>   de ouro.
+> - MOVIMENTO (a primeira versão, letras subindo de uma fresta e um rolo
+>   plano, foi "muito simples"): o anel do selo se desenha e o ícone acende;
+>   cada letra é a face de um cubo que gira em 3D em cascata, com a face que
+>   sai escurecendo e um fio de luz na aresta; "loja" e "casa" entram com
+>   foco de lente e uma estrela de brilho; na troca o selo vira como moeda.
+>   No fecho as duas formas ficam juntas, uma em cada linha. Tudo cai nos
+>   quadros dos passos do carrossel.
+> - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
+
 > **ADENDO 123 (29/10/2026): retirada na faixa do topo do computador, creatinas primeiro e setas das faixas no alto. IMPLEMENTADO, testado e PUBLICADO no 69º/70º push.**
 > - CABEÇALHO: a faixa do topo no celular (feita junto) foi RECUSADA no
 >   mesmo dia ("não quero esse header na versão mobile, é pra melhorar só na
