@@ -1,10 +1,10 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 123 (29/10/2026): faixa do topo no celular, creatinas primeiro e setas das faixas no alto. IMPLEMENTADO, testado e PUBLICADO no 69º push.**
-> - CABEÇALHO: no celular entrou a faixa azul-noite do topo (32 px, uma
->   linha centrada): "Aberto agora" ao vivo, Delivery e Retirada na loja,
->   ícones em ouro; --altura-cabecalho do celular foi de 7,25 para 9,25rem.
->   No computador a retirada virou "Retirada na loja" e aparece já em
+> **ADENDO 123 (29/10/2026): retirada na faixa do topo do computador, creatinas primeiro e setas das faixas no alto. IMPLEMENTADO, testado e PUBLICADO no 69º/70º push.**
+> - CABEÇALHO: a faixa do topo no celular (feita junto) foi RECUSADA no
+>   mesmo dia ("não quero esse header na versão mobile, é pra melhorar só na
+>   versão desktop") e saiu no 70º push; o celular segue sem a faixa e com
+>   --altura-cabecalho de 7,25rem. No computador a retirada virou "Retirada na loja" e aparece já em
 >   1024 px; a nota do Google passou para 1280 px (em 1024 os dois juntos
 >   estouravam a linha). Medido: sem estouro em 360, 390, 1024, 1280, 1366.
 > - MAIS PROCURADOS: Creatina Gummy e Caramelo de Creatina primeiro (ordem
