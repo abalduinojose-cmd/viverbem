@@ -227,9 +227,14 @@ export function CenaMulher() {
           </span>
         </span>
 
-        {/* "Saúde": cada letra na sua máscara (a folga em cima guarda o acento) */}
+        {/* "Saúde": cada letra na sua máscara (a folga em cima guarda o acento).
+            29/10/2026 ("o e do Saúde tá quebrado"): a máscara acabava junto da
+            caixa do "e" e o espaçamento negativo deixava o desenho dele uns
+            4 px para fora, então a lateral direita era cortada reta. Agora a
+            máscara tem folga à direita (pr) e o espaçamento fechou menos
+            (-0,045em para -0,03em), para o "d" não encostar no "e". */}
         <span
-          className="mt-4 md:mt-5 block overflow-hidden pt-[0.14em] -mb-[0.04em] text-white text-[3.7rem] md:text-[4.3rem] lg:text-[4.9rem] xl:text-[5.5rem] leading-[0.95] tracking-[-0.045em]"
+          className="mt-4 md:mt-5 block overflow-hidden pt-[0.14em] pr-[0.12em] -mb-[0.04em] text-white text-[3.7rem] md:text-[4.3rem] lg:text-[4.9rem] xl:text-[5.5rem] leading-[0.95] tracking-[-0.03em]"
           style={{ fontFamily: FONTES.display, fontWeight: FONTES.pesoDisplay }}
         >
           {[...l1].map((c, i) => (

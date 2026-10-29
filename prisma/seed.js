@@ -268,6 +268,36 @@ async function main() {
       categoria: "dermatologia-estetica",
       fotoUrl: "/uploads/centella-asiatica-creme.webp",
     },
+    // 29/10/2026: três produtos novos enviados com foto (rótulo da linha).
+    // Textos só com o que está no rótulo, sem promessa de efeito.
+    {
+      nome: "Calm Repair Pad",
+      apresentacao: "Pote com 56 pads",
+      composicao: "Plantonia 1%\nCentella asiatica 10%\nCeramida 1%\nD-pantenol 1%\nÁcido hialurônico 10%",
+      modoUso: "Com a pele limpa, passar suavemente no rosto 1 a 2 vezes ao dia, ou conforme orientação do prescritor.",
+      descricao: "Pads com centella asiatica, ceramida, D-pantenol e ácido hialurônico, para peles sensíveis e maduras.",
+      precoCentavos: 0,
+      categoria: "dermatologia-estetica",
+      fotoUrl: "/uploads/calm-repair-pad.webp",
+    },
+    {
+      nome: "Sérum Fortalecedor de Unhas",
+      apresentacao: "Frasco 30ml",
+      composicao: "D-pantenol\nBiotina\nExtrato de bambu",
+      modoUso: "Uso externo. Aplicar nas unhas conforme orientação do farmacêutico ou do prescritor.",
+      descricao: "Sérum para as unhas com D-pantenol, biotina e extrato de bambu. Uso externo.",
+      precoCentavos: 0,
+      categoria: "cabelos-unhas",
+      fotoUrl: "/uploads/serum-fortalecedor-unhas.webp",
+    },
+    {
+      nome: "Elibrya",
+      apresentacao: "30 blocos",
+      descricao: "Suplemento de bem-estar da linha Viver Bem, em 30 blocos. Composição e modo de uso com o farmacêutico.",
+      precoCentavos: 0,
+      categoria: "vitaminas-suplementos",
+      fotoUrl: "/uploads/elibrya.webp",
+    },
     {
       nome: "Firm Defense Serum",
       apresentacao: "Frasco 30ml",

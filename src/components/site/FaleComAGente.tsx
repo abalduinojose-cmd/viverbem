@@ -28,11 +28,14 @@
 // cima do cartão; a luz de ouro cresce um pouco ao passar o mouse. O cartão
 // recorta com overflow: clip (overflow: hidden faria dele um contêiner de
 // rolagem, e as linhas de tempo view() ficariam presas nele).
-import type React from "react";
+//
+// 29/10/2026: no desktop, a folha em vidro deu lugar à cena animada que já
+// existia (CenaReceita, adendo 50); o título continua se escrevendo.
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
 import { SetaDireita } from "./icones";
 import { IconeReceita } from "./BotaoEnviarReceita";
+import { CenaReceita } from "./receita/CenaReceita";
 
 const ROTAS_SEM_O_BLOCO = ["/lojas", "/contato"];
 const PREFIXOS_SEM_O_BLOCO = ["/produto/"];
@@ -72,30 +75,14 @@ export function FaleComAGente() {
               </div>
             </div>
 
-            {/* A folha de receita em vidro, só no desktop */}
-            <div aria-hidden="true" className="hidden lg:col-span-5 lg:flex lg:justify-end lg:pr-4">
-              <div className="relative w-[17rem] -rotate-[4deg] rounded-[1.4rem] bg-white/[0.06] p-7 ring-1 ring-inset ring-white/15 shadow-[0_40px_70px_-40px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-sm transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-2 group-hover:-rotate-[2.5deg]">
-                <span className="flex items-center justify-between">
-                  <span className="font-[family-name:var(--font-destaque)] text-[1.9rem] italic leading-none text-[#e1c68f]">Rx</span>
-                  <span className="text-[#e1c68f]/85">
-                    <IconeReceita tamanho={22} />
-                  </span>
-                </span>
-                <span className="receita-linha mt-7 block h-[3px] w-14 rounded-full bg-[image:var(--ouro-degrade)]" style={{ "--i": 0 } as React.CSSProperties} />
-                <span className="mt-6 block space-y-3.5">
-                  {["88%", "68%", "78%", "52%"].map((largura, i) => (
-                    <span key={largura} className="receita-linha block h-2 rounded-full bg-white/[0.16]" style={{ width: largura, "--i": i + 1 } as React.CSSProperties} />
-                  ))}
-                </span>
-                <span className="mt-8 flex items-center justify-between">
-                  <span className="receita-linha block h-2 w-[34%] rounded-full bg-white/[0.12]" style={{ "--i": 5 } as React.CSSProperties} />
-                  <span className="receita-visto flex size-8 items-center justify-center rounded-full bg-[image:var(--ouro-degrade)] text-navy">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </span>
-              </div>
+            {/* A cena animada, só no desktop (29/10/2026, "coloque a animação
+                que já tínhamos feito antes"): a CenaReceita do adendo 50, em que
+                o celular fotografa a receita e a conversa do WhatsApp responde
+                "Receita conferida". Ela se ajusta ao tamanho desta caixa e só
+                roda com o cartão à vista; no celular a caixa não aparece e a
+                cena nem começa. */}
+            <div aria-hidden="true" className="relative hidden lg:col-span-5 lg:block lg:h-[23rem] lg:-my-4">
+              <CenaReceita className="inset-0" />
             </div>
           </div>
         </article>

@@ -1616,41 +1616,17 @@ summary::-webkit-details-marker {
 }
 
 /* 27/10/2026, "Fale com a gente" (adendo 115): o título se escreve ao
-   entrar e, na folha de receita em vidro, as linhas se desenham uma depois
-   da outra (o índice --i de cada linha adia a faixa) e o visto de ouro
-   aparece por último. Tudo pela rolagem, como o resto do site. */
-@keyframes visto-aparece {
-  from {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
+   entrar. (As linhas da folha em vidro e o visto saíram em 29/10/2026,
+   quando a folha deu lugar à CenaReceita.) */
 @supports (animation-timeline: view()) {
   .revelar .titulo-receita {
     animation: titulo-escreve cubic-bezier(0.25, 0.5, 0.4, 1) both;
     animation-timeline: view();
     animation-range: cover 2% cover 18%;
   }
-  .receita-linha {
-    transform-origin: 0% 50%;
-    animation: cresce-x cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-timeline: view();
-    animation-range: cover calc(6% + var(--i, 0) * 2.4%) cover calc(20% + var(--i, 0) * 2.4%);
-  }
-  .receita-visto {
-    animation: visto-aparece cubic-bezier(0.34, 1.25, 0.64, 1) both;
-    animation-timeline: view();
-    animation-range: cover 22% cover 34%;
-  }
 }
 @media print {
-  .revelar .titulo-receita,
-  .receita-linha,
-  .receita-visto {
+  .revelar .titulo-receita {
     animation: none !important;
   }
 }

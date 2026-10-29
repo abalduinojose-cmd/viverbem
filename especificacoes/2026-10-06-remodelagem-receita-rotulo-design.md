@@ -1,5 +1,27 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 122 (29/10/2026): três produtos novos, a cena da receita de volta e o "Saúde" consertado. IMPLEMENTADO, testado e PUBLICADO no 68º push.**
+> - PRODUTOS (fotos enviadas pelo usuário, levadas a 500x500 com fundo
+>   transparente e o mesmo tamanho dos potes atuais): Calm Repair Pad
+>   (Dermatologia & Estética, pote com 56 pads, composição e modo de uso do
+>   rótulo), Sérum Fortalecedor de Unhas (Cabelos & Unhas, frasco 30 ml,
+>   D-pantenol, biotina e extrato de bambu, uso externo) e Elibrya
+>   (Vitaminas & Suplementos, 30 blocos, sem composição no rótulo). Todos
+>   manipulados, sem preço e sem tarja; textos sem promessa de efeito. No
+>   seed e no banco local. ATENÇÃO levada ao usuário: os três rótulos dizem
+>   "VivurBem" (erro de digitação da imagem gerada) e o "Plantonia 1%" do
+>   Calm Repair Pad precisa da confirmação do farmacêutico.
+> - FALE COM A GENTE, DESKTOP ("coloque a animação que já tínhamos feito
+>   antes"): a folha em vidro deu lugar à CenaReceita do adendo 50 (o
+>   celular fotografa a receita, a conversa responde "Receita conferida"),
+>   numa caixa de 23rem à direita; no celular não aparece. CSS das linhas e
+>   do visto da folha removido.
+> - "SAÚDE" do banner da Saúde da Mulher ("o e do Saúde tá quebrado"): a
+>   máscara da entrada letra a letra acabava junto da caixa do "e", e o
+>   espaçamento negativo deixava o desenho dele 4 px para fora, cortado
+>   reto. Máscara com folga à direita (pr-[0.12em]) e espaçamento de
+>   -0,045em para -0,03em. Conferido no desktop e no celular.
+
 > **ADENDO 121 (28/10/2026): a receita como cartão de seleção. IMPLEMENTADO, testado e PUBLICADO no 67º push.**
 > "Pode melhorar, deixe mais moderno." A chave de ligar e desligar deu lugar
 > a um CARTÃO DE SELEÇÃO, como as escolhas de pagamento dos apps: círculo
