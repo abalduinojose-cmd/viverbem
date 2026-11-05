@@ -70,7 +70,7 @@ export function CapituloVinteAnos({ anos, lojas }: { anos: number; lojas: number
     >
       <span aria-hidden="true" className="malha-banner" />
       <div ref={miolo} className="capitulo capitulo-sob-folha relative max-w-6xl mx-auto px-5 md:px-8 origin-bottom">
-        <p className="rotulo-pilula">03 · {anos} anos</p>
+        <p className="rotulo-pilula">{anos} anos de história</p>
 
         {/* O número gigante e a legenda dele */}
         <div ref={linhaNumero} className="mt-4 md:mt-6 flex items-end gap-4 md:gap-7">

@@ -36,6 +36,13 @@
 // no computador a galeria presa da evolução deu lugar a quatro cartões
 // lado a lado ligados por um fio de ouro, com o "Hoje" em azul-noite
 // (MarcosEmCartoes); até o tablet a lista vertical com o trilho continua.
+//
+// 05/11/2026 ("melhore aquele layout ali, o começo na Posse, 20 anos, 3
+// lojas; tire a numeração 01 propósito, 02 evolução"): os três números da
+// abertura saíram da tabela de fios e foram para um cartão branco de três
+// células, cada uma com um traço de ouro no alto, o número, o nome em
+// negrito e o complemento em cinza. Os rótulos dos capítulos perderam o
+// "01 ·", "02 ·", "03 ·" e "04 ·".
 import type { Metadata } from "next";
 import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
@@ -92,9 +99,9 @@ const FOTO_2006 = {
 };
 
 const NUMEROS = [
-  { valor: "2006", rotulo: "o começo, na Posse" },
-  { valor: String(ANOS_TRADICAO), rotulo: "anos de manipulação" },
-  { valor: String(UNIDADES.length), rotulo: "lojas em Petrópolis" },
+  { valor: "2006", titulo: "O começo", rotulo: "na loja da Posse" },
+  { valor: String(ANOS_TRADICAO), titulo: "Anos", rotulo: "de manipulação" },
+  { valor: String(UNIDADES.length), titulo: "Lojas", rotulo: "em Petrópolis" },
 ];
 
 // Para todas as âncoras da página caírem abaixo do cabeçalho preso
@@ -152,12 +159,18 @@ export default async function PaginaSobre() {
               </span>
             </h1>
 
-            {/* Os três números, rolando como contador */}
-            <ul className="entra mt-9 md:mt-11 grid grid-cols-3 border-y border-fio max-w-xl" style={{ "--atraso": "550ms" } as CSSProperties}>
+            {/* Os três números, rolando como contador, num cartão de três
+                células com um traço de ouro no alto de cada uma */}
+            <ul
+              className="entra mt-9 md:mt-11 grid max-w-xl grid-cols-3 overflow-hidden rounded-[1.5rem] bg-white ring-1 ring-inset ring-fio shadow-[0_26px_50px_-40px_rgba(16,42,74,0.55)]"
+              style={{ "--atraso": "550ms" } as CSSProperties}
+            >
               {NUMEROS.map((n, i) => (
-                <li key={n.rotulo} className={`py-5 md:py-6 ${i > 0 ? "border-l border-fio pl-4 md:pl-6" : "pr-4"}`}>
-                  <NumeroRolante valor={n.valor} className="text-[clamp(2.3rem,1.6rem+2.2vw,3.5rem)]" />
-                  <span className="mt-2 block text-[0.8rem] md:text-sm text-cinza leading-snug">{n.rotulo}</span>
+                <li key={n.rotulo} className={`relative px-3.5 pb-4 pt-5 md:px-6 md:pb-6 md:pt-7 ${i > 0 ? "border-l border-fio" : ""}`}>
+                  <span aria-hidden="true" className="absolute left-3.5 top-0 h-[2px] w-7 rounded-full bg-[image:var(--ouro-degrade)] md:left-6 md:w-9" />
+                  <NumeroRolante valor={n.valor} className="text-[clamp(2.2rem,1.6rem+2.2vw,3.5rem)]" />
+                  <span className="mt-2.5 block text-[0.86rem] font-semibold leading-tight tracking-[-0.01em] text-navy md:text-[1rem]">{n.titulo}</span>
+                  <span className="mt-0.5 block text-[0.74rem] leading-snug text-cinza md:text-[0.86rem]">{n.rotulo}</span>
                 </li>
               ))}
             </ul>
@@ -187,9 +200,9 @@ export default async function PaginaSobre() {
         </div>
       </section>
 
-      {/* ---------- 01 · O propósito ---------- */}
+      {/* ---------- O propósito ---------- */}
       <section id="proposito" aria-labelledby="titulo-proposito" className={`capitulo max-w-6xl mx-auto px-5 md:px-8 ${ANCORA}`}>
-        <p className="rotulo-pilula">01 · o propósito</p>
+        <p className="rotulo-pilula">o propósito</p>
         <h2 id="titulo-proposito" className="sr-only">
           O propósito
         </h2>
@@ -205,11 +218,11 @@ export default async function PaginaSobre() {
         />
       </section>
 
-      {/* ---------- 02 · A evolução ---------- */}
+      {/* ---------- A evolução ---------- */}
       <section id="evolucao" aria-labelledby="titulo-linha-do-tempo" className={`capitulo-tempo relative ${ANCORA}`}>
         <div className="max-w-6xl mx-auto px-5 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-4 lg:items-end">
           <div className="lg:col-span-7">
-            <p className="rotulo-pilula">02 · a evolução</p>
+            <p className="rotulo-pilula">a evolução</p>
             <h2 id="titulo-linha-do-tempo" className="titulo-secao vao-rotulo">
               Da Posse <span className="italic">para toda Petrópolis</span>
             </h2>
@@ -229,10 +242,10 @@ export default async function PaginaSobre() {
         </div>
       </section>
 
-      {/* ---------- 03 · 20 anos: a folha escura ---------- */}
+      {/* ---------- 20 anos: a folha escura ---------- */}
       <CapituloVinteAnos anos={ANOS_TRADICAO} lojas={UNIDADES.length} />
 
-      {/* ---------- 04 · O futuro: a folha branca sobe por cima da escura ---------- */}
+      {/* ---------- O futuro: a folha branca sobe por cima da escura ---------- */}
       <section
         id="futuro"
         aria-labelledby="titulo-futuro"
@@ -240,7 +253,7 @@ export default async function PaginaSobre() {
       >
         <div className="capitulo max-w-6xl mx-auto px-5 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
-            <p className="rotulo-pilula">04 · o mesmo propósito</p>
+            <p className="rotulo-pilula">o mesmo propósito</p>
             <h2 id="titulo-futuro" className="sr-only">
               O mesmo propósito
             </h2>

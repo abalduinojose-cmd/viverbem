@@ -174,8 +174,10 @@ export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_PERFIL}/`;
 export const CNPJ_FARMACIA = "08.303.445/0001-52";
 
 // Total de avaliações no perfil do Google (o site mostra só uma
-// seleção delas). Conferido em ago/2026 — atualize quando crescer.
-export const AVALIACOES_GOOGLE_TOTAL = 680; // perfil do Centro em 07/10/2026
+// seleção delas). Conferido no perfil do Google em 05/11/2026 (690
+// avaliações, 673 delas com 5 estrelas; eram 680 em 07/10). Atualize
+// quando crescer.
+export const AVALIACOES_GOOGLE_TOTAL = 690; // perfil do Centro em 05/11/2026
 export const AVALIACOES_GOOGLE_NOTA = 5.0;
 
 export const PERFIL_GOOGLE_URL =

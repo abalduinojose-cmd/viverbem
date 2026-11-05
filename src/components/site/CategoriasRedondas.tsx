@@ -8,6 +8,11 @@
 // 08/10/2026 ("diminua o tamanho em 10%"): o título sai a 90% do tamanho
 // de título de seção e a grade dos círculos ocupa 90% da largura.
 // 14/10/2026: os potes respiram e um brilho passa por eles (PoteVivo).
+// 05/11/2026 ("um pouco menor, arrastando para o lado, 4 destaques na tela
+// no celular"): no celular a grade de 3 colunas em duas linhas virou uma
+// faixa só, que arrasta para o lado: cabem quatro círculos e aparece a
+// ponta do quinto, para mostrar que há mais. O título também encolheu no
+// celular (de 1/15,2 para 1/17,5 da largura). No computador nada mudou.
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
@@ -34,18 +39,24 @@ export function CategoriasRedondas({
             computador em 82% do título de seção */}
         <h2
           id="titulo-categorias"
-          className="titulo-secao whitespace-nowrap text-[min(calc(var(--tam-titulo)*0.82),calc((100vw_-_3.5rem)/15.2))]"
+          className="titulo-secao whitespace-nowrap text-[min(1.75rem,calc((100vw_-_3.5rem)/17.5))] md:text-[min(calc(var(--tam-titulo)*0.82),calc((100vw_-_3.5rem)/15.2))]"
         >
           Conheça nossas <span className="italic">linhas de produtos</span>
         </h2>
       </div>
 
-      <ul className="escalonado vao-titulo mx-auto w-[90%] grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-7 md:gap-6">
+      {/* No celular a faixa inteira entra de uma vez (.revelar): dentro de
+          uma faixa que rola, a cascata dos filhos não tem como medir a tela.
+          No computador vale a cascata (.escalonado) e este bloco fica parado. */}
+      <div className="revelar md:![animation:none] vao-titulo">
+      <ul className="escalonado flex gap-3 overflow-x-auto rolagem-sem-barra snap-x snap-mandatory -mx-5 px-5 scroll-px-5 pt-1 pb-3 md:mx-auto md:w-[90%] md:grid md:grid-cols-6 md:gap-6 md:overflow-visible md:px-0 md:pt-0 md:pb-0">
         {categorias.map((c, i) => {
           const img = imagens[c.id];
           return (
-            <li key={c.id}>
-              <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-3 text-center">
+            // Celular: quatro por tela e a ponta do quinto (largura da tela
+            // menos o recuo e os três vãos, dividida por 4,25)
+            <li key={c.id} className="w-[calc((100vw_-_2.5rem_-_2.25rem)/4.25)] shrink-0 snap-start md:w-auto">
+              <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-2 md:gap-3 text-center">
                 <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
                   {img?.tipo === "foto" ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -82,7 +93,7 @@ export function CategoriasRedondas({
                   )}
                 </span>
                 <span className="leading-tight">
-                  <span className="block font-semibold text-navy text-[0.9rem] md:text-base transition-colors group-hover:text-tinta">
+                  <span className="block font-semibold text-navy text-[0.72rem] md:text-base transition-colors group-hover:text-tinta">
                     {c.nome}
                   </span>
                 </span>
@@ -91,6 +102,7 @@ export function CategoriasRedondas({
           );
         })}
       </ul>
+      </div>
     </section>
   );
 }

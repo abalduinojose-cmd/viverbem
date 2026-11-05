@@ -24,6 +24,22 @@
 >   quadros dos passos do carrossel.
 > - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
 
+> **ADENDO 125 (05/11/2026): linhas de produtos em faixa no celular, 690 avaliações e a abertura da história. IMPLEMENTADO, testado e PUBLICADO no 73º push.**
+> - LINHAS DE PRODUTOS, CELULAR ("um pouco menor, arrastando para o lado, 4
+>   destaques na tela"): a grade de 3 colunas em duas linhas virou uma faixa
+>   que arrasta para o lado, com quatro círculos na tela e a ponta do quinto
+>   aparecendo; o título encolheu (18 px em 375 px de tela, eram 21); o nome
+>   de cada linha em 0,72rem. No computador nada mudou (seis colunas).
+> - AVALIAÇÕES DO GOOGLE: 680 para 690 (perfil do Centro, medido pelo Apify
+>   em 05/11: 673 com 5 estrelas, nota 5,0). Horário e telefone do perfil
+>   conferem com o site. Vale em todo lugar que usa a constante.
+> - NOSSA HISTÓRIA ("melhore aquele layout ali, o começo na Posse, 20 anos, 3
+>   lojas; tire a numeração"): os três números da abertura saíram da tabela
+>   de fios para um cartão branco de três células, cada uma com um traço de
+>   ouro no alto, o número rolando, o nome em negrito (O começo, Anos, Lojas)
+>   e o complemento em cinza. Os rótulos dos capítulos perderam "01 ·" a
+>   "04 ·": o propósito, a evolução, 20 anos de história, o mesmo propósito.
+
 > **ADENDO 123 (29/10/2026): retirada na faixa do topo do computador, creatinas primeiro e setas das faixas no alto. IMPLEMENTADO, testado e PUBLICADO no 69º/70º push.**
 > - CABEÇALHO: a faixa do topo no celular (feita junto) foi RECUSADA no
 >   mesmo dia ("não quero esse header na versão mobile, é pra melhorar só na
