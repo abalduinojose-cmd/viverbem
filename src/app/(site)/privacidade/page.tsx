@@ -184,7 +184,7 @@ export default function PaginaPrivacidade() {
           conteudo: (
             <>
               <p>
-                Se esta política mudar, a nova versão entra aqui com a data atualizada no alto da página. Mudanças que afetem o uso dos seus dados serão avisadas no site. Veja também os <Link href="/termos">termos de uso</Link> e a <Link href="/reembolso">política de trocas e reembolso</Link>.
+                Se esta política mudar, a nova versão entra aqui com a data atualizada no alto da página. Mudanças que afetem o uso dos seus dados serão avisadas no site. Veja também os <Link href="/termos">termos de uso</Link>.
               </p>
             </>
           ),

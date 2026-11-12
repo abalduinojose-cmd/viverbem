@@ -43,7 +43,7 @@ import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
 import { linkWhatsAppPedido, gerarCodigoPedido } from "@/lib/whatsapp";
 import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
-import { IconeMoto } from "./IconeMoto";
+import { IconeCaixa } from "./IconeCaixa";
 import { FotoProduto } from "./FotoProduto";
 import { IconeReceita } from "./BotaoEnviarReceita";
 import { IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
@@ -791,8 +791,8 @@ export function CarrinhoDrawer() {
                         {
                           modo: ENTREGA_DELIVERY,
                           titulo: "Receber em casa",
-                          apoio: "Delivery",
-                          icone: <IconeMoto tamanho={24} />,
+                          apoio: "Enviamos para todo o Brasil",
+                          icone: <IconeCaixa tamanho={24} />,
                         },
                       ].map((opcao) => (
                         <button

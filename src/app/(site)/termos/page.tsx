@@ -34,7 +34,6 @@ export default function PaginaTermos() {
         "O site não vende sozinho: o pedido feito aqui é um pré-pedido, confirmado pelo farmacêutico no WhatsApp.",
         "Fórmula que exige prescrição só é preparada com receita válida de profissional habilitado (RDC 67/2007); nos demais produtos, o farmacêutico confere se a receita é necessária.",
         "Valor e prazo são passados na conversa; o pagamento é combinado ali e feito na loja, na entrega ou como acertado com a equipe.",
-        "Industrializados têm os prazos do Código de Defesa do Consumidor; manipulados não têm devolução por desistência.",
       ]}
       secoes={[
         {
@@ -91,20 +90,9 @@ export default function PaginaTermos() {
                 <li>Só produtos industrializados mostram preço no site, como referência confirmada no atendimento. O valor de uma fórmula manipulada depende da receita e da formulação e é informado pelo WhatsApp, antes de você confirmar.</li>
                 <li>Nada é cobrado pelo site. Você só paga depois que o farmacêutico confirma o pedido e você aceita o valor e o prazo.</li>
                 <li>Os prazos de preparo são informados no atendimento e podem variar conforme a fórmula e os insumos.</li>
-                <li>A retirada nas lojas não tem custo. A entrega em Petrópolis e Região tem taxa e prazo combinados pelo WhatsApp antes da confirmação.</li>
+                <li>A retirada nas lojas não tem custo. Enviamos para todo o Brasil, com frete e prazo combinados pelo WhatsApp antes da confirmação.</li>
                 <li>Erros evidentes de digitação em preços ou descrições podem ser corrigidos antes da confirmação do pedido.</li>
               </ul>
-            </>
-          ),
-        },
-        {
-          id: "trocas",
-          titulo: "Trocas, devoluções e reembolso",
-          conteudo: (
-            <>
-              <p>
-                As regras estão na <Link href="/reembolso">política de trocas e reembolso</Link>, que faz parte destes termos. Em resumo: produto industrializado com defeito é trocado conforme o Código de Defesa do Consumidor; fórmula manipulada é feita sob medida e não pode ser devolvida por desistência, mas qualquer problema de preparo é resolvido sem custo.
-              </p>
             </>
           ),
         },

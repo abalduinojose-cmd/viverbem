@@ -15,7 +15,7 @@ const EH_DEMO = process.env.DEMO === "1";
 export const metadata: Metadata = {
   title: "O que manipulamos · Manipulação Viver Bem",
   description:
-    "Fórmulas manipuladas a partir da receita, separadas por área. Envie a foto da prescrição pelo WhatsApp e retire numa das 3 lojas em Petrópolis ou receba em casa.",
+    "Fórmulas manipuladas a partir da receita, separadas por área. Envie a foto da prescrição pelo WhatsApp e retire numa das 3 lojas em Petrópolis ou receba em casa, com envio para todo o Brasil.",
   alternates: { canonical: "/produtos" },
 };
 

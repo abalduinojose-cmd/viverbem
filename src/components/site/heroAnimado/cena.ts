@@ -677,7 +677,10 @@ function medirRotulo(ctx: CanvasRenderingContext2D, tr: number, f: FontesDaCena,
 
 // Os ícones do site (IconesVantagens: o pino da loja; IconeMoto: a moto
 // do Delivery), em partes, para cada traço se desenhar por inteiro
-const ICONES_ENTREGA: Record<"loja" | "moto", string[]> = {
+// 12/11/2026: a caixa de encomenda ("enviamos para todo o Brasil"), do
+// "package" do Tabler Icons, como o IconeCaixa do site
+const ICONES_ENTREGA: Record<"loja" | "moto" | "caixa", string[]> = {
+  caixa: ["M12 3l8 4.5v9l-8 4.5l-8 -4.5v-9l8 -4.5", "M12 12l8 -4.5", "M12 12v9", "M12 12l-8 -4.5", "M16 5.25l-8 4.5"],
   loja: ["M12 21s-6.5-5.1-6.5-10a6.5 6.5 0 1 1 13 0c0 4.9-6.5 10-6.5 10Z", "M14.3 11a2.3 2.3 0 1 0 -4.6 0a2.3 2.3 0 1 0 4.6 0"],
   moto: [
     "M5 16v1a2 2 0 1 0 4 0v-5h-3a3 3 0 0 0 -3 3v1h10a6 6 0 0 1 5 -4v-5a2 2 0 0 0 -2 -2h-1",

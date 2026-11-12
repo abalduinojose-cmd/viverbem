@@ -34,7 +34,7 @@ export const PERGUNTAS = [
   },
   {
     pergunta: "Como recebo o pedido?",
-    resposta: `Retirada sem custo em uma das ${UNIDADES.length} lojas (${UNIDADES.map((u) => u.bairro).join(", ")}) ou Delivery em Petrópolis e Região. A taxa e o prazo da entrega são combinados pelo WhatsApp.`,
+    resposta: `Retirada sem custo em uma das ${UNIDADES.length} lojas (${UNIDADES.map((u) => u.bairro).join(", ")}) ou receba em casa: enviamos para todo o Brasil. O frete e o prazo da entrega são combinados pelo WhatsApp.`,
   },
   {
     pergunta: "O que acontece com a minha receita e os meus dados?",

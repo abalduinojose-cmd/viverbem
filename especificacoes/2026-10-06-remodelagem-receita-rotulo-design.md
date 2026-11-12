@@ -24,6 +24,22 @@
 >   quadros dos passos do carrossel.
 > - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
 
+> **ADENDO 126 (12/11/2026): ajustes depois da reunião com a proprietária. IMPLEMENTADO e testado, SÓ LOCAL.**
+> - LOGO MAIOR no cabeçalho: celular de 2,85 para 3,4rem (124x54 px em 375 de tela,
+>   folga de 81 px até os botões) e computador de 3,36 para 4rem (146x64 px).
+> - BUSCA NO COMPUTADOR ("fica quebrada, translúcida"): a entrada animada
+>   (.entrada-topo) faz de cada fileira do cabeçalho uma camada própria, e a fileira
+>   das categorias era pintada por cima do painel de resultados. A fileira da busca
+>   ganhou relative z-[2]; medido: o painel fica inteiro por cima.
+> - TROCAS E REEMBOLSO FORA DO SITE: a página /reembolso saiu, junto com o link no
+>   rodapé, no selo Compra garantida, na privacidade, no sitemap e a seção e o item
+>   do essencial nos termos.
+> - "ENVIAMOS PARA TODO O BRASIL" no lugar de "Delivery em Petrópolis e Região": faixa
+>   do topo, vantagens, letreiro da dobra, Como funciona, carrinho, página do produto
+>   (selos, destaques e aba de entrega), lojas, contato, sobre, termos, FAQ,
+>   formulário de contato e o areaServed (Brasil). Ícone novo IconeCaixa (caixa de
+>   encomenda, Tabler "package") no lugar da moto, também no letreiro da dobra.
+
 > **ADENDO 125 (05/11/2026): linhas de produtos em faixa no celular, 690 avaliações e a abertura da história. IMPLEMENTADO, testado e PUBLICADO no 73º push.**
 > - LINHAS DE PRODUTOS, CELULAR ("um pouco menor, arrastando para o lado, 4
 >   destaques na tela"): a grade de 3 colunas em duas linhas virou uma faixa

@@ -29,7 +29,7 @@ import { useEstadoLoja } from "./HorarioAtendimento";
 import { BotaoEnviarReceita } from "./BotaoEnviarReceita";
 import { BuscaAoVivo } from "./BuscaAoVivo";
 import type { ItemDoIndice } from "@/lib/indiceBusca";
-import { IconeMoto } from "./IconeMoto";
+import { IconeCaixa } from "./IconeCaixa";
 import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 
 // Abre a gaveta do pedido. A contagem só aparece com item no carrinho
@@ -93,7 +93,8 @@ const INSTITUCIONAL = [
 // xl (1280 px) e virou "Retirada na loja", curta, já no lg; a nota do
 // Google passou para o xl (em 1024 px os dois juntos estouravam a linha).
 const VANTAGENS = [
-  { icone: <IconeMoto tamanho={16} />, texto: "Delivery em Petrópolis e Região" },
+  // 12/11/2026: "enviamos para todo o Brasil" no lugar do Delivery local
+  { icone: <IconeCaixa tamanho={16} />, texto: "Enviamos para todo o Brasil" },
   {
     icone: <IconeEstrela tamanho={14} />,
     texto: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google · ${AVALIACOES_GOOGLE_TOTAL} avaliações`,
@@ -279,7 +280,12 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
       </div>
 
       {/* ---------- 2. Linha principal ---------- */}
-      <div className="entrada-topo entrada-topo-2 max-w-[90rem] mx-auto px-5 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
+      {/* relative z-[2] (12/11/2026, "a pesquisa no desktop fica quebrada,
+          translúcida"): a entrada animada (.entrada-topo) faz de cada fileira
+          uma camada própria, e a fileira das categorias, que vem depois, era
+          pintada por cima do painel de resultados da busca. Esta fileira
+          agora fica acima dela. */}
+      <div className="entrada-topo entrada-topo-2 relative z-[2] max-w-[90rem] mx-auto px-5 h-16 md:h-[4.75rem] flex items-center gap-4 md:gap-8">
         <Link
           href="/"
           onClick={(e) => {
@@ -294,7 +300,9 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
           className="shrink-0 active:scale-95 transition-transform"
         >
           {/* No computador, 3,36rem = 12% a mais que os 3rem de antes
-              (pedido de 13/10). O celular não muda. */}
+              (pedido de 13/10). 12/11/2026 ("aumente a logo, tanto para
+              mobile quanto para desktop"): celular de 2,85 para 3,4rem e
+              computador de 3,36 para 4rem, uns 19% maior nos dois. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset("/logo.webp")}
@@ -304,7 +312,7 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
             height={97}
             fetchPriority="high"
             decoding="async"
-            className="h-[2.85rem] md:h-[3.36rem] w-auto object-contain"
+            className="h-[3.4rem] md:h-[4rem] w-auto object-contain"
           />
         </Link>
 

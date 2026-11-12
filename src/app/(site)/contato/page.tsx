@@ -167,10 +167,10 @@ export default function PaginaContato() {
                 Mande a foto e receba <span className="italic">o orçamento</span>
               </p>
               <p className="relative mt-2 max-w-[34ch] text-[0.93rem] leading-relaxed text-white/72">
-                A equipe confere, informa valor e prazo, e você escolhe entre retirar na loja ou receber pelo Delivery.
+                A equipe confere, informa valor e prazo, e você escolhe entre retirar na loja ou receber em casa: enviamos para todo o Brasil.
               </p>
               <ol className="relative mt-5 flex flex-col gap-2.5 text-[0.9rem] text-white/85">
-                {["Foto da receita pelo site ou WhatsApp", "A equipe confere e manda valor e prazo", "Retirada na loja ou Delivery"].map((passo, i) => (
+                {["Foto da receita pelo site ou WhatsApp", "A equipe confere e manda valor e prazo", "Retirada na loja ou envio para todo o Brasil"].map((passo, i) => (
                   <li key={passo} className="flex items-center gap-3">
                     <span className="numero-tinta text-[1.05rem] w-5 shrink-0">{i + 1}</span>
                     {passo}

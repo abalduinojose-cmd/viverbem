@@ -17,7 +17,6 @@
 //     das lojas"); abre a conversa já com o produto, a dosagem e a
 //     quantidade.
 import { useState } from "react";
-import Link from "next/link";
 import { ProdutoDTO, listarDosagens, precoVisivel, WHATSAPP_NUMERO } from "@/lib/tipos";
 import { formatarPreco } from "@/lib/preco";
 import { useCarrinho } from "@/lib/carrinho";
@@ -180,7 +179,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
       </a>
 
       {/* O selo de compra garantida (27/10/2026): o que a farmácia promete de
-          verdade, com o link para a política de trocas */}
+          verdade (o link para trocas e reembolso saiu em 12/11/2026, com a página) */}
       <div className="mt-4 flex items-center gap-3 rounded-2xl bg-[#1DA851]/[0.07] px-3.5 py-3 ring-1 ring-inset ring-[#1DA851]/20">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-[#128C4B] ring-1 ring-inset ring-[#1DA851]/25 shadow-[0_6px_14px_-10px_rgba(18,140,75,0.8)]">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -191,10 +190,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         <span className="min-w-0 flex-1 leading-snug">
           <b className="block text-[0.92rem] font-semibold text-navy">Compra garantida</b>
           <span className="block text-[0.78rem] text-cinza">
-            Você só paga depois que o farmacêutico confirma o pedido.{" "}
-            <Link href="/reembolso" className="font-medium text-tinta underline-offset-2 hover:underline">
-              Trocas e reembolso
-            </Link>
+            Você só paga depois que o farmacêutico confirma o pedido.
           </span>
         </span>
       </div>

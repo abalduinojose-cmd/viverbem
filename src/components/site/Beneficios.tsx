@@ -11,13 +11,13 @@
 // só cabiam três pílulas na linha e a quarta ficava órfã embaixo; o cartão
 // 2x2 do celular passou a valer até o lg, e as pílulas (já no tamanho
 // maior) começam em 1024 px, onde as quatro cabem.
-import { IconeMoto } from "./IconeMoto";
+import { IconeCaixa } from "./IconeCaixa";
 import { IconeReceita } from "./BotaoEnviarReceita";
 import { IconeLoja, IconeEstrela } from "./IconesVantagens";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 
 const ITENS = [
-  { icone: <IconeMoto tamanho={20} />, titulo: "Delivery", texto: "Petrópolis e Região" },
+  { icone: <IconeCaixa tamanho={20} />, titulo: "Enviamos", texto: "para todo o Brasil" },
   { icone: <IconeLoja tamanho={18} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
   { icone: <IconeReceita tamanho={18} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
   {

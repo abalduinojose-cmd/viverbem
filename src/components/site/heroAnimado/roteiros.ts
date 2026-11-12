@@ -37,7 +37,7 @@ export type Roteiro = {
    *  duas juntas no fecho. O verbo vai na voz display, o lugar em ouro
    *  itálico, e o apoio numa linha menor embaixo. Com o mesmo número de
    *  letras por palavra nas duas frases, a troca gira letra a letra. */
-  entrega?: { verbo: string; nome: string; apoio: string; icone: "loja" | "moto" }[];
+  entrega?: { verbo: string; nome: string; apoio: string; icone: "loja" | "moto" | "caixa" }[];
   /** A cor da luz atrás dos potes e a segunda cor da poeira de luz (a
    *  primeira é sempre o ouro) */
   luz: [number, number, number];
@@ -72,7 +72,7 @@ export const ROTEIROS = {
     // letra (cena.ts, desenharEntrega)
     entrega: [
       { verbo: "Retire na", nome: "loja", apoio: `Numa das ${UNIDADES.length} lojas em Petrópolis`, icone: "loja" },
-      { verbo: "Receba em", nome: "casa", apoio: "Delivery em Petrópolis e Região", icone: "moto" },
+      { verbo: "Receba em", nome: "casa", apoio: "Enviamos para todo o Brasil", icone: "caixa" },
     ],
     luz: [80, 160, 235],
     poeira: [138, 184, 234],

@@ -302,7 +302,7 @@ export function CartaoLojas({ className = "" }: { className?: string }) {
               <span className="text-[#1DA851]">
                 <IconeConfere />
               </span>
-              Delivery em Petrópolis e Região
+              Enviamos para todo o Brasil
             </span>
           </div>
         </div>

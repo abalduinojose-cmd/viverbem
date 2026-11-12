@@ -43,7 +43,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { UNIDADES, WHATSAPP_NUMERO, linkMapaUnidade } from "@/lib/tipos";
 import { BotaoEnviarReceita, IconeReceita } from "./BotaoEnviarReceita";
 import { IconeLoja } from "./IconesVantagens";
-import { IconeMoto } from "./IconeMoto";
+import { IconeCaixa } from "./IconeCaixa";
 import { IconeWhatsApp } from "./icones";
 
 // Quanto tempo cada passo fica aceso no computador
@@ -116,9 +116,9 @@ const PASSOS = [
   },
   {
     titulo: "Retire ou receba",
-    texto: `Sem custo em uma das ${UNIDADES.length} lojas, ou em casa, pelo Delivery, em Petrópolis e Região.`,
-    detalhe: "A taxa e o prazo da entrega são combinados pelo WhatsApp.",
-    icone: <IconeMoto tamanho={22} />,
+    texto: `Sem custo em uma das ${UNIDADES.length} lojas, ou em casa: enviamos para todo o Brasil.`,
+    detalhe: "O frete e o prazo da entrega são combinados pelo WhatsApp.",
+    icone: <IconeCaixa tamanho={22} />,
     lojas: true,
   },
 ];

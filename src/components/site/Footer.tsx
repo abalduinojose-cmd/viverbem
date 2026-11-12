@@ -34,7 +34,6 @@ const LINK_WHATSAPP = `https://wa.me/${WHATSAPP_NUMERO}`;
 const LEGAIS = [
   { href: "/privacidade", rotulo: "Privacidade" },
   { href: "/termos", rotulo: "Termos de uso" },
-  { href: "/reembolso", rotulo: "Trocas e reembolso" },
 ];
 
 const NAVEGACAO = [

@@ -9,7 +9,7 @@ import { useEstadoLoja } from "./HorarioAtendimento";
 import { IconeWhatsApp, SetaDireita } from "./icones";
 import { WHATSAPP_NUMERO } from "@/lib/tipos";
 
-const ASSUNTOS = ["Dúvida", "Orçamento", "Receita", "Retirada ou delivery"] as const;
+const ASSUNTOS = ["Dúvida", "Orçamento", "Receita", "Retirada ou envio"] as const;
 type Assunto = (typeof ASSUNTOS)[number];
 
 export function FormularioContato() {

@@ -60,7 +60,7 @@ import { AcoesProduto } from "@/components/site/AcoesProduto";
 import { FaixaProdutos } from "@/components/site/FaixaProdutos";
 import { BotaoVerMais } from "@/components/site/BotaoVerMais";
 import { ColunaLateralProduto } from "@/components/site/ColunaLateralProduto";
-import { IconeMoto } from "@/components/site/IconeMoto";
+import { IconeCaixa } from "@/components/site/IconeCaixa";
 import { IconeLoja } from "@/components/site/IconesVantagens";
 import { IconeWhatsApp } from "@/components/site/icones";
 import { SeloAvaliacoes, escolherAvaliacoes } from "@/components/site/produto/AvaliacoesProduto";
@@ -136,7 +136,7 @@ const SEGURANCA = ["Farmacêutico confere cada pedido", "Você só paga depois d
 const PASSOS_PEDIDO = [
   { titulo: "Adicione ao carrinho", texto: "e envie o pedido pelo WhatsApp." },
   { titulo: "O farmacêutico confere", texto: "e passa o valor e o prazo." },
-  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa, pelo Delivery.` },
+  { titulo: "Retire ou receba", texto: `Numa das ${UNIDADES.length} lojas, sem custo, ou em casa: enviamos para todo o Brasil.` },
 ];
 
 // Selos de logística, logo embaixo do cartão de compra: só o que dá para
@@ -144,7 +144,7 @@ const PASSOS_PEDIDO = [
 // 23/10/2026: ordem pedida (WhatsApp, Delivery, Retirada), ícones maiores
 const SELOS = [
   { icone: <IconeWhatsApp tamanho={17} />, titulo: "Valor no WhatsApp", texto: "no horário das lojas" },
-  { icone: <IconeMoto tamanho={19} />, titulo: "Delivery", texto: "Petrópolis e Região" },
+  { icone: <IconeCaixa tamanho={19} />, titulo: "Enviamos", texto: "para todo o Brasil" },
   { icone: <IconeLoja tamanho={17} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
 ];
 
@@ -185,16 +185,16 @@ export default async function PaginaProduto({ params }: Props) {
   // cartões com ícone, e não só texto corrido.
   const destaques = industrializado
     ? [
-        { titulo: "Pronta entrega", texto: "Com registro na Anvisa, disponível nas lojas e pelo Delivery." },
+        { titulo: "Pronta entrega", texto: "Com registro na Anvisa, disponível nas lojas e com envio para todo o Brasil." },
         { titulo: "Preço no site", texto: "Você vê o valor aqui e confirma pelo WhatsApp." },
         { titulo: "Conferido pelo farmacêutico", texto: "Cada pedido passa pela equipe antes de sair." },
-        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou entrega em casa, em Petrópolis e Região." },
+        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou enviamos para todo o Brasil." },
       ]
     : [
         { titulo: "Preparado sob receita", texto: "Feito no nosso laboratório a partir da prescrição do seu profissional." },
         { titulo: "Na dose indicada", texto: "A fórmula e a quantidade são exatamente as da receita." },
         { titulo: "Conferido pelo farmacêutico", texto: "A receita é conferida e o valor e o prazo vêm antes de você confirmar." },
-        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou entrega em casa, em Petrópolis e Região." },
+        { titulo: `Retirada em ${UNIDADES.length} lojas`, texto: "Ou enviamos para todo o Brasil." },
       ];
 
   const abaDescricao = (
@@ -265,7 +265,7 @@ export default async function PaginaProduto({ params }: Props) {
       <path d="M12 3 5 6v5.5c0 4.2 2.9 8 7 9.5 4.1-1.5 7-5.3 7-9.5V6l-7-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
       <path d="m9 12 2.2 2.2L15.5 10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>,
-    <IconeMoto key="3" tamanho={20} />,
+    <IconeCaixa key="3" tamanho={20} />,
   ];
   const abaComoPedir = (
     <div className="max-w-4xl">
@@ -296,16 +296,16 @@ export default async function PaginaProduto({ params }: Props) {
 
   const abaEntrega = (
     <div className="grid max-w-4xl grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Delivery */}
+      {/* Envio para todo o Brasil (12/11/2026; era o Delivery em Petrópolis e Região) */}
       <div className="rounded-[1.25rem] bg-white ring-1 ring-inset ring-fio p-5">
         <div className="flex items-center gap-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ouro/10 text-ouro-escuro">
-            <IconeMoto tamanho={20} />
+            <IconeCaixa tamanho={20} />
           </span>
-          <p className="font-semibold text-navy">Delivery</p>
+          <p className="font-semibold text-navy">Envio para todo o Brasil</p>
         </div>
         <ul className="mt-4 flex flex-col gap-2.5 text-[0.92rem] leading-relaxed text-cinza">
-          {["Entregamos em Petrópolis e Região", "A taxa e o prazo são combinados pelo WhatsApp, junto com o valor", "Você confirma o pedido só depois de saber o total"].map((t) => (
+          {["Enviamos para todo o Brasil", "O frete e o prazo são combinados pelo WhatsApp, junto com o valor", "Você confirma o pedido só depois de saber o total"].map((t) => (
             <li key={t} className="flex items-start gap-2.5">
               <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[image:var(--ouro-degrade)]" aria-hidden="true" />
               {t}

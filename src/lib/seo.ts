@@ -86,7 +86,7 @@ export function dadosDaFarmacia() {
         description: `Farmácia de manipulação e homeopatia em Petrópolis há ${ANOS_TRADICAO} anos, com ${UNIDADES.length} lojas e pedido pela receita no WhatsApp.`,
         telephone: telefoneE164(WHATSAPP_LOJA),
         sameAs: [INSTAGRAM_URL, PERFIL_GOOGLE_URL],
-        areaServed: { "@type": "City", name: "Petrópolis" },
+        areaServed: { "@type": "Country", name: "Brasil" },
       },
       {
         "@type": "WebSite",
