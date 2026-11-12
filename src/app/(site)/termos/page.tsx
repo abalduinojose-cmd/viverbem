@@ -12,7 +12,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegal } from "@/components/site/PaginaLegal";
-import { CNPJ_FARMACIA, UNIDADES, WHATSAPP_LOJA } from "@/lib/tipos";
+import { CNPJ_FARMACIA, DADOS_LEGAIS, UNIDADES, WHATSAPP_LOJA } from "@/lib/tipos";
 
 export const metadata: Metadata = {
   title: "Termos de uso · Manipulação Viver Bem",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/termos" },
 };
 
-const ATUALIZADO_EM = "28 de outubro de 2026";
+const ATUALIZADO_EM = "12 de novembro de 2026";
 
 export default function PaginaTermos() {
   return (
@@ -42,7 +42,7 @@ export default function PaginaTermos() {
           conteudo: (
             <>
               <p>
-                Este site pertence à Manipulação Viver Bem, farmácia de manipulação e homeopatia com CNPJ {CNPJ_FARMACIA} e {UNIDADES.length} lojas em Petrópolis, RJ: {UNIDADES.map((u) => u.bairro).join(", ")}. O atendimento pelo WhatsApp é o {WHATSAPP_LOJA}.
+                Este site pertence à Manipulação Viver Bem ({DADOS_LEGAIS.razaoSocial}), farmácia de manipulação e homeopatia com CNPJ {CNPJ_FARMACIA} e {UNIDADES.length} lojas em Petrópolis, RJ: {UNIDADES.map((u) => u.bairro).join(", ")}. O atendimento pelo WhatsApp é o {WHATSAPP_LOJA} e o e-mail, {DADOS_LEGAIS.email}.
               </p>
             </>
           ),

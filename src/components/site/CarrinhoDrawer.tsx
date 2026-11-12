@@ -550,14 +550,15 @@ export function CarrinhoDrawer() {
                   {/* A receita: o pedido do manipulado.
                       28/10/2026: CARTÃO DE SELEÇÃO, como as escolhas de pagamento
                       dos apps (círculo que se enche de azul com o visto, fio que
-                      engrossa, degradê gelo leve). 12/11/2026, "modernize o
-                      carrinho e o anexo": o anexo, que era uma segunda caixa
-                      tracejada embaixo, passou para DENTRO do cartão, no lugar da
-                      barra de três passos; o cartão abre suave (grid 0fr -> 1fr)
-                      ao marcar. Como não cabe um botão dentro de outro, o cartão
-                      é um bloco e a escolha (role="switch") é a linha de cima. */}
+                      engrossa, degradê gelo leve). 12/11/2026, "o botão do anexo
+                      tem que estar na descrição; a pessoa pega ali e já envia a
+                      receita, sendo opcional": o anexo mora NA DESCRIÇÃO, logo
+                      abaixo do "Tenho uma receita", e não mais numa caixa à parte.
+                      Como não cabe um botão dentro de outro, a escolha
+                      (role="switch") cobre o cartão por baixo e a linha do anexo
+                      fica por cima dela. */}
                   <div
-                    className={`relative rounded-[1.35rem] transition-[background-color,box-shadow] duration-300 ${
+                    className={`group/rec relative rounded-[1.35rem] transition-[background-color,box-shadow,scale] duration-300 has-[>button:active]:scale-[0.985] ${
                       receita
                         ? "bg-gradient-to-br from-gelo/80 via-white to-white shadow-[inset_0_0_0_1.5px_var(--color-tinta),0_18px_36px_-26px_rgba(28,105,181,0.6)]"
                         : "bg-white shadow-[inset_0_0_0_1px_var(--color-fio)] hover:shadow-[inset_0_0_0_1px_rgba(28,105,181,0.35)]"
@@ -567,12 +568,15 @@ export function CarrinhoDrawer() {
                       type="button"
                       role="switch"
                       aria-checked={receita}
+                      aria-labelledby="receita-titulo"
+                      aria-describedby="receita-descricao"
                       onClick={() => {
                         if (receita) setAnexo(null);
                         setReceita(!receita);
                       }}
-                      className="group/rec flex w-full items-center gap-3.5 rounded-[1.35rem] p-4 pr-12 text-left outline-none transition-[scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2"
-                    >
+                      className="absolute inset-0 rounded-[1.35rem] outline-none focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2"
+                    />
+                    <div className="pointer-events-none relative flex items-start gap-3.5 p-4 pr-12">
                       <span
                         className={`shrink-0 size-11 rounded-[0.9rem] flex items-center justify-center transition-colors duration-300 ${
                           receita ? "bg-tinta text-white shadow-[0_8px_18px_-10px_rgba(28,105,181,0.8)]" : "bg-gelo text-tinta group-hover/rec:bg-[#e3ecf6]"
@@ -580,49 +584,50 @@ export function CarrinhoDrawer() {
                       >
                         <IconeReceita tamanho={20} />
                       </span>
-                      <span className="flex-1 min-w-0">
-                        <span className="block text-[1rem] font-semibold tracking-[-0.02em] text-navy">Tenho uma receita</span>
-                        <span className="block text-[0.8rem] leading-snug mt-0.5 text-cinza">
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <span id="receita-titulo" className="block text-[1rem] font-semibold tracking-[-0.02em] text-navy">
+                          Tenho uma receita
+                        </span>
+                        <span id="receita-descricao" className="block text-[0.8rem] leading-snug mt-0.5 text-cinza">
                           {!receita
                             ? "Toque para pedir pela receita"
                             : anexo
                               ? "A foto vai junto com o pedido"
-                              : "Anexe aqui ou mande na conversa"}
+                              : "Anexe agora ou mande na conversa"}
                         </span>
-                      </span>
-                      {/* O círculo da seleção, no canto */}
-                      <span
-                        aria-hidden="true"
-                        className={`absolute right-4 top-[1.6rem] flex size-[1.375rem] items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
-                          receita ? "bg-tinta shadow-[0_4px_10px_-3px_rgba(28,105,181,0.6)]" : "shadow-[inset_0_0_0_1.5px_#cfd8e3] group-hover/rec:shadow-[inset_0_0_0_1.5px_rgba(28,105,181,0.5)]"
-                        }`}
-                      >
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          className={`text-white transition-[scale,opacity] duration-300 ease-[cubic-bezier(0.34,1.5,0.64,1)] ${receita ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
+                        {/* O anexo, opcional, na própria descrição (abre ao marcar) */}
+                        <div
+                          aria-hidden={!receita}
+                          inert={!receita}
+                          className={`grid -mr-8 transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                            receita ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                          }`}
                         >
-                          <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                    </button>
-
-                    {/* O anexo, opcional, dentro do cartão (abre ao marcar) */}
-                    <div
-                      aria-hidden={!receita}
-                      inert={!receita}
-                      className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                        receita ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                      }`}
-                    >
-                      <div className="min-h-0 overflow-hidden">
-                        <div className="px-4 pb-4">
-                          <AnexoReceita arquivo={anexo} aoMudar={setAnexo} />
+                          <div className="min-h-0 min-w-0 overflow-clip">
+                            <div className="pointer-events-auto relative z-[1] pt-2.5 pb-0.5">
+                              <AnexoReceita arquivo={anexo} aoMudar={setAnexo} />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    {/* O círculo da seleção, no canto */}
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute right-4 top-[1.6rem] flex size-[1.375rem] items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
+                        receita ? "bg-tinta shadow-[0_4px_10px_-3px_rgba(28,105,181,0.6)]" : "shadow-[inset_0_0_0_1.5px_#cfd8e3] group-hover/rec:shadow-[inset_0_0_0_1.5px_rgba(28,105,181,0.5)]"
+                      }`}
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className={`text-white transition-[scale,opacity] duration-300 ease-[cubic-bezier(0.34,1.5,0.64,1)] ${receita ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
+                      >
+                        <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
                   </div>
 
                   {/* De qual manipulado a pessoa veio */}

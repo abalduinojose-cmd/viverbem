@@ -108,11 +108,11 @@ export default function PaginaLogin() {
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={asset("/logo.png")}
+            src={asset("/logo.svg")}
             alt="Manipulação Viver Bem"
             draggable={false}
-            width={560}
-            height={246}
+            width={906}
+            height={380}
             className="h-12 w-auto object-contain mx-auto"
           />
 

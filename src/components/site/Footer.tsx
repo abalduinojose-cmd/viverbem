@@ -96,17 +96,18 @@ export function Footer() {
           className="absolute left-1/2 top-10 -z-10 h-72 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-royal/20 blur-[110px]"
         />
 
-        {/* O logo é colorido, então some no escuro: viramos ele em branco */}
+        {/* O logo é colorido, então some no escuro: a versão branca do
+            vetor (public/logo-branco.svg, 12/11/2026) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={asset("/logo.webp")}
+          src={asset("/logo-branco.svg")}
           alt="Manipulação Viver Bem"
           draggable={false}
           loading="lazy"
           decoding="async"
-          width={220}
-          height={97}
-          className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
+          width={906}
+          height={380}
+          className="h-16 md:h-20 w-auto object-contain"
         />
 
         <p className="ouro-texto mt-6 max-w-[40ch] text-[1.25rem] md:text-[1.45rem] leading-relaxed italic [font-family:var(--font-destaque)]">

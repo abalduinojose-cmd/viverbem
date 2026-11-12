@@ -1,5 +1,80 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 133 (12/11/2026): atalhos sem verde, com o ícone num círculo; ficha sem WhatsApp e com o horário em cartões. IMPLEMENTADO, conferido (360 e 375) e PUBLICADO no 76º push (com os adendos 130 a 132).**
+> - DOBRA: "o verde não combina; tira e moderniza mais um pouco". Cada
+>   pílula leva o ícone num círculo à esquerda (size-8): receita branca com
+>   o fio de ouro e círculo gelo com contorno de ouro; Fale conosco em vidro
+>   um pouco mais forte; Ver produtos e Instagram em vidro. Texto 0,82rem,
+>   cabe em 360.
+> - FICHA: "pode tirar o WhatsApp; melhora os horários, mais moderno, mais
+>   claro". Saiu a linha Tel/WhatsApp; o horário virou um grupo próprio com
+>   três cartões (Segunda a sexta 9h às 19h, Sábado 9h às 13h, Domingo
+>   Fechado) e "O mesmo horário nas três lojas". DADOS_LEGAIS.horario saiu.
+
+> **ADENDO 132 (12/11/2026): atalhos da dobra em pílulas com o WhatsApp verde e os dados legais da farmácia nas páginas legais. IMPLEMENTADO, conferido (360, 375 e 1366) e PUBLICADO no 76º push.**
+> - DOBRA (celular): a grade 2x2 do 131 foi recusada ("não gostei; fale
+>   conosco no botão verde, está quebrando; modernize mais"). Os ladrilhos
+>   com ícone em cima viraram PÍLULAS deitadas (ícone e nome numa linha,
+>   3,25rem): receita branca com o fio de ouro; Fale conosco em degradê
+>   verde #169A4C -> #0B7D3C (texto branco, contraste 3,7 a 5,2) com brilho
+>   verde; Ver produtos e Instagram em vidro.
+> - DADOS LEGAIS ("não têm que ficar na cara do site, mas têm que ter no
+>   site"; vieram do rodapé do site antigo): DADOS_LEGAIS em tipos.ts
+>   (razão social Amajor Farmácia de Manipulação LTDA, sede na Posse com
+>   CEP, e-mail, horário, farmacêutico responsável, CRF, AFE, AE, licença
+>   sanitária, certidão de regularidade). Ficha "Dados da farmácia"
+>   (FichaFarmacia.tsx) no fim de /privacidade e /termos, com link no
+>   sumário, a frase da ANVISA e a dos controlados. A controladora na
+>   privacidade e o "quem" dos termos passaram a citar a razão social e o
+>   e-mail; atualização em 12/11/2026.
+> - CONSERTO: o "Falar no WhatsApp" do fim das páginas legais usava
+>   botao-primario, classe que não existe (aparecia sem fundo); agora
+>   botao-principal.
+
+> **ADENDO 131 (12/11/2026): logo menor, quatro atalhos na dobra do celular, anexo na descrição da receita e proteção contra a página empurrada. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 76º push.**
+> - LOGO: o vetor é recortado justo e parecia maior; "diminua bem de leve":
+>   celular 3,2 -> 3rem, computador 3,75 -> 3,5rem.
+> - DOBRA (só celular): "divida em quatro: enviar receita e fale conosco em
+>   cima, ver produtos e Instagram embaixo; mais moderno, com contraste".
+>   Grade 2x2 de ladrilhos (ícone em cima, nome embaixo, 3,6rem): a receita
+>   branca com o fio de ouro, os outros em vidro com texto branco; Fale
+>   conosco abre o WhatsApp, Instagram o perfil. "Como funciona" saiu do
+>   celular. No computador os botões seguem como estavam.
+> - CARRINHO: "o botão do anexo tem que estar na descrição; a pessoa pega
+>   ali e já envia a receita, sendo opcional". O anexo virou uma pílula
+>   "Anexar foto ou PDF" + "opcional" logo abaixo da descrição do cartão;
+>   anexado, uma linha compacta (miniatura com visto, nome, tamanho,
+>   Trocar, tirar). A escolha (role=switch) cobre o cartão por baixo e a
+>   linha do anexo fica por cima. Nome longo vazava: min-w-0 no item da grade.
+> - AVALIAÇÕES no celular "empurrada": não reproduziu no Chrome (375, 360,
+>   320, pelo menu e direto; scrollWidth = largura). Proteção: navegador
+>   sem overflow clip (iOS < 16, Android antigo) passa a usar hidden no
+>   html/body e no .overflow-clip, onde os brilhos decorativos vazavam.
+
+> **ADENDO 130 (12/11/2026): logo vetorizada em todo o projeto e página das lojas com as fachadas reais. IMPLEMENTADO e conferido (1366 e 375); não publicado.**
+> - PEDIDO: "logo vetorizada use ela em todo projeto / fotos para substituir
+>   e colocar no projeto" e, no meio, "melhore a página da loja" e "só não
+>   use a foto da creatina [...] no balcão" (a foto do pote ficou de fora).
+> - LOGO: o PDF da farmácia traz uma imagem JPEG em CMYK (1056x582), não
+>   vetores. Foi separada em três camadas de cor (azul, cinza, vermelho),
+>   traçada com potrace e virou public/logo.svg (azul #2B3990, cinza
+>   #3F4245, vermelho #C62835, a conversão do CMYK 93/86/1/4) e
+>   public/logo-branco.svg (rodapé, sem o filtro de inverter). logo.png,
+>   logo.webp, og.png, icone-512/96, icon.png, apple-icon.png e favicon.ico
+>   foram refeitos a partir do vetor (scripts/gerar-favicon.js e
+>   gerar-og.js). Cabeçalho, rodapé, painel e login apontam para o SVG.
+>   A cor do logo é a do logo; a paleta do site (#1C69B5) não muda.
+> - LOJAS: a foto larga do topo saiu; cada loja virou uma VITRINE
+>   (VitrineLoja.tsx) com a fachada real (public/fotos/lojas/centro,
+>   correas, posse .webp e -520), bairro em branco sobre véu azul-noite,
+>   endereço, mapa curto da rua e as ações alinhadas embaixo. Atalhos para
+>   cada loja no celular. UNIDADES ganhou foto e focoFoto; o dado
+>   estruturado de cada loja usa a fachada como imagem.
+> - FOTOS: Centro = a da porta 37 (telefone 2242-3621, o do cadastro);
+>   Corrêas = IMG_2046 (placa 2221-3939); Posse = a da calçada de tijolos
+>   (placa 2259-3934). Corrêas/Posse deduzidos pelos prefixos e pela rua,
+>   a confirmar com a farmácia. IMG_2049 (Corrêas de lado) não entrou.
+
 > **ADENDO 124 (29/10/2026, sessão da dobra animada): o letreiro dos passos virou as duas formas de receber, em tipografia cinética. IMPLEMENTADO e conferido em quadros (1440, 390 e 360); commit local, sem push.**
 > - PEDIDO: "envie a foto da receita pode sair, farmacêutico confere pode
 >   sair [...] são duas informações falando do delivery ou da retirada na

@@ -15,7 +15,9 @@
 // na frente no fecho da animação são industrializados com registro
 // (creatina).
 import Link from "next/link";
-import { UNIDADES } from "@/lib/tipos";
+import { INSTAGRAM_URL, UNIDADES } from "@/lib/tipos";
+import { linkComMensagem } from "@/lib/whatsapp";
+import { IconeInstagram, IconeWhatsApp } from "./icones";
 import type { ArteHero } from "@/lib/hero";
 import { CarrosselArte } from "./CarrosselArte";
 import { MidiaBanner } from "./MidiaBanner";
@@ -53,8 +55,10 @@ function SetaBaixo() {
  *  dois dividem a seguinte; de 1280px em diante os três cabem numa linha. */
 function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
   return (
+    <>
+    <BotoesDaDobraCelular />
     <div
-      className={`flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 ${
+      className={`hidden sm:flex sm:flex-row sm:flex-wrap sm:items-center gap-3 ${
         centralizados ? "sm:justify-center" : ""
       }`}
     >
@@ -85,6 +89,56 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
           </span>
         </Link>
       </div>
+    </div>
+    </>
+  );
+}
+
+/** No celular, QUATRO atalhos numa grade 2x2 (12/11/2026, "divida em
+ *  quatro: enviar receita e fale conosco em cima, ver produtos e
+ *  Instagram embaixo"). Os ladrilhos com o ícone em cima do nome pareciam
+ *  quebrados e viraram PÍLULAS deitadas; o "Fale conosco" verde foi
+ *  recusado ("o verde não combina; modernize mais um pouco"). Agora cada
+ *  pílula leva o ícone num CÍRCULO à esquerda, como os atalhos dos apps: a
+ *  receita branca com o fio de ouro e o ícone num círculo gelo; o "Fale
+ *  conosco" em vidro um pouco mais forte (é a outra ação de cima);
+ *  "Ver produtos" e "Instagram" em vidro. Tudo na paleta da marca. */
+function BotoesDaDobraCelular() {
+  const pilula =
+    "flex h-[3.25rem] min-w-0 items-center gap-1.5 rounded-full pl-[0.4rem] pr-2.5 text-[0.82rem] font-semibold leading-none tracking-[-0.015em] whitespace-nowrap transition active:scale-[0.97]";
+  const circuloVidro =
+    "flex size-8 shrink-0 items-center justify-center rounded-full bg-white/[0.14] ring-1 ring-inset ring-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]";
+  return (
+    <div className="grid grid-cols-2 gap-2.5 sm:hidden">
+      <BotaoEnviarReceita comIcone={false} className={`botao-vivo ${pilula}`}>
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gelo text-ouro-escuro ring-1 ring-inset ring-ouro/30">
+          <IconeReceita tamanho={16} />
+        </span>
+        Enviar receita
+      </BotaoEnviarReceita>
+      <a
+        href={linkComMensagem("Olá! Vim pelo site da Viver Bem e gostaria de falar com vocês.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`botao-vidro ${pilula} !bg-white/[0.16] !border-white/40`}
+      >
+        <span className={circuloVidro}>
+          <IconeWhatsApp tamanho={16} />
+        </span>
+        Fale conosco
+      </a>
+      <Link href="/produtos" className={`botao-vidro ${pilula}`}>
+        <span className={circuloVidro}>
+          <IconeGrade />
+        </span>
+        Ver produtos
+      </Link>
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={`botao-vidro ${pilula}`}>
+        <span className={circuloVidro}>
+          <IconeInstagram tamanho={16} />
+        </span>
+        Instagram
+      </a>
     </div>
   );
 }

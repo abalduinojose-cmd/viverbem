@@ -131,6 +131,10 @@ export interface Unidade {
   telefone: string | null;
   lat: number;
   lon: number;
+  /** 12/11/2026: a foto da fachada (public/fotos/lojas/<slug>.webp e a
+   *  versão -520 para o celular) e o ponto da foto que fica no recorte */
+  foto: string;
+  focoFoto: string;
 }
 export const UNIDADES: Unidade[] = [
   {
@@ -139,6 +143,8 @@ export const UNIDADES: Unidade[] = [
     telefone: "(24) 2242-3621",
     lat: -22.5092,
     lon: -43.1772,
+    foto: "/fotos/lojas/centro",
+    focoFoto: "50% 32%",
   },
   {
     bairro: "Corrêas",
@@ -146,6 +152,8 @@ export const UNIDADES: Unidade[] = [
     telefone: null,
     lat: -22.4454,
     lon: -43.1354,
+    foto: "/fotos/lojas/correas",
+    focoFoto: "50% 36%",
   },
   {
     bairro: "Posse",
@@ -153,6 +161,8 @@ export const UNIDADES: Unidade[] = [
     telefone: null,
     lat: -22.2521,
     lon: -43.0737,
+    foto: "/fotos/lojas/posse",
+    focoFoto: "42% 38%",
   },
 ];
 
@@ -172,6 +182,22 @@ export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_PERFIL}/`;
 // CNPJ da farmácia (do contrato de 28/09/2026). Vai na linha legal do rodapé,
 // como pede a RDC 44/2009 para site de farmácia.
 export const CNPJ_FARMACIA = "08.303.445/0001-52";
+
+// Os dados legais da farmácia (12/11/2026, mandados pelo usuário a partir
+// do rodapé do site antigo: "não têm que ficar na cara do site, mas têm que
+// ter no site"). Aparecem na ficha "Dados da farmácia" das páginas de
+// privacidade e de termos (FichaFarmacia), não no resto do site.
+export const DADOS_LEGAIS = {
+  razaoSocial: "Amajor Farmácia de Manipulação LTDA",
+  sede: "Estrada União e Indústria, 33.383, Posse, Petrópolis/RJ, CEP 25770-000",
+  email: "contato@manipulacaoviverbem.com.br",
+  farmaceuticoResponsavel: "Mariana de Souza Botelho",
+  crf: "11256",
+  afe: "13811376",
+  ae: "0489502",
+  licencaSanitaria: "041383620226",
+  certidaoRegularidade: "10087",
+};
 
 // Total de avaliações no perfil do Google (o site mostra só uma
 // seleção delas). Conferido no perfil do Google em 05/11/2026 (690

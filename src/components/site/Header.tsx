@@ -303,17 +303,21 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
               (pedido de 13/10). 12/11/2026 ("aumente a logo, tanto para
               mobile quanto para desktop"): celular de 2,85 para 3,4rem e
               computador de 3,36 para 4rem, uns 19% maior nos dois. No mesmo
-              dia, "diminua um pouquinho": celular 3,2rem, computador 3,75rem. */}
+              dia, "diminua um pouquinho": celular 3,2rem, computador 3,75rem.
+              12/11/2026: a logo VETORIZADA que a farmácia mandou (public/logo.svg,
+              traçada do PDF; logo.png, logo.webp e os ícones saem dela). Por
+              ser recortada justa, ela parecia maior: "diminua bem de leve",
+              celular 3rem e computador 3,5rem. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={asset("/logo.webp")}
+            src={asset("/logo.svg")}
             alt="Manipulação Viver Bem"
             draggable={false}
-            width={220}
-            height={97}
+            width={906}
+            height={380}
             fetchPriority="high"
             decoding="async"
-            className="h-[3.2rem] md:h-[3.75rem] w-auto object-contain"
+            className="h-[3rem] md:h-[3.5rem] w-auto object-contain"
           />
         </Link>
 

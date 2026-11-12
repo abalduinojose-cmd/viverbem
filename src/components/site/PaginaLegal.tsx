@@ -12,6 +12,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { WHATSAPP_NUMERO } from "@/lib/tipos";
 import { AbrirSecaoLegal } from "./AbrirSecaoLegal";
+import { FichaFarmacia } from "./FichaFarmacia";
 
 export interface SecaoLegal {
   id: string;
@@ -67,6 +68,12 @@ export function PaginaLegal({
                   </a>
                 </li>
               ))}
+              <li>
+                <a href="#dados-da-farmacia" className="group flex items-baseline gap-2.5 -ml-px border-l-2 border-transparent pl-4 py-1.5 text-sm text-cinza transition-colors hover:border-ouro hover:text-navy">
+                  <span aria-hidden="true" className="text-[0.75rem] text-grafite-claro group-hover:text-ouro-escuro">·</span>
+                  Dados da farmácia
+                </a>
+              </li>
             </ol>
           </nav>
 
@@ -107,13 +114,16 @@ export function PaginaLegal({
             </div>
             <AbrirSecaoLegal />
 
+            {/* Os dados legais da farmácia (12/11/2026) */}
+            <FichaFarmacia />
+
             {/* Falar com a equipe */}
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-[1.5rem] bg-gelo/70 ring-1 ring-fio/80 px-6 py-5">
               <p className="text-sm text-navy leading-relaxed">
                 Ficou alguma dúvida sobre este texto? A equipe responde pelo WhatsApp em horário de loja.
               </p>
               <div className="flex flex-wrap gap-2 shrink-0">
-                <a href={`https://wa.me/${WHATSAPP_NUMERO}`} target="_blank" rel="noopener noreferrer" className="botao botao-primario !min-h-11 !px-5 text-sm">
+                <a href={`https://wa.me/${WHATSAPP_NUMERO}`} target="_blank" rel="noopener noreferrer" className="botao botao-principal !min-h-11 !px-5 text-sm">
                   Falar no WhatsApp
                 </a>
                 <Link href="/contato" className="botao botao-secundario !min-h-11 !px-5 text-sm">

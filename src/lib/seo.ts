@@ -51,7 +51,8 @@ export function dadosDaFarmacia() {
       "@type": "Pharmacy",
       "@id": `${URL_SITE}/lojas#${u.bairro.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")}`,
       name: `${NOME_SITE} ${u.bairro}`,
-      image: urlDe(IMAGEM_PADRAO),
+      // A fachada de cada loja (12/11/2026)
+      image: urlDe(`${u.foto}.webp`),
       url: urlDe("/lojas"),
       telephone: telefoneE164(u.telefone ?? WHATSAPP_LOJA),
       parentOrganization: { "@id": organizacaoId },

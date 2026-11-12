@@ -122,6 +122,20 @@ body {
      funcionando. As faixas que rolam para o lado têm a própria rolagem. */
   overflow-x: clip;
 }
+/* 12/11/2026 ("na página de avaliações, no celular, o site está
+   empurrado"): navegador que não conhece o clip (iPhone com iOS antes do
+   16, Android antigo) ignorava a regra acima e os brilhos decorativos que
+   passam da borda empurravam a página para o lado. Nesses, o corte vira
+   hidden no html e no body (lá o sticky já não funcionava igual). */
+@supports not (overflow-x: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+  .overflow-clip {
+    overflow: hidden;
+  }
+}
 
 @layer base {
   h1, h2, h3, h4 {

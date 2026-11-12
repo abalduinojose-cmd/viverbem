@@ -14,7 +14,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegal } from "@/components/site/PaginaLegal";
-import { CNPJ_FARMACIA, UNIDADES, WHATSAPP_LOJA } from "@/lib/tipos";
+import { CNPJ_FARMACIA, DADOS_LEGAIS, WHATSAPP_LOJA } from "@/lib/tipos";
 
 export const metadata: Metadata = {
   title: "Política de privacidade · Manipulação Viver Bem",
@@ -22,10 +22,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacidade" },
 };
 
-const ATUALIZADO_EM = "28 de outubro de 2026";
+const ATUALIZADO_EM = "12 de novembro de 2026";
 
 export default function PaginaPrivacidade() {
-  const centro = UNIDADES[0];
   return (
     <PaginaLegal
       rotulo="privacidade"
@@ -47,10 +46,10 @@ export default function PaginaPrivacidade() {
           conteudo: (
             <>
               <p>
-                A controladora dos dados é a Manipulação Viver Bem, CNPJ {CNPJ_FARMACIA}, com loja em {centro.endereco}, {centro.bairro}, Petrópolis, RJ.
+                A controladora dos dados é a {DADOS_LEGAIS.razaoSocial} (Manipulação Viver Bem), CNPJ {CNPJ_FARMACIA}, com sede na {DADOS_LEGAIS.sede}.
               </p>
               <p>
-                Para qualquer assunto sobre os seus dados, fale com a equipe pelo WhatsApp {WHATSAPP_LOJA} ou em uma das lojas. O farmacêutico responsável e a gerência respondem em horário de loja.
+                Para qualquer assunto sobre os seus dados, fale com a equipe pelo WhatsApp {WHATSAPP_LOJA}, pelo e-mail {DADOS_LEGAIS.email} ou em uma das lojas. O farmacêutico responsável e a gerência respondem em horário de loja.
               </p>
             </>
           ),

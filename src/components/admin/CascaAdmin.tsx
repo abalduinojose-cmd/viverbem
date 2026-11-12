@@ -84,7 +84,7 @@ function Marca({ className = "" }: { className?: string }) {
     // (em WebP) e o fio de ouro na base, a assinatura do site
     <span className={`relative inline-flex items-center overflow-hidden rounded-[1.25rem] bg-white px-4 py-3 ring-1 ring-white/15 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.7)] ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={asset("/logo.webp")} alt="Manipulação Viver Bem" width={220} height={97} className="h-10 w-auto object-contain" draggable={false} />
+      <img src={asset("/logo.svg")} alt="Manipulação Viver Bem" width={906} height={380} className="h-10 w-auto object-contain" draggable={false} />
       <span aria-hidden="true" className="absolute inset-x-4 bottom-0 h-[2px] rounded-full bg-[image:var(--ouro-degrade)]" />
     </span>
   );

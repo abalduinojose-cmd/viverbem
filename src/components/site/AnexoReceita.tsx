@@ -96,10 +96,10 @@ export function AnexoReceita({ arquivo, aoMudar }: { arquivo: File | null; aoMud
       : `${Math.max(1, Math.round(arquivo.size / 1024))} KB`
     : "";
 
-  // 12/11/2026, "deixe mais moderno": o anexo mora dentro do cartão da
-  // receita. Vazio, é uma linha tracejada de toque largo, com o clipe num
-  // círculo e "opcional" numa pílula; anexado, um cartãozinho branco com a
-  // miniatura, o nome, o tamanho e um visto, e as ações Trocar e tirar.
+  // 12/11/2026, "o botão tem que estar na descrição": o anexo mora na
+  // descrição do cartão "Tenho uma receita". Vazio, é uma pílula branca com
+  // o clipe ("Anexar foto ou PDF") e "opcional" ao lado; anexado, uma linha
+  // compacta com a miniatura e o visto, o nome, o tamanho, Trocar e tirar.
   return (
     <div>
       <input
@@ -111,30 +111,30 @@ export function AnexoReceita({ arquivo, aoMudar }: { arquivo: File | null; aoMud
         onChange={(e) => escolher(e.target.files)}
       />
       {arquivo ? (
-        <div className="flex items-center gap-2.5 rounded-2xl bg-white p-2 pr-1 ring-1 ring-inset ring-tinta/15 shadow-[0_10px_24px_-20px_rgba(13,35,64,0.6)] animar-surgir">
+        <div className="flex items-center gap-2.5 rounded-[0.9rem] bg-white p-1.5 pr-1 ring-1 ring-inset ring-tinta/15 shadow-[0_10px_24px_-20px_rgba(13,35,64,0.6)] animar-surgir">
           {/* A miniatura com o visto verde no canto */}
           <span className="relative shrink-0">
-            <span className="flex size-12 items-center justify-center overflow-hidden rounded-xl bg-gelo text-tinta">
+            <span className="flex size-10 items-center justify-center overflow-hidden rounded-[0.65rem] bg-gelo text-tinta">
               {previa ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={previa} alt="" className="h-full w-full object-cover" />
               ) : (
-                <span className="text-[0.62rem] font-bold tracking-[0.08em]">PDF</span>
+                <span className="text-[0.58rem] font-bold tracking-[0.08em]">PDF</span>
               )}
             </span>
-            <span aria-hidden="true" className="absolute -bottom-1 -right-1 flex size-[1.1rem] items-center justify-center rounded-full bg-[#1DA851] text-white ring-2 ring-white">
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+            <span aria-hidden="true" className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-[#1DA851] text-white ring-2 ring-white">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none">
+                <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate whitespace-nowrap text-[0.86rem] font-semibold text-navy">Receita anexada</span>
-            <span className="mt-0.5 block truncate text-[0.74rem] text-cinza">
+            <span className="block truncate whitespace-nowrap text-[0.8rem] font-semibold text-navy">Receita anexada</span>
+            <span className="block truncate text-[0.7rem] text-cinza">
               {arquivo.name} · {tamanho}
             </span>
           </span>
-          <label htmlFor={idCampo} className="shrink-0 cursor-pointer rounded-full px-2 py-1.5 text-[0.76rem] font-semibold text-tinta transition-colors hover:bg-gelo">
+          <label htmlFor={idCampo} className="shrink-0 cursor-pointer rounded-full px-1.5 py-1.5 text-[0.74rem] font-semibold text-tinta transition-colors hover:bg-gelo">
             Trocar
           </label>
           <button
@@ -144,27 +144,24 @@ export function AnexoReceita({ arquivo, aoMudar }: { arquivo: File | null; aoMud
               aoMudar(null);
             }}
             aria-label="Tirar o anexo da receita"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full text-cinza transition-colors hover:bg-gelo hover:text-navy"
+            className="flex size-8 shrink-0 items-center justify-center rounded-full text-cinza transition-colors hover:bg-gelo hover:text-navy"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
             </svg>
           </button>
         </div>
       ) : (
-        <label
-          htmlFor={idCampo}
-          className="group/anexo flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-tinta/35 bg-white/80 p-2 pr-3 transition-colors hover:border-tinta hover:bg-white"
-        >
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gelo text-tinta transition-colors duration-300 group-hover/anexo:bg-tinta group-hover/anexo:text-white">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <label
+            htmlFor={idCampo}
+            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full bg-white pl-3 pr-4 text-[0.84rem] font-semibold text-tinta ring-1 ring-inset ring-tinta/30 shadow-[0_8px_18px_-14px_rgba(28,105,181,0.7)] transition-colors duration-300 hover:bg-tinta hover:text-white hover:ring-tinta active:scale-[0.97]"
+          >
             <IconeClipe />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[0.88rem] font-semibold text-navy">Anexar foto ou PDF</span>
-            <span className="block text-[0.74rem] leading-snug text-cinza">Vai junto com o pedido no WhatsApp</span>
-          </span>
-          <span className="shrink-0 rounded-full bg-gelo px-2 py-0.5 text-[0.64rem] font-semibold uppercase tracking-[0.1em] text-cinza">opcional</span>
-        </label>
+            Anexar foto ou PDF
+          </label>
+          <span className="text-[0.72rem] font-medium text-cinza">opcional</span>
+        </div>
       )}
       {erro && (
         <p role="alert" className="mt-2 text-[0.78rem] text-carimbo">
