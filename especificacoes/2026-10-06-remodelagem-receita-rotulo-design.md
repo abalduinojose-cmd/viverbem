@@ -24,7 +24,18 @@
 >   quadros dos passos do carrossel.
 > - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
 
-> **ADENDO 128 (12/11/2026): anexar a receita no carrinho, opcional. IMPLEMENTADO e testado, SÓ LOCAL.**
+> **ADENDO 129 (12/11/2026): cartão da receita com o anexo dentro. IMPLEMENTADO, testado e PUBLICADO no 75º push (com o 128).**
+> "Modernize o carrinho e o anexo." O anexo, que era uma segunda caixa tracejada embaixo do
+> cartão, passou para dentro dele, no lugar da barra de três passos (Seus dados, Mensagem,
+> Foto). O cartão é um bloco; a escolha (role="switch") é a linha de cima, e o anexo abre
+> suave ao marcar (grid 0fr -> 1fr, inert quando fechado). Subtítulo muda com o estado
+> ("Toque para pedir pela receita", "Anexe aqui ou mande na conversa", "A foto vai junto com o
+> pedido"). Anexo vazio: linha tracejada com o clipe num quadrado gelo, "Anexar foto ou PDF" e a
+> pílula "opcional". Anexado: cartãozinho branco com a miniatura e um visto verde no canto,
+> "Receita anexada" numa linha, nome e tamanho, Trocar e tirar. Desmarcar a receita tira o
+> anexo. Conferido no celular (375 px) nos três estados.
+
+> **ADENDO 128 (12/11/2026): anexar a receita no carrinho, opcional. IMPLEMENTADO, testado e PUBLICADO no 75º push.**
 > Pedido: "no carrinho, a opção de anexar a receita; quando a pessoa anexa e envia para o
 > WhatsApp, a foto já cai lá junto com a mensagem; não obrigatório" e, no mesmo dia, "a foto
 > não precisa ficar salva no banco de dados; as outras informações do cliente vão para o

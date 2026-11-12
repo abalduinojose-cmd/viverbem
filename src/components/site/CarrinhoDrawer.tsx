@@ -58,8 +58,6 @@ const ETAPAS: { id: Etapa; rotulo: string }[] = [
 ];
 
 // O que acontece depois de marcar a receita, em três passos curtos
-// 28/10/2026: rótulos curtos, para os três caberem numa linha no celular
-const PASSOS_RECEITA = ["Seus dados", "Mensagem", "Foto"];
 
 // "a, b e c", para a dica do que falta preencher
 function listar(partes: string[]) {
@@ -549,37 +547,35 @@ export function CarrinhoDrawer() {
               /* ---------- Etapa 1: o pedido ---------- */
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col [&>*]:shrink-0 gap-3">
-                  {/* A receita: o pedido do manipulado. O cartão inteiro é a
-                      escolha (role="switch").
-                      28/10/2026, quarta volta ("pode melhorar, deixe mais
-                      moderno"): a chave de ligar e desligar deu lugar a um
-                      CARTÃO DE SELEÇÃO, como as escolhas de pagamento dos apps:
-                      um círculo no canto que se enche de azul com o visto
-                      (com uma mola leve), o fio do cartão engrossa em azul e
-                      o fundo ganha um degradê gelo bem leve. Os passos viram
-                      uma barra de progresso de três segmentos (o primeiro
-                      cheio, o próximo passo) com os nomes embaixo, que abre
-                      suave (grid 0fr -> 1fr). Um acento só: o azul da marca.
-                      Antes: azul-noite com ouro ("pesado") e a versão com a
-                      chave (adendos 118 a 120). */}
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={receita}
-                    onClick={() => {
-                      if (receita) setAnexo(null);
-                      setReceita(!receita);
-                    }}
-                    className={`group/rec relative text-left rounded-[1.25rem] p-4 flex flex-col outline-none transition-[background-color,box-shadow,scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2 ${
+                  {/* A receita: o pedido do manipulado.
+                      28/10/2026: CARTÃO DE SELEÇÃO, como as escolhas de pagamento
+                      dos apps (círculo que se enche de azul com o visto, fio que
+                      engrossa, degradê gelo leve). 12/11/2026, "modernize o
+                      carrinho e o anexo": o anexo, que era uma segunda caixa
+                      tracejada embaixo, passou para DENTRO do cartão, no lugar da
+                      barra de três passos; o cartão abre suave (grid 0fr -> 1fr)
+                      ao marcar. Como não cabe um botão dentro de outro, o cartão
+                      é um bloco e a escolha (role="switch") é a linha de cima. */}
+                  <div
+                    className={`relative rounded-[1.35rem] transition-[background-color,box-shadow] duration-300 ${
                       receita
-                        ? "bg-gradient-to-br from-gelo/70 via-white to-white shadow-[inset_0_0_0_1.5px_var(--color-tinta),0_14px_30px_-22px_rgba(28,105,181,0.55)]"
+                        ? "bg-gradient-to-br from-gelo/80 via-white to-white shadow-[inset_0_0_0_1.5px_var(--color-tinta),0_18px_36px_-26px_rgba(28,105,181,0.6)]"
                         : "bg-white shadow-[inset_0_0_0_1px_var(--color-fio)] hover:shadow-[inset_0_0_0_1px_rgba(28,105,181,0.35)]"
                     }`}
                   >
-                    <span className="flex items-center gap-3.5 w-full pr-8">
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={receita}
+                      onClick={() => {
+                        if (receita) setAnexo(null);
+                        setReceita(!receita);
+                      }}
+                      className="group/rec flex w-full items-center gap-3.5 rounded-[1.35rem] p-4 pr-12 text-left outline-none transition-[scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2"
+                    >
                       <span
                         className={`shrink-0 size-11 rounded-[0.9rem] flex items-center justify-center transition-colors duration-300 ${
-                          receita ? "bg-tinta text-white" : "bg-gelo text-tinta group-hover/rec:bg-[#e3ecf6]"
+                          receita ? "bg-tinta text-white shadow-[0_8px_18px_-10px_rgba(28,105,181,0.8)]" : "bg-gelo text-tinta group-hover/rec:bg-[#e3ecf6]"
                         }`}
                       >
                         <IconeReceita tamanho={20} />
@@ -587,54 +583,47 @@ export function CarrinhoDrawer() {
                       <span className="flex-1 min-w-0">
                         <span className="block text-[1rem] font-semibold tracking-[-0.02em] text-navy">Tenho uma receita</span>
                         <span className="block text-[0.8rem] leading-snug mt-0.5 text-cinza">
-                          {receita ? "A foto vai na conversa do WhatsApp" : "Envie a foto pelo WhatsApp"}
+                          {!receita
+                            ? "Toque para pedir pela receita"
+                            : anexo
+                              ? "A foto vai junto com o pedido"
+                              : "Anexe aqui ou mande na conversa"}
                         </span>
                       </span>
-                    </span>
-
-                    {/* O círculo da seleção, no canto */}
-                    <span
-                      aria-hidden="true"
-                      className={`absolute right-4 top-4 flex size-[1.375rem] items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
-                        receita ? "bg-tinta shadow-[0_4px_10px_-3px_rgba(28,105,181,0.6)]" : "shadow-[inset_0_0_0_1.5px_#cfd8e3] group-hover/rec:shadow-[inset_0_0_0_1.5px_rgba(28,105,181,0.5)]"
-                      }`}
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className={`text-white transition-[scale,opacity] duration-300 ease-[cubic-bezier(0.34,1.5,0.64,1)] ${receita ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
+                      {/* O círculo da seleção, no canto */}
+                      <span
+                        aria-hidden="true"
+                        className={`absolute right-4 top-[1.6rem] flex size-[1.375rem] items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
+                          receita ? "bg-tinta shadow-[0_4px_10px_-3px_rgba(28,105,181,0.6)]" : "shadow-[inset_0_0_0_1.5px_#cfd8e3] group-hover/rec:shadow-[inset_0_0_0_1.5px_rgba(28,105,181,0.5)]"
+                        }`}
                       >
-                        <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          className={`text-white transition-[scale,opacity] duration-300 ease-[cubic-bezier(0.34,1.5,0.64,1)] ${receita ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
+                        >
+                          <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    </button>
 
-                    {/* Os três passos seguintes: barra de progresso em três
-                        segmentos, o primeiro cheio (o próximo passo) */}
-                    <span
+                    {/* O anexo, opcional, dentro do cartão (abre ao marcar) */}
+                    <div
                       aria-hidden={!receita}
+                      inert={!receita}
                       className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                         receita ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                       }`}
                     >
-                      <span className="min-h-0 overflow-hidden">
-                        <span className="mt-3.5 grid grid-cols-3 gap-1.5">
-                          {PASSOS_RECEITA.map((passo, i) => (
-                            <span key={passo} className="flex flex-col gap-1.5">
-                              <span className={`h-1 rounded-full ${i === 0 ? "bg-tinta" : "bg-tinta/15"}`} />
-                              <span className={`text-[0.72rem] leading-none ${i === 0 ? "font-semibold text-tinta" : "text-cinza/80"}`}>
-                                <span className="tabular-nums">{i + 1}.</span> {passo}
-                              </span>
-                            </span>
-                          ))}
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-
-                  {/* O anexo da receita, opcional (12/11/2026) */}
-                  {receita && <AnexoReceita arquivo={anexo} aoMudar={setAnexo} />}
+                      <div className="min-h-0 overflow-hidden">
+                        <div className="px-4 pb-4">
+                          <AnexoReceita arquivo={anexo} aoMudar={setAnexo} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* De qual manipulado a pessoa veio */}
                   {receita && produtoVisto && (
