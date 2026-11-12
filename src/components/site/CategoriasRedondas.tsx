@@ -53,9 +53,9 @@ export function CategoriasRedondas({
         {categorias.map((c, i) => {
           const img = imagens[c.id];
           return (
-            // Celular: quatro por tela e a ponta do quinto (largura da tela
-            // menos o recuo e os três vãos, dividida por 4,25)
-            <li key={c.id} className="w-[calc((100vw_-_2.5rem_-_2.25rem)/4.25)] shrink-0 snap-start md:w-auto">
+            // Celular: três por tela e boa parte do quarto (12/11/2026,
+            // "aumente levemente"; eram quatro e a ponta do quinto)
+            <li key={c.id} className="w-[calc((100vw_-_2.5rem_-_2.25rem)/3.7)] shrink-0 snap-start md:w-auto">
               <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-2 md:gap-3 text-center">
                 <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
                   {img?.tipo === "foto" ? (
@@ -93,7 +93,7 @@ export function CategoriasRedondas({
                   )}
                 </span>
                 <span className="leading-tight">
-                  <span className="block font-semibold text-navy text-[0.72rem] md:text-base transition-colors group-hover:text-tinta">
+                  <span className="block font-semibold text-navy text-[0.8rem] md:text-base transition-colors group-hover:text-tinta">
                     {c.nome}
                   </span>
                 </span>

@@ -187,11 +187,28 @@ export function BuscaAoVivo({
                           <span className="size-2 rounded-full bg-fio" />
                         )}
                       </span>
-                      <span className="min-w-0">
+                      <span className="min-w-0 flex-1">
                         <span className="block truncate text-[0.95rem] text-grafite">
                           <NomeComDestaque nome={p.nome} busca={termo} />
                         </span>
                         {p.categoria && <span className="block truncate text-xs text-cinza">{p.categoria}</span>}
+                      </span>
+                      {/* 12/11/2026 ("coloque o direcionamento para os produtos"):
+                          a linha mostra que leva à página do produto */}
+                      <span
+                        aria-hidden="true"
+                        className={`ml-2 flex shrink-0 items-center gap-1.5 text-[0.78rem] font-semibold transition-colors ${
+                          i === marcado ? "text-tinta" : "text-cinza/70"
+                        }`}
+                      >
+                        <span className={`hidden sm:inline transition-opacity ${i === marcado ? "opacity-100" : "opacity-0"}`}>Ver produto</span>
+                        <span className={`flex size-8 items-center justify-center rounded-full ring-1 ring-inset transition-colors ${
+                          i === marcado ? "bg-tinta text-white ring-tinta" : "ring-fio"
+                        }`}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </span>
                       </span>
                     </Link>
                   </li>

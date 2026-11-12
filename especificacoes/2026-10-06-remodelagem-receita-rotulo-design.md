@@ -24,7 +24,18 @@
 >   quadros dos passos do carrossel.
 > - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
 
-> **ADENDO 126 (12/11/2026): ajustes depois da reunião com a proprietária. IMPLEMENTADO e testado, SÓ LOCAL.**
+> **ADENDO 127 (12/11/2026): vantagens no desktop, busca que leva ao produto, logo e linhas no celular. IMPLEMENTADO, testado e PUBLICADO no 74º push (com o 126).**
+> - VANTAGENS no computador: quatro colunas iguais (251 px em 1366) separadas por fio,
+>   ícone num círculo gelo com contorno de ouro que clareia no hover, título 1rem.
+>   Ícones novos: fachada da loja (era o pino) e prancheta com visto (era a folha da
+>   receita), Tabler "building-store" e "clipboard-check". No celular, o 2x2 de antes.
+> - BUSCA AO VIVO: cada resultado ganhou "Ver produto" e o círculo da seta (azul no
+>   item marcado). Testado: o clique abre /produto/glow-cream.
+> - LOGO um pouco menor que no 126: celular 3,2rem (117x51) e computador 3,75rem.
+> - LINHAS DE PRODUTOS no celular um pouco maiores: 3,7 círculos por tela (81 px,
+>   eram 70) e nome em 0,8rem.
+
+> **ADENDO 126 (12/11/2026): ajustes depois da reunião com a proprietária. IMPLEMENTADO, testado e PUBLICADO no 74º push.**
 > - LOGO MAIOR no cabeçalho: celular de 2,85 para 3,4rem (124x54 px em 375 de tela,
 >   folga de 81 px até os botões) e computador de 3,36 para 4rem (146x64 px).
 > - BUSCA NO COMPUTADOR ("fica quebrada, translúcida"): a entrada animada
