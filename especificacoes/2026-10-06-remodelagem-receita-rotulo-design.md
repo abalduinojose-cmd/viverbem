@@ -24,6 +24,27 @@
 >   quadros dos passos do carrossel.
 > - MEDIDO: até 2,5 ms por quadro no trecho mais pesado, 60 fps.
 
+> **ADENDO 128 (12/11/2026): anexar a receita no carrinho, opcional. IMPLEMENTADO e testado, SÓ LOCAL.**
+> Pedido: "no carrinho, a opção de anexar a receita; quando a pessoa anexa e envia para o
+> WhatsApp, a foto já cai lá junto com a mensagem; não obrigatório" e, no mesmo dia, "a foto
+> não precisa ficar salva no banco de dados; as outras informações do cliente vão para o
+> banco; a foto só é enviada para o WhatsApp quando o cliente finaliza".
+> - Com "Tenho uma receita" marcado, aparece "Anexar a receita (opcional)" (foto ou PDF,
+>   até 15 MB), com miniatura, Trocar e tirar (AnexoReceita.tsx). Desmarcar a receita
+>   tira o anexo.
+> - A foto NÃO vai para o servidor nem para o banco: o pedido segue para o painel como
+>   antes, só com os dados. O link wa.me só leva texto, então a foto sai assim:
+>   celular (navigator.canShare com arquivo): a tela de compartilhar do aparelho com a foto e
+>   a mensagem juntas; a pessoa escolhe o WhatsApp e a conversa da Viver Bem; a mensagem diz
+>   "foto anexada a esta mensagem" e a tela final oferece "Não achou a Viver Bem? Abrir a
+>   conversa". Computador: a conversa abre com a mensagem e a imagem vai copiada (PNG na área
+>   de transferência) para colar com Ctrl+V; PDF ou cópia recusada: "anexe pelo clipe".
+> - Textos da FAQ e da privacidade dizem que a foto, mesmo anexada, vai do aparelho direto
+>   para o WhatsApp, sem ficar guardada no site.
+> - Testado no navegador do painel (sem compartilhar arquivo): anexo, nota do botão, envio
+>   para wa.me/5524988733934 com a mensagem certa e a tela final. O compartilhar do celular
+>   só dá para testar num celular de verdade.
+
 > **ADENDO 127 (12/11/2026): vantagens no desktop, busca que leva ao produto, logo e linhas no celular. IMPLEMENTADO, testado e PUBLICADO no 74º push (com o 126).**
 > - VANTAGENS no computador: quatro colunas iguais (251 px em 1366) separadas por fio,
 >   ícone num círculo gelo com contorno de ouro que clareia no hover, título 1rem.

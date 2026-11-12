@@ -2,7 +2,7 @@
 import { WHATSAPP_NUMERO, ENTREGA_RETIRADA } from "./tipos";
 import { ItemCarrinho } from "./carrinho";
 
-function linkComMensagem(mensagem: string): string {
+export function linkComMensagem(mensagem: string): string {
   return `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagem)}`;
 }
 
@@ -22,12 +22,21 @@ export interface DadosPedido {
   receita: boolean;
   /** Manipulado que ela abriu no site antes de pedir, se houver */
   produtoVisto?: string | null;
+  /** 12/11/2026: a foto da receita foi anexada no carrinho e segue com a
+   *  mensagem (pelo compartilhar do celular ou colada no computador) */
+  fotoAnexada?: boolean;
 }
 
 /** Link com o pedido completo: dados da pessoa, a receita (se houver)
  *  e os itens com a quantidade. Sem preço: o farmacêutico confere e
  *  responde com o valor. */
 export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): string {
+  return linkComMensagem(mensagemDoPedido(itens, dados));
+}
+
+/** O texto do pedido (o mesmo do link), para ir junto com a foto da
+ *  receita no compartilhar do celular */
+export function mensagemDoPedido(itens: ItemCarrinho[], dados: DadosPedido): string {
   const partes = [
     "🧾 *NOVO PEDIDO · SITE VIVER BEM*",
     `*Pedido:* ${dados.codigo}`,
@@ -48,7 +57,7 @@ export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): s
   }
 
   if (dados.receita) {
-    partes.push("", "📄 *Receita:* vou enviar a foto em seguida.");
+    partes.push("", dados.fotoAnexada ? "📄 *Receita:* foto anexada a esta mensagem." : "📄 *Receita:* vou enviar a foto em seguida.");
     if (dados.produtoVisto) partes.push(`*Vi no site:* ${dados.produtoVisto}`);
   }
 
@@ -68,9 +77,11 @@ export function linkWhatsAppPedido(itens: ItemCarrinho[], dados: DadosPedido): s
   partes.push(
     "",
     dados.receita
-      ? "_Pedido feito pelo site. Segue a foto da receita:_"
+      ? dados.fotoAnexada
+        ? "_Pedido feito pelo site, com a foto da receita._"
+        : "_Pedido feito pelo site. Segue a foto da receita:_"
       : "_Pedido feito pelo site. Aguardo o valor e o prazo._"
   );
 
-  return linkComMensagem(partes.join("\n"));
+  return partes.join("\n");
 }

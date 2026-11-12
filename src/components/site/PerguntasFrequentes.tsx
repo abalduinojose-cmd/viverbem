@@ -20,7 +20,7 @@ export const PERGUNTAS = [
   {
     pergunta: "Como envio a receita?",
     resposta:
-      "Pelo botão Enviar receita, o pedido abre com um código e a conversa do WhatsApp; é só anexar a foto na conversa. Se preferir, traga a receita em uma das lojas.",
+      "Pelo botão Enviar receita. Se quiser, anexe a foto ou o PDF ali mesmo, e ela segue com o pedido para o WhatsApp; ou mande depois, na conversa. Se preferir, traga a receita em uma das lojas.",
   },
   {
     pergunta: "Quanto tempo leva?",
@@ -39,7 +39,7 @@ export const PERGUNTAS = [
   {
     pergunta: "O que acontece com a minha receita e os meus dados?",
     resposta:
-      "A receita vai direto pelo WhatsApp e não passa pelo site. Ela e os seus dados são usados só para o preparo e o atendimento, conforme a LGPD, e não são vendidos nem cedidos para anúncios. Os detalhes estão na política de privacidade.",
+      "A receita vai direto pelo WhatsApp: mesmo anexada no carrinho, ela sai do seu aparelho para a conversa, sem ficar guardada no site. Ela e os seus dados são usados só para o preparo e o atendimento, conforme a LGPD, e não são vendidos nem cedidos para anúncios. Os detalhes estão na política de privacidade.",
   },
 ];
 

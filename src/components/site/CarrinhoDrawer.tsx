@@ -41,7 +41,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
-import { linkWhatsAppPedido, gerarCodigoPedido } from "@/lib/whatsapp";
+import { linkWhatsAppPedido, mensagemDoPedido, gerarCodigoPedido } from "@/lib/whatsapp";
+import { AnexoReceita, copiarImagem, podeCompartilharArquivo } from "./AnexoReceita";
 import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeCaixa } from "./IconeCaixa";
 import { FotoProduto } from "./FotoProduto";
@@ -134,6 +135,18 @@ export function CarrinhoDrawer() {
   const [enviado, setEnviado] = useState(false);
   // Guardado no envio, porque limpar() zera a receita logo em seguida
   const [enviouReceita, setEnviouReceita] = useState(false);
+  // 12/11/2026 ("no carrinho, a opção de anexar a receita; não obrigatório"):
+  // a foto (ou PDF) da receita, escolhida no aparelho. Ela NÃO vai para o
+  // servidor nem para o banco: no celular segue com a mensagem pelo
+  // compartilhar do próprio aparelho; no computador é copiada para colar
+  // na conversa. Os outros dados do pedido seguem para o painel como antes.
+  const [anexo, setAnexo] = useState<File | null>(null);
+  // Como a foto saiu no envio: "compartilhada" (celular), "copiada" (cole
+  // com Ctrl+V), "manual" (PDF ou cópia recusada: anexar na conversa)
+  const [saidaFoto, setSaidaFoto] = useState<"" | "compartilhada" | "copiada" | "manual">("");
+  // O link da conversa, para o botão de reserva da tela final
+  const [linkConversa, setLinkConversa] = useState("");
+  const compartilhaFoto = podeCompartilharArquivo(anexo);
 
   // Fechar sempre volta para a primeira etapa, então a próxima abertura
   // começa do início. Os dados digitados ficam, para não redigitar.
@@ -303,6 +316,7 @@ export function CarrinhoDrawer() {
   // há servidor para registrar: o pedido vai direto para o WhatsApp.
   function enviarPedido() {
     if (!podeEnviar) return;
+    const comFoto = receita && anexo !== null;
 
     if (process.env.NEXT_PUBLIC_DEMO !== "1") fetch("/api/pedidos", {
       method: "POST",
@@ -326,7 +340,7 @@ export function CarrinhoDrawer() {
       /* o pedido segue para o WhatsApp mesmo sem o registro */
     });
 
-    const url = linkWhatsAppPedido(itens, {
+    const dadosMensagem = {
       nome: nome.trim(),
       whatsapp: whatsapp.trim(),
       entrega,
@@ -335,10 +349,36 @@ export function CarrinhoDrawer() {
       codigo,
       receita,
       produtoVisto,
-    });
-    window.open(url, "_blank", "noopener,noreferrer");
+      // "foto anexada a esta mensagem" só quando ela vai mesmo junto (o
+      // compartilhar do celular); no computador ela vem colada em seguida
+      fotoAnexada: comFoto && compartilhaFoto,
+    };
+    const url = linkWhatsAppPedido(itens, dadosMensagem);
+    setLinkConversa(url);
+
+    if (comFoto && anexo && compartilhaFoto) {
+      // Celular: a tela de compartilhar do aparelho, com a foto e o pedido
+      // juntos; a pessoa escolhe o WhatsApp e a conversa da Viver Bem
+      setSaidaFoto("compartilhada");
+      navigator
+        .share({ files: [anexo], text: mensagemDoPedido(itens, dadosMensagem) })
+        .catch(() => {
+          /* fechou sem enviar: a tela final oferece abrir a conversa */
+        });
+    } else {
+      if (comFoto && anexo) {
+        // Computador: a foto vai copiada para colar na conversa. A cópia
+        // começa antes de abrir o WhatsApp, com a página ainda em foco.
+        setSaidaFoto("manual");
+        copiarImagem(anexo).then((ok) => ok && setSaidaFoto("copiada"));
+      } else {
+        setSaidaFoto("");
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
     setEnviouReceita(receita);
     setEnviado(true);
+    setAnexo(null);
     limpar();
   }
 
@@ -476,11 +516,31 @@ export function CarrinhoDrawer() {
                 </div>
                 <h3 className="text-2xl font-semibold tracking-[-0.03em] text-navy">Pedido enviado</h3>
                 <p className="text-cinza leading-relaxed">
-                  Abrimos o WhatsApp com o seu pedido <b className="text-navy whitespace-nowrap">{codigo}</b>.{" "}
-                  {enviouReceita
-                    ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
-                    : "Envie a mensagem: o farmacêutico confere o pedido e passa o valor, o prazo e a forma de pagamento."}
+                  {saidaFoto === "compartilhada" ? (
+                    <>
+                      Escolha o WhatsApp e a conversa da Viver Bem: a foto da receita vai junto com o pedido{" "}
+                      <b className="text-navy whitespace-nowrap">{codigo}</b>.
+                    </>
+                  ) : (
+                    <>
+                      Abrimos o WhatsApp com o seu pedido <b className="text-navy whitespace-nowrap">{codigo}</b>.{" "}
+                      {saidaFoto === "copiada"
+                        ? "A foto da receita já está copiada: na conversa, cole com Ctrl+V e envie."
+                        : saidaFoto === "manual"
+                          ? "Na conversa, anexe o arquivo da receita pelo clipe e envie."
+                          : enviouReceita
+                            ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
+                            : "Envie a mensagem: o farmacêutico confere o pedido e passa o valor, o prazo e a forma de pagamento."}
+                    </>
+                  )}
                 </p>
+                {/* Reserva do compartilhar: se a conversa da Viver Bem não
+                    apareceu na lista, abre direto (aí a foto vai pelo clipe) */}
+                {saidaFoto === "compartilhada" && linkConversa && (
+                  <a href={linkConversa} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-tinta underline-offset-4 hover:underline">
+                    Não achou a Viver Bem? Abrir a conversa
+                  </a>
+                )}
                 <button type="button" onClick={fechar} className="botao botao-secundario mt-2">
                   Concluir
                 </button>
@@ -506,7 +566,10 @@ export function CarrinhoDrawer() {
                     type="button"
                     role="switch"
                     aria-checked={receita}
-                    onClick={() => setReceita(!receita)}
+                    onClick={() => {
+                      if (receita) setAnexo(null);
+                      setReceita(!receita);
+                    }}
                     className={`group/rec relative text-left rounded-[1.25rem] p-4 flex flex-col outline-none transition-[background-color,box-shadow,scale] duration-300 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2 ${
                       receita
                         ? "bg-gradient-to-br from-gelo/70 via-white to-white shadow-[inset_0_0_0_1.5px_var(--color-tinta),0_14px_30px_-22px_rgba(28,105,181,0.55)]"
@@ -569,6 +632,9 @@ export function CarrinhoDrawer() {
                       </span>
                     </span>
                   </button>
+
+                  {/* O anexo da receita, opcional (12/11/2026) */}
+                  {receita && <AnexoReceita arquivo={anexo} aoMudar={setAnexo} />}
 
                   {/* De qual manipulado a pessoa veio */}
                   {receita && produtoVisto && (
@@ -949,7 +1015,15 @@ export function CarrinhoDrawer() {
                       `Falta preencher ${listar(faltando)}.`
                     ) : (
                       <>
-                        {`${receita ? "Depois da mensagem, anexe a foto da receita. " : ""}Pedido `}
+                        {`${
+                          receita
+                            ? anexo
+                              ? compartilhaFoto
+                                ? "Ao enviar, escolha o WhatsApp e a conversa da Viver Bem: a foto vai junto. "
+                                : "A foto da receita vai copiada para você colar na conversa. "
+                              : "Depois da mensagem, anexe a foto da receita. "
+                            : ""
+                        }Pedido `}
                         <span className="whitespace-nowrap">{codigo}</span>
                         {" · seus dados servem só para o seu atendimento ("}
                         <Link href="/privacidade" className="underline underline-offset-2 hover:text-navy">

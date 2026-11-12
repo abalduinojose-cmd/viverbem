@@ -35,7 +35,7 @@ export default function PaginaPrivacidade() {
       atualizadoEm={ATUALIZADO_EM}
       essencial={[
         "O site guarda nome, WhatsApp e o resumo do pedido de quem finaliza um pedido. Navegar e montar o carrinho não gera cadastro.",
-        "A foto da receita não passa pelo site: vai direto na conversa do WhatsApp, onde só a equipe da farmácia a vê, para conferir e preparar.",
+        "A foto da receita não fica guardada no site: anexada no carrinho ou mandada na conversa, ela vai direto para o WhatsApp da farmácia, onde só a equipe a vê.",
         "Os dados servem para a equipe responder e preparar o pedido. Não vendemos nem repassamos para anúncios.",
         "Cookies de medição só com o seu aceite, e você pode mudar a escolha a qualquer hora pelo rodapé.",
         "Você pode pedir acesso, correção ou exclusão dos seus dados pelo WhatsApp ou em uma das lojas.",
@@ -71,7 +71,7 @@ export default function PaginaPrivacidade() {
                 Com o pedido, o seu nome, o seu WhatsApp e o que você procura entram também na lista de contatos da farmácia, para a equipe acompanhar o atendimento. Nessa lista a equipe pode registrar, da mesma forma, contatos recebidos pelo WhatsApp, pelo Instagram ou nas lojas.
               </p>
               <p>
-                A foto da receita não passa pelo site: você a envia direto na conversa do WhatsApp, e é lá que o farmacêutico a confere. O site não guarda receitas, laudos nem diagnósticos. A receita é um dado de saúde: a farmácia a usa só para conferir, preparar e registrar o que a legislação sanitária exige, e ela não vai para a lista de contatos.
+                A foto da receita não fica guardada no site: mesmo quando você a anexa no carrinho, ela sai do seu aparelho direto para a conversa do WhatsApp, e é lá que o farmacêutico a confere. O site não guarda receitas, laudos nem diagnósticos. A receita é um dado de saúde: a farmácia a usa só para conferir, preparar e registrar o que a legislação sanitária exige, e ela não vai para a lista de contatos.
               </p>
               <p>
                 Navegar pelo site, buscar produtos e montar o carrinho não gera cadastro. O carrinho e a lista &quot;Você viu recentemente&quot; ficam só no seu navegador. Como em qualquer site, os servidores da hospedagem registram dados técnicos de acesso (como o endereço IP e a página pedida) por pouco tempo, para segurança e para corrigir falhas.
