@@ -1,5 +1,17 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 138 (13/11/2026): capítulo "20 anos de história" com a foto da equipe no laboratório. IMPLEMENTADO e conferido (375 e 1366); não publicado.**
+> - PEDIDO: "coloque essa foto no lugar [da fachada com a equipe];
+>   modernize toda essa parte; mais moderna e clean, mas mantenha a
+>   essência". Foto: equipe de jaleco vermelho na bancada de manipulação
+>   (HEIC do usuário), recortada em 4:5, public/fotos/sobre/laboratorio-equipe.webp.
+> - LAYOUT: no computador o rótulo, o "20" e o texto à esquerda e a foto
+>   alta (4:5) à direita, ao lado dos dois, com a etiqueta de vidro
+>   "Nosso laboratório / manipulação desde 2006"; título com medida mais
+>   curta, fio de ouro, texto com mais entrelinha. No celular: "20", foto,
+>   texto. Ficaram a folha azul-noite, o "20" que cresce, a paralaxe, o
+>   recuo sob a folha branca, o texto da farmácia e os dois botões.
+
 > **ADENDO 137 (13/11/2026): lojas sem numeração, sem o selo ao vivo e com título novo. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 78º push (com o 136).**
 > - PEDIDO: "gostei; sem numeração, as três são importantes; tire o
 >   aberto, fecha às 19h; modernize o título e o subtítulo; depois
