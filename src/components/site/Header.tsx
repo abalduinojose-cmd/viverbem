@@ -215,7 +215,7 @@ export function Header({ categorias, indice = [] }: { categorias: CategoriaDTO[]
           vantagens com ícone em ouro, separadas por um fio; os links
           institucionais em pílulas na ponta. Nada quebra linha: cada item
           entra só a partir da largura em que cabe. */}
-      <div className="entrada-topo entrada-topo-1 hidden md:block bg-[linear-gradient(90deg,#0d2340_0%,#0f3157_55%,#124a86_100%)] text-white">
+      <div className="entrada-topo entrada-topo-1 hidden md:block bg-[linear-gradient(90deg,#124a86_0%,#0f3157_45%,#0d2340_100%)] text-white">
         <div className="max-w-[90rem] mx-auto px-5 h-9 flex items-center justify-between gap-6 text-[0.78rem] whitespace-nowrap">
           <ul className="flex items-center min-w-0">
             <li className="flex items-center">

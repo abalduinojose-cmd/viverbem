@@ -41,7 +41,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/lib/carrinho";
-import { linkWhatsAppPedido, mensagemDoPedido, gerarCodigoPedido } from "@/lib/whatsapp";
+import { linkWhatsAppPedido, gerarCodigoPedido } from "@/lib/whatsapp";
 import { AnexoReceita, copiarImagem, podeCompartilharArquivo } from "./AnexoReceita";
 import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeCaixa } from "./IconeCaixa";
@@ -139,11 +139,22 @@ export function CarrinhoDrawer() {
   // compartilhar do próprio aparelho; no computador é copiada para colar
   // na conversa. Os outros dados do pedido seguem para o painel como antes.
   const [anexo, setAnexo] = useState<File | null>(null);
-  // Como a foto saiu no envio: "compartilhada" (celular), "copiada" (cole
-  // com Ctrl+V), "manual" (PDF ou cópia recusada: anexar na conversa)
-  const [saidaFoto, setSaidaFoto] = useState<"" | "compartilhada" | "copiada" | "manual">("");
-  // O link da conversa, para o botão de reserva da tela final
-  const [linkConversa, setLinkConversa] = useState("");
+  // 13/11/2026 ("por que o pedido não vai como mensagem no WhatsApp? quero
+  // que abra o meu WhatsApp com a mensagem, igual antes, e já mande a
+  // imagem junto"): o compartilhar do celular (foto + texto) deixava a
+  // pessoa escolhendo o contato e o WhatsApp do iPhone descarta o texto
+  // quando vai junto com arquivo. Agora o envio é SEMPRE igual ao de antes:
+  // abre a conversa da Viver Bem com a mensagem pronta. A foto, que o link
+  // do WhatsApp não carrega, segue LOGO DEPOIS: a tela final tem o botão
+  // "Enviar a foto da receita" (o compartilhar do celular, só com a foto;
+  // a conversa da Viver Bem aparece no topo da lista, porque acabou de ser
+  // usada) e, no computador, a foto já vai copiada para colar com Ctrl+V.
+  // Como a foto segue: "compartilhar" (botão da tela final), "copiada"
+  // (cole com Ctrl+V), "manual" (PDF ou cópia recusada: anexar pelo clipe)
+  const [saidaFoto, setSaidaFoto] = useState<"" | "compartilhar" | "copiada" | "manual">("");
+  // A foto guardada para o botão da tela final (só no aparelho, nunca no servidor)
+  const [fotoPendente, setFotoPendente] = useState<File | null>(null);
+  const [fotoEnviada, setFotoEnviada] = useState(false);
   const compartilhaFoto = podeCompartilharArquivo(anexo);
 
   // Fechar sempre volta para a primeira etapa, então a próxima abertura
@@ -151,6 +162,8 @@ export function CarrinhoDrawer() {
   const fechar = useCallback(() => {
     setEtapa("pedido");
     setEnviado(false);
+    setFotoPendente(null);
+    setFotoEnviada(false);
     fecharPedido();
   }, [fecharPedido]);
 
@@ -347,33 +360,29 @@ export function CarrinhoDrawer() {
       codigo,
       receita,
       produtoVisto,
-      // "foto anexada a esta mensagem" só quando ela vai mesmo junto (o
-      // compartilhar do celular); no computador ela vem colada em seguida
-      fotoAnexada: comFoto && compartilhaFoto,
+      // A foto segue logo depois da mensagem (a mensagem avisa isso)
+      fotoAnexada: false,
     };
     const url = linkWhatsAppPedido(itens, dadosMensagem);
-    setLinkConversa(url);
 
-    if (comFoto && anexo && compartilhaFoto) {
-      // Celular: a tela de compartilhar do aparelho, com a foto e o pedido
-      // juntos; a pessoa escolhe o WhatsApp e a conversa da Viver Bem
-      setSaidaFoto("compartilhada");
-      navigator
-        .share({ files: [anexo], text: mensagemDoPedido(itens, dadosMensagem) })
-        .catch(() => {
-          /* fechou sem enviar: a tela final oferece abrir a conversa */
-        });
-    } else {
-      if (comFoto && anexo) {
+    if (comFoto && anexo) {
+      setFotoPendente(anexo);
+      setFotoEnviada(false);
+      if (compartilhaFoto) {
+        // Celular: a foto vai pelo botão da tela final, logo depois da mensagem
+        setSaidaFoto("compartilhar");
+      } else {
         // Computador: a foto vai copiada para colar na conversa. A cópia
         // começa antes de abrir o WhatsApp, com a página ainda em foco.
         setSaidaFoto("manual");
         copiarImagem(anexo).then((ok) => ok && setSaidaFoto("copiada"));
-      } else {
-        setSaidaFoto("");
       }
-      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      setFotoPendente(null);
+      setSaidaFoto("");
     }
+    // Sempre: a conversa da Viver Bem com a mensagem do pedido pronta
+    window.open(url, "_blank", "noopener,noreferrer");
     setEnviouReceita(receita);
     setEnviado(true);
     setAnexo(null);
@@ -514,30 +523,43 @@ export function CarrinhoDrawer() {
                 </div>
                 <h3 className="text-2xl font-semibold tracking-[-0.03em] text-navy">Pedido enviado</h3>
                 <p className="text-cinza leading-relaxed">
-                  {saidaFoto === "compartilhada" ? (
-                    <>
-                      Escolha o WhatsApp e a conversa da Viver Bem: a foto da receita vai junto com o pedido{" "}
-                      <b className="text-navy whitespace-nowrap">{codigo}</b>.
-                    </>
-                  ) : (
-                    <>
-                      Abrimos o WhatsApp com o seu pedido <b className="text-navy whitespace-nowrap">{codigo}</b>.{" "}
-                      {saidaFoto === "copiada"
-                        ? "A foto da receita já está copiada: na conversa, cole com Ctrl+V e envie."
-                        : saidaFoto === "manual"
-                          ? "Na conversa, anexe o arquivo da receita pelo clipe e envie."
-                          : enviouReceita
-                            ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
-                            : "Envie a mensagem: o farmacêutico confere o pedido e passa o valor, o prazo e a forma de pagamento."}
-                    </>
-                  )}
+                  Abrimos o WhatsApp com o seu pedido <b className="text-navy whitespace-nowrap">{codigo}</b>.{" "}
+                  {saidaFoto === "compartilhar"
+                    ? "Envie a mensagem e, em seguida, a foto da receita pelo botão abaixo."
+                    : saidaFoto === "copiada"
+                      ? "A foto da receita já está copiada: na conversa, cole com Ctrl+V e envie."
+                      : saidaFoto === "manual"
+                        ? "Na conversa, anexe o arquivo da receita pelo clipe e envie."
+                        : enviouReceita
+                          ? "Agora é só anexar a foto da receita na conversa. O farmacêutico confere e passa o valor."
+                          : "Envie a mensagem: o farmacêutico confere o pedido e passa o valor, o prazo e a forma de pagamento."}
                 </p>
-                {/* Reserva do compartilhar: se a conversa da Viver Bem não
-                    apareceu na lista, abre direto (aí a foto vai pelo clipe) */}
-                {saidaFoto === "compartilhada" && linkConversa && (
-                  <a href={linkConversa} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-tinta underline-offset-4 hover:underline">
-                    Não achou a Viver Bem? Abrir a conversa
-                  </a>
+                {/* Celular: a foto da receita, logo depois da mensagem. A tela
+                    de compartilhar abre só com a foto; a conversa da Viver Bem
+                    está no topo da lista do WhatsApp. */}
+                {saidaFoto === "compartilhar" && fotoPendente && (
+                  <div className="mt-1 flex w-full flex-col items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator
+                          .share({ files: [fotoPendente] })
+                          .then(() => setFotoEnviada(true))
+                          .catch(() => {
+                            /* fechou sem enviar: o botão continua aqui */
+                          });
+                      }}
+                      className="botao botao-principal w-full !gap-2.5"
+                    >
+                      <IconeWhatsApp tamanho={20} />
+                      {fotoEnviada ? "Enviar a foto de novo" : "Enviar a foto da receita"}
+                    </button>
+                    <p className="text-xs leading-relaxed text-cinza">
+                      {fotoEnviada
+                        ? "Foto enviada. O farmacêutico confere e responde com o valor."
+                        : "Escolha o WhatsApp e a conversa da Viver Bem, no topo da lista."}
+                    </p>
+                  </div>
                 )}
                 <button type="button" onClick={fechar} className="botao botao-secundario mt-2">
                   Concluir
@@ -592,7 +614,7 @@ export function CarrinhoDrawer() {
                           {!receita
                             ? "Toque para pedir pela receita"
                             : anexo
-                              ? "A foto vai junto com o pedido"
+                              ? "A foto vai logo depois da mensagem"
                               : "Anexe agora ou mande na conversa"}
                         </span>
                         {/* O anexo, opcional, na própria descrição (abre ao marcar) */}
@@ -1013,7 +1035,7 @@ export function CarrinhoDrawer() {
                           receita
                             ? anexo
                               ? compartilhaFoto
-                                ? "Ao enviar, escolha o WhatsApp e a conversa da Viver Bem: a foto vai junto. "
+                                ? "O WhatsApp abre com o pedido; a foto você envia logo depois, num toque. "
                                 : "A foto da receita vai copiada para você colar na conversa. "
                               : "Depois da mensagem, anexe a foto da receita. "
                             : ""

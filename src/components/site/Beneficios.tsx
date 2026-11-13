@@ -17,16 +17,19 @@
 // o texto embaixo; a nota do Google acende no hover. Ícones novos: a fachada
 // da loja (era o pino) e a prancheta com o visto (era a folha da receita).
 // No celular o cartão 2x2 continua, com os ícones novos.
-import { IconeCaixa } from "./IconeCaixa";
-import { IconeEstrela, IconeFachada, IconeReceitaConferida } from "./IconesVantagens";
+// 13/11/2026 ("modernize os ícones"): ícones em DOIS TONS (traço em ouro
+// escuro com as faces num ouro bem claro, IconesVantagensDuo), cada um num
+// quadrado arredondado em degradê creme e ouro, com um brilho em cima;
+// no celular também (antes o ícone ficava solto).
+import { IconeCaixaDuo, IconeEstrelaDuo, IconeFachadaDuo, IconeReceitaDuo } from "./IconesVantagensDuo";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, PERFIL_GOOGLE_URL, UNIDADES } from "@/lib/tipos";
 
 const ITENS = [
-  { icone: <IconeCaixa tamanho={20} />, titulo: "Enviamos", texto: "para todo o Brasil" },
-  { icone: <IconeFachada tamanho={19} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
-  { icone: <IconeReceitaConferida tamanho={19} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
+  { icone: <IconeCaixaDuo tamanho={20} />, titulo: "Enviamos", texto: "para todo o Brasil" },
+  { icone: <IconeFachadaDuo tamanho={20} />, titulo: "Retirada grátis", texto: `em ${UNIDADES.length} lojas` },
+  { icone: <IconeReceitaDuo tamanho={20} />, titulo: "Receita conferida", texto: "pelo farmacêutico" },
   {
-    icone: <IconeEstrela tamanho={17} />,
+    icone: <IconeEstrelaDuo tamanho={19} />,
     titulo: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google`,
     texto: `${AVALIACOES_GOOGLE_TOTAL} avaliações`,
     href: PERFIL_GOOGLE_URL,
@@ -37,7 +40,7 @@ const ITENS = [
 // 25/10/2026 (clean, marca de beleza): no computador as pílulas com borda,
 // sombra e vidro viraram texto com o ícone em ouro, separados por um fio
 const classeItem =
-  "group/vt flex h-full items-center gap-2.5 px-3 py-3.5 text-left transition lg:h-[4.75rem] lg:justify-center lg:gap-3.5 lg:py-0 lg:px-5";
+  "group/vt flex h-full items-center gap-2 px-2.5 py-3.5 text-left transition lg:h-[4.75rem] lg:justify-center lg:gap-3.5 lg:py-0 lg:px-5";
 
 /** Os fios entre as células no celular: à esquerda das ímpares e em cima
  *  da segunda fileira. No computador cada pílula tem a própria borda. */
@@ -52,7 +55,7 @@ export function Beneficios() {
         {ITENS.map((i, indice) => {
           const miolo = (
             <>
-              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-ouro-escuro lg:size-11 lg:rounded-full lg:bg-gelo lg:ring-1 lg:ring-inset lg:ring-ouro/30 lg:transition-colors lg:duration-300 lg:group-hover/vt:bg-white lg:group-hover/vt:ring-ouro/60">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-[0.7rem] bg-[linear-gradient(145deg,#fdf9f0,#f3e6c8)] text-ouro-escuro ring-1 ring-inset ring-ouro/25 shadow-[inset_0_1px_0_#ffffff,0_6px_14px_-10px_rgba(133,101,47,0.6)] transition duration-300 lg:size-12 lg:rounded-[1rem] lg:group-hover/vt:-translate-y-0.5 lg:group-hover/vt:ring-ouro/50">
                 {i.icone}
               </span>
               <span className="min-w-0 leading-tight">

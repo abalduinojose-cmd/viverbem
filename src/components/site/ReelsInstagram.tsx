@@ -12,8 +12,8 @@
 // nele no celular). Botão de som no cartão que está tocando. No
 // computador, sem "reduzir movimento", o ativo começa mudo quando a seção
 // entra na tela e para quando sai; quem pausou não é interrompido de novo.
-// O botão do Instagram é uma pílula azul-noite com o anel dos stories
-// (13/11/2026).
+// O botão do Instagram é uma pílula branca e leve, com o anel fino de ouro
+// em volta do ícone (13/11/2026).
 //
 // Terceira passada (07/10/2026, "modernize mas deixe clean"): o cabeçalho
 // ficou em duas colunas no computador, com o botão do Instagram ao lado
@@ -94,43 +94,35 @@ function IconeSom({ mudo }: { mudo: boolean }) {
   );
 }
 
-// O botão do Instagram (13/11/2026, "o botão do Instagram não está legal,
-// poderia melhorar; melhore a seção por dentro"): uma pílula AZUL-NOITE,
-// de alto contraste no fundo branco, como um cartão de perfil. À esquerda
-// o ícone num círculo branco cercado pelo ANEL DOS STORIES em ouro e
-// no vermelho da onda da logo, que gira devagar com o mouse em
-// cima; no meio "Seguir no Instagram" e o @ do perfil; à direita a seta
-// num círculo de vidro, que avança no hover. Sem o "ímã" de antes.
+// O botão do Instagram. 13/11/2026, segunda versão ("muito forte, quero
+// algo mais leve, clean e moderno"): a pílula azul-noite virou BRANCA, com
+// contorno fino, sombra curta e o texto em azul-noite. O ícone fica num
+// círculo gelo cercado por um anel fino de ouro (o anel dos stories, só
+// que discreto), e a seta mora num círculo claro que acende em ouro e
+// avança no hover.
 function BotaoInstagram({ className = "" }: { className?: string }) {
   return (
     <a
       href={INSTAGRAM_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group/ig inline-flex h-[3.75rem] items-center gap-3 rounded-full bg-navy pl-1.5 pr-1.5 text-white shadow-[0_22px_44px_-24px_rgba(13,35,64,0.85),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-inset ring-white/10 transition hover:-translate-y-0.5 hover:shadow-[0_26px_48px_-22px_rgba(13,35,64,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] active:scale-[0.98] ${className}`}
+      className={`group/ig inline-flex h-14 items-center gap-3 rounded-full bg-white pl-1.5 pr-1.5 text-navy ring-1 ring-inset ring-fio shadow-[0_14px_30px_-22px_rgba(13,35,64,0.45)] transition hover:-translate-y-0.5 hover:ring-ouro/50 hover:shadow-[0_18px_34px_-22px_rgba(13,35,64,0.5)] active:scale-[0.98] ${className}`}
     >
-      {/* O anel dos stories, girando só no hover */}
-      <span className="relative flex size-12 shrink-0 items-center justify-center">
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 rounded-full bg-[conic-gradient(from_200deg,#c9a56b,#efe2b8,#e02129,#e8d4a6,#c9a56b)] motion-safe:group-hover/ig:animate-[spin_2.6s_linear_infinite]"
-        />
-        {/* O vão azul-noite entre o anel e o círculo branco, como nos stories */}
-        <span className="relative flex size-[2.6rem] items-center justify-center rounded-full bg-navy">
-          <span className="flex size-[2.15rem] items-center justify-center rounded-full bg-white text-navy">
-            <IconeInstagram tamanho={18} />
-          </span>
+      {/* O ícone num círculo gelo com o anel fino de ouro */}
+      <span className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_210deg,#c9a56b,#efe2b8,#e0a3a0,#c9a56b)] p-[1.5px]">
+        <span className="flex size-full items-center justify-center rounded-full bg-gelo text-navy transition-colors duration-300 group-hover/ig:bg-white">
+          <IconeInstagram tamanho={19} />
         </span>
       </span>
       <span className="flex min-w-0 flex-col items-start leading-none">
-        <span className="text-[1rem] font-semibold tracking-[-0.015em]">Seguir no Instagram</span>
-        <span className="mt-1.5 text-[0.76rem] font-medium text-white/60">@{INSTAGRAM_PERFIL}</span>
+        <span className="text-[0.98rem] font-semibold tracking-[-0.015em]">Seguir no Instagram</span>
+        <span className="mt-1.5 text-[0.76rem] font-medium text-cinza">@{INSTAGRAM_PERFIL}</span>
       </span>
       <span
         aria-hidden="true"
-        className="ml-2 flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-ouro-claro ring-1 ring-inset ring-white/15 transition group-hover/ig:bg-white/20"
+        className="ml-2 flex size-10 shrink-0 items-center justify-center rounded-full bg-gelo text-navy transition-colors duration-300 group-hover/ig:bg-[image:var(--ouro-degrade)]"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="transition-transform duration-300 group-hover/ig:translate-x-0.5 group-hover/ig:-translate-y-0.5">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="transition-transform duration-300 group-hover/ig:translate-x-0.5 group-hover/ig:-translate-y-0.5">
           <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>

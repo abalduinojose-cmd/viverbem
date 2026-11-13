@@ -13,6 +13,11 @@
 // faixa só, que arrasta para o lado: cabem quatro círculos e aparece a
 // ponta do quinto, para mostrar que há mais. O título também encolheu no
 // celular (de 1/15,2 para 1/17,5 da largura). No computador nada mudou.
+// 13/11/2026 ("melhore a seção"): embaixo do nome, quantos produtos a linha
+// tem no site; os círculos ganharam um fundo com luz no centro (branco para
+// o gelo), um aro de ouro fino com um aro branco por dentro e uma sombra
+// mais suave; no toque e no mouse o aro acende em ouro e o nome vai para o
+// azul.
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
@@ -23,9 +28,12 @@ export type ImagemCategoria = { tipo: "foto" | "produto"; src: string };
 export function CategoriasRedondas({
   categorias,
   imagens = {},
+  contagens = {},
 }: {
   categorias: CategoriaDTO[];
   imagens?: Record<number, ImagemCategoria>;
+  /** Quantos produtos cada linha tem no site */
+  contagens?: Record<number, number>;
 }) {
   if (categorias.length === 0) return null;
 
@@ -57,7 +65,7 @@ export function CategoriasRedondas({
             // "aumente levemente"; eram quatro e a ponta do quinto)
             <li key={c.id} className="w-[calc((100vw_-_2.5rem_-_2.25rem)/3.7)] shrink-0 snap-start md:w-auto">
               <Link href={`/produtos/${c.slug}`} className="group flex flex-col items-center gap-2 md:gap-3 text-center">
-                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/30 shadow-[0_18px_30px_-22px_rgba(16,42,74,0.45)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/60 group-hover:-translate-y-1">
+                <span className="relative block w-full aspect-square rounded-full overflow-hidden ring-1 ring-ouro/35 shadow-[inset_0_0_0_4px_rgba(255,255,255,0.9),0_16px_28px_-22px_rgba(16,42,74,0.4)] transition duration-300 group-hover:ring-2 group-hover:ring-ouro/70 group-hover:-translate-y-1">
                   {img?.tipo === "foto" ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -72,7 +80,7 @@ export function CategoriasRedondas({
                   ) : img?.tipo === "produto" ? (
                     // p-[9.7%]: os potes 12% maiores (14/10/2026; era p-[14%],
                     // 72% do círculo, agora 80,6%)
-                    <span className="flex w-full h-full items-center justify-center bg-gelo p-[9.7%]">
+                    <span className="flex w-full h-full items-center justify-center bg-[radial-gradient(circle_at_50%_40%,#ffffff_0%,#f3f6fa_58%,#e6edf6_100%)] p-[9.7%]">
                       <PoteVivo indice={i} src={asset(img.src)}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -96,6 +104,11 @@ export function CategoriasRedondas({
                   <span className="block font-semibold text-navy text-[0.8rem] md:text-base transition-colors group-hover:text-tinta">
                     {c.nome}
                   </span>
+                  {(contagens[c.id] ?? 0) > 0 && (
+                    <span className="mt-1 block text-[0.7rem] text-cinza md:text-[0.8rem]">
+                      {contagens[c.id]} {contagens[c.id] === 1 ? "produto" : "produtos"}
+                    </span>
+                  )}
                 </span>
               </Link>
             </li>

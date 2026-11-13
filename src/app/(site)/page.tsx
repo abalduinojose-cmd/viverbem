@@ -36,8 +36,12 @@ import { BancadaProdutos } from "@/components/site/BancadaProdutos";
 import { ReelsInstagram } from "@/components/site/ReelsInstagram";
 import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
 import { BannerHistoria } from "@/components/site/BannerHistoria";
+
 import { SecaoSaudeMulher } from "@/components/site/BannerSaudeMulher";
 import { ROTEIROS } from "@/components/site/heroAnimado/roteiros";
+
+// O cartão "desde 2006 / 20 anos" fora da home por enquanto (13/11/2026)
+const SEM_HISTORIA_NA_HOME = true;
 
 export const dynamic = "force-dynamic";
 
@@ -108,6 +112,9 @@ export default async function Home() {
 
   // Imagem de cada área para os círculos
   const imagensCategorias = imagensDasLinhas(categoriasComItens, comFoto, linhasFotos);
+  // Quantos produtos cada linha tem no site (13/11/2026, embaixo do nome)
+  const contagemPorLinha: Record<number, number> = {};
+  for (const p of produtos) if (p.categoriaId != null) contagemPorLinha[p.categoriaId] = (contagemPorLinha[p.categoriaId] ?? 0) + 1;
 
   // Vitrines por área: só as que têm fotos reais suficientes e a chave
   // "Vitrine na home" ligada no painel
@@ -181,7 +188,7 @@ export default async function Home() {
     if (!ehChaveFixa(chave) || !secoes[chave]) return null;
     switch (chave) {
       case "categorias":
-        return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} />;
+        return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} contagens={contagemPorLinha} />;
       case "maisProcurados":
         return (
           <VitrineCategoria
@@ -251,6 +258,10 @@ export default async function Home() {
       case "avaliacoes":
         return avaliacoes.length === 0 ? null : <CarrosselAvaliacoes key={chave} avaliacoes={avaliacoes} />;
       case "bannerHistoria":
+        // 13/11/2026 ("o 'desde 2006' pode sair da página principal por
+        // enquanto"): o cartão da história (só no celular) fica fora da home.
+        // Para voltar, basta trocar SEM_HISTORIA_NA_HOME para false.
+        if (SEM_HISTORIA_NA_HOME) return null;
         return <BannerHistoria key={chave} midia={banners["historia"]?.desktop ?? null} />;
       default:
         return null;

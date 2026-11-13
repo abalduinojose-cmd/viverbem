@@ -1,5 +1,30 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 140 (13/11/2026): pedido abre o WhatsApp direto e a foto segue num toque; faixa do topo, vantagens, linhas, Instagram e o cartão da história. IMPLEMENTADO e conferido (375 e 1366, pedido testado de ponta a ponta com o compartilhar simulado); não publicado.**
+> - PEDIDO NO WHATSAPP ("por que o pedido não vai como mensagem? quero que
+>   abra o meu WhatsApp, igual antes, e já mande a imagem junto"): o
+>   compartilhar do celular (foto + texto) deixava a pessoa escolhendo o
+>   contato, e o WhatsApp do iPhone descarta o texto quando vai com
+>   arquivo. Agora o envio SEMPRE abre a conversa da Viver Bem (wa.me) com a
+>   mensagem pronta ("vou enviar a foto em seguida"). O link do WhatsApp
+>   não carrega imagem (limite do próprio WhatsApp), então a foto segue
+>   logo depois: no celular, a tela final tem "Enviar a foto da receita"
+>   (compartilhar só com a foto; a conversa da Viver Bem fica no topo da
+>   lista); no computador, a foto vai copiada para Ctrl+V. A foto continua
+>   só no aparelho (fotoPendente), nunca no servidor.
+> - FAIXA DO TOPO (computador): o degradê virou; o azul mais claro
+>   (#124A86) fica em cima da logo e escurece para a direita.
+> - VANTAGENS: ícones em dois tons (IconesVantagensDuo) num quadrado
+>   arredondado em degradê creme e ouro, também no celular.
+> - LINHAS DE PRODUTOS: a contagem de produtos de cada linha embaixo do
+>   nome; círculos com luz no centro, aro de ouro fino e aro branco por
+>   dentro.
+> - INSTAGRAM: a pílula azul-noite foi achada "muito forte"; virou branca,
+>   com contorno fino, o ícone num círculo gelo com anel fino de ouro e a
+>   seta num círculo claro que acende em ouro.
+> - HOME: o cartão "desde 2006 / 20 anos" (só no celular) saiu por
+>   enquanto (SEM_HISTORIA_NA_HOME em page.tsx).
+
 > **ADENDO 139 (13/11/2026): o "20" dentro da foto. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 80º push.**
 > - PEDIDO: "melhore essa parte [rótulo e o 20 gigante], quero algo que
 >   conecte mais e não fique tão longe". O "20" ficava sozinho numa faixa,
