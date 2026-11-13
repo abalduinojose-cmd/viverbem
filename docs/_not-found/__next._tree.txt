@@ -1,3 +1,3 @@
-:HL["/viverbem/_next/static/chunks/32dgj8d8tvwe8.css","style"]
+:HL["/viverbem/_next/static/chunks/0rcm8d8hbjgm6.css","style"]
 :HL["/viverbem/_next/static/chunks/0byd1irmr1w3p.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"zOeAsggIfSdchT846DwEn"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"DrJsJaV5Vmug3OQoCzsj-"}
