@@ -16,8 +16,11 @@
    Em 10/10/2026 o usuário definiu "branco, azul fraco da hero, #36346B e
    #C9A56B": o índigo #36346B entrou no lugar dos dois azuis e foi desfeito
    na mesma hora ("não gostei, volte para o tom de azul que estava antes");
-   ficou só o ouro #C9A56B (claro #D9BD8A, escuro #9C7B46). Os azuis abaixo
-   são os de sempre: não trocar de novo.
+   ficou só o ouro #C9A56B (claro #D9BD8A, escuro #9C7B46).
+   13/11/2026: o azul da logo vetorizada (#2B3990) foi aplicado no site
+   inteiro e desfeito no mesmo dia ("não gostei das cores, volte como
+   estava"). Segunda vez que um azul mais índigo é recusado: os azuis
+   abaixo são os de sempre, não trocar de novo.
 
    - Fundo branco em tudo, com luz azul e dourada atrás dos potes.
    - Azul da marca (#1C69B5) como estrutura e ação: botão principal,
@@ -222,15 +225,22 @@ body {
     letter-spacing: 0.16em;
     text-transform: uppercase;
     line-height: 1.2;
-    color: var(--color-tinta);
+    color: var(--color-ouro-escuro);
   }
+  /* 13/11/2026 ("a bolinha dourada com o escrito azul não está legal";
+     a onda vermelha da logo foi testada e recusada: "melhore o que já
+     estava"): o ponto de ouro ficou, com um halo dourado fino em volta, e o
+     TEXTO passou para o ouro escuro (5,4:1 no branco), para o rótulo ser
+     uma peça só, em ouro, sem o azul brigando com o ponto. */
   .rotulo-pilula::before {
     content: "";
     flex: none;
-    width: 0.375rem;
-    height: 0.375rem;
+    width: 0.4rem;
+    height: 0.4rem;
     border-radius: 9999px;
     background: var(--ouro-degrade);
+    box-shadow: 0 0 0 0.2rem rgba(201, 165, 107, 0.2);
+    margin-inline: 0.2rem 0.1rem;
   }
   .em-noite .rotulo-pilula {
     /* Creme de ouro, não o ouro claro: na ponta clara do degradê azul
@@ -245,7 +255,7 @@ body {
      painel): sem isto a regra de cima vazava e a pílula ficava ouro claro
      no branco, a 1,8:1 (13/10/2026) */
   .em-noite .em-claro .rotulo-pilula {
-    color: var(--color-tinta);
+    color: var(--color-ouro-escuro);
     background:
       linear-gradient(#fff, #fff) padding-box,
       linear-gradient(90deg, rgba(201, 165, 107, 0.95) 0%, rgba(201, 165, 107, 0.55) 45%, rgba(28, 105, 181, 0.12) 100%) border-box;

@@ -7,7 +7,7 @@
 //
 // Dois modos (07/10/2026, "prepare a estrutura"): quando a farmácia manda
 // a própria ARTE (src/lib/hero.ts lê public/uploads/hero/), a dobra vira a
-// arte inteira com só os três botões por cima, centralizados; sem arte,
+// arte inteira com só os botões por cima, centralizados; sem arte,
 // fica a animação. Os botões são os mesmos nos dois modos (BotoesDaDobra).
 //
 // Nenhum pote leva preço nem indicação: é imagem institucional (RDC
@@ -28,7 +28,7 @@ import { HeroAnimado } from "./heroAnimado/HeroAnimado";
 // pílula "Todos" do cabeçalho)
 function IconeGrade() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
       <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
       <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
@@ -37,81 +37,31 @@ function IconeGrade() {
   );
 }
 
-function SetaBaixo() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 5v14m0 0-6-6m6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** Os três botões da dobra, em três níveis bem distintos (07/10/2026,
- *  "modernize os botões, mais clean": os círculos internos saíram;
- *  08/10/2026, "moderno e atual, condizente com a animação da hero"):
- *  a receita (principal) em branco com o ícone em ouro escuro e o fio de
- *  ouro que percorre a borda (.botao-vivo), "Ver produtos" (secundário) em
- *  vidro (.botao-vidro) e "Como funciona" (terciário) só texto com a seta
- *  que acena para baixo. No celular a receita ocupa a linha e os outros
- *  dois dividem a seguinte; de 1280px em diante os três cabem numa linha. */
+/** Os QUATRO atalhos da dobra, no celular e no computador (12 e
+ *  13/11/2026). Pedidos: "divida em quatro: enviar receita e fale conosco
+ *  em cima, ver produtos e Instagram embaixo"; os ladrilhos com o ícone em
+ *  cima do nome pareciam quebrados e viraram pílulas; o "Fale conosco"
+ *  verde foi recusado ("o verde não combina"); e no dia 13, "coloque na
+ *  versão desktop, um do lado do outro; modernize mais; não está tão
+ *  centralizado". Cada pílula leva o ícone num círculo e o NOME
+ *  CENTRALIZADO junto com ele. A receita é branca com o fio de ouro que
+ *  corre a borda e o ícone num círculo em degradê de ouro; os outros três
+ *  em vidro, com o ícone num círculo de vidro mais claro. Celular: 2x2;
+ *  de 640px: quatro numa linha; de 1024px: pílulas maiores, do tamanho do
+ *  texto. "Como funciona" saiu (o cabeçalho do computador tem a pílula e,
+ *  no celular, a seção vem logo abaixo). */
 function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
-  return (
-    <>
-    <BotoesDaDobraCelular />
-    <div
-      className={`hidden sm:flex sm:flex-row sm:flex-wrap sm:items-center gap-3 ${
-        centralizados ? "sm:justify-center" : ""
-      }`}
-    >
-      <BotaoEnviarReceita
-        comIcone={false}
-        className="botao botao-vivo !gap-2.5"
-      >
-        <span className="text-ouro-escuro">
-          <IconeReceita tamanho={20} />
-        </span>
-        Enviar receita
-      </BotaoEnviarReceita>
-      <div className={`grid grid-cols-2 gap-3 sm:flex ${centralizados ? "" : "xl:contents"}`}>
-        <Link
-          href="/produtos"
-          className="botao botao-vidro !gap-2.5 !px-4 sm:!px-6 !text-[0.95rem] sm:!text-[1.05rem]"
-        >
-          <IconeGrade />
-          Ver produtos
-        </Link>
-        <Link
-          href="#como-funciona"
-          className="botao text-white/85 transition-colors hover:text-white !gap-2 !px-3 sm:!px-4 !text-[0.95rem] sm:!text-[1.05rem]"
-        >
-          Como funciona
-          <span className="acenar-baixo">
-            <SetaBaixo />
-          </span>
-        </Link>
-      </div>
-    </div>
-    </>
-  );
-}
-
-/** No celular, QUATRO atalhos numa grade 2x2 (12/11/2026, "divida em
- *  quatro: enviar receita e fale conosco em cima, ver produtos e
- *  Instagram embaixo"). Os ladrilhos com o ícone em cima do nome pareciam
- *  quebrados e viraram PÍLULAS deitadas; o "Fale conosco" verde foi
- *  recusado ("o verde não combina; modernize mais um pouco"). Agora cada
- *  pílula leva o ícone num CÍRCULO à esquerda, como os atalhos dos apps: a
- *  receita branca com o fio de ouro e o ícone num círculo gelo; o "Fale
- *  conosco" em vidro um pouco mais forte (é a outra ação de cima);
- *  "Ver produtos" e "Instagram" em vidro. Tudo na paleta da marca. */
-function BotoesDaDobraCelular() {
   const pilula =
-    "flex h-[3.25rem] min-w-0 items-center gap-1.5 rounded-full pl-[0.4rem] pr-2.5 text-[0.82rem] font-semibold leading-none tracking-[-0.015em] whitespace-nowrap transition active:scale-[0.97]";
-  const circuloVidro =
-    "flex size-8 shrink-0 items-center justify-center rounded-full bg-white/[0.14] ring-1 ring-inset ring-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]";
+    "group/at flex h-[3.25rem] min-w-0 items-center justify-center gap-1.5 rounded-full px-2 text-[0.82rem] font-semibold leading-none tracking-[-0.015em] whitespace-nowrap transition active:scale-[0.97] lg:h-14 lg:gap-2.5 lg:pl-2 lg:pr-6 lg:text-[1rem]";
+  const circulo =
+    "flex size-8 shrink-0 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 lg:size-10";
+  const circuloVidro = `${circulo} bg-white/[0.14] ring-1 ring-inset ring-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] group-hover/at:bg-white/[0.24]`;
   return (
-    <div className="grid grid-cols-2 gap-2.5 sm:hidden">
+    <div
+      className={`grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:flex lg:w-fit lg:gap-3 ${centralizados ? "lg:mx-auto" : ""}`}
+    >
       <BotaoEnviarReceita comIcone={false} className={`botao-vivo ${pilula}`}>
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gelo text-ouro-escuro ring-1 ring-inset ring-ouro/30">
+        <span className={`${circulo} bg-[image:var(--ouro-degrade)] text-navy shadow-[0_6px_14px_-8px_rgba(133,101,47,0.9)]`}>
           <IconeReceita tamanho={16} />
         </span>
         Enviar receita
@@ -120,7 +70,7 @@ function BotoesDaDobraCelular() {
         href={linkComMensagem("Olá! Vim pelo site da Viver Bem e gostaria de falar com vocês.")}
         target="_blank"
         rel="noopener noreferrer"
-        className={`botao-vidro ${pilula} !bg-white/[0.16] !border-white/40`}
+        className={`botao-vidro ${pilula}`}
       >
         <span className={circuloVidro}>
           <IconeWhatsApp tamanho={16} />

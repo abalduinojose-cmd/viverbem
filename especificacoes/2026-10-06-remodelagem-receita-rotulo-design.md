@@ -1,5 +1,44 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 135 (13/11/2026): página das lojas modernizada. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 77º push (com o 134).**
+> - PEDIDO: "modernize essa parte das lojas [rótulo, título, texto,
+>   aberto agora, atalhos]; a Posse pode ficar em último; modernize toda a
+>   página, inclusive o horário lá embaixo; depois atualize o GitHub".
+> - ABERTURA: cartão azul-noite (banner-noite, o mesmo da dobra da home)
+>   com o rótulo, o título em branco com "Petrópolis" em ouro, o texto e o
+>   selo ao vivo; à direita (embaixo no celular) as TRÊS FACHADAS em
+>   miniatura 3:4 com número em ouro, bairro e seta, que levam à loja. Os
+>   atalhos em pílulas brancas saíram. Ordem: Centro, Corrêas, Posse.
+> - LOJAS: as vitrines (VitrineLoja) seguem, numa seção própria.
+> - HORÁRIO (HorarioLojas.tsx): um cartão claro com o estado ao vivo e
+>   TRÊS CARTÕES de dias com a hora grande; o de hoje aceso em azul-noite
+>   com a etiqueta "hoje" em ouro. Ao lado, "Prefere pedir de casa?" com
+>   Enviar receita e o WhatsApp.
+
+> **ADENDO 134 (13/11/2026): atalhos da dobra também no computador, rótulos em ouro e botão do Instagram novo. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 77º push.**
+> - CORES: o azul da logo (#2B3990) foi aplicado no site inteiro (60
+>   arquivos, gelo, fios e vermelho #C62835 junto) e RECUSADO no mesmo dia
+>   ("não gostei das cores, volte como estava"). Tudo voltou aos azuis de
+>   sempre (#1C69B5 / #0D2340). Segunda vez que um índigo é recusado
+>   (a primeira foi o #36346B em 10/10). A logo segue com o próprio azul.
+> - DOBRA: "coloque na versão desktop, um do lado do outro; modernize
+>   mais; não está tão centralizado". Um componente só: 2x2 no celular,
+>   quatro numa linha a partir de 640px, pílulas maiores a partir de
+>   1024px. Ícone num círculo e o nome CENTRALIZADOS juntos na pílula; a
+>   receita com o ícone num círculo em degradê de ouro. "Como funciona"
+>   saiu da dobra (o cabeçalho do computador tem a pílula).
+> - RÓTULOS (rotulo-pilula): "a bolinha dourada com o escrito azul não
+>   está legal". A onda vermelha da logo foi testada e recusada ("melhore o
+>   que já estava"). Ficou o ponto de ouro com um halo fino e o TEXTO em
+>   ouro escuro (#85652F), uma peça só em ouro.
+> - INSTAGRAM: o botão virou uma pílula azul-noite com o ícone num círculo
+>   branco cercado pelo anel dos stories (ouro e vermelho, gira no hover),
+>   "Seguir no Instagram" + @, e a seta num círculo de vidro. O reel ativo
+>   ganhou anel de ouro inteiro (ring-2) e o botão subiu para perto das
+>   bolinhas no celular.
+> - DADOS DA FARMÁCIA: só a pergunta respondida ("tem que ficar na
+>   privacidade ou em outro lugar?"); nada mudou à espera da decisão.
+
 > **ADENDO 133 (12/11/2026): atalhos sem verde, com o ícone num círculo; ficha sem WhatsApp e com o horário em cartões. IMPLEMENTADO, conferido (360 e 375) e PUBLICADO no 76º push (com os adendos 130 a 132).**
 > - DOBRA: "o verde não combina; tira e moderniza mais um pouco". Cada
 >   pílula leva o ícone num círculo à esquerda (size-8): receita branca com

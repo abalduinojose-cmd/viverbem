@@ -12,8 +12,8 @@
 // nele no celular). Botão de som no cartão que está tocando. No
 // computador, sem "reduzir movimento", o ativo começa mudo quando a seção
 // entra na tela e para quando sai; quem pausou não é interrompido de novo.
-// O botão do Instagram tem o anel de ouro que gira e um leve "ímã" que
-// segue o mouse.
+// O botão do Instagram é uma pílula azul-noite com o anel dos stories
+// (13/11/2026).
 //
 // Terceira passada (07/10/2026, "modernize mas deixe clean"): o cabeçalho
 // ficou em duas colunas no computador, com o botão do Instagram ao lado
@@ -94,69 +94,47 @@ function IconeSom({ mudo }: { mudo: boolean }) {
   );
 }
 
-// O botão do Instagram: anel de ouro que gira enquanto o mouse está em
-// cima e um leve "ímã" que acompanha o ponteiro (só mouse; no toque fica
-// parado). Tudo em JavaScript, sem animação permanente.
+// O botão do Instagram (13/11/2026, "o botão do Instagram não está legal,
+// poderia melhorar; melhore a seção por dentro"): uma pílula AZUL-NOITE,
+// de alto contraste no fundo branco, como um cartão de perfil. À esquerda
+// o ícone num círculo branco cercado pelo ANEL DOS STORIES em ouro e
+// no vermelho da onda da logo, que gira devagar com o mouse em
+// cima; no meio "Seguir no Instagram" e o @ do perfil; à direita a seta
+// num círculo de vidro, que avança no hover. Sem o "ímã" de antes.
 function BotaoInstagram({ className = "" }: { className?: string }) {
-  const anel = useRef<HTMLSpanElement>(null);
-  const giro = useRef(0);
-  const quadro = useRef<number | null>(null);
-
-  function girar() {
-    giro.current = (giro.current + 2.4) % 360;
-    anel.current?.style.setProperty("--giro", `${giro.current}deg`);
-    quadro.current = requestAnimationFrame(girar);
-  }
-  function parar() {
-    if (quadro.current != null) cancelAnimationFrame(quadro.current);
-    quadro.current = null;
-  }
-  useEffect(() => parar, []);
-
-  function aoEntrar(e: React.PointerEvent) {
-    if (e.pointerType !== "mouse" || quadro.current != null) return;
-    quadro.current = requestAnimationFrame(girar);
-  }
-  function aoMover(e: React.PointerEvent) {
-    const el = anel.current;
-    if (!el || e.pointerType !== "mouse") return;
-    const r = el.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width / 2);
-    const dy = e.clientY - (r.top + r.height / 2);
-    el.style.transform = `translate(${(dx * 0.16).toFixed(1)}px, ${(dy * 0.3).toFixed(1)}px)`;
-  }
-  function aoSair() {
-    parar();
-    if (anel.current) anel.current.style.transform = "";
-  }
-
   return (
-    <span
-      ref={anel}
-      onPointerEnter={aoEntrar}
-      onPointerMove={aoMover}
-      onPointerLeave={aoSair}
-      style={{ "--giro": "0deg" } as React.CSSProperties}
-      className={`inline-flex rounded-full p-[2px] bg-[conic-gradient(from_var(--giro),#c9a56b,#efe2b8,#c9a56b,#9c7b46,#c9a56b)] shadow-[0_18px_40px_-26px_rgba(156,123,70,0.8)] transition-transform duration-200 ease-out will-change-transform ${className}`}
+    <a
+      href={INSTAGRAM_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group/ig inline-flex h-[3.75rem] items-center gap-3 rounded-full bg-navy pl-1.5 pr-1.5 text-white shadow-[0_22px_44px_-24px_rgba(13,35,64,0.85),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-inset ring-white/10 transition hover:-translate-y-0.5 hover:shadow-[0_26px_48px_-22px_rgba(13,35,64,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] active:scale-[0.98] ${className}`}
     >
-      <a
-        href={INSTAGRAM_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-3 h-14 pl-2 pr-6 rounded-full bg-white text-navy font-semibold text-[1rem] transition-colors hover:bg-gelo"
+      {/* O anel dos stories, girando só no hover */}
+      <span className="relative flex size-12 shrink-0 items-center justify-center">
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full bg-[conic-gradient(from_200deg,#c9a56b,#efe2b8,#e02129,#e8d4a6,#c9a56b)] motion-safe:group-hover/ig:animate-[spin_2.6s_linear_infinite]"
+        />
+        {/* O vão azul-noite entre o anel e o círculo branco, como nos stories */}
+        <span className="relative flex size-[2.6rem] items-center justify-center rounded-full bg-navy">
+          <span className="flex size-[2.15rem] items-center justify-center rounded-full bg-white text-navy">
+            <IconeInstagram tamanho={18} />
+          </span>
+        </span>
+      </span>
+      <span className="flex min-w-0 flex-col items-start leading-none">
+        <span className="text-[1rem] font-semibold tracking-[-0.015em]">Seguir no Instagram</span>
+        <span className="mt-1.5 text-[0.76rem] font-medium text-white/60">@{INSTAGRAM_PERFIL}</span>
+      </span>
+      <span
+        aria-hidden="true"
+        className="ml-2 flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-ouro-claro ring-1 ring-inset ring-white/15 transition group-hover/ig:bg-white/20"
       >
-        <span className="w-10 h-10 rounded-full bg-[image:var(--ouro-degrade)] text-navy flex items-center justify-center">
-          <IconeInstagram tamanho={20} />
-        </span>
-        <span className="flex flex-col items-start leading-none">
-          <span>Seguir no Instagram</span>
-          <span className="mt-1 text-[0.74rem] font-medium text-cinza">@{INSTAGRAM_PERFIL}</span>
-        </span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ouro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="transition-transform duration-300 group-hover/ig:translate-x-0.5 group-hover/ig:-translate-y-0.5">
           <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </a>
-    </span>
+      </span>
+    </a>
   );
 }
 
@@ -359,7 +337,7 @@ export function ReelsInstagram() {
               }}
               className={`group relative shrink-0 snap-center w-[min(15rem,70vw)] lg:w-[14rem] xl:w-[16rem] aspect-[9/16] overflow-hidden rounded-[1.5rem] md:rounded-[1.75rem] bg-navy ring-1 transition duration-500 ${
                 ehAtivo
-                  ? "ring-ouro/60 shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
+                  ? "ring-2 ring-ouro shadow-[0_30px_60px_-30px_rgba(13,35,64,0.6)]"
                   : "ring-fio lg:scale-[0.94] lg:opacity-80 lg:hover:opacity-100"
               }`}
             >
@@ -510,7 +488,7 @@ export function ReelsInstagram() {
       </div>
 
       {/* Abaixo do computador o botão do Instagram fica embaixo, centralizado */}
-      <div className="revelar mt-8 flex justify-center lg:hidden">
+      <div className="revelar mt-5 flex justify-center lg:hidden">
         <BotaoInstagram />
       </div>
 
