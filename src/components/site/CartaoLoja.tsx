@@ -18,15 +18,12 @@ function IconePino() {
   );
 }
 
-export function CartaoLoja({ unidade, indice, compacto = false }: { unidade: Unidade; indice: number; compacto?: boolean }) {
+export function CartaoLoja({ unidade, compacto = false }: { unidade: Unidade; compacto?: boolean }) {
   const mensagem = `Olá! Vim pelo site e gostaria de falar sobre a loja ${unidade.bairro}.`;
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-inset ring-fio shadow-[0_24px_50px_-42px_rgba(16,42,74,0.45)] transition duration-300 hover:-translate-y-1 hover:ring-ouro/45 hover:shadow-[0_30px_50px_-36px_rgba(16,42,74,0.5)]">
       <div className="relative">
         <MapaLoja lat={unidade.lat} lon={unidade.lon} nome={unidade.bairro} className={compacto ? "h-36" : "h-44 md:h-48"} />
-        <span aria-hidden="true" className="absolute left-4 top-3.5 inline-flex h-8 items-center rounded-full bg-white/92 pl-2.5 pr-3 shadow-sm">
-          <span className="numero-tinta text-[1.1rem]">{String(indice + 1).padStart(2, "0")}</span>
-        </span>
       </div>
       <div className={`flex flex-1 flex-col ${compacto ? "p-5" : "p-5 md:p-6"}`}>
         <h3 className={`font-semibold tracking-[-0.03em] leading-none text-navy ${compacto ? "text-[1.35rem]" : "text-[1.6rem] md:text-[1.8rem]"}`}>{unidade.bairro}</h3>

@@ -37,11 +37,9 @@ export function ancoraLoja(bairro: string) {
 
 export function VitrineLoja({
   unidade,
-  indice,
   prioridade = false,
 }: {
   unidade: Unidade;
-  indice: number;
   prioridade?: boolean;
 }) {
   const mensagem = `Olá! Vim pelo site e gostaria de falar sobre a loja ${unidade.bairro}.`;
@@ -72,14 +70,7 @@ export function VitrineLoja({
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0D2340]/90 via-[#0D2340]/35 to-transparent"
         />
-        <span
-          aria-hidden="true"
-          className="absolute left-4 top-4 inline-flex h-8 items-center rounded-full bg-white/92 pl-2.5 pr-3 shadow-sm"
-        >
-          <span className="numero-tinta text-[1.1rem]">
-            {String(indice + 1).padStart(2, "0")}
-          </span>
-        </span>
+        {/* Sem número (13/11/2026): "as três são importantes" */}
         <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-6">
           <span className="flex items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-white/75">
             <span

@@ -194,12 +194,18 @@ export function CenaAnimada({
     };
     const reavaliar = () => (visivel && !document.hidden ? tocar() : parar());
 
-    // A vez do navegador entre um pedaço da preparação e outro: espera o
-    // próximo quadro ser pintado (com a aba escondida não há quadros, então
-    // só devolve a vez)
+    // A vez do navegador entre um pedaço da preparação e outro.
+    // 13/11/2026 ("quando passo pela hero e pela das mulheres dá uma leve
+    // travada"): medido na prévia, a primeira passada perdia quadros soltos
+    // (33 a 50 ms) perto do banner, e a segunda não: era o preparo, que
+    // rodava um pedaço logo depois de cada quadro, disputando com a
+    // rolagem. Agora cada pedaço espera um RESPIRO do navegador
+    // (requestIdleCallback, no máximo 700 ms), que não existe enquanto a
+    // rolagem está ocupando os quadros. Sem ele (Safari), fica o de antes.
     const pausa = () =>
       new Promise<void>((r) => {
         if (document.hidden) setTimeout(r, 0);
+        else if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(() => r(), { timeout: 700 });
         else requestAnimationFrame(() => setTimeout(r, 0));
       });
 
@@ -229,7 +235,10 @@ export function CenaAnimada({
       { threshold: [0, 0.15] },
     );
 
+    let preparando = false;
     const preparar = () => {
+      if (preparando) return;
+      preparando = true;
       Promise.all([
         Promise.all(roteiro.potes.map((p) => carregar(asset(p.src)))),
         // As fontes precisam estar prontas antes de medir as letras
@@ -297,12 +306,24 @@ export function CenaAnimada({
     );
     if (dev && busca.has("agora")) preparar();
     else aproximacao.observe(canvas);
+    // 13/11/2026: as cenas mais abaixo (Saúde da Mulher) também se
+    // preparam logo depois da carga, num respiro do navegador, para já
+    // estarem prontas quando a pessoa chegar rolando (antes começavam a
+    // uma tela de distância, no meio da rolagem)
+    let adiantado = 0;
+    const adiantar = () => {
+      adiantado = window.setTimeout(() => quandoLivre(preparar), 2500);
+    };
+    if (document.readyState === "complete") adiantar();
+    else window.addEventListener("load", adiantar, { once: true });
 
     return () => {
       vivo = false;
       cancelAnimationFrame(quadro);
       if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(espera);
       window.clearTimeout(espera);
+      window.clearTimeout(adiantado);
+      window.removeEventListener("load", adiantar);
       aproximacao.disconnect();
       observadorTamanho.disconnect();
       observadorTela.disconnect();

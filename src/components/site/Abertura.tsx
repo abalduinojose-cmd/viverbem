@@ -55,6 +55,11 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
     "group/at flex h-[3.25rem] min-w-0 items-center justify-center gap-1.5 rounded-full px-2 text-[0.82rem] font-semibold leading-none tracking-[-0.015em] whitespace-nowrap transition active:scale-[0.97] lg:h-14 lg:gap-2.5 lg:pl-2 lg:pr-6 lg:text-[1rem]";
   const circulo =
     "flex size-8 shrink-0 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 lg:size-10";
+  // 13/11/2026 ("ao passar pela hero dá uma leve travada"): as pílulas de
+  // vidro ficam SEM o desfoque do fundo (backdrop-filter). Sobre a animação
+  // ele era refeito a cada quadro, o que pesa em placa de vídeo simples, e
+  // no azul-noite quase não aparecia; o fundo ficou um pouco mais claro.
+  const vidro = "botao-vidro ![backdrop-filter:none] ![-webkit-backdrop-filter:none] !bg-white/[0.12]";
   const circuloVidro = `${circulo} bg-white/[0.14] ring-1 ring-inset ring-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] group-hover/at:bg-white/[0.24]`;
   return (
     <div
@@ -70,20 +75,20 @@ function BotoesDaDobra({ centralizados = false }: { centralizados?: boolean }) {
         href={linkComMensagem("Olá! Vim pelo site da Viver Bem e gostaria de falar com vocês.")}
         target="_blank"
         rel="noopener noreferrer"
-        className={`botao-vidro ${pilula}`}
+        className={`${vidro} ${pilula}`}
       >
         <span className={circuloVidro}>
           <IconeWhatsApp tamanho={16} />
         </span>
         Fale conosco
       </a>
-      <Link href="/produtos" className={`botao-vidro ${pilula}`}>
+      <Link href="/produtos" className={`${vidro} ${pilula}`}>
         <span className={circuloVidro}>
           <IconeGrade />
         </span>
         Ver produtos
       </Link>
-      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={`botao-vidro ${pilula}`}>
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={`${vidro} ${pilula}`}>
         <span className={circuloVidro}>
           <IconeInstagram tamanho={16} />
         </span>

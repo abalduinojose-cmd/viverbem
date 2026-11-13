@@ -1,5 +1,40 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 137 (13/11/2026): lojas sem numeração, sem o selo ao vivo e com título novo. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 78º push (com o 136).**
+> - PEDIDO: "gostei; sem numeração, as três são importantes; tire o
+>   aberto, fecha às 19h; modernize o título e o subtítulo; depois
+>   atualize o GitHub".
+> - NUMERAÇÃO: saiu do leque, das vitrines (VitrineLoja) e do CartaoLoja.
+> - ABERTURA: título "Três lojas, um só cuidado" (a voz em ouro inteira
+>   numa linha); texto "No Centro, em Corrêas e na Posse, em Petrópolis.
+>   Escolha a mais perto de você ou receba em casa." com os bairros em
+>   destaque; o selo ao vivo saiu e entrou a lista das três vantagens com
+>   ícone em círculo gelo e ouro (Retirada grátis, Enviamos para todo o
+>   Brasil, Mesmo horário nas três).
+
+> **ADENDO 136 (13/11/2026): abertura das lojas em leque de fotos, horário de volta ao padrão e a travada das animações. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 78º push.**
+> - LOJAS: o cartão azul-noite da abertura foi recusado ("melhore, não
+>   gostei"). A abertura voltou a ser CLARA (padrão das páginas) e as três
+>   fachadas viraram um LEQUE de fotos com moldura branca, giradas ±7°, a do
+>   meio na frente; no mouse a foto endireita e sobe. Na da direita o nome
+>   vai para a direita (o lado esquerdo fica sob a do meio).
+> - HORÁRIO: os cartões de dias (HorarioLojas) foram recusados ("fora do
+>   padrão do site"); voltou a ficha de sempre (HorarioAtendimento) e o
+>   componente foi apagado.
+> - TRAVADA ("quando passo pelos vídeos da hero e das mulheres dá uma leve
+>   travada"): medido com rolagem por programa num Chrome sem janela, na
+>   prévia de produção: a 1ª passada perdia 10 a 21 quadros (33 a 84 ms),
+>   2 a 6 perto da Saúde da Mulher; a 2ª nenhum. Causa: o preparo da cena
+>   (fotos, fontes, cache) começava a uma tela de distância e rodava um
+>   pedaço depois de cada quadro, disputando com a rolagem. Agora cada
+>   pedaço espera um respiro do navegador (requestIdleCallback, até 700 ms)
+>   e as cenas se preparam 2,5 s depois da carga, num respiro, antes de a
+>   pessoa chegar. Resultado: 7 ou 8 quadros perdidos na 1ª passada, 0 a 3
+>   perto da Saúde da Mulher. As pílulas de vidro da dobra perderam o
+>   desfoque do fundo (refeito a cada quadro sobre a animação, pesado em
+>   placa de vídeo simples). Os quadros que sobram perto do fim da dobra
+>   aparecem também sem o canvas: são a primeira carga do que entra na tela.
+
 > **ADENDO 135 (13/11/2026): página das lojas modernizada. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 77º push (com o 134).**
 > - PEDIDO: "modernize essa parte das lojas [rótulo, título, texto,
 >   aberto agora, atalhos]; a Posse pode ficar em último; modernize toda a
