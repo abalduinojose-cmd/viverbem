@@ -1,6 +1,14 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 138 (13/11/2026): capítulo "20 anos de história" com a foto da equipe no laboratório. IMPLEMENTADO e conferido (375 e 1366); não publicado.**
+> **ADENDO 139 (13/11/2026): o "20" dentro da foto. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 80º push.**
+> - PEDIDO: "melhore essa parte [rótulo e o 20 gigante], quero algo que
+>   conecte mais e não fique tão longe". O "20" ficava sozinho numa faixa,
+>   longe da foto e do texto. Agora ele mora no ALTO DA FOTO, sobre um véu
+>   azul-noite, com "anos construindo cuidado" ao lado, e continua crescendo
+>   com a rolagem. Celular: rótulo, foto com o 20, título e texto colados;
+>   computador: rótulo e texto à esquerda, foto com o 20 à direita.
+
+> **ADENDO 138 (13/11/2026): capítulo "20 anos de história" com a foto da equipe no laboratório. IMPLEMENTADO, conferido (375 e 1366) e PUBLICADO no 79º push.**
 > - PEDIDO: "coloque essa foto no lugar [da fachada com a equipe];
 >   modernize toda essa parte; mais moderna e clean, mas mantenha a
 >   essência". Foto: equipe de jaleco vermelho na bancada de manipulação

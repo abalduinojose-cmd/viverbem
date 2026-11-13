@@ -81,19 +81,15 @@ export function CapituloVinteAnos({ anos, lojas }: { anos: number; lojas: number
         {/* Grade: no celular, cabeça, foto e texto em sequência; no
             computador a cabeça e o texto à esquerda e a foto alta à direita,
             ao lado dos dois */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-x-16 lg:gap-y-10">
-          <div className="lg:col-span-7 lg:row-start-1">
+        {/* 13/11/2026 ("melhore essa parte, quero algo que conecte mais e
+            não fique tão longe"): o "20" gigante ficava sozinho numa faixa,
+            longe da foto e do texto. Agora ele mora DENTRO DA FOTO, no alto,
+            sobre um véu azul-noite, com "anos construindo cuidado" ao lado:
+            logo depois do rótulo vem a foto já com o número, e em seguida o
+            título. O "20" segue crescendo com a rolagem. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-6">
+          <div className="lg:col-span-7 lg:row-start-1 lg:self-end">
             <p className="rotulo-pilula">{anos} anos de história</p>
-
-            {/* O número gigante e a legenda dele */}
-            <div ref={linhaNumero} className="mt-4 md:mt-6 flex items-end gap-4 md:gap-6">
-              <span ref={numero} className="numero-tinta numero-gigante origin-bottom-left">
-                {anos}
-              </span>
-              <span className="pb-[0.45em] text-white/80 text-[clamp(1.1rem,0.85rem+1vw,1.6rem)] leading-tight max-w-[9ch]">
-                anos construindo cuidado
-              </span>
-            </div>
           </div>
 
           {/* A equipe no laboratório, com a etiqueta de vidro */}
@@ -105,6 +101,16 @@ export function CapituloVinteAnos({ anos, lojas }: { anos: number; lojas: number
               altura={1200}
               className="w-full aspect-[4/5] rounded-[2rem] ring-1 ring-white/10 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
             />
+            {/* O "20" no alto da foto, sobre o véu azul-noite */}
+            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[52%] rounded-t-[2rem] bg-gradient-to-b from-noite/90 via-noite/45 to-transparent" />
+            <div ref={linhaNumero} className="absolute left-5 right-5 top-4 flex items-end gap-3 md:left-7 md:top-6 md:gap-4">
+              <span ref={numero} className="numero-tinta origin-bottom-left text-[clamp(5.5rem,4rem+6vw,8.5rem)] leading-[0.85] drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]">
+                {anos}
+              </span>
+              <span className="pb-[0.55em] text-white/90 text-[clamp(1rem,0.85rem+0.5vw,1.25rem)] font-medium leading-tight max-w-[9ch]">
+                anos construindo cuidado
+              </span>
+            </div>
             <figcaption className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-[1.1rem] bg-noite/55 px-4 py-3 ring-1 ring-inset ring-white/15 backdrop-blur-md md:bottom-5 md:left-5 md:right-auto">
               <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-[image:var(--ouro-degrade)] shadow-[0_0_0_4px_rgba(201,165,107,0.2)]" />
               <span className="leading-tight">
@@ -114,7 +120,7 @@ export function CapituloVinteAnos({ anos, lojas }: { anos: number; lojas: number
             </figcaption>
           </figure>
 
-          <div className="lg:col-span-7 lg:row-start-2">
+          <div className="lg:col-span-7 lg:row-start-2 lg:self-start">
             <h2
               id="titulo-vinte-anos"
               className="titulo-banner text-[clamp(1.75rem,1.15rem+1.8vw,2.6rem)] font-semibold leading-[1.04] tracking-[-0.035em] text-balance max-w-[20ch]"
