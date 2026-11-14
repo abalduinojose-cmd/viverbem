@@ -1,5 +1,32 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 144 (14/11/2026, sessão da dobra animada): a dobra na VERSÃO 3, o efeito de antes com o que o estúdio tinha de limpo. IMPLEMENTADO e conferido em quadros (1440, 390) e vídeo; commit local, sem push.**
+> - PEDIDO: "essa última atualização não ficou boa; antes o efeito tava
+>   melhor; não gostei das luzes de holofote em cima dos produtos; pegar o
+>   melhor dessa e o melhor da outra e criar uma nova; moderna e clean".
+> - O ESTÚDIO (adendo 142) SAIU da dobra: o roteiro voltou à coreografia
+>   "orbita" com o ritmo de 15,6 s. O arquivo estudio.ts ficou no projeto,
+>   sem uso na dobra.
+> - FICOU DO EFEITO DE ANTES: o ponto de ouro que vira fio, "Especialistas"
+>   subindo de trás dele e voando para o lugar, "em saúde" palavra a
+>   palavra, a cápsula que tomba e vira o anel, os potes chegando do fundo,
+>   o carrossel em quatro passos, "personalizada" nascendo da névoa, o
+>   fecho com as duas creatinas e a saída em espelho. Fundo no azul da
+>   marca, sem o escuro e sem os refletores.
+> - VEIO DO ESTÚDIO, EM VERSÃO LIMPA: o texto não inclina nem desliza mais
+>   durante a leitura (saíram o balanço de lado e o giro de 1,2° da
+>   câmera); o sobretítulo sem a cápsula de vidro, só o ponto de ouro
+>   (aceso, sem respirar) e "MANIPULAÇÃO e HOMEOPATIA"; um tampo de vidro
+>   claro dentro do anel de ouro, onde os potes pousam e se refletem; o
+>   pote que chega à frente sobe um pouco do vidro, com uma luz quente
+>   embaixo e o reflexo descendo na mesma medida.
+> - MAIS LIMPO: a poeira de luz com 60% da força de antes.
+
+> **ADENDO 143 (14/11/2026): linhas de produtos sem a contagem. IMPLEMENTADO e conferido (375); não publicado.**
+> - "Não quero 12 produtos, 4 produtos; só as partes [os nomes]": a
+>   contagem embaixo do nome de cada linha (adendo 140) saiu, no celular e
+>   no computador. Os círculos refinados ficaram.
+
 > **ADENDO 142 (14/11/2026, sessão da dobra animada): a dobra virou um ESTÚDIO de fotografia de produto. IMPLEMENTADO e conferido em quadros (1440, 390) e vídeo; commit local, sem push.**
 > - PEDIDO: "quero reformular esse motion da hero [...] mais moderna; pode
 >   melhorar o fundo, a fonte, a escrita, a manipulação e homeopatia também

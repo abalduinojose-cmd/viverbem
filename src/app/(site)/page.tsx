@@ -112,9 +112,6 @@ export default async function Home() {
 
   // Imagem de cada área para os círculos
   const imagensCategorias = imagensDasLinhas(categoriasComItens, comFoto, linhasFotos);
-  // Quantos produtos cada linha tem no site (13/11/2026, embaixo do nome)
-  const contagemPorLinha: Record<number, number> = {};
-  for (const p of produtos) if (p.categoriaId != null) contagemPorLinha[p.categoriaId] = (contagemPorLinha[p.categoriaId] ?? 0) + 1;
 
   // Vitrines por área: só as que têm fotos reais suficientes e a chave
   // "Vitrine na home" ligada no painel
@@ -188,7 +185,7 @@ export default async function Home() {
     if (!ehChaveFixa(chave) || !secoes[chave]) return null;
     switch (chave) {
       case "categorias":
-        return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} contagens={contagemPorLinha} />;
+        return <CategoriasRedondas key={chave} categorias={categoriasComItens} imagens={imagensCategorias} />;
       case "maisProcurados":
         return (
           <VitrineCategoria

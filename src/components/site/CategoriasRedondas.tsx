@@ -13,11 +13,11 @@
 // faixa só, que arrasta para o lado: cabem quatro círculos e aparece a
 // ponta do quinto, para mostrar que há mais. O título também encolheu no
 // celular (de 1/15,2 para 1/17,5 da largura). No computador nada mudou.
-// 13/11/2026 ("melhore a seção"): embaixo do nome, quantos produtos a linha
-// tem no site; os círculos ganharam um fundo com luz no centro (branco para
+// 13/11/2026 ("melhore a seção"): os círculos ganharam um fundo com luz no centro (branco para
 // o gelo), um aro de ouro fino com um aro branco por dentro e uma sombra
 // mais suave; no toque e no mouse o aro acende em ouro e o nome vai para o
-// azul.
+// azul. A contagem de produtos embaixo do nome foi testada e saiu em
+// 14/11/2026 ("não quero 12 produtos, 4 produtos; só o nome das linhas").
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { CategoriaDTO } from "@/lib/tipos";
@@ -28,12 +28,9 @@ export type ImagemCategoria = { tipo: "foto" | "produto"; src: string };
 export function CategoriasRedondas({
   categorias,
   imagens = {},
-  contagens = {},
 }: {
   categorias: CategoriaDTO[];
   imagens?: Record<number, ImagemCategoria>;
-  /** Quantos produtos cada linha tem no site */
-  contagens?: Record<number, number>;
 }) {
   if (categorias.length === 0) return null;
 
@@ -104,11 +101,6 @@ export function CategoriasRedondas({
                   <span className="block font-semibold text-navy text-[0.8rem] md:text-base transition-colors group-hover:text-tinta">
                     {c.nome}
                   </span>
-                  {(contagens[c.id] ?? 0) > 0 && (
-                    <span className="mt-1 block text-[0.7rem] text-cinza md:text-[0.8rem]">
-                      {contagens[c.id]} {contagens[c.id] === 1 ? "produto" : "produtos"}
-                    </span>
-                  )}
                 </span>
               </Link>
             </li>
