@@ -401,7 +401,7 @@ export function criarEstudio(palco: Palco): Coreografia {
    *  marca (#0D2340), no centro o azul claro */
   function desenharEscuro(r: number, cam: Camera) {
     const e = palco.enq();
-    const luz = limitar(Math.max(aceso(r, LUZ_DIR, SAI + 0.9), aceso(r, LUZ_ESQ, SAI + 0.6) * 0.85));
+    const luz = limitar(Math.max(aceso(r, LUZ_DIR, SAI + 0.72), aceso(r, LUZ_ESQ, SAI + 0.6) * 0.85));
     const R = raioMesa();
     const c = palco.P(e.potesX, e.chao - R * 0.55, ORBITA_CENTRO, cam);
     const raio = Math.max(e.largura * (e.modo === "retrato" ? 1.1 : 0.62), e.altura * 0.9);
@@ -417,7 +417,7 @@ export function criarEstudio(palco: Palco): Coreografia {
 
   function desenharLuzes(r: number, cam: Camera) {
     const e = palco.enq();
-    const frio = aceso(r, LUZ_DIR, SAI + 0.9);
+    const frio = aceso(r, LUZ_DIR, SAI + 0.72);
     const quente = aceso(r, LUZ_ESQ, SAI + 0.6);
     const geral = Math.max(frio, quente * 0.8);
     if (geral <= 0.003) return;
