@@ -1499,15 +1499,22 @@ export async function criarCena(
     const ds = 0.16 * ((n - i) / n) ** 0.75;
     const q = trecho(t, 6.3 + ds, 6.3 + ds + 0.28);
     // Escondida: o topo da letra abaixo do fio (13 unidades sob a base)
-    const escondido = l.ascent + 13 / textos.escalaIntro + 3;
-    const dy = mix(escondido, 0, mola(p)) + entraCubica(q) * (l.ascent + l.descent + 10);
+    // 14/11/2026 ("melhore o efeito das fontes, pode melhorar muito"): a
+    // letra se LEVANTA do fio de ouro, como uma carta que abre, com a
+    // dobradiça na base (antes subia de trás do fio). k é quanto ela está
+    // de pé: o achatamento vertical a partir da base, de 0 (deitada no fio)
+    // a 1; deitada, ela fica mais escura (a luz bate de frente). Na saída,
+    // dobra de volta sobre a base, da última para a primeira
+    const levanta = Math.sin((Math.PI / 2) * Math.min(1, mola(p)));
+    const deita = Math.cos((Math.PI / 2) * entraCubica(q));
+    const k = q > 0 ? deita : levanta;
     const peso = q > 0 ? mix(l.peso, fontes.pesoDisplayLeve, saiCubica(q)) : mix(fontes.pesoDisplayLeve, l.peso, saiCubica(p));
     // As letras chegam um pouco abertas (a partir do centro) e o
     // espaçamento fecha ao pousar, como um "tracking" do After Effects
     const dx = (1 - saiCubica(p)) * l.tamanho * 0.07 * (i - n / 2);
-    // Chegada com opacidade binária (21/10/2026): a letra já nasce atrás do
-    // fio, a máscara faz o recorte; um fade por cima brigava com o estalo
-    return { dy, dx, peso, alfa: p > 0 ? 1 : 0, p, q };
+    // Chegada com opacidade binária (21/10/2026): o desenho da letra é que
+    // cresce a partir do fio; um fade por cima brigava com o estalo
+    return { dy: 0, dx, peso, alfa: p > 0 ? 1 : 0, p, q, k };
   }
 
   /** Desenha a linha grande no instante tt. Serve para o quadro e, com
@@ -1554,20 +1561,20 @@ export async function criarCena(
     // Junta tudo que vai desenhar e agrupa por peso: o que custa é trocar
     // o ctx.font, não o fillText. (A ordem não altera a imagem: letra e
     // rastro são brancos sobre branco.)
-    const itens: { ch: string; x: number; y: number; peso: number; alfa: number }[] = [];
+    const itens: { ch: string; x: number; y: number; peso: number; alfa: number; k: number }[] = [];
     for (let i = 0; i < l.texto.length; i++) {
       const a = letra1(i, tt);
       if (a.p <= 0 || a.q >= 1) continue;
       if (comRastro) {
-        // Rastro: a letra onde estava há 1, 2 e 3 quadros (desfoque de
-        // movimento), só enquanto se move
-        for (let k = 3; k >= 1; k--) {
-          const b = letra1(i, tt - k * 0.016);
-          if (b.p <= 0 || Math.abs(b.dy - a.dy) < 1.2) continue;
-          itens.push({ ch: l.texto[i], x: l.xs[i] + b.dx, y: b.dy, peso: b.peso, alfa: b.alfa * alfaMult * [0, 0.14, 0.09, 0.05][k] });
+        // Rastro: a letra como estava há 1, 2 e 3 quadros (desfoque de
+        // movimento), só enquanto se levanta depressa
+        for (let j = 3; j >= 1; j--) {
+          const b = letra1(i, tt - j * 0.016);
+          if (b.p <= 0 || Math.abs(b.k - a.k) < 0.04) continue;
+          itens.push({ ch: l.texto[i], x: l.xs[i] + b.dx, y: b.dy, peso: b.peso, alfa: b.alfa * alfaMult * [0, 0.14, 0.09, 0.05][j], k: b.k });
         }
       }
-      itens.push({ ch: l.texto[i], x: l.xs[i] + a.dx, y: a.dy, peso: a.peso, alfa: a.alfa * alfaMult });
+      itens.push({ ch: l.texto[i], x: l.xs[i] + a.dx, y: a.dy, peso: a.peso, alfa: a.alfa * alfaMult, k: a.k });
     }
     itens.sort((a, b) => a.peso - b.peso);
     ctx.fillStyle = "#ffffff";
@@ -1578,8 +1585,16 @@ export async function criarCena(
         ctx.font = f;
         fonteAtual = f;
       }
-      ctx.globalAlpha = it.alfa;
-      ctx.fillText(it.ch, it.x, it.y);
+      // Deitada, a letra pega menos luz
+      ctx.globalAlpha = it.alfa * (0.35 + 0.65 * it.k);
+      if (it.k >= 0.999) ctx.fillText(it.ch, it.x, it.y);
+      else if (it.k > 0.01) {
+        ctx.save();
+        ctx.translate(it.x, it.y);
+        ctx.scale(1, it.k);
+        ctx.fillText(it.ch, 0, 0);
+        ctx.restore();
+      }
     }
     luzDoPouso();
     ctx.restore();
@@ -1619,6 +1634,13 @@ export async function criarCena(
   }
   /** Quando a palavra k começa a subir: vãos que encolhem (x0,84) */
   const inicioPalavra2 = (k: number) => 1.58 + (0.14 * (1 - 0.84 ** k)) / 0.16;
+  /** 14/11/2026: a ligação é DIGITADA pela pena de ouro, letra a letra, no
+   *  compasso de quem escreve; cada letra entra em foco (sai de um leve
+   *  desfoque e de 1,35x) atrás do cursor. A saída segue a de antes (as
+   *  palavras caem atrás da base) */
+  const COMPASSO_L2 = 0.052;
+  const DURA_LETRA2 = 0.22;
+  const inicioLetra2 = (i: number) => 1.56 + i * COMPASSO_L2;
   /** O estado da palavra k da ligação no instante t: altura em relação à
    *  base (positivo = escondida abaixo) e os progressos de entrada e saída */
   function palavra2(k: number, n: number, t: number) {
@@ -1639,9 +1661,47 @@ export async function criarCena(
     if (n === 0) return;
     ctx.save();
     noPlano(cam, enq.textoX + l.recuo, textos.base2, 1);
-    const assentada = t >= inicioPalavra2(n - 1) + 0.46 && t < 6.36;
+    const fimDigitada = inicioLetra2(l.texto.length - 1) + DURA_LETRA2;
+    const assentada = t >= fimDigitada && t < 6.36;
     if (assentada && spritesTexto) {
       pintarSprite(spritesTexto.l2);
+      ctx.restore();
+      return;
+    }
+    if (t < 6.36) {
+      // Digitando: cada letra cresce em foco no lugar dela
+      ctx.font = fonteDe(l);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+      const meio = -l.ascent * 0.45;
+      for (let i = 0; i < l.texto.length; i++) {
+        if (l.texto[i] === " ") continue;
+        const p = trecho(t, inicioLetra2(i), inicioLetra2(i) + DURA_LETRA2);
+        if (p <= 0) break;
+        const e = saiQuinta(p);
+        const larg = (i < l.texto.length - 1 ? l.xs[i + 1] : l.largura) - l.xs[i];
+        const cx = l.xs[i] + larg / 2;
+        const esc = 1 + 0.35 * (1 - e);
+        const borrao = (1 - e) * l.tamanho * 0.12;
+        const aparece = limitar(p * 4);
+        ctx.save();
+        ctx.translate(cx, meio);
+        ctx.scale(esc, esc);
+        ctx.translate(-cx, -meio);
+        if (borrao > 0.4) {
+          ctx.globalAlpha = aparece * 0.14;
+          for (const [ox, oy] of [
+            [-1, 0],
+            [1, 0],
+            [0, -0.7],
+            [0, 0.7],
+          ]) {
+            ctx.fillText(l.texto[i], l.xs[i] + ox * borrao, oy * borrao);
+          }
+        }
+        ctx.globalAlpha = aparece * mix(0.45, 1, e);
+        ctx.fillText(l.texto[i], l.xs[i], 0);
+        ctx.restore();
+      }
       ctx.restore();
       return;
     }
@@ -1716,7 +1776,6 @@ export async function criarCena(
     // As fronteiras entre letras, para recortar a névoa de cada uma: o meio
     // entre uma origem e a seguinte (a névoa é macia, o corte não aparece)
     const fronteira = (i: number) => (i <= 0 ? nevoa.x0 : i >= n ? nevoa.x0 + nevoa.l : (l.xs[i - 1] + l.xs[i]) / 2 + l.tamanho * 0.12);
-    let frente = -1;
     for (let i = 0; i < n; i++) {
       let p: number;
       let dy: number;
@@ -1726,7 +1785,6 @@ export async function criarCena(
       if (entrando) {
         p = trecho(t, inicioLetra3(i), inicioLetra3(i) + DURA_LETRA3);
         if (p <= 0) break;
-        if (p < 1) frente = i;
         const e = saiQuinta(p);
         dy = (1 - e) * l.tamanho * 0.22;
         dx = (1 - e) * l.tamanho * 0.06 * (i - n / 2);
@@ -1765,20 +1823,127 @@ export async function criarCena(
         ctx.restore();
       }
     }
-    // A luz que acompanha a ponta da escrita
-    if (entrando && frente >= 0) {
-      const lx = l.xs[frente] + l.tamanho * 0.28;
-      const ly = -l.ascent * 0.4;
-      const r = l.tamanho * 0.55;
-      const g2 = ctx.createRadialGradient(lx, ly, 0, lx, ly, r);
-      g2.addColorStop(0, "rgba(255, 246, 220, 0.45)");
-      g2.addColorStop(1, "rgba(255, 246, 220, 0)");
-      ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = 1 - trecho(t, fimEntrada - 0.18, fimEntrada);
-      ctx.fillStyle = g2;
-      ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
-    }
+    // (A luz que acompanhava a ponta da escrita virou a pena de ouro, que
+    // é desenhada por cima de tudo em desenharPena, 14/11/2026)
     ctx.restore();
+  }
+
+  // ---- a pena de ouro (14/11/2026, "melhore o efeito das fontes"): um
+  // cursor fino de ouro que DIGITA "em saúde", desce numa curva até a
+  // linha de baixo e ESCREVE "personalizada" (as letras saem da névoa atrás
+  // dela, acelerando com os vãos que encolhem); no fim da palavra ela vira
+  // uma estrela de brilho e some. Liga as duas linhas num gesto só, como
+  // num título de cinema. Tempos da coreografia de 7 s.
+  /** Onde está a pena no instante t (mundo: x, base, altura do cursor,
+   *  inclinação do itálico e presença), ou null fora do gesto */
+  function estadoPena(t: number) {
+    const l2 = textos.l2;
+    const l3 = textos.l3;
+    const n2 = l2.texto.length;
+    const n3 = l3.texto.length;
+    if (n2 === 0 || n3 === 0) return null;
+    const x2 = enq.textoX + l2.recuo;
+    const x3 = enq.textoX - l3.tamanho * 0.03;
+    const comeca = inicioLetra2(0) - 0.08;
+    const fimL2 = inicioLetra2(n2 - 1) + 0.1;
+    const inicio3 = inicioLetra3(0);
+    const fim3 = inicioLetra3(n3 - 1) + DURA_LETRA3 * 0.55;
+    if (t < comeca || t > fim3 + 0.06) return null;
+    const h2 = l2.ascent * 0.92;
+    const h3 = l3.ascent * 0.82;
+    const vao2 = l2.tamanho * 0.08;
+    const pos2 = (u: number) => {
+      const i = Math.max(0, Math.min(n2, Math.floor(u)));
+      const xa = i < n2 ? l2.xs[i] : l2.largura;
+      const xb = i + 1 < n2 ? l2.xs[i + 1] : l2.largura;
+      return x2 + mix(xa, xb, entraSaiSeno(limitar(u - i))) + vao2;
+    };
+    const presenca = limitar((t - comeca) / 0.08) * (1 - trecho(t, fim3 - 0.04, fim3 + 0.06));
+    if (t < fimL2) {
+      // Digitando: anda um passo a cada letra, de leve (sem pulo seco)
+      const u = (t - inicioLetra2(0)) / COMPASSO_L2 + 0.35;
+      return { x: pos2(Math.max(0, u)), base: textos.base2, h: h2, inclina: 0, presenca, desce: 0 };
+    }
+    if (t < inicio3) {
+      // A descida até o começo da palavra em ouro, numa curva
+      const p = entraSaiCubica(trecho(t, fimL2 + 0.04, inicio3));
+      const xa = x2 + l2.largura + vao2;
+      const xb = x3 + l3.tamanho * 0.05;
+      return {
+        x: mix(xa, xb, p) + Math.sin(Math.PI * p) * l2.tamanho * 0.5,
+        base: mix(textos.base2, textos.base3, p),
+        h: mix(h2, h3, p),
+        inclina: 0.2 * p,
+        presenca,
+        desce: Math.sin(Math.PI * p),
+      };
+    }
+    // Escrevendo: na ponta da letra que está nascendo
+    let i = 0;
+    for (let k = 0; k < n3; k++) if (t >= inicioLetra3(k)) i = k;
+    const proxima = i < n3 - 1 ? inicioLetra3(i + 1) : inicioLetra3(i) + DURA_LETRA3 * 0.55;
+    const frac = trecho(t, inicioLetra3(i), proxima);
+    const xa = l3.xs[i];
+    const xb = i < n3 - 1 ? l3.xs[i + 1] : l3.largura;
+    return { x: x3 + mix(xa, xb, frac) + l3.tamanho * 0.05, base: textos.base3, h: h3, inclina: 0.2, presenca, desce: 0 };
+  }
+
+  function desenharPena(t: number, cam: Camera) {
+    const l3 = textos.l3;
+    // A estrela no fim de "personalizada", quando a pena chega
+    const fim3 = inicioLetra3(l3.texto.length - 1) + DURA_LETRA3 * 0.55;
+    const g = trecho(t, fim3 - 0.06, fim3 + 0.34);
+    if (g > 0 && g < 1 && l3.texto.length) {
+      const a = Math.sin(Math.PI * g);
+      const r = l3.tamanho * 0.34 * a;
+      ctx.save();
+      noPlano(cam, enq.textoX - l3.tamanho * 0.03 + l3.largura - l3.tamanho * 0.06, textos.base3 - l3.ascent * 0.86, 1);
+      ctx.globalAlpha = 0.42 * a;
+      desenharLuz(luzOuro, -r * 1.9, -r * 1.9, r * 3.8, r * 3.8);
+      ctx.rotate(g * Math.PI * 0.5);
+      ctx.globalAlpha = 0.95 * a;
+      ctx.fillStyle = "#fff6dc";
+      ctx.beginPath();
+      ctx.moveTo(0, -r);
+      ctx.quadraticCurveTo(0, 0, r * 0.7, 0);
+      ctx.quadraticCurveTo(0, 0, 0, r);
+      ctx.quadraticCurveTo(0, 0, -r * 0.7, 0);
+      ctx.quadraticCurveTo(0, 0, 0, -r);
+      ctx.fill();
+      ctx.restore();
+    }
+    const pena = estadoPena(t);
+    if (!pena || pena.presenca <= 0.01) return;
+    /** O cursor: uma barra fina de ouro com a luz quente em volta,
+     *  inclinada como o itálico quando está na palavra em ouro */
+    const cursor = (e: NonNullable<ReturnType<typeof estadoPena>>, alfa: number, comLuz: boolean) => {
+      ctx.save();
+      noPlano(cam, e.x, e.base, 1);
+      if (comLuz) {
+        const rl = e.h * 1.25;
+        ctx.globalAlpha = 0.55 * alfa;
+        desenharLuz(luzOuro, -rl, -e.h / 2 - rl, rl * 2, rl * 2);
+      }
+      ctx.transform(1, 0, -e.inclina, 1, 0, 0);
+      const larg = Math.max(1.4, e.h * 0.07);
+      ctx.globalAlpha = alfa;
+      ctx.fillStyle = ouro(ctx, -larg, larg, -1);
+      ctx.beginPath();
+      ctx.roundRect(-larg / 2, -e.h, larg, e.h * 1.08, larg / 2);
+      ctx.fill();
+      ctx.restore();
+    };
+    // Na descida, um rastro curto (desfoque de movimento)
+    if (pena.desce > 0.15) {
+      for (const [dt, a] of [
+        [0.03, 0.22],
+        [0.06, 0.1],
+      ] as const) {
+        const antes = estadoPena(t - dt);
+        if (antes) cursor(antes, a * pena.presenca * pena.desce, false);
+      }
+    }
+    cursor(pena, pena.presenca, true);
   }
 
   // ---- o rótulo do topo (08/10/2026, pedido: "fontes mais modernas e
@@ -2211,6 +2376,7 @@ export async function criarCena(
     desenharLinha3(t, cam);
     desenharLinha1(t, cam);
     desenharLinha2(t, cam);
+    desenharPena(t, cam);
     desenharEntrega(t, cam);
     if (formaNaFrente) desenharForma(t, cam);
   }
