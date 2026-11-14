@@ -1,5 +1,33 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 142 (14/11/2026, sessão da dobra animada): a dobra virou um ESTÚDIO de fotografia de produto. IMPLEMENTADO e conferido em quadros (1440, 390) e vídeo; commit local, sem push.**
+> - PEDIDO: "quero reformular esse motion da hero [...] mais moderna; pode
+>   melhorar o fundo, a fonte, a escrita, a manipulação e homeopatia também
+>   pode mudar; uma reformulação significativa; use o HyperFrames".
+> - ONDE: coreografia nova "estudio" (heroAnimado/estudio.ts), ligada no
+>   roteiro da dobra (roteiros.ts, volta de 16 s). A anterior ("orbita", em
+>   cena.ts) ficou inteira: para voltar, o roteiro aponta para ela e recebe
+>   o ritmo antigo, anotado ali.
+> - FUNDO: uma camada azul-noite escurece o banner e se abre onde a luz
+>   bate; dois refletores (frio à direita, quente à esquerda) acendem em
+>   fachos de luz somada, com o halo azul atrás e a poça de luz no chão.
+> - PRODUTOS: uma mesa giratória de vidro escuro com borda de ouro (que se
+>   desenha na entrada) e marcas de bisel que giram com ela; os potes
+>   aparecem pela luz, entrando em foco; quatro giros de 90° na curva
+>   devagar-rápido-devagar, o pote da frente sobe um pouco, acende e ganha
+>   a luz quente embaixo e a faixa de luz no rótulo; os de trás escurecem e
+>   desfocam; meia volta no fecho deixa os dois potes de creatina na frente.
+> - TEXTO (preso, sem câmera): "MANIPULAÇÃO ◆ HOMEOPATIA" sem cápsula, com
+>   losango de ouro; "Especialistas" fecha o espaçamento do centro para as
+>   pontas saindo do desfoque, com degradê de luz; "em saúde" sobe palavra
+>   a palavra; "personalizada" se monta com a poeira de ouro que vem dos
+>   refletores e solta uma estrela. O letreiro de entrega segue o mesmo,
+>   no compasso dos giros.
+> - FECHO DA VOLTA: as luzes apagam, o ouro volta a ser poeira e a volta
+>   recomeça no escuro, sem emenda.
+> - MEDIDO: até 2,5 ms por quadro no computador e 3,1 ms no celular 2x,
+>   60 fps.
+
 > **ADENDO 141 (14/11/2026): foto original do Caramelo de Creatina, seletor de quantidade e o compre junto bem posicionado. IMPLEMENTADO, conferido (375) e PUBLICADO no 82º push.**
 > - CARAMELO: a foto original da farmácia (fundo transparente) entrou no
 >   lugar de public/uploads/caramelo-creatina.webp, no padrão das outras

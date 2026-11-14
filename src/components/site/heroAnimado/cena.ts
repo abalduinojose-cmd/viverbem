@@ -896,6 +896,10 @@ export type Palco = {
     suave?: boolean,
   ) => void;
   particulas: (t: number, cam: Camera, frente: boolean) => void;
+  /** O letreiro de entrega (as duas formas de receber) no tempo da
+   *  coreografia "orbita", com o texto preso (sem câmera): quem usa mapeia
+   *  o próprio tempo para o daquela (ver estudio.ts) */
+  entrega: (t: number) => void;
   /** Quantos px CSS vale uma unidade do palco (para medir o HTML por cima) */
   escala: () => number;
   /** Quantos pixels do canvas vale uma unidade do palco (escala x densidade
@@ -2189,6 +2193,7 @@ export async function criarCena(
     pintarSprite,
     faixaDeLuz,
     particulas: desenharParticulas,
+    entrega: (t) => desenharEntrega(t, { x: 0, y: 0, z: 0, giro: 0 }),
     escala: () => escala,
     densidade: () => dpr * escala,
   });

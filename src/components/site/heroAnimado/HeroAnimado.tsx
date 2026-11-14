@@ -14,6 +14,7 @@ import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { criarCena, DURACAO, type Cena } from "./cena";
 import { criarVitrine } from "./vitrine";
+import { criarEstudio } from "./estudio";
 import { FONTES_PADRAO, JOGOS_DE_FONTES, fontesParaCarregar } from "./fontes";
 import { ROTEIROS, type NomeRoteiro, type Roteiro } from "./roteiros";
 
@@ -255,7 +256,7 @@ export function CenaAnimada({
             imagens,
             fontes,
             roteiro,
-            roteiro.coreografia === "vitrine" ? criarVitrine : undefined,
+            roteiro.coreografia === "vitrine" ? criarVitrine : roteiro.coreografia === "estudio" ? criarEstudio : undefined,
             pausa,
           );
           if (!vivo) return;

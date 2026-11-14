@@ -17,10 +17,12 @@ export type FontePote = { src: string; altura: number };
 export type Roteiro = {
   /** dobra: o banner alto da abertura; cartao: um banner de seção */
   formato: "dobra" | "cartao";
-  /** orbita: a coreografia da dobra (ponto, fio, cápsula, anel e
-   *  carrossel); vitrine: a da Saúde da Mulher (os quatro potes lado a
-   *  lado sobre um espelho, com olas), em vitrine.ts */
-  coreografia: "orbita" | "vitrine";
+  /** orbita: a primeira coreografia da dobra (ponto, fio, cápsula, anel e
+   *  carrossel), em cena.ts; vitrine: a da Saúde da Mulher (os quatro potes
+   *  lado a lado sobre um espelho, com olas), em vitrine.ts; estudio: a da
+   *  dobra desde 14/11/2026 (refletores, mesa giratória, título montado
+   *  com poeira de ouro), em estudio.ts */
+  coreografia: "orbita" | "vitrine" | "estudio";
   /** Os quatro potes. Na dobra, na ordem do carrossel (90° entre um e
    *  outro), e os dois primeiros ficam na frente no fecho; na vitrine, da
    *  esquerda para a direita. A altura é em unidades do palco. */
@@ -53,7 +55,10 @@ export type Roteiro = {
 export const ROTEIROS = {
   dobra: {
     formato: "dobra",
-    coreografia: "orbita",
+    // 14/11/2026 ("quero uma reformulação significativa do motion da hero"):
+    // o estúdio (estudio.ts). Para voltar à anterior: "orbita" aqui e o
+    // ritmo antigo, que ficou anotado logo abaixo
+    coreografia: "estudio",
     potes: [
       { src: "/uploads/caramelo-creatina.webp", altura: 174 },
       { src: "/uploads/creatina-gummy.webp", altura: 188 },
@@ -82,18 +87,14 @@ export const ROTEIROS = {
     // formando) segue no tempo original; do carrossel em diante a cena
     // corre a 0,28 da velocidade, por igual, e cada passo fica ~2,2 s
     // (0,9 s parado e inteiro). O carrossel e o fecho ficam lentos junto,
-    // e a saída volta quase à velocidade normal. Ciclo de 15,6 s.
+    // e a saída volta quase à velocidade normal. Ciclo de 15,6 s:
+    //   [0, 0], [2, 2], [2.7, 2.7], [3.3, 3.05], [6.07, 3.825], [8.84, 4.6],
+    //   [11.6, 5.375], [14.37, 6.15], [14.87, 6.4], [15.6, 7]
+    // 14/11/2026: o estúdio marca o próprio tempo em segundos reais
+    // (estudio.ts); aqui a volta de 7 s só estica, por igual, para 16 s
     ritmo: [
       [0, 0],
-      [2, 2],
-      [2.7, 2.7],
-      [3.3, 3.05],
-      [6.07, 3.825],
-      [8.84, 4.6],
-      [11.6, 5.375],
-      [14.37, 6.15],
-      [14.87, 6.4],
-      [15.6, 7],
+      [16, 7],
     ],
   },
   mulher: {
