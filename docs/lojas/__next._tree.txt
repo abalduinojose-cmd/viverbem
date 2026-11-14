@@ -6,4 +6,4 @@
 :HL["/viverbem/fotos/lojas/centro-520.webp","image",{"fetchPriority":"auto"}]
 :HL["/viverbem/fotos/lojas/correas-520.webp","image",{"fetchPriority":"high"}]
 :HL["/viverbem/fotos/lojas/posse-520.webp","image",{"fetchPriority":"auto"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"(site)","param":null,"prefetchHints":0,"slots":{"children":{"name":"lojas","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"ZiD4SUYcF27zzjA_nGpaH"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"(site)","param":null,"prefetchHints":0,"slots":{"children":{"name":"lojas","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"YtnV8eW7Shru4Ckc3mOlO"}
