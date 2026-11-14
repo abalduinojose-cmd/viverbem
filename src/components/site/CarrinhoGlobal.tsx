@@ -3,12 +3,13 @@
 // as páginas do site. O pedido é finalizado pelo WhatsApp da farmácia.
 import { CarrinhoProvider } from "@/lib/carrinho";
 import { CarrinhoDrawer } from "./CarrinhoDrawer";
+import type { ItemSugestao } from "./SugestoesCarrinho";
 
-export function CarrinhoGlobal({ children }: { children: React.ReactNode }) {
+export function CarrinhoGlobal({ children, sugestoes = [] }: { children: React.ReactNode; sugestoes?: ItemSugestao[] }) {
   return (
     <CarrinhoProvider>
       {children}
-      <CarrinhoDrawer />
+      <CarrinhoDrawer sugestoes={sugestoes} />
     </CarrinhoProvider>
   );
 }

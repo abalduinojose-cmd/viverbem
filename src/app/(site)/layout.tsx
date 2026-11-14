@@ -17,9 +17,15 @@ export default async function LayoutSite({ children }: { children: React.ReactNo
   // cabeçalho leva um índice enxuto dos produtos (nome, área, foto, texto)
   const { categorias, produtos } = await obterCatalogo();
   const indice = montarIndiceBusca(produtos);
+  // "Combina com o seu pedido" no carrinho (14/11/2026): os produtos com
+  // foto real (o mesmo critério do "Compre junto" da página do produto), na
+  // ordem da vitrine
+  const sugestoes = produtos
+    .filter((p) => p.fotoUrl && !p.fotoUrl.toLowerCase().endsWith(".svg"))
+    .map((p) => ({ id: p.id, nome: p.nome, slug: p.slug, fotoUrl: p.fotoUrl as string, categoriaId: p.categoriaId ?? null }));
 
   return (
-    <CarrinhoGlobal>
+    <CarrinhoGlobal sugestoes={sugestoes}>
       {/* Para quem navega pelo teclado: pula o cabeçalho inteiro */}
       <a href="#conteudo" className="pular-conteudo">
         Pular para o conteúdo

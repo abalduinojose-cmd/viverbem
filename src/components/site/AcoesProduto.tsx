@@ -69,7 +69,11 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
   // 23/10/2026 ("melhore o botão de quantidade", de novo): os dois passos
   // viraram círculos cheios, o "menos" em gelo e o "mais" em navy, com o
   // número maior no meio; a pílula tem a altura do botão do carrinho
-  const classePasso = "flex size-10 items-center justify-center rounded-full transition active:scale-90 disabled:opacity-35 disabled:active:scale-100";
+  // 14/11/2026 ("gostei desse modelo, quero tudo melhorinho"): o mesmo
+  // seletor, mais justo (o "Adicionar" do lado cortava no celular), com o
+  // "menos" num círculo branco de contorno fino, o "mais" em azul-noite com
+  // sombra, o número que entra de leve a cada troca e um fio em volta
+  const classePasso = "flex size-[2.4rem] items-center justify-center rounded-full transition active:scale-90 disabled:opacity-35 disabled:active:scale-100";
 
   // 23/10/2026: a folha navy com halos foi reprovada no dia seguinte ("não
   // gostei desse azul, mais clean"). 24/10/2026: cartão BRANCO e limpo, só
@@ -119,12 +123,12 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         <div
           role="group"
           aria-labelledby="rotulo-quantidade"
-          className="flex h-[3.25rem] shrink-0 items-center gap-0.5 rounded-full bg-gelo px-1.5"
+          className="flex h-[3.25rem] shrink-0 items-center gap-0.5 rounded-full bg-gelo px-[5px] ring-1 ring-inset ring-fio/70"
         >
-          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={`${classePasso} text-navy hover:bg-white`}>
+          <button type="button" onClick={() => setQuantidade((q) => Math.max(1, q - 1))} disabled={quantidade <= 1} aria-label="Diminuir quantidade" className={`${classePasso} bg-white text-navy shadow-[0_2px_6px_-2px_rgba(13,35,64,0.25)] ring-1 ring-inset ring-fio hover:ring-navy/25`}>
             <IconeMenos />
           </button>
-          <output aria-live="polite" className="w-10 text-center text-[1.3rem] font-semibold text-navy tabular-nums">
+          <output key={quantidade} aria-live="polite" className="animar-surgir w-8 text-center text-[1.25rem] font-semibold text-navy tabular-nums">
             {quantidade}
           </output>
           <button
@@ -132,7 +136,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
             onClick={() => setQuantidade((q) => Math.min(MAXIMO, q + 1))}
             disabled={quantidade >= MAXIMO}
             aria-label="Aumentar quantidade"
-            className={`${classePasso} bg-navy text-white hover:bg-tinta`}
+            className={`${classePasso} bg-navy text-white shadow-[0_6px_14px_-6px_rgba(13,35,64,0.75)] hover:bg-tinta`}
           >
             <IconeMaisQtd />
           </button>
@@ -141,7 +145,7 @@ export function AcoesProduto({ produto }: { produto: ProdutoDTO }) {
         <button
           type="button"
           onClick={adicionarAoCarrinho}
-          className={`botao-carrinho flex-1 min-w-0 !min-h-[3.25rem] !px-4 !text-[1rem] ${adicionado ? "botao-carrinho-feito" : ""}`}
+          className={`botao-carrinho flex-1 min-w-0 !min-h-[3.25rem] !gap-2 !px-3 !text-[1rem] ${adicionado ? "botao-carrinho-feito" : ""}`}
         >
           <span className="sr-only" aria-live="polite">
             {adicionado ? "Produto adicionado ao carrinho" : ""}

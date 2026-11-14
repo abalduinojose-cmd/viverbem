@@ -13,7 +13,11 @@ import { useCarrinho } from "@/lib/carrinho";
 import { IconeCarrinho, IconeFeito } from "../icones";
 import { FotoProduto } from "../FotoProduto";
 
-export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO; companheiros: ProdutoDTO[] }) {
+// 14/11/2026 ("o compre junto tem que estar melhor posicionado"): na
+// página do produto ele subiu para a coluna de compra, logo abaixo de
+// "Adicionar" e "Pedir pelo WhatsApp" (compacto: tudo em coluna, sem a
+// divisão lateral); e o carrinho ganhou o "Combina com o seu pedido".
+export function CompreJunto({ principal, companheiros, compacto = false }: { principal: ProdutoDTO; companheiros: ProdutoDTO[]; compacto?: boolean }) {
   const { adicionar } = useCarrinho();
   const [feito, setFeito] = useState(false);
   const todos = [principal, ...companheiros];
@@ -33,7 +37,7 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
       <div className="relative flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>
           <p className="rotulo-pilula !text-[0.6875rem]">compre junto</p>
-          <h2 id="titulo-compre-junto" className="mt-2 text-[1.2rem] md:text-[1.5rem] font-semibold tracking-[-0.03em] text-navy">
+          <h2 id="titulo-compre-junto" className={`mt-2 font-semibold tracking-[-0.03em] text-navy ${compacto ? "text-[1.1rem] md:text-[1.2rem]" : "text-[1.2rem] md:text-[1.5rem]"}`}>
             Quem pede este, costuma levar <span className="italic">também</span>
           </h2>
         </div>
@@ -42,9 +46,9 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
         </p>
       </div>
 
-      <div className="relative mt-6 flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-7">
+      <div className={`relative flex flex-col gap-5 ${compacto ? "mt-5" : "mt-6 lg:flex-row lg:items-center lg:gap-7"}`}>
         {/* Os três, com o "+" entre eles */}
-        <ul className="mx-auto flex w-full max-w-[26rem] items-stretch justify-center gap-3 pt-2 sm:gap-4 lg:mx-0 lg:max-w-sm lg:flex-none">
+        <ul className={`mx-auto flex w-full max-w-[26rem] items-stretch justify-center gap-3 pt-2 sm:gap-4 ${compacto ? "" : "lg:mx-0 lg:max-w-sm lg:flex-none"}`}>
           {todos.map((p, i) => (
             <Fragment key={p.id}>
               {i > 0 && (
@@ -86,7 +90,7 @@ export function CompreJunto({ principal, companheiros }: { principal: ProdutoDTO
         </ul>
 
         {/* A ação única */}
-        <div className="flex flex-col items-stretch gap-2.5 lg:max-w-sm lg:flex-1 lg:border-l lg:border-fio lg:pl-7">
+        <div className={`flex flex-col items-stretch gap-2.5 ${compacto ? "" : "lg:max-w-sm lg:flex-1 lg:border-l lg:border-fio lg:pl-7"}`}>
           <p className="text-sm leading-snug text-cinza">
             Os {todos.length} vão juntos para o carrinho. O farmacêutico passa o valor de tudo pelo WhatsApp.
           </p>

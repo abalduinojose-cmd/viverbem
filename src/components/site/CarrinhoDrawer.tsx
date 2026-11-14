@@ -45,6 +45,7 @@ import { linkWhatsAppPedido, gerarCodigoPedido } from "@/lib/whatsapp";
 import { AnexoReceita, copiarImagem, podeCompartilharArquivo } from "./AnexoReceita";
 import { UNIDADES, ENTREGA_RETIRADA, ENTREGA_DELIVERY } from "@/lib/tipos";
 import { IconeCaixa } from "./IconeCaixa";
+import { SugestoesCarrinho, type ItemSugestao } from "./SugestoesCarrinho";
 import { FotoProduto } from "./FotoProduto";
 import { IconeReceita } from "./BotaoEnviarReceita";
 import { IconeCarrinho, IconeFeito, IconeWhatsApp } from "./icones";
@@ -106,7 +107,7 @@ function IconeChevron() {
 const classeBotaoCabecalho =
   "shrink-0 w-10 h-10 rounded-full bg-gelo text-navy hover:bg-fio flex items-center justify-center transition active:scale-90";
 
-export function CarrinhoDrawer() {
+export function CarrinhoDrawer({ sugestoes = [] }: { sugestoes?: ItemSugestao[] }) {
   const {
     itens,
     totalItens,
@@ -740,31 +741,40 @@ export function CarrinhoDrawer() {
                           ) : (
                             <span />
                           )}
-                          <div className="flex items-center bg-gelo rounded-full p-0.5 gap-0.5">
+                          {/* 14/11/2026: o mesmo modelo do seletor da página do produto */}
+                          <div className="flex items-center gap-0.5 rounded-full bg-gelo p-[3px] ring-1 ring-inset ring-fio/70">
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, -1)}
                               aria-label="Diminuir"
-                              className="w-8 h-8 rounded-full bg-white text-navy text-base flex items-center justify-center active:scale-90 transition hover:bg-fio shadow-sm"
+                              className="flex size-8 items-center justify-center rounded-full bg-white text-navy shadow-[0_2px_6px_-2px_rgba(13,35,64,0.25)] ring-1 ring-inset ring-fio transition active:scale-90 hover:ring-navy/25"
                             >
-                              −
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M6 12h12" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                              </svg>
                             </button>
-                            <span className="text-sm font-semibold text-navy w-7 text-center tabular-nums">
+                            <span key={item.quantidade} className="animar-surgir w-7 text-center text-[0.95rem] font-semibold text-navy tabular-nums">
                               {item.quantidade}
                             </span>
                             <button
                               type="button"
                               onClick={() => mudarQuantidade(item.produtoId, item.dosagem, 1)}
                               aria-label="Aumentar"
-                              className="w-8 h-8 rounded-full bg-navy text-white text-base flex items-center justify-center active:scale-90 transition hover:bg-tinta"
+                              className="flex size-8 items-center justify-center rounded-full bg-navy text-white shadow-[0_4px_10px_-4px_rgba(13,35,64,0.7)] transition active:scale-90 hover:bg-tinta"
                             >
-                              +
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 6v12M6 12h12" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                              </svg>
                             </button>
                           </div>
                         </div>
                       </div>
                     </div>
                   ))}
+
+                  {/* "Combina com o seu pedido" (14/11/2026): o compre junto
+                      dentro do carrinho, logo abaixo dos produtos */}
+                  {temProdutos && <SugestoesCarrinho catalogo={sugestoes} />}
 
                   {/* Nada escolhido ainda */}
                   {!temAlgo && (

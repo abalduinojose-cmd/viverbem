@@ -1,6 +1,23 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
-> **ADENDO 140 (13/11/2026): pedido abre o WhatsApp direto e a foto segue num toque; faixa do topo, vantagens, linhas, Instagram e o cartão da história. IMPLEMENTADO e conferido (375 e 1366, pedido testado de ponta a ponta com o compartilhar simulado); não publicado.**
+> **ADENDO 141 (14/11/2026): foto original do Caramelo de Creatina, seletor de quantidade e o compre junto bem posicionado. IMPLEMENTADO, conferido (375) e PUBLICADO no 82º push.**
+> - CARAMELO: a foto original da farmácia (fundo transparente) entrou no
+>   lugar de public/uploads/caramelo-creatina.webp, no padrão das outras
+>   (500x500, pote centralizado); vale para o catálogo, a página, o
+>   carrinho e a animação da dobra.
+> - QUANTIDADE ("gostei desse modelo, quero tudo melhorinho"): o mesmo
+>   seletor, mais justo (o "Adicionar" cortava no celular), com o "menos"
+>   num círculo branco de contorno fino, o "mais" em azul-noite com sombra,
+>   um fio em volta e o número que entra de leve; o carrinho usa o mesmo
+>   modelo (SVG no lugar dos sinais de texto).
+> - COMPRE JUNTO ("melhor posicionado, talvez no carrinho"): na página do
+>   produto subiu para a coluna de compra, logo abaixo de Adicionar e
+>   WhatsApp (compacto); e o carrinho ganhou "Combina com o seu pedido"
+>   (SugestoesCarrinho): até dois produtos com foto real das mesmas linhas
+>   do pedido, com o botão Adicionar. Todos os 32 produtos estão como
+>   manipulados, por isso o filtro é "foto real" e não "pronta entrega".
+
+> **ADENDO 140 (13/11/2026): pedido abre o WhatsApp direto e a foto segue num toque; faixa do topo, vantagens, linhas, Instagram e o cartão da história. IMPLEMENTADO e conferido (375 e 1366, pedido testado de ponta a ponta com o compartilhar simulado) e PUBLICADO no 81º push.**
 > - PEDIDO NO WHATSAPP ("por que o pedido não vai como mensagem? quero que
 >   abra o meu WhatsApp, igual antes, e já mande a imagem junto"): o
 >   compartilhar do celular (foto + texto) deixava a pessoa escolhendo o

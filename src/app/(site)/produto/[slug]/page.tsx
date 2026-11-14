@@ -437,6 +437,14 @@ export default async function PaginaProduto({ params }: Props) {
             <p className="texto-apoio mt-5 max-w-[34rem]">{produto.descricao}</p>
 
             <AcoesProduto produto={produto} />
+
+            {/* Compre junto, logo abaixo da compra (14/11/2026, "melhor
+                posicionado"; antes ficava numa faixa própria lá embaixo) */}
+            {companheiros.length === 1 && (
+              <div className="mt-5">
+                <CompreJunto principal={produto} companheiros={companheiros} compacto />
+              </div>
+            )}
             <Selos />
 
             {/* Compra segura */}
@@ -473,13 +481,6 @@ export default async function PaginaProduto({ params }: Props) {
           ]}
         />
       </section>
-
-      {/* Compre junto (23/10/2026, estudo da Amazon e do Mercado Livre) */}
-      {companheiros.length === 1 && (
-        <section className="max-w-6xl mx-auto px-5 md:px-8 pb-5 md:pb-6">
-          <CompreJunto principal={produto} companheiros={companheiros} />
-        </section>
-      )}
 
       {/* Mais procurados e o que a pessoa já viu, em faixas que arrastam, embaixo do produto */}
       <section className="max-w-6xl mx-auto px-5 md:px-8 pb-8 md:pb-10">
