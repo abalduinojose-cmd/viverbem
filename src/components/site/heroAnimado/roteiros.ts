@@ -55,10 +55,12 @@ export type Roteiro = {
 export const ROTEIROS = {
   dobra: {
     formato: "dobra",
-    // 14/11/2026 ("quero uma reformulação significativa do motion da hero"):
-    // o estúdio (estudio.ts). Para voltar à anterior: "orbita" aqui e o
-    // ritmo antigo, que ficou anotado logo abaixo
-    coreografia: "estudio",
+    // 14/11/2026: o estúdio (estudio.ts, refletores e escuro) foi recusado
+    // no mesmo dia ("antes o efeito tava melhor; não gostei das luzes de
+    // holofote; quero moderna e clean, o melhor de uma e da outra"). Voltou
+    // a "orbita", na versão 3: o efeito de antes com o que o estúdio tinha
+    // de limpo (ver cena.ts, "versão 3")
+    coreografia: "orbita",
     potes: [
       { src: "/uploads/caramelo-creatina.webp", altura: 174 },
       { src: "/uploads/creatina-gummy.webp", altura: 188 },
@@ -87,14 +89,19 @@ export const ROTEIROS = {
     // formando) segue no tempo original; do carrossel em diante a cena
     // corre a 0,28 da velocidade, por igual, e cada passo fica ~2,2 s
     // (0,9 s parado e inteiro). O carrossel e o fecho ficam lentos junto,
-    // e a saída volta quase à velocidade normal. Ciclo de 15,6 s:
-    //   [0, 0], [2, 2], [2.7, 2.7], [3.3, 3.05], [6.07, 3.825], [8.84, 4.6],
-    //   [11.6, 5.375], [14.37, 6.15], [14.87, 6.4], [15.6, 7]
-    // 14/11/2026: o estúdio marca o próprio tempo em segundos reais
-    // (estudio.ts); aqui a volta de 7 s só estica, por igual, para 16 s
+    // e a saída volta quase à velocidade normal. Ciclo de 15,6 s. (O
+    // estúdio usava [[0, 0], [16, 7]]: a volta de 7 s esticada por igual)
     ritmo: [
       [0, 0],
-      [16, 7],
+      [2, 2],
+      [2.7, 2.7],
+      [3.3, 3.05],
+      [6.07, 3.825],
+      [8.84, 4.6],
+      [11.6, 5.375],
+      [14.37, 6.15],
+      [14.87, 6.4],
+      [15.6, 7],
     ],
   },
   mulher: {

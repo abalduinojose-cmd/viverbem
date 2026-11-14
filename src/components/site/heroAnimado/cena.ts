@@ -109,7 +109,6 @@ export const mola = (p: number) => (p >= 1 ? 1 : p <= 0 ? 0 : molaBruta(p) + p *
 export type Camera = { x: number; y: number; z: number; giro: number };
 
 function camera(t: number): Camera {
-  const meio = trecho(t, 2.4, 6.2);
   let z: number;
   let giro: number;
   if (t < 1.3) {
@@ -122,13 +121,16 @@ function camera(t: number): Camera {
     let passos = 0;
     for (let k = 0; k < 4; k++) passos += entraSaiSeno(trecho(t, inicioDoPasso(k), inicioDoPasso(k) + PASSO_GIRO + 0.1));
     z = 8 * entraSaiSeno(trecho(t, 2.4, 3.0)) + 5.5 * passos + 10 * entraSaiSeno(trecho(t, 5.2, 6.2));
-    giro = 1.2 * Math.sin(TAU * meio);
+    // 14/11/2026 (versão 3, "moderna e clean"): sem o balanço de lado e o
+    // giro de 1,2° no meio, que inclinavam o título e o letreiro durante a
+    // leitura (do estúdio: o texto fica parado; a câmera só avança)
+    giro = 0;
   } else {
     const p = entraCubica(trecho(t, 6.45, DURACAO));
     z = mix(40, 220, p);
     giro = mix(0, -4, p);
   }
-  return { x: 14 * Math.sin(TAU * meio), y: -6 * Math.sin(Math.PI * meio), z, giro: giro * RAD };
+  return { x: 0, y: 0, z, giro: giro * RAD };
 }
 
 /** O texto acompanha a câmera pela metade: fica mais estável que os
@@ -1279,7 +1281,8 @@ export async function criarCena(
       const y = mix(-enq.cy * 1.3, (enq.altura - enq.cy) * 1.05, p.ny);
       const q = P(p.nx * meiaLargura, y + 12 * Math.sin(fase), p.z, cam);
       const r = Math.min(46, p.r * q.s * (frente ? 1.6 : 1));
-      ctx.globalAlpha = p.alfa * (0.55 + 0.45 * Math.sin(fase * 2));
+      // 14/11/2026 (versão 3): 60% da força de antes, para a cena ficar limpa
+      ctx.globalAlpha = 0.6 * p.alfa * (0.55 + 0.45 * Math.sin(fase * 2));
       desenharLuz(bolinhas[p.cor], q.x - r, q.y - r, r * 2, r * 2);
     }
     ctx.restore();
@@ -1296,6 +1299,22 @@ export async function criarCena(
     for (const p of pts) { if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x; }
     // Sem pontos válidos neste quadro, não há forma para desenhar
     if (!Number.isFinite(minX) || !Number.isFinite(maxX)) return;
+    // 14/11/2026 (versão 3): o anel vira a borda de um tampo de vidro claro
+    // (a mesa do estúdio, sem o escuro), onde os potes pousam e se refletem
+    const vidro = trecho(t, 2.5, 3.0) * (1 - trecho(t, 6.3, 6.55));
+    if (vidro > 0.01) {
+      const centro = P(enq.potesX, enq.chao, ORBITA_CENTRO, cam);
+      const meia = (maxX - minX) / 2;
+      const tampo = ctx.createRadialGradient(centro.x, centro.y, 0, centro.x, centro.y, meia);
+      tampo.addColorStop(0, "rgba(255, 255, 255, 0.11)");
+      tampo.addColorStop(0.7, "rgba(255, 255, 255, 0.05)");
+      tampo.addColorStop(1, "rgba(255, 255, 255, 0.025)");
+      ctx.save();
+      ctx.globalAlpha = vidro;
+      ctx.fillStyle = tampo;
+      ctx.fill();
+      ctx.restore();
+    }
     const dourado = ouro(ctx, minX - 4, maxX + 4, mix(-0.3, 1.3, trecho(t, 0.3, 1.2)));
     ctx.save();
     // O brilho em volta é um traço largo e transparente por baixo do traço
@@ -1352,13 +1371,17 @@ export async function criarCena(
   // ---- um pote num instante (posição projetada e tamanho)
   function geometriaPote(i: number, t: number, cam: Camera) {
     const e = estadoPote(enq, i, t);
-    const q = P(e.x, e.y, e.z, cam);
+    // 14/11/2026 (versão 3, do estúdio): o pote que chega à frente do
+    // carrossel se solta um pouco do vidro (o herói da vez)
+    const solta = 5 * enq.ep * limitar((Math.cos(e.angulo) - 0.9) / 0.1) * trecho(t, 3.0, 3.2) * (1 - trecho(t, 5.25, 5.6));
+    const chao = P(e.x, e.y, e.z, cam);
+    const q = solta > 0.05 ? P(e.x, e.y - solta, e.z, cam) : chao;
     const sp = potes[i];
     const h = sp.altura * enq.ep * q.s;
     const l = h * sp.proporcao * (1 - 0.05 * Math.abs(Math.sin(e.angulo)) * (1 - trecho(t, 5.25, 5.8)));
     // Profundidade de campo: foco na frente do carrossel
     const desfoque = limitar((e.z - 50) / 320);
-    return { e, q, h, l, desfoque };
+    return { e, q, chao, h, l, desfoque, solta };
   }
 
   function desenharPotes(t: number, cam: Camera) {
@@ -1389,9 +1412,17 @@ export async function criarCena(
       if (noChao < 0.02) continue;
       const sp = potes[i];
       ctx.save();
+      // A luz quente sob o pote que se soltou (versão 3)
+      const quente = g.solta / (5 * enq.ep);
+      if (quente > 0.01) {
+        const rl = g.l * 0.9;
+        ctx.globalAlpha = 0.38 * quente * g.e.alfa;
+        desenharLuz(luzOuro, g.chao.x - rl, g.chao.y - rl * 0.2, rl * 2, rl * 0.4);
+      }
       ctx.globalAlpha = noChao;
-      desenharPote(sp.reflexo, g.q.x - g.l / 2, g.q.y, g.l, g.h * 0.42, true);
-      desenharLuz(sombra, g.q.x - g.l * 0.55, g.q.y - g.l * 0.1, g.l * 1.1, g.l * 0.2);
+      // O reflexo fica no vidro: quando o pote sobe, ele desce na mesma medida
+      desenharPote(sp.reflexo, g.q.x - g.l / 2, g.chao.y + (g.chao.y - g.q.y), g.l, g.h * 0.42, true);
+      desenharLuz(sombra, g.chao.x - g.l * 0.55, g.chao.y - g.l * 0.1, g.l * 1.1, g.l * 0.2 * (1 - 0.4 * quente));
       ctx.restore();
     }
 
@@ -1765,76 +1796,25 @@ export async function criarCena(
     const presenca = abre * (1 - fecha);
     if (presenca <= 0.001) return;
     const { x0, x1, topo, base } = r.capsula;
-    const h = base - topo;
-    const raio = h / 2;
     const cy = (topo + base) / 2;
-    const perimetro = 2 * (x1 - x0 - h) + Math.PI * h;
 
     ctx.save();
     noPlano(cam, enq.textoX, textos.baseRotulo, 1);
-    // A cápsula cresce de leve a partir do ponto de ouro
+    // O conjunto cresce de leve a partir do ponto de ouro
     const escalaCapsula = mix(0.92, 1, abre) * mix(1, 0.96, fecha);
     ctx.translate(r.pontoX, cy);
     ctx.scale(escalaCapsula, escalaCapsula);
     ctx.translate(-r.pontoX, -cy);
 
-    // O contorno começa no meio da ponta esquerda e corre no sentido do
-    // relógio (por cima primeiro)
-    const caminho = (recuo = 0) => {
-      const a = x0 + recuo;
-      const b = x1 - recuo;
-      const rr = raio - recuo;
-      ctx.beginPath();
-      ctx.moveTo(a, cy);
-      ctx.arc(a + rr, cy, rr, Math.PI, Math.PI * 1.5);
-      ctx.lineTo(b - rr, cy - rr);
-      ctx.arc(b - rr, cy, rr, Math.PI * 1.5, Math.PI * 0.5);
-      ctx.lineTo(a + rr, cy + rr);
-      ctx.arc(a + rr, cy, rr, Math.PI * 0.5, Math.PI);
-      ctx.closePath();
-    };
-
-    // Vidro: um véu claro, mais forte no alto
-    caminho();
-    const vidro = ctx.createLinearGradient(0, topo, 0, base);
-    vidro.addColorStop(0, `rgba(255, 255, 255, ${0.12 * presenca})`);
-    vidro.addColorStop(1, `rgba(255, 255, 255, ${0.035 * presenca})`);
-    ctx.fillStyle = vidro;
-    ctx.fill();
-
-    // A borda se desenha a partir do ponto e se desfaz na saída
-    ctx.lineWidth = 1;
-    ctx.setLineDash([perimetro * saiQuinta(trecho(t, 2.0, 2.9)) * (1 - fecha), perimetro * 2]);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
-    ctx.stroke();
-
-    // O fio de ouro: uma volta só, com a cauda esmaecendo (quatro traços
-    // que terminam na mesma cabeça, mais claros onde se sobrepõem)
-    const volta = trecho(t, 2.25, 3.35);
-    if (volta > 0 && volta < 1) {
-      const cabeca = entraSaiSeno(volta) * perimetro;
-      const forca = Math.sin(Math.PI * volta);
-      ctx.lineCap = "round";
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = `rgba(232, 204, 146, ${0.32 * forca})`;
-      for (let j = 1; j <= 4; j++) {
-        const comp = perimetro * 0.07 * j;
-        ctx.setLineDash([comp, perimetro * 2]);
-        ctx.lineDashOffset = comp - cabeca;
-        ctx.stroke();
-      }
-    }
-    ctx.setLineDash([]);
-    ctx.lineDashOffset = 0;
-
-    // O ponto de ouro: acende primeiro e respira (três vezes por laço,
-    // então o fim emenda no começo)
+    // 14/11/2026 (versão 3, "moderna e clean"): sem a cápsula de vidro, a
+    // borda e o fio de ouro que corria nela (do estúdio: o sobretítulo
+    // editorial, só o ponto de ouro e as palavras). O ponto acende e fica
+    // (sem respirar: nada de balanço ocioso)
     const acende = saiQuinta(trecho(t, 1.95, 2.45)) * (1 - entraCubica(trecho(t, 6.2, 6.55)));
     if (acende > 0.001) {
-      const respira = 0.5 - 0.5 * Math.cos((TAU * 3 * t) / DURACAO);
-      const halo = r.raioPonto * (2.4 + 1.6 * respira);
+      const halo = r.raioPonto * 3.2;
       const gh = ctx.createRadialGradient(r.pontoX, cy, 0, r.pontoX, cy, halo);
-      gh.addColorStop(0, `rgba(232, 204, 146, ${(0.4 + 0.2 * respira) * acende})`);
+      gh.addColorStop(0, `rgba(232, 204, 146, ${0.5 * acende})`);
       gh.addColorStop(1, "rgba(232, 204, 146, 0)");
       ctx.globalCompositeOperation = "lighter";
       ctx.fillStyle = gh;
@@ -1846,9 +1826,10 @@ export async function criarCena(
       ctx.fill();
     }
 
-    // As palavras, presas dentro da cápsula: sobem do fundo dela e saem
-    // pelo alto
-    caminho(1);
+    // As palavras sobem de uma fresta (a faixa onde ficava a cápsula) e
+    // saem pelo alto
+    ctx.beginPath();
+    ctx.rect(x0 - 4, topo, x1 - x0 + 8, base - topo);
     ctx.clip();
     const passada =
       t < 4.5 ? mix(-0.25, 1.25, entraSaiSeno(trecho(t, 2.95, 3.75))) : mix(-0.25, 1.25, entraSaiSeno(trecho(t, 5.7, 6.2)));
