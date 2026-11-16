@@ -1,5 +1,33 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 145 (15/11/2026): segurança, isolamento por usuário, teto de requisições e 404 personalizada. IMPLEMENTADO e testado no servidor local; não publicado.**
+> - ISOLAMENTO ("RLS, cada usuário só vê os próprios dados"): o banco é
+>   Prisma (SQLite/MySQL/Postgres), sem RLS; o equivalente é o servidor
+>   decidir a cada pedido. obterSessao (lib/sessao.ts) agora confere o
+>   usuário NO BANCO em toda leitura: quem não existe ou foi desligado
+>   perde a sessão na hora, e o papel e o nome vêm do cadastro atual (antes
+>   ficavam congelados no cookie por até 12 h). Testado com um usuário
+>   temporário: 200 ativo, 403 com o mesmo cookie depois de desligado e de
+>   rebaixado a colaborador. Rotas e páginas do gestor já exigiam o papel.
+> - FORÇA BRUTA: src/proxy.ts (o middleware do Next 16) põe um teto por
+>   minuto em memória, por IP e, no painel, também por usuário logado:
+>   login 10, pedidos 10, painel 120; acima disso 429 "Calma, muitas
+>   requisições. Espere N segundos" com Retry-After. Continua o bloqueio
+>   gravado no banco (5 senhas erradas por e-mail ou IP = 30 min), agora
+>   com a mesma mensagem e Retry-After. O IP sai de lib/ipDaRequisicao.ts
+>   (x-real-ip ou o ÚLTIMO endereço do X-Forwarded-For): o primeiro, usado
+>   antes, era falsificável e deixava burlar o bloqueio por IP. O proxy sai
+>   da prévia estática (gerar-demo.js).
+> - 404: PaginaNaoEncontrada em app/not-found.tsx (endereço inexistente,
+>   com a logo; vira o 404.html da prévia) e app/(site)/not-found.tsx
+>   (produto ou linha fora do catálogo, com cabeçalho e rodapé): 404 em
+>   ouro, "Esta página não está aqui", Voltar ao início, WhatsApp e
+>   atalhos. Responde 404 com noindex.
+> - NA HOSPEDAGEM: o servidor na frente do site precisa preencher
+>   x-real-ip (ou acrescentar o IP real no fim do X-Forwarded-For); com
+>   várias instâncias, o teto em memória conta por instância (o bloqueio do
+>   banco vale para todas).
+
 > **ADENDO 144 (14/11/2026, sessão da dobra animada): a dobra na VERSÃO 3, o efeito de antes com o que o estúdio tinha de limpo. IMPLEMENTADO e conferido em quadros (1440, 390) e vídeo; commit local, sem push.**
 > - PEDIDO: "essa última atualização não ficou boa; antes o efeito tava
 >   melhor; não gostei das luzes de holofote em cima dos produtos; pegar o
@@ -21,6 +49,13 @@
 >   pote que chega à frente sobe um pouco do vidro, com uma luz quente
 >   embaixo e o reflexo descendo na mesma medida.
 > - MAIS LIMPO: a poeira de luz com 60% da força de antes.
+> - FONTES (mesmo dia, "melhore o efeito das fontes, pode melhorar muito"):
+>   "Especialistas" se LEVANTA do fio de ouro letra a letra, como uma carta
+>   que abre (dobradiça na base, mais escura deitada, o peso enchendo ao
+>   ficar de pé) e dobra de volta na saída; uma PENA DE OURO (cursor fino
+>   com luz quente) digita "em saúde" letra a letra, cada letra entrando em
+>   foco, desce numa curva e escreve "personalizada" puxando as letras da
+>   névoa, e vira uma estrela de brilho no fim da palavra.
 
 > **ADENDO 143 (14/11/2026): linhas de produtos sem a contagem. IMPLEMENTADO e conferido (375); não publicado.**
 > - "Não quero 12 produtos, 4 produtos; só as partes [os nomes]": a

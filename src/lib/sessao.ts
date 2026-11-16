@@ -34,7 +34,33 @@ export async function obterSessao() {
     const { SESSAO_DEMO } = await import("./adminDemo");
     return { ...SESSAO_DEMO } as unknown as Awaited<ReturnType<typeof getIronSession<DadosSessao>>>;
   }
-  return getIronSession<DadosSessao>(await cookies(), opcoesSessao);
+  const sessao = await getIronSession<DadosSessao>(await cookies(), opcoesSessao);
+
+  // ISOLAMENTO (15/11/2026, "cada usuário só vê os próprios dados"): o
+  // banco do projeto (Prisma: SQLite aqui, MySQL ou Postgres na hospedagem)
+  // não tem RLS como o Supabase; o equivalente é o servidor decidir, a cada
+  // pedido, quem é a pessoa e o que o papel dela permite. Antes, o papel e o
+  // "ativo" ficavam congelados no cookie do login: um colaborador desligado,
+  // ou um gestor rebaixado, seguia com o acesso antigo por até 12 horas.
+  // Agora toda leitura da sessão confere no banco: quem não existe mais ou
+  // foi desligado perde a sessão na hora, e o papel e o nome vêm sempre do
+  // cadastro atual. Todas as rotas e páginas do painel passam por aqui.
+  if (sessao.usuarioId) {
+    const { db } = await import("./db");
+    const usuario = await db.usuario.findUnique({
+      where: { id: sessao.usuarioId },
+      select: { nome: true, papel: true, ativo: true },
+    });
+    if (!usuario || !usuario.ativo) {
+      sessao.usuarioId = undefined;
+      sessao.nome = undefined;
+      sessao.papel = undefined;
+    } else {
+      sessao.nome = usuario.nome;
+      sessao.papel = usuario.papel;
+    }
+  }
+  return sessao;
 }
 
 /** Para rotas de API protegidas: retorna a sessão ou null se não estiver logado. */

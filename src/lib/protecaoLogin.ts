@@ -8,6 +8,7 @@
 // hash (bcrypt) e a sessão vai num cookie criptografado (iron-session);
 // esta camada cobre o que faltava, a repetição de tentativas.
 import { db } from "@/lib/db";
+import { ipDaRequisicao } from "@/lib/ipDaRequisicao";
 
 export const LIMITE_TENTATIVAS = 5;
 export const BLOQUEIO_MINUTOS = 30;
@@ -16,9 +17,9 @@ export const chaveEmail = (email: string) => `email:${email.toLowerCase().trim()
 
 /** O IP de quem chamou (atrás de proxy vem em x-forwarded-for). */
 export function chaveIp(req: Request): string {
-  const encaminhado = req.headers.get("x-forwarded-for");
-  const ip = (encaminhado ? encaminhado.split(",")[0] : req.headers.get("x-real-ip")) || "desconhecido";
-  return `ip:${ip.trim().slice(0, 80)}`;
+  // 15/11/2026: o IP sai de ipDaRequisicao (x-real-ip ou o último endereço
+  // do X-Forwarded-For); o primeiro endereço, usado antes, era falsificável
+  return `ip:${ipDaRequisicao(req.headers)}`;
 }
 
 export function minutosRestantes(ate: Date): number {

@@ -31,6 +31,8 @@ const publicada = path.join(raiz, "docs");
 // Arquivos/pastas que saem do build estático (dependem de servidor)
 const EXCLUIR = [
   path.join("src", "app", "api"),
+  // o teto de requisições (15/11/2026) só existe com servidor
+  path.join("src", "proxy.ts"),
   // redirecionamento não funciona em site estático
   path.join("src", "app", "catalogo"),
   // a prévia não deve ser indexada: vai um robots.txt fixo no lugar

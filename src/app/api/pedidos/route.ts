@@ -52,7 +52,10 @@ export async function POST(req: Request) {
   const cabe = await cabeMaisUmEnvio([`pedido:ip:${ip}`], 6, 10);
   const cabeZap = await cabeMaisUmEnvio([`pedido:zap:${digitos}`], 4, 10);
   if (!cabe || !cabeZap) {
-    return NextResponse.json({ erro: "Muitos pedidos em pouco tempo. Tente de novo em alguns minutos." }, { status: 429 });
+    return NextResponse.json(
+      { erro: "Calma, muitas requisições. Muitos pedidos em pouco tempo; tente de novo em alguns minutos." },
+      { status: 429, headers: { "Retry-After": "600" } }
+    );
   }
 
   // Os produtos citados, lidos do banco (o preço nunca vem do navegador)

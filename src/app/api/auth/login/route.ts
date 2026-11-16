@@ -23,14 +23,17 @@ import {
 
 const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// 15/11/2026: a resposta 429 diz "Calma, muitas requisições" e leva o
+// cabeçalho Retry-After (em segundos), o padrão para quem bate no limite
 function respostaBloqueio(ate: Date) {
   const min = minutosRestantes(ate);
+  const segundos = Math.max(1, Math.ceil((ate.getTime() - Date.now()) / 1000));
   return NextResponse.json(
     {
-      erro: `Muitas tentativas. O acesso ficou bloqueado por ${BLOQUEIO_MINUTOS} minutos; tente de novo em ${min} min.`,
+      erro: `Calma, muitas requisições. Depois de ${LIMITE_TENTATIVAS} tentativas erradas o acesso fica bloqueado por ${BLOQUEIO_MINUTOS} minutos; tente de novo em ${min} min.`,
       bloqueadoAte: ate.toISOString(),
     },
-    { status: 429 }
+    { status: 429, headers: { "Retry-After": String(segundos) } }
   );
 }
 
