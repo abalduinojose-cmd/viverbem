@@ -48,6 +48,7 @@ import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import { ANOS_TRADICAO, AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, UNIDADES } from "@/lib/tipos";
 import { SetaDireita as SetaAtalho } from "@/components/site/ui/icones";
+import { IconeEstrelaDuo, IconeReceitaDuo } from "@/components/site/ui/IconesVantagensDuo";
 import { FotoParalaxe } from "@/components/site/historia/FotoParalaxe";
 import { NumeroRolante } from "@/components/site/historia/NumeroRolante";
 import { TextoRevelado } from "@/components/site/historia/TextoRevelado";
@@ -90,12 +91,14 @@ const MARCOS = [
   },
 ];
 
+// 16/11/2026 ("troque a foto"): o marco de 2006 mostra a loja da Posse,
+// onde tudo começou (era a técnica no laboratório)
 const FOTO_2006 = {
   ano: "2006",
-  src: "/fotos/laboratorio.webp",
-  alt: "Técnica no laboratório de manipulação da Viver Bem",
-  largura: 576,
-  altura: 720,
+  src: "/fotos/lojas/posse.webp",
+  alt: "A fachada da loja da Posse, em Petrópolis, onde a Viver Bem começou",
+  largura: 900,
+  altura: 915,
 };
 
 const NUMEROS = [
@@ -299,36 +302,50 @@ export default async function PaginaSobre() {
           (seguem na home, em /como-funciona e em /avaliacoes); ficam dois
           atalhos curtos */}
       <section aria-label="Veja também" className="max-w-6xl mx-auto px-5 md:px-8 pb-12 md:pb-16">
-        {/* 25/10/2026, segunda volta ("melhore isso"): os dois cartões altos
-            viraram uma faixa só, com os dois atalhos lado a lado */}
-        <div className="revelar flex flex-col gap-3 rounded-[1.5rem] border border-fio bg-white p-2 sm:flex-row sm:items-center">
-          <p className="px-4 pt-3 sm:pt-0 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-escuro sm:shrink-0">Veja também</p>
-          <ul className="grid flex-1 grid-cols-2 gap-2">
-            <li>
-              <Link href="/como-funciona" className="group flex h-full items-center justify-between gap-3 rounded-xl bg-gelo/70 px-4 py-3 transition-colors hover:bg-gelo">
-                <span className="min-w-0">
-                  <span className="block text-[0.72rem] text-cinza">O pedido pela receita</span>
-                  <span className="block text-[0.95rem] font-semibold tracking-[-0.02em] text-navy leading-tight">
-                    Como funciona, <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">em 4 passos</span>
+        {/* 16/11/2026 ("melhore e modernize"): a faixa com os dois atalhos
+            apertados virou dois cartões, um embaixo do outro no celular e
+            lado a lado no computador; cada um com o ícone em dois tons, o
+            texto e a seta num círculo que fica azul no hover */}
+        <p className="revelar text-center text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ouro-escuro">Continue por aqui</p>
+        <ul className="revelar mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
+          {[
+            {
+              href: "/como-funciona",
+              icone: <IconeReceitaDuo tamanho={22} />,
+              rotulo: "O pedido pela receita",
+              titulo: "Como funciona",
+              destaque: "em 4 passos",
+            },
+            {
+              href: "/avaliacoes",
+              icone: <IconeEstrelaDuo tamanho={21} />,
+              rotulo: "Quem já é cliente",
+              titulo: `${AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google`,
+              destaque: `${AVALIACOES_GOOGLE_TOTAL} avaliações`,
+            },
+          ].map((a) => (
+            <li key={a.href}>
+              <Link
+                href={a.href}
+                className="group flex h-full items-center gap-4 rounded-[1.5rem] bg-white p-3 pr-4 ring-1 ring-inset ring-fio shadow-[0_22px_44px_-36px_rgba(16,42,74,0.5)] transition duration-300 hover:-translate-y-0.5 hover:ring-ouro/40 md:p-4 md:pr-5"
+              >
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-[1rem] bg-[linear-gradient(145deg,#fdf9f0,#f3e6c8)] text-ouro-escuro ring-1 ring-inset ring-ouro/25 shadow-[inset_0_1px_0_#ffffff] md:size-14">
+                  {a.icone}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.76rem] text-cinza">{a.rotulo}</span>
+                  <span className="mt-0.5 block text-[1.05rem] font-semibold leading-tight tracking-[-0.02em] text-navy md:text-[1.15rem]">
+                    {a.titulo}
+                    <span className="block italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">{a.destaque}</span>
                   </span>
                 </span>
-                <SetaAtalho tamanho={16} className="shrink-0 text-tinta transition-transform duration-300 group-hover:translate-x-0.5" />
-              </Link>
-            </li>
-            <li>
-              <Link href="/avaliacoes" className="group flex h-full items-center justify-between gap-3 rounded-xl bg-gelo/70 px-4 py-3 transition-colors hover:bg-gelo">
-                <span className="min-w-0">
-                  <span className="block text-[0.72rem] text-cinza">Quem já é cliente</span>
-                  <span className="block text-[0.95rem] font-semibold tracking-[-0.02em] text-navy leading-tight">
-                    {AVALIACOES_GOOGLE_NOTA.toLocaleString("pt-BR", { minimumFractionDigits: 1 })} no Google,{" "}
-                    <span className="italic font-[family-name:var(--font-destaque)] font-normal text-ouro-escuro">{AVALIACOES_GOOGLE_TOTAL} avaliações</span>
-                  </span>
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gelo text-tinta transition duration-300 group-hover:bg-navy group-hover:text-white">
+                  <SetaAtalho tamanho={16} className="transition-transform duration-300 group-hover:translate-x-0.5" />
                 </span>
-                <SetaAtalho tamanho={16} className="shrink-0 text-tinta transition-transform duration-300 group-hover:translate-x-0.5" />
               </Link>
             </li>
-          </ul>
-        </div>
+          ))}
+        </ul>
       </section>
     </main>
   );

@@ -1,5 +1,22 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 147 (16/11/2026): Como funciona com os dados da empresa, foto de 2006, atalhos da história e vantagens arrastando. IMPLEMENTADO e conferido (tsc, eslint, capturas no celular e no computador); commit local, sem push.**
+> - COMO FUNCIONA (/como-funciona): abertura com o botão Enviar receita e
+>   "Ver os passos", e os três números no cartão branco de três células da
+>   página A Viver Bem; a prova das avaliações virou cartão com o ícone em
+>   dois tons e a seta no círculo; no fim, "Quem responde pela sua
+>   fórmula" (DadosDaEmpresa.tsx): farmacêutico responsável e CRF, as
+>   quatro licenças em azulejos, razão social, CNPJ, sede, e-mail e o
+>   aviso da ANVISA. Os quatro passos (nona versão) e as perguntas não
+>   mudaram.
+> - A VIVER BEM: o marco de 2006 mostra a fachada da loja da Posse (era a
+>   técnica no laboratório; laboratorio.webp ficou sem uso). O "Veja
+>   também" virou dois cartões, um embaixo do outro no celular, com o
+>   ícone em dois tons e a seta no círculo que fica azul no hover.
+> - VANTAGENS (home): no celular o cartão 2x2 virou uma faixa de pílulas
+>   brancas que arrasta para o lado, com a borda direita esmaecendo; o
+>   computador continua com as quatro colunas.
+
 > **ADENDO 146 (16/11/2026): projeto limpo e organizado em pastas. IMPLEMENTADO e conferido (tsc, eslint, next build, as 13 páginas no ar local, home no celular); commit local, sem push.**
 > - PEDIDO: "comprima o projeto, exclua o que não é usado, organize as
 >   pastas como um engenheiro de software, mantendo tudo que já existe".

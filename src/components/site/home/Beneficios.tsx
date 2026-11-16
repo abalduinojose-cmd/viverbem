@@ -36,36 +36,32 @@ const ITENS = [
   },
 ];
 
-// Célula do cartão no celular (ícone ao lado, à esquerda); pílula no computador
-// 25/10/2026 (clean, marca de beleza): no computador as pílulas com borda,
-// sombra e vidro viraram texto com o ícone em ouro, separados por um fio
+// 16/11/2026 ("coloque arrastando para o lado e com um layout mais clean"):
+// no celular o cartão 2x2 virou uma faixa de pílulas brancas que arrasta
+// para o lado, cada uma com o ícone num círculo creme e o texto numa linha
+// só; a borda direita esmaece para mostrar que tem mais. O computador
+// continua igual: quatro colunas separadas por um fio.
 const classeItem =
-  "group/vt flex h-full items-center gap-2 px-2.5 py-3.5 text-left transition lg:h-[4.75rem] lg:justify-center lg:gap-3.5 lg:py-0 lg:px-5";
-
-/** Os fios entre as células no celular: à esquerda das ímpares e em cima
- *  da segunda fileira. No computador cada pílula tem a própria borda. */
-function fiosDaCelula(i: number) {
-  return `border-fio ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""} lg:border-t-0 ${i > 0 ? "lg:border-l" : "lg:border-0"}`;
-}
+  "group/vt flex h-full items-center gap-2.5 rounded-full bg-white py-1.5 pl-1.5 pr-4 ring-1 ring-inset ring-fio shadow-[0_10px_24px_-20px_rgba(16,42,74,0.5)] transition lg:h-[4.75rem] lg:justify-center lg:gap-3.5 lg:rounded-none lg:bg-transparent lg:px-5 lg:py-0 lg:shadow-none lg:ring-0";
 
 export function Beneficios() {
   return (
-    <section aria-label="Vantagens" className="entrada-vantagens max-w-7xl mx-auto px-5 md:px-8 pt-4 md:pt-5 pb-1.5">
-      <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-fio bg-white lg:grid-cols-4 lg:overflow-visible lg:rounded-none lg:border-0 lg:border-y lg:border-fio lg:bg-transparent">
+    <section aria-label="Vantagens" className="entrada-vantagens max-w-7xl mx-auto px-5 md:px-8 pt-3.5 md:pt-5 pb-0 lg:pb-1.5">
+      <ul className="-mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pt-1 pb-2.5 scroll-px-5 rolagem-sem-barra [mask-image:linear-gradient(to_right,#000_calc(100%-2.5rem),transparent)] md:-mx-8 md:px-8 md:scroll-px-8 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-0 lg:overflow-visible lg:border-y lg:border-fio lg:px-0 lg:py-0 lg:[mask-image:none]">
         {ITENS.map((i, indice) => {
           const miolo = (
             <>
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-[0.7rem] bg-[linear-gradient(145deg,#fdf9f0,#f3e6c8)] text-ouro-escuro ring-1 ring-inset ring-ouro/25 shadow-[inset_0_1px_0_#ffffff,0_6px_14px_-10px_rgba(133,101,47,0.6)] transition duration-300 lg:size-12 lg:rounded-[1rem] lg:group-hover/vt:-translate-y-0.5 lg:group-hover/vt:ring-ouro/50">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#fdf9f0,#f3e6c8)] text-ouro-escuro ring-1 ring-inset ring-ouro/25 shadow-[inset_0_1px_0_#ffffff] transition duration-300 lg:size-12 lg:rounded-[1rem] lg:shadow-[inset_0_1px_0_#ffffff,0_6px_14px_-10px_rgba(133,101,47,0.6)] lg:group-hover/vt:-translate-y-0.5 lg:group-hover/vt:ring-ouro/50">
                 {i.icone}
               </span>
-              <span className="min-w-0 leading-tight">
-                <b className="block font-semibold text-navy text-[0.8rem] lg:text-[1rem] lg:tracking-[-0.01em]">{i.titulo}</b>
-                <span className="block text-cinza text-[0.75rem] lg:text-[0.84rem] mt-0.5">{i.texto}</span>
+              <span className="min-w-0 whitespace-nowrap leading-tight lg:whitespace-normal">
+                <b className="block font-semibold text-navy text-[0.82rem] lg:text-[1rem] lg:tracking-[-0.01em]">{i.titulo}</b>
+                <span className="block text-cinza text-[0.74rem] lg:text-[0.84rem] mt-0.5">{i.texto}</span>
               </span>
             </>
           );
           return (
-            <li key={i.titulo} className={`min-w-0 ${fiosDaCelula(indice)}`}>
+            <li key={i.titulo} className={`shrink-0 snap-start lg:min-w-0 ${indice > 0 ? "lg:border-l lg:border-fio" : ""}`}>
               {i.href ? (
                 <a href={i.href} target="_blank" rel="noopener noreferrer" className={classeItem}>
                   {miolo}
