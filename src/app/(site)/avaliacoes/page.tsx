@@ -20,10 +20,10 @@ import {
   PERFIL_GOOGLE_URL,
   UNIDADES,
 } from "@/lib/tipos";
-import { Estrelas } from "@/components/site/Estrelas";
-import { ListaAvaliacoes } from "@/components/site/ListaAvaliacoes";
-import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
-import { SetaDireita } from "@/components/site/icones";
+import { Estrelas } from "@/components/site/avaliacoes/Estrelas";
+import { ListaAvaliacoes } from "@/components/site/avaliacoes/ListaAvaliacoes";
+import { BotaoEnviarReceita, IconeReceita } from "@/components/site/carrinho/BotaoEnviarReceita";
+import { SetaDireita } from "@/components/site/ui/icones";
 
 export const dynamic = "force-dynamic";
 

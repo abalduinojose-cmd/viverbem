@@ -9,8 +9,8 @@
 
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
-const avaliacoesGoogle = require("./avaliacoes-google");
-const conformidade = require("./conformidade");
+const avaliacoesGoogle = require("./dados/avaliacoes-google");
+const conformidade = require("./dados/conformidade");
 
 const db = new PrismaClient();
 
@@ -74,7 +74,7 @@ async function main() {
   }
 
   // ---------- Avaliacoes reais do Google ----------
-  // Vem de prisma/avaliacoes-google.js, gerado a partir do perfil
+  // Vem de prisma/dados/avaliacoes-google.js, gerado a partir do perfil
   // do Google da farmacia. O gestor pode editar cada uma no painel.
   await db.depoimento.deleteMany();
   const depoimentos = avaliacoesGoogle.map((a) => ({
@@ -542,7 +542,7 @@ async function main() {
   // cada item passa pelo mapa de conformidade: nome genérico, descrição
   // sem promessa de efeito e vitrine promocional desligada, porque
   // manipulado não pode ser exposto como produto de prateleira
-  // (ver prisma/conformidade.js).
+  // (ver prisma/dados/conformidade.js).
   const slugsUsados = new Set();
   for (let i = 0; i < produtos.length; i++) {
     const original = produtos[i];

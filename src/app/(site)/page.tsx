@@ -25,19 +25,19 @@ import { chaveBannerVitrine } from "@/lib/banners";
 import { imagemSeExistir, imagensDasLinhas, temFoto } from "@/lib/linhas";
 import { CategoriaDTO, ProdutoDTO, ehIndustrializado } from "@/lib/tipos";
 import { ehChaveExtra, ehChaveFixa, chaveDaExtra, type ChaveSecao } from "@/lib/secoes";
-import { Abertura } from "@/components/site/Abertura";
+import { Abertura } from "@/components/site/home/Abertura";
 import { obterArtesHero } from "@/lib/hero";
-import { Beneficios } from "@/components/site/Beneficios";
-import { Folha } from "@/components/site/Folha";
-import { ComoFunciona } from "@/components/site/ComoFunciona";
-import { CategoriasRedondas } from "@/components/site/CategoriasRedondas";
-import { VitrineCategoria, BannerVitrine } from "@/components/site/VitrineCategoria";
-import { BancadaProdutos } from "@/components/site/BancadaProdutos";
-import { ReelsInstagram } from "@/components/site/ReelsInstagram";
-import { CarrosselAvaliacoes } from "@/components/site/CarrosselAvaliacoes";
-import { BannerHistoria } from "@/components/site/BannerHistoria";
+import { Beneficios } from "@/components/site/home/Beneficios";
+import { Folha } from "@/components/site/home/Folha";
+import { ComoFunciona } from "@/components/site/home/ComoFunciona";
+import { CategoriasRedondas } from "@/components/site/home/CategoriasRedondas";
+import { VitrineCategoria, BannerVitrine } from "@/components/site/home/VitrineCategoria";
+import { BancadaProdutos } from "@/components/site/home/BancadaProdutos";
+import { ReelsInstagram } from "@/components/site/home/ReelsInstagram";
+import { CarrosselAvaliacoes } from "@/components/site/avaliacoes/CarrosselAvaliacoes";
+import { BannerHistoria } from "@/components/site/home/BannerHistoria";
 
-import { SecaoSaudeMulher } from "@/components/site/BannerSaudeMulher";
+import { SecaoSaudeMulher } from "@/components/site/home/BannerSaudeMulher";
 import { ROTEIROS } from "@/components/site/heroAnimado/roteiros";
 
 // O cartão "desde 2006 / 20 anos" fora da home por enquanto (13/11/2026)

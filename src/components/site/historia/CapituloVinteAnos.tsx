@@ -16,7 +16,7 @@
 // azul-noite, o "20" que cresce, a paralaxe e o recuo sob a folha branca.
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { BotaoEnviarReceita, IconeReceita } from "../BotaoEnviarReceita";
+import { BotaoEnviarReceita, IconeReceita } from "@/components/site/carrinho/BotaoEnviarReceita";
 import { FotoParalaxe } from "./FotoParalaxe";
 import { registrarCena, entre, limitar, suavizarSaida } from "./motor";
 

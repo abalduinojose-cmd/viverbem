@@ -1,7 +1,7 @@
 // 404 para endereço que não existe no site (e o 404.html da prévia
 // estática). Fora do layout do site: a página traz a própria logo.
 import type { Metadata } from "next";
-import { PaginaNaoEncontrada } from "@/components/site/PaginaNaoEncontrada";
+import { PaginaNaoEncontrada } from "@/components/site/institucional/PaginaNaoEncontrada";
 
 export const metadata: Metadata = {
   title: "Página não encontrada · Manipulação Viver Bem",

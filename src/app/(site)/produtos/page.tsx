@@ -2,7 +2,7 @@
 // aqui como ?busca=termo e já abre filtrada.
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
-import { CatalogoClient } from "@/components/site/CatalogoClient";
+import { CatalogoClient } from "@/components/site/catalogo/CatalogoClient";
 import { contarPorArea } from "@/lib/contagens";
 
 // Sempre dados frescos do banco (o que muda no painel aparece na hora)

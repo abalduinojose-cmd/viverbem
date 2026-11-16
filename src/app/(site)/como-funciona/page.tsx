@@ -8,9 +8,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ANOS_TRADICAO, UNIDADES } from "@/lib/tipos";
-import { ComoFunciona } from "@/components/site/ComoFunciona";
-import { PerguntasFrequentes } from "@/components/site/PerguntasFrequentes";
-import { SetaDireita } from "@/components/site/icones";
+import { ComoFunciona } from "@/components/site/home/ComoFunciona";
+import { PerguntasFrequentes } from "@/components/site/institucional/PerguntasFrequentes";
+import { SetaDireita } from "@/components/site/ui/icones";
 
 export const metadata: Metadata = {
   title: "Como funciona · Manipulação Viver Bem",

@@ -1,16 +1,16 @@
 // Layout do SITE público: header fixo, rodapé e o pedido (receita e
 // carrinho, sem preço) disponível em todas as páginas, fechando pelo
 // WhatsApp. O painel administrativo (/admin) tem layout próprio.
-import { CarrinhoGlobal } from "@/components/site/CarrinhoGlobal";
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
-import { RolagemSuave } from "@/components/site/RolagemSuave";
+import { CarrinhoGlobal } from "@/components/site/carrinho/CarrinhoGlobal";
+import { Header } from "@/components/site/layout/Header";
+import { Footer } from "@/components/site/layout/Footer";
+import { RolagemSuave } from "@/components/site/layout/RolagemSuave";
 import { obterCatalogo } from "@/lib/catalogo";
 import { montarIndiceBusca } from "@/lib/indiceBusca";
 import { dadosDaFarmacia } from "@/lib/seo";
-import { DadosEstruturados } from "@/components/site/DadosEstruturados";
-import { ConsentimentoCookies } from "@/components/site/ConsentimentoCookies";
-import { Analytics } from "@/components/site/Analytics";
+import { DadosEstruturados } from "@/components/site/layout/DadosEstruturados";
+import { ConsentimentoCookies } from "@/components/site/layout/ConsentimentoCookies";
+import { Analytics } from "@/components/site/layout/Analytics";
 
 export default async function LayoutSite({ children }: { children: React.ReactNode }) {
   // O menu "Categorias" lista as categorias do banco; a busca ao vivo do

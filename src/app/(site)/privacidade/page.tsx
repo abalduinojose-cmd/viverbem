@@ -13,7 +13,7 @@
 // contatos e foi corrigido.
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PaginaLegal } from "@/components/site/PaginaLegal";
+import { PaginaLegal } from "@/components/site/institucional/PaginaLegal";
 import { CNPJ_FARMACIA, DADOS_LEGAIS, WHATSAPP_LOJA } from "@/lib/tipos";
 
 export const metadata: Metadata = {

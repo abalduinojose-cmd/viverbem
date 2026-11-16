@@ -1,5 +1,32 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 146 (16/11/2026): projeto limpo e organizado em pastas. IMPLEMENTADO e conferido (tsc, eslint, next build, as 13 páginas no ar local, home no celular); commit local, sem push.**
+> - PEDIDO: "comprima o projeto, exclua o que não é usado, organize as
+>   pastas como um engenheiro de software, mantendo tudo que já existe".
+> - COMPONENTES: src/components/site deixou de ser uma pasta só com ~60
+>   arquivos e ganhou pastas por assunto: layout/, home/, catalogo/,
+>   produto/, carrinho/, lojas/, avaliacoes/, institucional/ e ui/
+>   (heroAnimado/, historia/ e receita/ ficaram como estavam). 56 arquivos
+>   movidos com git mv (histórico preservado), 111 imports reescritos.
+> - APAGADOS (nada usava): CartaoLoja, CartaoLojas, CartaoReceita,
+>   CartaoWhatsApp, IconeMoto, SeloAoVivo; as fotos fachada.webp,
+>   vinte-anos.webp, equipe-loja.webp (fica a -800), logo.webp e os
+>   pôsteres reel-N.jpg (ficam os .webp); a logo antiga (midia/) e a pasta
+>   .jez/.
+> - SCRIPTS: scripts/build/ (prévia, troca de banco, seed do deploy),
+>   scripts/imagens/ (favicon, og, capas) e scripts/dados/ (avaliações,
+>   fotos, conformidade); package.json e caminhos internos ajustados.
+>   Os dados do seed foram para prisma/dados/.
+> - DOCUMENTAÇÃO: DEPLOY.md e PRODUCAO.md em documentacao/, com a revisão
+>   de design de outubro; o README ganhou a estrutura atual (a antiga
+>   ainda descrevia o "totem").
+> - PESO: o cache .next tinha 472 MB acumulados de várias versões e foi
+>   apagado (o Next recria só o necessário); o backup do banco de 06/10
+>   saiu do projeto para ../backups-viverbem/.
+> - FICOU DE FORA (decisão do usuário): os vídeos dos reels são 15 dos
+>   17 MB de public/ (reel-1 tem 7,6 MB). Só carregam no toque, mas dá
+>   para recomprimir para ~1/3 com pequena perda de qualidade.
+
 > **ADENDO 145 (15/11/2026): segurança, isolamento por usuário, teto de requisições e 404 personalizada. IMPLEMENTADO e testado no servidor local; não publicado.**
 > - ISOLAMENTO ("RLS, cada usuário só vê os próprios dados"): o banco é
 >   Prisma (SQLite/MySQL/Postgres), sem RLS; o equivalente é o servidor

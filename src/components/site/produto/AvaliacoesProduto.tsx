@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, type DepoimentoDTO } from "@/lib/tipos";
-import { Estrelas } from "../Estrelas";
+import { Estrelas } from "@/components/site/avaliacoes/Estrelas";
 
 export function IconeGoogle({ tamanho = 18 }: { tamanho?: number }) {
   return (

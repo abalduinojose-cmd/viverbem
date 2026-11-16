@@ -34,7 +34,7 @@ npm run dev                      # sobe em http://localhost:3000
 - Painel: http://localhost:3000/admin
   - **Admin:** `admin@viverbem.com.br` / senha `viverbem123` (acesso total)
   - **Operador:** `operador@viverbem.com.br` / senha `operador123` (só cadastra/edita produtos e preços)
-  - **Em produção as senhas iniciais vêm de `SEED_ADMIN_SENHA` e `SEED_OPERADOR_SENHA`** (ou saem aleatórias no log do build). O passo a passo está em `PRODUCAO.md`.
+  - **Em produção as senhas iniciais vêm de `SEED_ADMIN_SENHA` e `SEED_OPERADOR_SENHA`** (ou saem aleatórias no log do build). O passo a passo está em `documentacao/PRODUCAO.md`.
 
 ### Logo oficial
 
@@ -52,29 +52,45 @@ existir, uma versão recriada em CSS é exibida no lugar.
 ## Estrutura do projeto
 
 ```
+documentacao/            guias: publicar (DEPLOY), colocar em produção (PRODUCAO)
+especificacoes/          o design do site, com o histórico de cada mudança (adendos)
+docs/                    a prévia estática publicada no GitHub Pages (gerada, não editar)
 prisma/
-  schema.prisma        # modelos: Categoria, Produto (inclui combos), Usuario
-  seed.js              # dados de exemplo (APAGA produtos/categorias e recria)
-public/uploads/        # fotos dos produtos (placeholders SVG + uploads do painel)
+  schema.prisma          modelos do banco
+  seed.js                carga inicial (categorias, produtos, avaliações, usuários)
+  dados/                 dados do seed (avaliações do Google, textos de conformidade)
+  migrations/            histórico de migrações do SQLite local
+public/
+  fotos/                 fotos do site (lojas, história, laboratório)
+  uploads/               fotos dos produtos e envios do painel
+  videos/                reels do Instagram (vídeo + capa)
+scripts/
+  build/                 prévia estática, troca de banco, seed automático no deploy
+  imagens/               favicon, imagem de compartilhamento, capas dos vídeos
+  dados/                 importação e ajuste de avaliações, fotos e conformidade
 src/
   app/
-    page.tsx           # totem: tela de boas-vindas
-    catalogo/          # totem: catálogo completo
-    admin/             # painel: login + páginas protegidas
-    api/
-      auth/            # login/logout
-      admin/           # CRUD de produtos/categorias + upload (protegidos)
-      totem/catalogo/  # JSON público do catálogo (base p/ modo offline da Fase 3)
+    (site)/              páginas públicas (home, produtos, lojas, sobre, contato...)
+    admin/               painel: login e páginas protegidas
+    api/                 rotas: login, pedidos do site e as do painel
+    not-found.tsx        página 404
+  proxy.ts               teto de requisições na frente da API (429)
   components/
-    totem/             # componentes da tela do cliente
-    admin/             # componentes do painel
-  lib/
-    db.ts              # instância do Prisma
-    sessao.ts          # sessão do admin (iron-session)
-    catalogo.ts        # consulta do catálogo (compartilhada página + API)
-    preco.ts           # preços em centavos <-> "R$ 0,00"
-    validarProduto.ts  # validação do formulário de produto
-    slug.ts            # gera slugs de categoria
+    site/
+      layout/            cabeçalho, rodapé, busca, cookies, rolagem, SEO
+      home/              seções da página inicial
+      heroAnimado/       a animação da abertura (canvas)
+      catalogo/          cartão de produto, faixas, foto, tarja, adicionar
+      produto/           página do produto (galeria, ações, compre junto, abas)
+      carrinho/          carrinho, anexo da receita, sugestões, "Enviar receita"
+      lojas/             vitrine da loja, mapa, horário
+      avaliacoes/        lista, carrossel e estrelas
+      institucional/     páginas legais, ficha da farmácia, perguntas, contato, 404
+      historia/          capítulos da página A Viver Bem
+      receita/           a cena da receita do "Fale com a gente"
+      ui/                ícones e botões usados no site todo
+    admin/               componentes do painel
+  lib/                   regras e dados (banco, sessão, catálogo, pedidos, SEO...)
 ```
 
 Detalhes de modelagem:
@@ -121,7 +137,7 @@ Recomendações:
 - Use um gerenciador de processo (ex.: `pm2 start npm --name viverbem -- start`) para reiniciar sozinho.
 - Coloque um proxy reverso com HTTPS na frente (Caddy ou Nginx) — o cookie de sessão exige HTTPS em produção.
 - **Troque `SESSION_SECRET`** e a senha do admin.
-- **Login protegido**: senhas em hash (bcrypt), sessão em cookie criptografado com validade de 12h e bloqueio de 30 minutos depois de 5 senhas erradas (por e-mail e por IP, tabela `TentativaLogin`). O gestor desbloqueia em Acessos ao painel. Atrás de proxy, mantenha o cabeçalho `X-Forwarded-For` para o bloqueio por IP funcionar.
+- **Login protegido**: senhas em hash (bcrypt), sessão em cookie criptografado com validade de 12h e bloqueio de 30 minutos depois de 5 senhas erradas (por e-mail e por IP, tabela `TentativaLogin`). O gestor desbloqueia em Acessos ao painel. Atrás de proxy, o servidor da frente precisa preencher `X-Real-IP` (ou acrescentar o IP real no fim do `X-Forwarded-For`) para os limites por IP funcionarem (`src/lib/ipDaRequisicao.ts`). Acima do teto, a API responde 429 "Calma, muitas requisições" (`src/proxy.ts`).
 - Faça backup do arquivo `prisma/dev.db` (banco) e da pasta `public/uploads/` (fotos) — são os dois únicos lugares com dados.
 
 ### Migrar para Postgres (quando precisar)
@@ -149,7 +165,7 @@ As fotos enviadas pelo painel continuam em `public/uploads/` (ou no Vercel Blob,
 
 ### Publicar na internet (Vercel)
 
-Veja o guia completo em **[DEPLOY.md](DEPLOY.md)** — sobe o app inteiro
+Veja o guia completo em **[documentacao/DEPLOY.md](documentacao/DEPLOY.md)** — sobe o app inteiro
 (totem + painel) com link público, usando Postgres e Vercel Blob.
 
 O upload de fotos já se adapta sozinho ao ambiente (`src/lib/armazenamento.ts`):

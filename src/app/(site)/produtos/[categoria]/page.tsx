@@ -2,11 +2,11 @@
 // destino do menu "Categorias" e dos cartões da home.
 import { notFound } from "next/navigation";
 import { dadosDeMigalhas } from "@/lib/seo";
-import { DadosEstruturados } from "@/components/site/DadosEstruturados";
+import { DadosEstruturados } from "@/components/site/layout/DadosEstruturados";
 import type { Metadata } from "next";
 import { obterCatalogo } from "@/lib/catalogo";
 import { infoCategoria } from "@/lib/categorias";
-import { CatalogoClient } from "@/components/site/CatalogoClient";
+import { CatalogoClient } from "@/components/site/catalogo/CatalogoClient";
 import { contarPorArea } from "@/lib/contagens";
 
 export const dynamic = "force-dynamic";

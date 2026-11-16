@@ -21,10 +21,10 @@ import {
   WHATSAPP_NUMERO,
   linkMapaUnidade,
 } from "@/lib/tipos";
-import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
-import { BotaoEnviarReceita, IconeReceita } from "@/components/site/BotaoEnviarReceita";
-import { FormularioContato } from "@/components/site/FormularioContato";
-import { IconeInstagram, IconeWhatsApp, SetaDireita } from "@/components/site/icones";
+import { HorarioAtendimento } from "@/components/site/lojas/HorarioAtendimento";
+import { BotaoEnviarReceita, IconeReceita } from "@/components/site/carrinho/BotaoEnviarReceita";
+import { FormularioContato } from "@/components/site/institucional/FormularioContato";
+import { IconeInstagram, IconeWhatsApp, SetaDireita } from "@/components/site/ui/icones";
 
 export const metadata: Metadata = {
   title: "Contatos · Manipulação Viver Bem",

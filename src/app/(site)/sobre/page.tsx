@@ -47,7 +47,7 @@ import type { Metadata } from "next";
 import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import { ANOS_TRADICAO, AVALIACOES_GOOGLE_NOTA, AVALIACOES_GOOGLE_TOTAL, UNIDADES } from "@/lib/tipos";
-import { SetaDireita as SetaAtalho } from "@/components/site/icones";
+import { SetaDireita as SetaAtalho } from "@/components/site/ui/icones";
 import { FotoParalaxe } from "@/components/site/historia/FotoParalaxe";
 import { NumeroRolante } from "@/components/site/historia/NumeroRolante";
 import { TextoRevelado } from "@/components/site/historia/TextoRevelado";

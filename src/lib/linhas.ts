@@ -10,7 +10,7 @@
 // Sem nada, o círculo sai em azul-noite com a inicial em ouro.
 import fs from "fs";
 import path from "path";
-import type { ImagemCategoria } from "@/components/site/CategoriasRedondas";
+import type { ImagemCategoria } from "@/components/site/home/CategoriasRedondas";
 
 /** Caminho público da imagem, se o arquivo existir em public/ */
 export function imagemSeExistir(caminho: string): string | null {

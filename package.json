@@ -10,11 +10,11 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "demo:build": "node scripts/gerar-demo.js",
-    "db:sqlite": "node scripts/trocar-banco.js sqlite",
-    "db:postgres": "node scripts/trocar-banco.js postgres",
-    "vercel-build": "node scripts/trocar-banco.js postgres && prisma db push --skip-generate && prisma generate && node scripts/seed-se-vazio.js && next build",
-    "db:mysql": "node scripts/trocar-banco.js mysql"
+    "demo:build": "node scripts/build/gerar-demo.js",
+    "db:sqlite": "node scripts/build/trocar-banco.js sqlite",
+    "db:postgres": "node scripts/build/trocar-banco.js postgres",
+    "vercel-build": "node scripts/build/trocar-banco.js postgres && prisma db push --skip-generate && prisma generate && node scripts/build/seed-se-vazio.js && next build",
+    "db:mysql": "node scripts/build/trocar-banco.js mysql"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

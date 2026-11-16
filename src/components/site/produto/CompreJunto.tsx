@@ -10,8 +10,8 @@ import Link from "next/link";
 import { asset } from "@/lib/asset";
 import type { ProdutoDTO } from "@/lib/tipos";
 import { useCarrinho } from "@/lib/carrinho";
-import { IconeCarrinho, IconeFeito } from "../icones";
-import { FotoProduto } from "../FotoProduto";
+import { IconeCarrinho, IconeFeito } from "@/components/site/ui/icones";
+import { FotoProduto } from "@/components/site/catalogo/FotoProduto";
 
 // 14/11/2026 ("o compre junto tem que estar melhor posicionado"): na
 // página do produto ele subiu para a coluna de compra, logo abaixo de

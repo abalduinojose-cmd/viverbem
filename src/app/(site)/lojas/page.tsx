@@ -24,12 +24,12 @@
 import type { Metadata } from "next";
 import { asset } from "@/lib/asset";
 import { UNIDADES, WHATSAPP_LOJA } from "@/lib/tipos";
-import { HorarioAtendimento } from "@/components/site/HorarioAtendimento";
-import { BotaoEnviarReceita } from "@/components/site/BotaoEnviarReceita";
-import { VitrineLoja, ancoraLoja } from "@/components/site/VitrineLoja";
-import { IconeCaixa } from "@/components/site/IconeCaixa";
-import { IconeFachada } from "@/components/site/IconesVantagens";
-import { IconeRelogio } from "@/components/site/icones";
+import { HorarioAtendimento } from "@/components/site/lojas/HorarioAtendimento";
+import { BotaoEnviarReceita } from "@/components/site/carrinho/BotaoEnviarReceita";
+import { VitrineLoja, ancoraLoja } from "@/components/site/lojas/VitrineLoja";
+import { IconeCaixa } from "@/components/site/ui/IconeCaixa";
+import { IconeFachada } from "@/components/site/ui/IconesVantagens";
+import { IconeRelogio } from "@/components/site/ui/icones";
 
 export const metadata: Metadata = {
   title: "Lojas · Manipulação Viver Bem",
