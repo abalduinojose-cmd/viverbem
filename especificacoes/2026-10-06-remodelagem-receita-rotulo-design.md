@@ -1,5 +1,35 @@
 # Remodelagem visual "Receita e rótulo" — Manipulação Viver Bem
 
+> **ADENDO 149 (17/11/2026, sessão da dobra animada): o título do banner Saúde da Mulher na linguagem da dobra versão 3 (adendo 144). IMPLEMENTADO e conferido em quadros (1440, 1024, 390) e vídeo.**
+> - Pedido, com o cartão da Saúde da Mulher selecionado: "assim como na
+>   primeira hero, que a gente reformulou na última mexida, atualize esse
+>   banner e essa autoestima que está sendo animada, melhore 1000%".
+> - SOBRETÍTULO SEM A CÁPSULA DE VIDRO: o ponto de ouro acende com um halo
+>   e as palavras BELEZA e AUTOESTIMA fecham o espaçamento (de 0,6em para
+>   0,16em) enquanto aparecem; o "e" itálico sobe e cresce. Ficou um pouco
+>   maior (0,72rem). Ele só conta na altura da medida do texto, para os
+>   potes não andarem enquanto o espaçamento fecha.
+> - "SAÚDE" SE LEVANTA DE UM FIO DE OURO: o fio se desenha do centro para as
+>   pontas rente à linha de base e as letras se levantam dele (dobradiça na
+>   linha de base, a 84% da caixa da letra), escuras quando deitadas e
+>   fechando o espaçamento; o fio se apaga. Antes subiam de trás de uma
+>   máscara.
+> - A PENA DE OURO: um cursor fino com luz digita "em cada fase da" letra a
+>   letra (cada letra entra em foco, de 5px de desfoque), se recolhe num
+>   ponto de luz, desce e ESCREVE "mulher": cada letra sai da névoa (12px)
+>   atrás dela, em cascata de vãos que encolhem. No fim da palavra a pena
+>   some e acende uma estrela de quatro pontas no terminal do "r"; em
+>   seguida a luz corre pelo ouro. A pena anda pelas medidas reais das
+>   letras (offset*, depois de document.fonts.ready). Antes o "mulher" era
+>   revelado por uma cortina da esquerda para a direita.
+> - O ouro do "mulher" agora é por letra (para cada uma ter seu foco), mas
+>   contínuo pela palavra: cada letra mostra o pedaço do degradê que cai
+>   sobre ela (tamanho e posição em px, refeitos quando a tela muda).
+> - O letreiro chega depois do título: LETREIRO_INICIO de 1,45 para 1,75
+>   (vitrine.ts); a ola dos potes e o brilho de cada volta vêm junto.
+> - A cena dos potes (vitrine) ficou como estava. Tudo roda com "reduzir
+>   movimento" ligado.
+
 > **ADENDO 147 (16/11/2026): Como funciona com os dados da empresa, foto de 2006, atalhos da história e vantagens arrastando. IMPLEMENTADO e conferido (tsc, eslint, capturas no celular e no computador); commit local, sem push.**
 > - COMO FUNCIONA (/como-funciona): abertura com o botão Enviar receita e
 >   "Ver os passos", e os três números no cartão branco de três células da

@@ -53,8 +53,10 @@ import { DURACAO, FOCAL, TAU, entraSaiCubica, entraSaiSeno, limitar, mix, saiCub
  *  TituloCinetico): a vitrine ocupa o que sobra. Zero = ainda não medido */
 export const areaDoTexto = { direita: 0, base: 0 };
 
-/** Quando o letreiro aparece na primeira volta (tempo da coreografia) */
-export const LETREIRO_INICIO = 1.45;
+/** Quando o letreiro aparece na primeira volta (tempo da coreografia). Era
+ *  1,45; com o título escrito pela pena (17/11/2026) ele chega depois do
+ *  "mulher", junto da estrela do fim da palavra */
+export const LETREIRO_INICIO = 1.75;
 /** Quanto dura cada item do letreiro: cinco itens fecham uma volta */
 const VEZ = DURACAO / 5;
 
